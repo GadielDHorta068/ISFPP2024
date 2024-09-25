@@ -1,4 +1,4 @@
-package modelo;
+package org.isfpp.modelo;
 
 public class link {
 
