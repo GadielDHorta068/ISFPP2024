@@ -30,8 +30,9 @@ public class Equipment{
 		this.location = location;
 	}
 
-
-
+	public String getCode() {
+		return null;
+	}
 
 
 	private class Port{

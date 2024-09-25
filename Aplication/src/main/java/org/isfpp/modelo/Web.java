@@ -2,20 +2,19 @@ package org.isfpp.modelo;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 
 import org.isfpp.exceptions.AlredyExistException;
 
 public class Web {
 	private HashMap<String,Equipment> hardware;
-	private ArrayList<link> linked;
+	private ArrayList<Conection> linked;
 	private HashMap<String,Location> locations;
 	private String nombre;
 	public Web(String nombre) {
 		super();
 		this.nombre = nombre;
 		this.hardware=new HashMap<String,Equipment>();
-		this.linked=new ArrayList<link>();
+		this.linked=new ArrayList<Conection>();
 		this.locations=new HashMap<String,Location>();
 	}
 	public HashMap<String, Equipment> getHardware() {
@@ -24,10 +23,10 @@ public class Web {
 	public void setHardware(HashMap<String, Equipment> hardware) {
 		this.hardware = hardware;
 	}
-	public ArrayList<link> getLinked() {
+	public ArrayList<Conection> getLinked() {
 		return linked;
 	}
-	public void setLinked(ArrayList<link> linked) {
+	public void setLinked(ArrayList<Conection> linked) {
 		this.linked = linked;
 	}
 	public HashMap<String, Location> getLocations() {
@@ -48,8 +47,9 @@ public class Web {
 		locations.put(location.getCode(), location);
 	}
 	public void addEquipment(Equipment equipment) {
-		if(locations.containsKey(equipment.getCode())
+		if(locations.containsKey(equipment.getCode())){
 			throw new AlredyExistException("el quipo ya se encuentra");
+		}
 		hardware.put(equipment.getCode(),equipment);
 	}
 	
