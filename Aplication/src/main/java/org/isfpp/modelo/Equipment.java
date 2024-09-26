@@ -52,9 +52,12 @@ public class Equipment{
 		return IpAdress;
 	}
 
+	public String getDescription() {
+		return description;
+	}
 
 	private class Port{
-		private PortType portType;
+	//	private PortType portType;
 		private int cantidad;
 		
 		

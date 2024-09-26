@@ -16,9 +16,9 @@ import java.util.List;
 
 public class DesplegableComponent {
     private boolean isExpanded = false;
-    private JPanel panel;
-    private JButton toggleButton;
-    private JTable table;
+    private final JPanel panel;
+    private final JButton toggleButton;
+    private final JTable table;
     private JScrollPane scrollPane;
     private PanelDerecho panelDerecho;  // Referencia al PanelDerecho
 
@@ -32,15 +32,14 @@ public class DesplegableComponent {
         StylusUI.aplicarEstiloBoton(toggleButton,false);
         toggleButton.setHorizontalAlignment(SwingConstants.LEFT);
         toggleButton.addActionListener(e -> toggle());
-
-        // Obtener los equipos de la clase Web
+        
         List<Equipment> equipmentList = new ArrayList<>(web.getHardware().values());
         Object[][] data = new Object[equipmentList.size()][2];
 
         for (int i = 0; i < equipmentList.size(); i++) {
             Equipment equipment = equipmentList.get(i);
-            data[i][0] = equipment.getCode();  // Mostrar el nombre o descripción
-            data[i][1] = equipment.getIp();  // Mostrar la primera IP
+            data[i][0] = equipment.getCode();
+            data[i][1] = equipment.getIp();  
         }
 
         String[] columnNames = {"Nombre", "IP"};
@@ -65,8 +64,9 @@ public class DesplegableComponent {
                 int row = table.getSelectedRow();
                 if (row != -1) {
                     Equipment selectedEquipment = equipmentList.get(row);
-                    // Actualizar el panel derecho con el toString del equipo
                     panelDerecho.updateProperties(selectedEquipment.toString());
+                    panelDerecho.setIcon(selectedEquipment.getDescription().toLowerCase());
+
                 }
             }
         });
