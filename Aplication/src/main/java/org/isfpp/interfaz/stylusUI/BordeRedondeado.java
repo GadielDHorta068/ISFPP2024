@@ -1,4 +1,4 @@
-package org.deneb.stylusUI;
+package org.isfpp.interfaz.stylusUI;
 
 import javax.swing.border.Border;
 import java.awt.*;

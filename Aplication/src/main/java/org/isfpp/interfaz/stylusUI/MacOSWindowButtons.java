@@ -1,4 +1,4 @@
-package org.deneb.stylusUI;
+package org.isfpp.interfaz.stylusUI;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,7 +16,7 @@ public class MacOSWindowButtons extends JPanel {
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new FlowLayout(FlowLayout.RIGHT, 5, 5));
 
-        JButton closeButton = createCircleButton(Color.RED, "×");
+        JButton closeButton = createCircleButton(Color.RED, "ï¿½");
         JButton minimizeButton = createCircleButton(Color.YELLOW, "-");
         JButton maximizeButton = createCircleButton(Color.GREEN, "?");
 
@@ -78,7 +78,7 @@ public class MacOSWindowButtons extends JPanel {
     }
 
     /**
-     * Método para animar la maximización de la ventana
+     * Mï¿½todo para animar la maximizaciï¿½n de la ventana
      */
     private void animateMaximize(JFrame frame) {
         Rectangle startBounds = frame.getBounds();
@@ -89,21 +89,21 @@ public class MacOSWindowButtons extends JPanel {
     }
 
     /**
-     * Método para animar la restauración de la ventana
+     * Mï¿½todo para animar la restauraciï¿½n de la ventana
      */
     private void animateRestore(JFrame frame) {
         Rectangle startBounds = frame.getBounds();
-        Rectangle targetBounds = new Rectangle(100, 100, 800, 600); // Tamaño y posición originales o deseadas
+        Rectangle targetBounds = new Rectangle(100, 100, 800, 600); // Tamaï¿½o y posiciï¿½n originales o deseadas
 
         animateWindow(frame, startBounds, targetBounds);
     }
 
     /**
-     * Método genérico para animar el cambio de tamaño de la ventana
+     * Mï¿½todo genï¿½rico para animar el cambio de tamaï¿½o de la ventana
      */
     private void animateWindow(JFrame frame, Rectangle startBounds, Rectangle targetBounds) {
-        int animationDuration = 100; // Duración de la animación en milisegundos
-        int steps = 10; // Número de pasos de la animación
+        int animationDuration = 100; // Duraciï¿½n de la animaciï¿½n en milisegundos
+        int steps = 10; // Nï¿½mero de pasos de la animaciï¿½n
         int delay = animationDuration / steps;
 
         Timer timer = new Timer(delay, null);
@@ -136,17 +136,17 @@ public class MacOSWindowButtons extends JPanel {
     }
 
     /**
-     * Función de interpolación para calcular el valor intermedio en cada paso de la animación
+     * Funciï¿½n de interpolaciï¿½n para calcular el valor intermedio en cada paso de la animaciï¿½n
      */
     private int interpolate(int startValue, int endValue, int step, int totalSteps) {
         return startValue + ((endValue - startValue) * step) / totalSteps;
     }
 
     /**
-     * Crear un botón circular con texto dentro (como '×', '?' o '?')
-     * @param color Color del botón
-     * @param symbol Símbolo a mostrar dentro del botón
-     * @return Botón suavizado con símbolo
+     * Crear un botï¿½n circular con texto dentro (como 'ï¿½', '?' o '?')
+     * @param color Color del botï¿½n
+     * @param symbol Sï¿½mbolo a mostrar dentro del botï¿½n
+     * @return Botï¿½n suavizado con sï¿½mbolo
      */
     private JButton createCircleButton(Color color, String symbol) {
         JButton button = new JButton() {
@@ -167,7 +167,7 @@ public class MacOSWindowButtons extends JPanel {
                 g2d.drawString(symbol, (getWidth() - textWidth) / 2, (getHeight() + textHeight) / 2 - 3);
             }
         };
-        button.setPreferredSize(new Dimension(15, 15));  // Tamaño del botón
+        button.setPreferredSize(new Dimension(15, 15));  // Tamaï¿½o del botï¿½n
         button.setContentAreaFilled(false);
         button.setBorderPainted(false);
         button.setFocusPainted(false);

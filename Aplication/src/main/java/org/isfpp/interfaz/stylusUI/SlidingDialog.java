@@ -1,4 +1,4 @@
-package org.deneb.stylusUI;
+package org.isfpp.interfaz.stylusUI;
 
 import javax.swing.*;
 import java.awt.*;
@@ -6,8 +6,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class SlidingDialog extends JDialog {
-    private static final int ANIMATION_DURATION = 75; // Duración de la animación en milisegundos
-    private static final int STEP_SIZE = 10; // Tamaño del paso en píxeles
+    private static final int ANIMATION_DURATION = 75; // Duraciï¿½n de la animaciï¿½n en milisegundos
+    private static final int STEP_SIZE = 10; // Tamaï¿½o del paso en pï¿½xeles
 
     public SlidingDialog(JFrame parentFrame, String title, String message) {
         super(parentFrame, title, true);
@@ -26,7 +26,7 @@ public class SlidingDialog extends JDialog {
 
 
 
-        // Crear un panel para el botón
+        // Crear un panel para el botï¿½n
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         buttonPanel.setBackground(StylusUI.COLOR_PRIMARIO.darker());
 
@@ -43,12 +43,12 @@ public class SlidingDialog extends JDialog {
         panel.add(buttonPanel, BorderLayout.SOUTH);
 
         add(panel, BorderLayout.CENTER);
-        StylusUI.aplicarEstiloPanel((JPanel) getContentPane()); // Aplicar estilo al panel del diálogo
+        StylusUI.aplicarEstiloPanel((JPanel) getContentPane()); // Aplicar estilo al panel del diï¿½logo
 
         setSize(320, 120);
         setLocationRelativeTo(parentFrame);
 
-        // Inicializar posición de la ventana fuera de la pantalla
+        // Inicializar posiciï¿½n de la ventana fuera de la pantalla
         setLocation(parentFrame.getX() + (parentFrame.getWidth() - getWidth()) / 2, parentFrame.getY() + parentFrame.getHeight());
 
         // Crear un temporizador para animar el deslizamiento
@@ -65,7 +65,7 @@ public class SlidingDialog extends JDialog {
 
                 step++;
                 if (step > totalSteps) {
-                    setLocation(getX(), targetY); // Ajustar la posición final para el centro
+                    setLocation(getX(), targetY); // Ajustar la posiciï¿½n final para el centro
                     ((Timer) e.getSource()).stop();
                 }
             }
@@ -91,7 +91,7 @@ public class SlidingDialog extends JDialog {
 
                 step++;
                 if (step > totalSteps) {
-                    setLocation(getX(), endY); // Ajustar la posición final para la parte inferior
+                    setLocation(getX(), endY); // Ajustar la posiciï¿½n final para la parte inferior
                     ((Timer) e.getSource()).stop();
                     dispose();
                 }

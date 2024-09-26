@@ -1,4 +1,4 @@
-package org.deneb.stylusUI;
+package org.isfpp.interfaz.stylusUI;
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -15,6 +15,8 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+
+import static java.lang.StringTemplate.STR;
 
 public class StylusUI {
     // Colores oscuros inspirados en Material UI, IOS , Ubuntu
@@ -36,7 +38,7 @@ public class StylusUI {
     private static final Color BUTTON_HOVER_COLOR = BUTTON_BACKGROUND_COLOR.darker();
     private static final Color BUTTON_PRESSED_COLOR = BUTTON_BACKGROUND_COLOR.brighter();
 
-    // TipografÌa personalizada
+    // TipografÔøΩa personalizada
     public static Font FUENTE_TEXTO;
     public static Font FUENTE_TITULO;
 
@@ -48,7 +50,7 @@ public class StylusUI {
             }
 
             try (InputStream fuenteStream = fuenteURL.openStream()) {
-                FUENTE_TEXTO = Font.createFont(Font.TRUETYPE_FONT, fuenteStream).deriveFont(14f);
+               FUENTE_TEXTO = Font.createFont(Font.TRUETYPE_FONT, fuenteStream).deriveFont(14f);
                 FUENTE_TITULO = FUENTE_TEXTO.deriveFont(Font.ITALIC, 16f);
                 GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
                 ge.registerFont(FUENTE_TEXTO);
@@ -77,22 +79,22 @@ public class StylusUI {
     public static void aplicarEstiloBoton(JButton boton, Boolean relleno) {
         boton.setBackground(COLOR_FONDO_BOTON);
         boton.setForeground(COLOR_TEXTO);
-        boton.setFont(FUENTE_TEXTO.deriveFont(12f));  // TamaÒo de fuente reducido
+        boton.setFont(FUENTE_TEXTO.deriveFont(12f));  // TamaÔøΩo de fuente reducido
         boton.setFont(boton.getFont().deriveFont(Font.BOLD)); // Bold para mas volumen(?
         boton.setFocusPainted(false);
-        boton.setBorder(new BordeRedondeado(10));  // Borde redondeado m·s pequeÒo
-        // Ajustar m·rgenes muy pequeÒos para hacer el botÛn m·s compacto
-        boton.setMargin(new Insets(2, 5, 2, 5));    //Esto hace que el boton tenga mas "tamaÒo"
-        boton.setPreferredSize(new Dimension(85, 35));  // TamaÒo ajustado, me quedaba muy grande
+        boton.setBorder(new BordeRedondeado(10));  // Borde redondeado mÔøΩs pequeÔøΩo
+        // Ajustar mÔøΩrgenes muy pequeÔøΩos para hacer el botÔøΩn mÔøΩs compacto
+        boton.setMargin(new Insets(2, 5, 2, 5));    //Esto hace que el boton tenga mas "tamaÔøΩo"
+        boton.setPreferredSize(new Dimension(85, 35));  // TamaÔøΩo ajustado, me quedaba muy grande
         boton.setContentAreaFilled(relleno);  // Mantener el relleno, caso contrario logramos hacer un boton "transparente" con texto legible
        if (!relleno){
            boton.setBorder(null);
        }
         boton.setCursor(new Cursor(Cursor.HAND_CURSOR));    //HandCursor hace que al poner el mouse sobre un boton cambie a "la manito"
 
-        // Ajustar tamaÒo al contenido del texto del botÛn
+        // Ajustar tamaÔøΩo al contenido del texto del botÔøΩn
         Dimension preferredSize = boton.getPreferredSize();
-        preferredSize.width += PADDING_HORIZONTAL * 2; // AÒadir espacio horizontal adicional
+        preferredSize.width += PADDING_HORIZONTAL * 2; // AÔøΩadir espacio horizontal adicional
         boton.setPreferredSize(preferredSize);
 
         boton.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -142,17 +144,17 @@ public class StylusUI {
         tabla.setBackground(COLOR_PRIMARIO);  // Fondo de la tabla
         tabla.setForeground(COLOR_TEXTO);     // Color del texto
         tabla.setFont(FUENTE_TEXTO.deriveFont(Font.PLAIN, 12f));  // Fuente del texto sin negrita
-        tabla.setFillsViewportHeight(true);   // Llenar el ·rea de la tabla, incluso cuando est· vacÌa
+        tabla.setFillsViewportHeight(true);   // Llenar el ÔøΩrea de la tabla, incluso cuando estÔøΩ vacÔøΩa
 
         JTableHeader cabecera = tabla.getTableHeader();
         cabecera.setBackground(COLOR_SECUNDARIO);  // Fondo de la cabecera
         cabecera.setForeground(COLOR_TEXTO);       // Texto de la cabecera
         cabecera.setFont(FUENTE_TITULO);           // Fuente de la cabecera
 
-        // Bordes y selecciÛn
-        tabla.setGridColor(COLOR_SECUNDARIO);         // Color de las lÌneas de la tabla
-        tabla.setSelectionBackground(COLOR_SECUNDARIO.darker());  // Fondo de selecciÛn
-        tabla.setSelectionForeground(COLOR_TEXTO);    // Texto de selecciÛn
+        // Bordes y selecciÔøΩn
+        tabla.setGridColor(COLOR_SECUNDARIO);         // Color de las lÔøΩneas de la tabla
+        tabla.setSelectionBackground(COLOR_SECUNDARIO.darker());  // Fondo de selecciÔøΩn
+        tabla.setSelectionForeground(COLOR_TEXTO);    // Texto de selecciÔøΩn
 
         // Renderer para el fondo de las celdas
         tabla.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
@@ -204,7 +206,7 @@ public class StylusUI {
                 maxWidth = Math.max(maxWidth, cellWidth);
             }
 
-            column.setPreferredWidth(maxWidth + 10); // AÒadir un margen adicional para el espaciado
+            column.setPreferredWidth(maxWidth + 10); // AÔøΩadir un margen adicional para el espaciado
         }
     }
 
@@ -216,7 +218,7 @@ public class StylusUI {
         dialog.getContentPane().setBackground(DARK_BACKGROUND_COLOR);
         dialog.setFont(FUENTE_TEXTO);
 
-        // Aplicar estilo a los componentes dentro del di·logo
+        // Aplicar estilo a los componentes dentro del diÔøΩlogo
         for (Component component : dialog.getContentPane().getComponents()) {
             if (component instanceof JPanel) {
                 aplicarEstiloPanel((JPanel) component);
@@ -229,8 +231,8 @@ public class StylusUI {
             }
         }
 
-        dialog.pack(); // Ajustar el tamaÒo del di·logo seg˙n su contenido
-        dialog.setLocationRelativeTo(null); // Centrar el di·logo en la pantalla
+        dialog.pack(); // Ajustar el tamaÔøΩo del diÔøΩlogo segÔøΩn su contenido
+        dialog.setLocationRelativeTo(null); // Centrar el diÔøΩlogo en la pantalla
     }
 
     /**
@@ -269,7 +271,7 @@ public class StylusUI {
         comboBox.setFont(FUENTE_TEXTO);
         comboBox.setBorder(BorderFactory.createLineBorder(TEXT_COLOR)); ///Cambiar esto, no mgggg
 
-        // Estilo de los Ìtems desplegados
+        // Estilo de los ÔøΩtems desplegados
         comboBox.setUI(new javax.swing.plaf.basic.BasicComboBoxUI() {
             @Override
             protected JButton createArrowButton() {
@@ -328,7 +330,7 @@ public class StylusUI {
         radioButton.setForeground(TEXT_COLOR);
         radioButton.setFont(FUENTE_TEXTO);
 
-        // Personaliza el Ìcono seleccionado
+        // Personaliza el ÔøΩcono seleccionado
         radioButton.setIcon(new javax.swing.ImageIcon("ruta/iconoNoSeleccionado.png"));
         radioButton.setSelectedIcon(new javax.swing.ImageIcon("ruta/iconoSeleccionado.png"));
     }
@@ -342,7 +344,7 @@ public class StylusUI {
         checkBox.setForeground(TEXT_COLOR);
         checkBox.setFont(FUENTE_TEXTO);
 
-        // Personaliza el Ìcono marcado
+        // Personaliza el ÔøΩcono marcado
         checkBox.setIcon(new javax.swing.ImageIcon("ruta/iconoNoSeleccionado.png"));
         checkBox.setSelectedIcon(new javax.swing.ImageIcon("ruta/iconoSeleccionado.png"));
     }
@@ -356,7 +358,7 @@ public class StylusUI {
         tabbedPane.setForeground(TEXT_COLOR);
         tabbedPane.setFont(FUENTE_TEXTO);
 
-        // Personalizar las pestaÒas
+        // Personalizar las pestaÔøΩas
         tabbedPane.setUI(new javax.swing.plaf.basic.BasicTabbedPaneUI() {
             @Override
             protected void installDefaults() {
@@ -432,22 +434,22 @@ public class StylusUI {
     }
 
     /**
-     * Ajusta el tamaÒo del texto y la ventana en un JDialog para que se adapte al contenido.
+     * Ajusta el tamaÔøΩo del texto y la ventana en un JDialog para que se adapte al contenido.
      * @param dialog El JDialog a ajustar.
-     * @param texto El texto que se mostrar· en el di·logo.
+     * @param texto El texto que se mostrarÔøΩ en el diÔøΩlogo.
      */
     public static void ajustarDialogo(JDialog dialog, String texto) {
         // Crear un JLabel con el texto proporcionado
         JLabel label = new JLabel(texto);
         label.setFont(FUENTE_TEXTO); // Aplicar fuente personalizada
 
-        // Ajustar el diseÒo del JDialog para que se ajuste al texto
+        // Ajustar el diseÔøΩo del JDialog para que se ajuste al texto
         dialog.getContentPane().setLayout(new BorderLayout());
         dialog.getContentPane().add(label, BorderLayout.CENTER);
 
-        // Ajustar el tamaÒo del di·logo al contenido
+        // Ajustar el tamaÔøΩo del diÔøΩlogo al contenido
         dialog.pack();
-        dialog.setLocationRelativeTo(null); // Centrar el di·logo en la pantalla
+        dialog.setLocationRelativeTo(null); // Centrar el diÔøΩlogo en la pantalla
     }
 
     /**
@@ -466,7 +468,7 @@ public class StylusUI {
      */
     private static void configurarRickrolleo(){
         Thread.setDefaultUncaughtExceptionHandler((thread, throwable) -> {
-            System.err.println(STR."Se ha producido una excepciÛn no manejada: \{throwable.getMessage()}");
+            System.err.println(STR."Se ha producido una excepciÔøΩn no manejada: \{throwable.getMessage()}");
             try {
                 if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
                     Desktop.getDesktop().browse(new URI("https://www.youtube.com/watch?v=dQw4w9WgXcQ"));
@@ -475,6 +477,49 @@ public class StylusUI {
                 System.err.println(STR."Error al intentar abrir el enlace: \{e.getMessage()}");
             }
         });
+    }
+
+    /**
+     * Aplica un estilo personalizado a un JMenuItem.
+     * @param menuItem el JMenuItem a personalizar
+     */
+    public static void styleMenuItem(JMenuItem menuItem) {
+        // Cambiar la fuente
+        menuItem.setFont(new Font("Arial", Font.PLAIN, 14));
+
+        // Color de fondo y texto
+        menuItem.setBackground(new Color(45, 45, 45));  // Color oscuro de fondo
+        menuItem.setForeground(Color.WHITE);  // Texto en blanco
+
+        // Cambiar color al pasar el rat√≥n (hover)
+        menuItem.addChangeListener(e -> {
+            if (menuItem.getModel().isRollover()) {
+                menuItem.setBackground(new Color(60, 60, 60));  // Fondo m√°s claro en hover
+            } else {
+                menuItem.setBackground(new Color(45, 45, 45));  // Fondo original
+            }
+        });
+
+        // Borde opcional para mejorar la est√©tica
+        menuItem.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+
+        // Deshabilitar relleno si el estado est√° deshabilitado
+        menuItem.setOpaque(true);
+
+        // Ajustar el espaciado entre el icono y el texto
+        menuItem.setIconTextGap(10);
+    }
+
+    // Ejemplo de uso para un JMenuBar
+    public static void styleMenuBar(JMenuBar menuBar) {
+        menuBar.setBackground(BUTTON_BACKGROUND_COLOR);
+        menuBar.setForeground(TEXT_COLOR);
+    }
+
+    public static void styleMenu(JMenu menu) {
+        menu.setFont(new Font("Arial", Font.BOLD, 14));
+        menu.setBackground(BUTTON_BACKGROUND_COLOR);
+        menu.setForeground(TEXT_COLOR);
     }
 }
 
