@@ -12,13 +12,23 @@ public class Equipment{
 	private List<Port> puertos;
 	private EquipmetType EquipmentType;
 	private Location location;
-	
-	
-	
-	
-	
+
+	@Override
+	public String toString() {
+		return "Equipment{" +
+				"code='" + code + '\'' +
+				", description='" + description + '\'' +
+				", marca='" + marca + '\'' +
+				", modelo='" + modelo + '\'' +
+				", IpAdress=" + IpAdress +
+				", puertos=" + puertos +
+				", EquipmentType=" + EquipmentType +
+				", location=" + location +
+				'}';
+	}
+
 	public Equipment(String code, String description, String marca, String modelo, List<String> ipAdress,
-			List<Port> puertos, EquipmetType equipmentType, Location location) {
+					 List<Port> puertos, EquipmetType equipmentType, Location location) {
 		super();
 		this.code = code;
 		this.description = description;
@@ -31,7 +41,15 @@ public class Equipment{
 	}
 
 	public String getCode() {
-		return null;
+		return code;
+	}
+
+	public String getName() {
+		return code;
+	}
+
+	public List<String> getIp() {
+		return IpAdress;
 	}
 
 

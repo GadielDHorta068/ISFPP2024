@@ -52,8 +52,31 @@ public class BarraMenu {
 
         JMenu editarMenu = new JMenu("Editar");
         StylusUI.styleMenu(editarMenu);
+
+        JMenuItem agregarItem = new JMenuItem("Agregar");
+        StylusUI.styleMenuItem(agregarItem);
+        JMenuItem eliminarItem = new JMenuItem("Eliminar");
+        StylusUI.styleMenuItem(eliminarItem);
+
+       agregarItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        });
+
+        eliminarItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        });
+        editarMenu.add(agregarItem);
+        editarMenu.add(eliminarItem);
+
         JMenu ayudaMenu = new JMenu("Ayuda");
         StylusUI.styleMenu(ayudaMenu);
+
         menuBar.add(editarMenu);
         menuBar.add(ayudaMenu);
 

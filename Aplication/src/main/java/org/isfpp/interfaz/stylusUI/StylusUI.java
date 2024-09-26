@@ -4,6 +4,7 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.swing.*;
+import javax.swing.border.Border;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
@@ -520,6 +521,22 @@ public class StylusUI {
         menu.setFont(new Font("Arial", Font.BOLD, 14));
         menu.setBackground(BUTTON_BACKGROUND_COLOR);
         menu.setForeground(TEXT_COLOR);
+    }
+
+    /**
+     * Aplica un estilo personalizado a un JTextArea.
+     * @param textArea el JTextArea a personalizar
+     */
+    public static void styleTextArea(JTextArea textArea) {
+        textArea.setBackground(DARK_BACKGROUND_COLOR);
+        textArea.setForeground(TEXT_COLOR);
+
+
+        textArea.setLineWrap(true);
+        textArea.setWrapStyleWord(true);
+
+        textArea.setSelectionColor(COLOR_SECUNDARIO);
+        textArea.setSelectedTextColor(COLOR_TEXTO);
     }
 }
 
