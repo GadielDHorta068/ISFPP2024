@@ -1,73 +1,69 @@
 package org.isfpp.interfaz;
 
 import org.isfpp.interfaz.stylusUI.StylusUI;
-import org.isfpp.modelo.Web;
+import org.isfpp.modelo.Connection;
 import org.isfpp.modelo.Equipment;
+import org.isfpp.modelo.Location;
+import org.isfpp.modelo.Web;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.util.ArrayList;
 import java.util.List;
 
-public class DesplegableComponent {
+public class DesplegableComponent<T> {
     private boolean isExpanded = false;
     private final JPanel panel;
     private final JButton toggleButton;
     private final JTable table;
     private JScrollPane scrollPane;
-    private PanelDerecho panelDerecho;  // Referencia al PanelDerecho
-    private Web web;  // Referencia a la instancia de Web
-    private List<Equipment> equipmentList;
+    private PanelDerecho panelDerecho;
+    private List<T> dataList;
+    private Web web;
 
-    public DesplegableComponent(String titulo, Web web, PanelDerecho panelDerecho) {
-        this.web = web;  // Inicializar referencia a Web
-        this.panelDerecho = panelDerecho;  // Inicializar referencia al PanelDerecho
+    public DesplegableComponent(String titulo, List<T> dataList, PanelDerecho panelDerecho, Web web) {
+        this.web = web;
+        this.dataList = dataList;
+        this.panelDerecho = panelDerecho;
 
         panel = new JPanel();
         panel.setLayout(new BorderLayout());
 
         toggleButton = new JButton("▶ " + titulo);
-        StylusUI.aplicarEstiloBoton(toggleButton,false);
+        StylusUI.aplicarEstiloBoton(toggleButton, false);
         toggleButton.setHorizontalAlignment(SwingConstants.LEFT);
         toggleButton.addActionListener(e -> toggle());
 
-        equipmentList = new ArrayList<>(web.getHardware().values());
-        Object[][] data = new Object[equipmentList.size()][2];
+        Object[][] data = new Object[dataList.size()][2];
 
-        for (int i = 0; i < equipmentList.size(); i++) {
-            Equipment equipment = equipmentList.get(i);
-            data[i][0] = equipment.getCode();
-            data[i][1] = equipment.getIp();
+        for (int i = 0; i < dataList.size(); i++) {
+            T item = dataList.get(i);
+            // Aquí es donde debes manejar el tipo de dato genérico
+            if (item instanceof Equipment) {
+                Equipment equipment = (Equipment) item;
+                data[i][0] = equipment.getCode();
+                data[i][1] = equipment.getIpAdresses();
+            } else if (item instanceof Location) {
+                Location location = (Location) item;
+                data[i][0] = location.getCode();
+                data[i][1] = location.getDescription();
+            } else if (item instanceof Connection) {
+                // Maneja el tipo Connection u otros tipos
+                data[i][0] = STR."\{((Connection) item).getEquipment1()}\{((Connection) item).getEquipment2()}"; // Ajusta según el contenido de Connection
+                data[i][1] = ((Connection) item).getWire();
+            }
         }
 
-        String[] columnNames = {"Nombre", "IP"};
+        //Aca levantar el nombre del string del objeto
+        String[] columnNames = {"Nombre", "IP/Descripción"};
 
         table = new JTable(data, columnNames);
-        StylusUI.aplicarEstiloTabla(table,false);
+        StylusUI.aplicarEstiloTabla(table, false);
         table.setVisible(false);
-
-        DefaultTableCellRenderer rightRenderer = new DefaultTableCellRenderer();
-        rightRenderer.setHorizontalAlignment(SwingConstants.LEFT);
-        table.getColumnModel().getColumn(1).setCellRenderer(rightRenderer);
 
         scrollPane = new JScrollPane(table);
         StylusUI.aplicarEstiloScrollPane(scrollPane);
         scrollPane.setColumnHeaderView(table.getTableHeader());
-
-        table.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                int row = table.getSelectedRow();
-                if (row != -1) {
-                    Equipment selectedEquipment = equipmentList.get(row);
-                    panelDerecho.updateProperties(selectedEquipment.toString());
-                    panelDerecho.setIcon(selectedEquipment.getDescription().toLowerCase());
-                }
-            }
-        });
 
         panel.add(toggleButton, BorderLayout.NORTH);
         panel.add(scrollPane, BorderLayout.CENTER);
@@ -90,20 +86,39 @@ public class DesplegableComponent {
     public void removeSelectedEquipment() {
         int selectedRow = table.getSelectedRow();
         if (selectedRow != -1) {
-            Equipment selectedEquipment = equipmentList.get(selectedRow);
-            equipmentList.remove(selectedRow);
-            web.getHardware().remove(selectedEquipment.getCode());
+            T selectedItem = dataList.get(selectedRow);
+            dataList.remove(selectedRow);
+            if (selectedItem instanceof Equipment) {
+                Equipment equipment = (Equipment) selectedItem;
+                web.getHardware().remove(equipment.getCode());
+            } else if (selectedItem instanceof Location) {
+                Location location = (Location) selectedItem;
+                web.getLocations().remove(location.getCode());
+            } else if (selectedItem instanceof Connection) {
+                Connection connection = (Connection) selectedItem;
+                web.getLinked().remove(connection);
+            }
             updateTable();
         }
     }
 
     private void updateTable() {
-        Object[][] data = new Object[equipmentList.size()][2];
-        for (int i = 0; i < equipmentList.size(); i++) {
-            Equipment equipment = equipmentList.get(i);
-            data[i][0] = equipment.getCode();
-            data[i][1] = equipment.getIp();
+        Object[][] data = new Object[dataList.size()][2];
+        for (int i = 0; i < dataList.size(); i++) {
+            T item = dataList.get(i);
+            if (item instanceof Equipment) {
+                Equipment equipment = (Equipment) item;
+                data[i][0] = equipment.getCode();
+                data[i][1] = equipment.getIpAdresses();
+            } else if (item instanceof Location) {
+                Location location = (Location) item;
+                data[i][0] = location.getCode();
+                data[i][1] = location.getDescription();
+            } else if (item instanceof Connection) {
+                data[i][0] = ((Connection) item).getEquipment1() + " - " + ((Connection) item).getEquipment2();
+                data[i][1] = ((Connection) item).getWire();
+            }
         }
-        table.setModel(new javax.swing.table.DefaultTableModel(data, new String[]{"Nombre", "IP"}));
+        table.setModel(new DefaultTableModel(data, new String[]{"Nombre", "IP/Descripción"}));
     }
 }

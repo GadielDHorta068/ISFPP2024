@@ -151,14 +151,15 @@ public class Equipment {
 				+ ", ipAdresses=" + ipAdresses + ", ports=" + ports + ", location=" + location + "]";
 	}
 
-	private class Port {
+	public static class Port {
 		private PortType portType;
 		private int cantidad;
+
 		public Port(PortType portType, int cantidad) {
 			super();
 			this.portType = portType;
-			if (cantidad<0)
-				  throw new IllegalArgumentException("la cantidad de puertos no puede ser negativa");
+			if (cantidad < 0)
+				throw new IllegalArgumentException("la cantidad de puertos no puede ser negativa");
 			this.cantidad = cantidad;
 		}
 		public PortType getPortType() {
@@ -173,9 +174,6 @@ public class Equipment {
 		public void setCantidad(int cantidad) {
 			this.cantidad = cantidad;
 		}
-		
-		
-
 	}
 
 }

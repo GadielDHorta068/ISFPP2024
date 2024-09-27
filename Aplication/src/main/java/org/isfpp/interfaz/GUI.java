@@ -1,13 +1,14 @@
 package org.isfpp.interfaz;
 
 import org.isfpp.interfaz.stylusUI.StylusUI;
+import org.isfpp.modelo.Connection;
+import org.isfpp.modelo.Location;
 import org.isfpp.modelo.Web;
 import org.isfpp.modelo.Equipment;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.List;
 
 public class GUI {
     public static void main(String[] args) {
@@ -16,14 +17,16 @@ public class GUI {
         frame.setLayout(new BorderLayout());
         StylusUI.inicializar(false);
 
-
         PanelDerecho panelDerecho = new PanelDerecho();
 
         Web web = new Web("Red Principal");
+        web.addLocation("biblio", "Biblioteca");
+        web.addLocation("Labo 0", "Laboratorio 0");
 
-        DesplegableComponent desplegableNodos = new DesplegableComponent("Equipos", web, panelDerecho);
-        DesplegableComponent desplegableConexiones = new DesplegableComponent("Conexiones", web, panelDerecho);
-        DesplegableComponent desplegableCables = new DesplegableComponent("Cables", web, panelDerecho);
+
+        DesplegableComponent<Equipment> desplegableNodos = new DesplegableComponent<>("Equipos", new ArrayList<>(web.getHardware().values()), panelDerecho, web);
+        DesplegableComponent<Location> desplegableCables = new DesplegableComponent<>("Ubicaciones", new ArrayList<>(web.getLocations().values()), panelDerecho, web);
+        DesplegableComponent<Connection> desplegableConexiones = new DesplegableComponent<>("Conexiones", web.getLinked(), panelDerecho, web);
 
         BarraMenu barraMenu = new BarraMenu(desplegableNodos);
         JPanel panelIzquierdo = new JPanel();

@@ -1,18 +1,17 @@
 package org.isfpp.modelo;
+import org.
 
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import javax.sound.sampled.Port;
-
 import org.isfpp.exceptions.AlredyExistException;
 import org.isfpp.exceptions.NotFoundException;
 
+
 public class Web {
 	private HashMap<String, Equipment> hardware;
-	private ArrayList<Conection> conections;
+	private ArrayList<Connection> conections;
 	private HashMap<String, Location> locations;
 	private String nombre;
 
@@ -32,11 +31,11 @@ public class Web {
 		this.hardware = hardware;
 	}
 
-	public ArrayList<Conection> getLinked() {
+	public ArrayList<Connection> getLinked() {
 		return conections;
 	}
 
-	public void setLinked(ArrayList<Conection> conectiones) {
+	public void setLinked(ArrayList<Connection> conectiones) {
 		this.conections = conectiones;
 	}
 
@@ -79,15 +78,15 @@ public class Web {
 
 	}
 
-	public Equipment addEquipment(String code, String description, String marca, String modelo, String ipAdress,
-			Port port, EquipmetType equipmentType, Location location) {
-		if (hardware.containsKey(code))
-			throw new AlredyExistException("el quipo ya se encuentra");
-
-		Equipment e = new Equipment(code, description, marca, modelo, ipAdress, port, equipmentType, location);
-		hardware.put(code, e);
-		return e;
-	}
+//	public Equipment addEquipment(String code, String description, String marca, String modelo, String ipAdress,
+//			  Port port, EquipmetType equipmentType, Location location) {
+//		if (hardware.containsKey(code))
+//			throw new AlredyExistException("el quipo ya se encuentra");
+//
+//		//Equipment e = new Equipment(code, description, marca, modelo, port, equipmentType, location);
+//		//hardware.put(code, e);
+//		//return e;
+//	}
 
 	public void eraseEquipment(Equipment e) {
 		if (!hardware.containsKey(e.getCode()))
