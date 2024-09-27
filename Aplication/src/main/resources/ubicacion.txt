@@ -1,0 +1,6 @@
+SS;Sala de Servidores;
+L0;Laboratorio 0;
+L1;Laboratorio 1;
+PC;Pasillo Central;
+OF1;Oficina 1;
+OF2;Oficina 2;

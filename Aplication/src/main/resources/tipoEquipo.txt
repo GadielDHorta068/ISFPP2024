@@ -1,0 +1,9 @@
+AP;Access Point;
+CAM;Cámara IP;
+COM;Computadora;
+IMP;Impresora de Red;
+RJ;Reloj Acceso Personal;
+NAS;Network Attached Storage;
+NVR;Network Video Recorder;
+RT;Router;
+SW;Switch;
