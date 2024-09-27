@@ -2,6 +2,7 @@ package org.isfpp.logica;
 
 import org.isfpp.modelo.Connection;
 import org.isfpp.modelo.Equipment;
+import org.isfpp.modelo.Web;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.SimpleGraph;
@@ -9,6 +10,7 @@ import org.jgrapht.graph.SimpleGraph;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
+
 
 public class Utils {
 
@@ -34,9 +36,6 @@ public class Utils {
                 graph.addEdge(sourceNode, targetNode, c);
 
         }
-
-
-}
-
+    }
 
 }
