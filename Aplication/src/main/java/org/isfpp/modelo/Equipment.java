@@ -3,6 +3,7 @@ package org.isfpp.modelo;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Random;
 
 import org.isfpp.exceptions.AlredyExistException;
 import org.isfpp.exceptions.NotFoundException;
@@ -16,9 +17,10 @@ public class Equipment {
 	private List<Port> ports;
 	private EquipmetType equipmentType;
 	private Location location;
+	private boolean status;
 
-	public Equipment(String code, String description, String marca, String modelo, Port port,
-			EquipmetType equipmentType, Location location) {
+	public Equipment(String code, String description, String marca, String modelo, PortType portType,int cantidad,
+			EquipmetType equipmentType, Location location,boolean status) {
 		super();
 		this.code = code;
 		this.description = description;
@@ -26,12 +28,28 @@ public class Equipment {
 		this.modelo = modelo;
 		this.equipmentType = equipmentType;
 		this.location = location;
+		this.status=status;
 
 		this.ipAdresses = new ArrayList<String>();
 		this.ports = new ArrayList<Port>();
-		this.ports.add(port);
+		this.ports.add(new Port(portType,cantidad));
 
 	}
+	public static String generarMAC() {
+		Random random = new Random();
+		byte[] macAddr = new byte[6];
+		random.nextBytes(macAddr);
+
+		StringBuilder macAddress = new StringBuilder(18);
+		for (byte b : macAddr) {
+			if (!macAddress.isEmpty()) {
+				macAddress.append(":");
+			}
+			macAddress.append(String.format("%02x", b));
+		}
+		return macAddress.toString().toUpperCase();
+	}
+
 
 	public void addIp(String ip) {
 		// llamo al metodo check de ip
@@ -46,6 +64,14 @@ public class Equipment {
 			throw new NotFoundException("la ip no se encuentra");
 		ipAdresses.remove(ip);
 
+	}
+
+	public void setStatus(boolean status) {
+		this.status = status;
+	}
+
+	public boolean isStatus() {
+		return status;
 	}
 
 	public Port addPort(PortType portType, int cantidad) {
