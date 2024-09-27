@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import javax.sound.sampled.Port;
-
 import org.isfpp.exceptions.AlredyExistException;
 import org.isfpp.exceptions.NotFoundException;
 
@@ -32,12 +30,13 @@ public class Web {
 		this.hardware = hardware;
 	}
 
-	public ArrayList<Connection> getLinked() {
+
+	public ArrayList<org.isfpp.modelo.Connection> getConections() {
 		return conections;
 	}
 
-	public void setLinked(ArrayList<Connection> conectiones) {
-		this.conections = conectiones;
+	public void setConections(ArrayList<Connection> conections) {
+		this.conections = conections;
 	}
 
 	public HashMap<String, Location> getLocations() {
@@ -95,4 +94,13 @@ public class Web {
 		hardware.remove(e.getCode(), e);
 	}
 
+	@Override
+	public String toString() {
+		return "Web{" +
+				"hardware=" + hardware +
+				", conections=" + conections +
+				", locations=" + locations +
+				", nombre='" + nombre + '\'' +
+				'}';
+	}
 }

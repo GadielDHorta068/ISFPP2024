@@ -1,12 +1,12 @@
 package org.isfpp.modelo;
 
+import org.isfpp.exceptions.AlredyExistException;
+import org.isfpp.exceptions.NotFoundException;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
-
-import org.isfpp.exceptions.AlredyExistException;
-import org.isfpp.exceptions.NotFoundException;
 
 public class Equipment {
 	private String code;
@@ -74,16 +74,15 @@ public class Equipment {
 		return status;
 	}
 
-	public Port addPort(PortType portType, int cantidad) {
+	public void addPort(PortType portType, int cantidad) {
 		Port p = new Port(portType, cantidad);
 		if (ports.contains(p))
 			throw new AlredyExistException("ese puerto ya esta en la lista de puertos del equipo");
 		ports.add(p);
-		return p;
 
 	}
 
-	public void deletePort(Port port) {
+	public void deletePort(PortType port) {
 		if (!ports.contains(port))
 			throw new AlredyExistException("ese puerto ya esta en la lista de puertos del equipo");
 		ports.remove(port);
@@ -199,9 +198,19 @@ public class Equipment {
 		public void setCantidad(int cantidad) {
 			this.cantidad = cantidad;
 		}
-		
-		
 
+		@Override
+		public boolean equals(Object o) {
+			if (this == o) return true;
+			if (o == null || getClass() != o.getClass()) return false;
+			Port port = (Port) o;
+			return Objects.equals(portType, port.portType);
+		}
+
+		@Override
+		public int hashCode() {
+			return Objects.hashCode(portType);
+		}
 	}
 
 }
