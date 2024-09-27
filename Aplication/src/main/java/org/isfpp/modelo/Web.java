@@ -1,13 +1,14 @@
 package org.isfpp.modelo;
-import org.
 
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.sound.sampled.Port;
+
 import org.isfpp.exceptions.AlredyExistException;
 import org.isfpp.exceptions.NotFoundException;
-
 
 public class Web {
 	private HashMap<String, Equipment> hardware;
@@ -78,15 +79,15 @@ public class Web {
 
 	}
 
-//	public Equipment addEquipment(String code, String description, String marca, String modelo, String ipAdress,
-//			  Port port, EquipmetType equipmentType, Location location) {
-//		if (hardware.containsKey(code))
-//			throw new AlredyExistException("el quipo ya se encuentra");
-//
-//		//Equipment e = new Equipment(code, description, marca, modelo, port, equipmentType, location);
-//		//hardware.put(code, e);
-//		//return e;
-//	}
+	public Equipment addEquipment(String code, String description, String marca, String model, PortType portType,int cantidad,
+								  EquipmetType equipmentType, Location location,Boolean status)  {
+		if (hardware.containsKey(code))
+			throw new AlredyExistException("el quipo ya se encuentra");
+
+		Equipment e = new Equipment(code, description, marca, model, portType,cantidad, equipmentType, location,status);
+		hardware.put(code, e);
+		return e;
+	}
 
 	public void eraseEquipment(Equipment e) {
 		if (!hardware.containsKey(e.getCode()))
