@@ -21,14 +21,6 @@ public class GUI {
 
         Web web = new Web("Red Principal");
 
-        List<String> ipList1 = new ArrayList<>();
-        ipList1.add("192.168.1.1");
-        List<String> ipList2 = new ArrayList<>();
-        ipList2.add("192.168.1.2");
-
-        web.addEquipment(new Equipment("EQ1", "Router", "Marca A", "Modelo X", ipList1, new ArrayList<>(), null, null));
-        web.addEquipment(new Equipment("EQ2", "Switch", "Marca B", "Modelo Y", ipList2, new ArrayList<>(), null, null));
-
         DesplegableComponent desplegableNodos = new DesplegableComponent("Equipos", web, panelDerecho);
         DesplegableComponent desplegableConexiones = new DesplegableComponent("Conexiones", web, panelDerecho);
         DesplegableComponent desplegableCables = new DesplegableComponent("Cables", web, panelDerecho);
