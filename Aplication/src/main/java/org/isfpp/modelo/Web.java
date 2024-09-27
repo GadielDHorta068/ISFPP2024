@@ -1,5 +1,6 @@
 package org.isfpp.modelo;
 
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -11,7 +12,7 @@ import org.isfpp.exceptions.NotFoundException;
 
 public class Web {
 	private HashMap<String, Equipment> hardware;
-	private ArrayList<link> linked;
+	private ArrayList<Conection> conections;
 	private HashMap<String, Location> locations;
 	private String nombre;
 
@@ -19,7 +20,7 @@ public class Web {
 		super();
 		this.nombre = nombre;
 		this.hardware = new HashMap<String, Equipment>();
-		this.linked = new ArrayList<link>();
+		this.conections = new ArrayList<Connection>();
 		this.locations = new HashMap<String, Location>();
 	}
 
@@ -31,12 +32,12 @@ public class Web {
 		this.hardware = hardware;
 	}
 
-	public ArrayList<link> getLinked() {
-		return linked;
+	public ArrayList<Conection> getLinked() {
+		return conections;
 	}
 
-	public void setLinked(ArrayList<link> linked) {
-		this.linked = linked;
+	public void setLinked(ArrayList<Conection> conectiones) {
+		this.conections = conectiones;
 	}
 
 	public HashMap<String, Location> getLocations() {
@@ -72,8 +73,8 @@ public class Web {
 			if (e.getLocation().equals(l))
 				codes.add(e.getCode());
 		}
-		if(!codes.isEmpty())
-			 throw new IllegalStateException("Hay equipos que dependen de esa ubicación: " + codes);
+		if (!codes.isEmpty())
+			throw new IllegalStateException("Hay equipos que dependen de esa ubicación: " + codes);
 		locations.remove(l.getCode(), l);
 
 	}
@@ -87,11 +88,11 @@ public class Web {
 		hardware.put(code, e);
 		return e;
 	}
+
 	public void eraseEquipment(Equipment e) {
 		if (!hardware.containsKey(e.getCode()))
 			throw new NotFoundException("equipo invalido");
 		hardware.remove(e.getCode(), e);
 	}
-	
 
 }
