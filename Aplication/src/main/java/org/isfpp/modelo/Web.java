@@ -2,57 +2,96 @@ package org.isfpp.modelo;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
+import java.util.List;
+
+import javax.sound.sampled.Port;
 
 import org.isfpp.exceptions.AlredyExistException;
+import org.isfpp.exceptions.NotFoundException;
 
 public class Web {
-	private HashMap<String,Equipment> hardware;
+	private HashMap<String, Equipment> hardware;
 	private ArrayList<link> linked;
-	private HashMap<String,Location> locations;
+	private HashMap<String, Location> locations;
 	private String nombre;
+
 	public Web(String nombre) {
 		super();
 		this.nombre = nombre;
-		this.hardware=new HashMap<String,Equipment>();
-		this.linked=new ArrayList<link>();
-		this.locations=new HashMap<String,Location>();
+		this.hardware = new HashMap<String, Equipment>();
+		this.linked = new ArrayList<link>();
+		this.locations = new HashMap<String, Location>();
 	}
+
 	public HashMap<String, Equipment> getHardware() {
 		return hardware;
 	}
+
 	public void setHardware(HashMap<String, Equipment> hardware) {
 		this.hardware = hardware;
 	}
+
 	public ArrayList<link> getLinked() {
 		return linked;
 	}
+
 	public void setLinked(ArrayList<link> linked) {
 		this.linked = linked;
 	}
+
 	public HashMap<String, Location> getLocations() {
 		return locations;
 	}
+
 	public void setLocations(HashMap<String, Location> locations) {
 		this.locations = locations;
 	}
+
 	public String getNombre() {
 		return nombre;
 	}
+
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
 	}
-	public void addLocation(Location location) {
-		if(locations.containsKey(location.getCode()))
+
+	public Location addLocation(String code, String description) {
+		if (locations.containsKey(code))
 			throw new AlredyExistException("la localizacion ya se encuentra");
-		locations.put(location.getCode(), location);
+
+		Location l = new Location(code, description);
+		locations.put(code, l);
+		return l;
 	}
-	public void addEquipment(Equipment equipment) {
-		if(locations.containsKey(equipment.getCode())
+
+	public void eraseLocation(Location l) {
+		if (!locations.containsKey(l.getCode()))
+			throw new NotFoundException("Localizacion invalida");
+		List<String> codes = new ArrayList<String>();
+		for (Equipment e : hardware.values()) {
+			if (e.getLocation().equals(l))
+				codes.add(e.getCode());
+		}
+		if(!codes.isEmpty())
+			 throw new IllegalStateException("Hay equipos que dependen de esa ubicación: " + codes);
+		locations.remove(l.getCode(), l);
+
+	}
+
+	public Equipment addEquipment(String code, String description, String marca, String modelo, String ipAdress,
+			Port port, EquipmetType equipmentType, Location location) {
+		if (hardware.containsKey(code))
 			throw new AlredyExistException("el quipo ya se encuentra");
-		hardware.put(equipment.getCode(),equipment);
+
+		Equipment e = new Equipment(code, description, marca, modelo, ipAdress, port, equipmentType, location);
+		hardware.put(code, e);
+		return e;
 	}
-	
+	public void eraseEquipment(Equipment e) {
+		if (!hardware.containsKey(e.getCode()))
+			throw new NotFoundException("equipo invalido");
+		hardware.remove(e.getCode(), e);
+	}
 	
 
 }
