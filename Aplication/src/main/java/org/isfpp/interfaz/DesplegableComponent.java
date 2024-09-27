@@ -5,8 +5,6 @@ import org.isfpp.modelo.Web;
 import org.isfpp.modelo.Equipment;
 
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -21,8 +19,11 @@ public class DesplegableComponent {
     private final JTable table;
     private JScrollPane scrollPane;
     private PanelDerecho panelDerecho;  // Referencia al PanelDerecho
+    private Web web;  // Referencia a la instancia de Web
+    private List<Equipment> equipmentList;
 
     public DesplegableComponent(String titulo, Web web, PanelDerecho panelDerecho) {
+        this.web = web;  // Inicializar referencia a Web
         this.panelDerecho = panelDerecho;  // Inicializar referencia al PanelDerecho
 
         panel = new JPanel();
@@ -32,14 +33,14 @@ public class DesplegableComponent {
         StylusUI.aplicarEstiloBoton(toggleButton,false);
         toggleButton.setHorizontalAlignment(SwingConstants.LEFT);
         toggleButton.addActionListener(e -> toggle());
-        
-        List<Equipment> equipmentList = new ArrayList<>(web.getHardware().values());
+
+        equipmentList = new ArrayList<>(web.getHardware().values());
         Object[][] data = new Object[equipmentList.size()][2];
 
         for (int i = 0; i < equipmentList.size(); i++) {
             Equipment equipment = equipmentList.get(i);
             data[i][0] = equipment.getCode();
-            data[i][1] = equipment.getIp();  
+            data[i][1] = equipment.getIp();
         }
 
         String[] columnNames = {"Nombre", "IP"};
@@ -47,7 +48,6 @@ public class DesplegableComponent {
         table = new JTable(data, columnNames);
         StylusUI.aplicarEstiloTabla(table,false);
         table.setVisible(false);
-
 
         DefaultTableCellRenderer rightRenderer = new DefaultTableCellRenderer();
         rightRenderer.setHorizontalAlignment(SwingConstants.LEFT);
@@ -57,7 +57,6 @@ public class DesplegableComponent {
         StylusUI.aplicarEstiloScrollPane(scrollPane);
         scrollPane.setColumnHeaderView(table.getTableHeader());
 
-
         table.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -66,7 +65,6 @@ public class DesplegableComponent {
                     Equipment selectedEquipment = equipmentList.get(row);
                     panelDerecho.updateProperties(selectedEquipment.toString());
                     panelDerecho.setIcon(selectedEquipment.getDescription().toLowerCase());
-
                 }
             }
         });
@@ -87,5 +85,25 @@ public class DesplegableComponent {
 
     public JPanel getPanel() {
         return panel;
+    }
+
+    public void removeSelectedEquipment() {
+        int selectedRow = table.getSelectedRow();
+        if (selectedRow != -1) {
+            Equipment selectedEquipment = equipmentList.get(selectedRow);
+            equipmentList.remove(selectedRow);
+            web.getHardware().remove(selectedEquipment.getCode());
+            updateTable();
+        }
+    }
+
+    private void updateTable() {
+        Object[][] data = new Object[equipmentList.size()][2];
+        for (int i = 0; i < equipmentList.size(); i++) {
+            Equipment equipment = equipmentList.get(i);
+            data[i][0] = equipment.getCode();
+            data[i][1] = equipment.getIp();
+        }
+        table.setModel(new javax.swing.table.DefaultTableModel(data, new String[]{"Nombre", "IP"}));
     }
 }

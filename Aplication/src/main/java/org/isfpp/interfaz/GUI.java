@@ -16,7 +16,7 @@ public class GUI {
         frame.setLayout(new BorderLayout());
         StylusUI.inicializar(false);
 
-        BarraMenu barraMenu = new BarraMenu();
+
         PanelDerecho panelDerecho = new PanelDerecho();
 
         Web web = new Web("Red Principal");
@@ -33,7 +33,7 @@ public class GUI {
         DesplegableComponent desplegableConexiones = new DesplegableComponent("Conexiones", web, panelDerecho);
         DesplegableComponent desplegableCables = new DesplegableComponent("Cables", web, panelDerecho);
 
-
+        BarraMenu barraMenu = new BarraMenu(desplegableNodos);
         JPanel panelIzquierdo = new JPanel();
         StylusUI.aplicarEstiloPanel(panelIzquierdo);
         panelIzquierdo.setLayout(new BoxLayout(panelIzquierdo, BoxLayout.Y_AXIS));

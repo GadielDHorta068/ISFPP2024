@@ -7,6 +7,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class BarraMenu {
+    private DesplegableComponent desplegableComponent;
+
+    public BarraMenu(DesplegableComponent desplegableComponent) {
+        this.desplegableComponent = desplegableComponent;
+    }
+
     public JMenuBar crearBarraMenu() {
         JMenuBar menuBar = new JMenuBar();
         StylusUI.styleMenuBar(menuBar);
@@ -19,7 +25,7 @@ public class BarraMenu {
         StylusUI.styleMenuItem(guardarItem);
         JMenuItem salirItem = new JMenuItem("Salir");
         StylusUI.styleMenuItem(salirItem);
-        // Añadir ActionListeners a los elementos del menú
+
         cargarItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -58,19 +64,14 @@ public class BarraMenu {
         JMenuItem eliminarItem = new JMenuItem("Eliminar");
         StylusUI.styleMenuItem(eliminarItem);
 
-       agregarItem.addActionListener(new ActionListener() {
+        agregarItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                // Lógica para agregar
             }
         });
 
-        eliminarItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-            }
-        });
+        eliminarItem.addActionListener(e -> desplegableComponent.removeSelectedEquipment());
         editarMenu.add(agregarItem);
         editarMenu.add(eliminarItem);
 
