@@ -14,6 +14,7 @@ public class Connection {
 		setWire(wire);
 	}
 
+
 	public WireType getWire() {return wire;}
 	
 	public void setWire(WireType wire) {this.wire = wire;}
