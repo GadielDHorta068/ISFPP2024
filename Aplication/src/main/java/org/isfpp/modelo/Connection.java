@@ -6,6 +6,7 @@ public class Connection {
     private WireType wire;
     private Equipment equipment1;
     private Equipment equipment2;
+
     
 	public Connection(WireType wire, Equipment equipment1, Equipment equipment2) {
 		super();
