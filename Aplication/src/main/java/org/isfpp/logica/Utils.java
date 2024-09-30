@@ -1,26 +1,48 @@
 package org.isfpp.logica;
 
+import org.isfpp.modelo.Connection;
+import org.isfpp.modelo.Equipment;
+import org.isfpp.modelo.Web;
+import org.jgrapht.Graph;
+import org.jgrapht.graph.DefaultEdge;
+import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.graph.SimpleGraph;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Random;
 
 public class Utils {
+
+    private Graph<Equipment, Connection> graph;
+
     /**
      * Genera una direccion MAC aleatoria, usada en la creacion de todo Nodo
      *
      * @return String
      */
-    public static String generarMAC() {
-        Random random = new Random();
-        byte[] macAddr = new byte[6];
-        random.nextBytes(macAddr);
-
-        StringBuilder macAddress = new StringBuilder(18);
-        for (byte b : macAddr) {
-            if (!macAddress.isEmpty()) {
-                macAddress.append(":");
-            }
-            macAddress.append(String.format("%02x", b));
+    public void createGraph(Web web) {
+        HashMap<String, Equipment> hardware = web.getHardware();
+        ArrayList<Connection> connections = web.getConections();
+        // Crear un grafo no dirigido
+        graph = new SimpleGraph<>(Connection.class);
+        for (Equipment valor : hardware.values()) {
+            graph.addVertex(valor);
         }
-        return macAddress.toString().toUpperCase();
+        for (Connection c : connections) {
+            Equipment sourceNode = c.getEquipment1();
+            Equipment targetNode = c.getEquipment2();
+
+            if (sourceNode.equals(targetNode)) throw new IllegalArgumentException("son el mismo equipo");
+            if (graph.containsEdge(sourceNode, targetNode)) graph.addEdge(sourceNode, targetNode, c);
+
+        }
+
+
     }
-    
+
+
+
+
 }

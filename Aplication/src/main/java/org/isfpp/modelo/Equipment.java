@@ -1,11 +1,12 @@
 package org.isfpp.modelo;
 
+import org.isfpp.exceptions.AlredyExistException;
+import org.isfpp.exceptions.NotFoundException;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
-import org.isfpp.exceptions.AlredyExistException;
-import org.isfpp.exceptions.NotFoundException;
+import java.util.Random;
 
 public class Equipment {
 	private String code;
@@ -16,9 +17,10 @@ public class Equipment {
 	private List<Port> ports;
 	private EquipmetType equipmentType;
 	private Location location;
+	private boolean status;
 
-	public Equipment(String code, String description, String marca, String modelo, Port port,
-			EquipmetType equipmentType, Location location) {
+	public Equipment(String code, String description, String marca, String modelo, PortType portType,int cantidad,
+			EquipmetType equipmentType, Location location,boolean status) {
 		super();
 		this.code = code;
 		this.description = description;
@@ -26,12 +28,28 @@ public class Equipment {
 		this.modelo = modelo;
 		this.equipmentType = equipmentType;
 		this.location = location;
+		this.status=status;
 
 		this.ipAdresses = new ArrayList<String>();
 		this.ports = new ArrayList<Port>();
-		this.ports.add(port);
+		this.ports.add(new Port(portType,cantidad));
 
 	}
+	public static String generarMAC() {
+		Random random = new Random();
+		byte[] macAddr = new byte[6];
+		random.nextBytes(macAddr);
+
+		StringBuilder macAddress = new StringBuilder(18);
+		for (byte b : macAddr) {
+			if (!macAddress.isEmpty()) {
+				macAddress.append(":");
+			}
+			macAddress.append(String.format("%02x", b));
+		}
+		return macAddress.toString().toUpperCase();
+	}
+
 
 	public void addIp(String ip) {
 		// llamo al metodo check de ip
@@ -48,16 +66,23 @@ public class Equipment {
 
 	}
 
-	public Port addPort(PortType portType, int cantidad) {
+	public void setStatus(boolean status) {
+		this.status = status;
+	}
+
+	public boolean isStatus() {
+		return status;
+	}
+
+	public void addPort(PortType portType, int cantidad) {
 		Port p = new Port(portType, cantidad);
 		if (ports.contains(p))
 			throw new AlredyExistException("ese puerto ya esta en la lista de puertos del equipo");
 		ports.add(p);
-		return p;
 
 	}
 
-	public void deletePort(Port port) {
+	public void deletePort(PortType port) {
 		if (!ports.contains(port))
 			throw new AlredyExistException("ese puerto ya esta en la lista de puertos del equipo");
 		ports.remove(port);
@@ -151,15 +176,14 @@ public class Equipment {
 				+ ", ipAdresses=" + ipAdresses + ", ports=" + ports + ", location=" + location + "]";
 	}
 
-	public static class Port {
+	private class Port {
 		private PortType portType;
 		private int cantidad;
-
 		public Port(PortType portType, int cantidad) {
 			super();
 			this.portType = portType;
-			if (cantidad < 0)
-				throw new IllegalArgumentException("la cantidad de puertos no puede ser negativa");
+			if (cantidad<0)
+				  throw new IllegalArgumentException("la cantidad de puertos no puede ser negativa");
 			this.cantidad = cantidad;
 		}
 		public PortType getPortType() {
@@ -173,6 +197,19 @@ public class Equipment {
 		}
 		public void setCantidad(int cantidad) {
 			this.cantidad = cantidad;
+		}
+
+		@Override
+		public boolean equals(Object o) {
+			if (this == o) return true;
+			if (o == null || getClass() != o.getClass()) return false;
+			Port port = (Port) o;
+			return Objects.equals(portType, port.portType);
+		}
+
+		@Override
+		public int hashCode() {
+			return Objects.hashCode(portType);
 		}
 	}
 

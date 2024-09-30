@@ -26,7 +26,7 @@ public class GUI {
 
         DesplegableComponent<Equipment> desplegableNodos = new DesplegableComponent<>("Equipos", new ArrayList<>(web.getHardware().values()), panelDerecho, web);
         DesplegableComponent<Location> desplegableCables = new DesplegableComponent<>("Ubicaciones", new ArrayList<>(web.getLocations().values()), panelDerecho, web);
-        DesplegableComponent<Connection> desplegableConexiones = new DesplegableComponent<>("Conexiones", web.getLinked(), panelDerecho, web);
+        DesplegableComponent<Connection> desplegableConexiones = new DesplegableComponent<>("Conexiones", web.getConections(), panelDerecho, web);
 
         BarraMenu barraMenu = new BarraMenu(desplegableNodos);
         JPanel panelIzquierdo = new JPanel();

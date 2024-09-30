@@ -1,5 +1,4 @@
 package org.isfpp.modelo;
-import org.
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,7 +6,6 @@ import java.util.List;
 
 import org.isfpp.exceptions.AlredyExistException;
 import org.isfpp.exceptions.NotFoundException;
-
 
 public class Web {
 	private HashMap<String, Equipment> hardware;
@@ -31,12 +29,13 @@ public class Web {
 		this.hardware = hardware;
 	}
 
-	public ArrayList<Connection> getLinked() {
+
+	public ArrayList<org.isfpp.modelo.Connection> getConections() {
 		return conections;
 	}
 
-	public void setLinked(ArrayList<Connection> conectiones) {
-		this.conections = conectiones;
+	public void setConections(ArrayList<Connection> conections) {
+		this.conections = conections;
 	}
 
 	public HashMap<String, Location> getLocations() {
@@ -78,15 +77,15 @@ public class Web {
 
 	}
 
-//	public Equipment addEquipment(String code, String description, String marca, String modelo, String ipAdress,
-//			  Port port, EquipmetType equipmentType, Location location) {
-//		if (hardware.containsKey(code))
-//			throw new AlredyExistException("el quipo ya se encuentra");
-//
-//		//Equipment e = new Equipment(code, description, marca, modelo, port, equipmentType, location);
-//		//hardware.put(code, e);
-//		//return e;
-//	}
+	public Equipment addEquipment(String code, String description, String marca, String model, PortType portType,int cantidad,
+								  EquipmetType equipmentType, Location location,Boolean status)  {
+		if (hardware.containsKey(code))
+			throw new AlredyExistException("el quipo ya se encuentra");
+
+		Equipment e = new Equipment(code, description, marca, model, portType,cantidad, equipmentType, location,status);
+		hardware.put(code, e);
+		return e;
+	}
 
 	public void eraseEquipment(Equipment e) {
 		if (!hardware.containsKey(e.getCode()))
@@ -94,4 +93,13 @@ public class Web {
 		hardware.remove(e.getCode(), e);
 	}
 
+	@Override
+	public String toString() {
+		return "Web{" +
+				"hardware=" + hardware +
+				", conections=" + conections +
+				", locations=" + locations +
+				", nombre='" + nombre + '\'' +
+				'}';
+	}
 }
