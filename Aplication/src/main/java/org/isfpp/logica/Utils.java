@@ -45,8 +45,6 @@ public class Utils {
             if (graph.containsEdge(sourceNode, targetNode)) graph.addEdge(sourceNode, targetNode, c);
 
         }
-
-
     }
 
     /**
