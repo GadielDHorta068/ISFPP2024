@@ -63,6 +63,8 @@ public class BarraMenu {
         StylusUI.styleMenuItem(agregarItem);
         JMenuItem eliminarItem = new JMenuItem("Eliminar");
         StylusUI.styleMenuItem(eliminarItem);
+        JMenuItem verGrafo = new JMenuItem("Visualizar Grafo");
+        StylusUI.styleMenuItem(verGrafo);
 
         agregarItem.addActionListener(new ActionListener() {
             @Override
@@ -71,10 +73,17 @@ public class BarraMenu {
             }
         });
 
+        verGrafo.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+              // new VisualizarGrafo();
+            }
+        });
+
         eliminarItem.addActionListener(e -> desplegableComponent.removeSelectedEquipment());
         editarMenu.add(agregarItem);
         editarMenu.add(eliminarItem);
-
+        editarMenu.add(verGrafo);
         JMenu ayudaMenu = new JMenu("Ayuda");
         StylusUI.styleMenu(ayudaMenu);
 
