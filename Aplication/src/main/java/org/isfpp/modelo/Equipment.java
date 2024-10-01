@@ -3,10 +3,7 @@ package org.isfpp.modelo;
 import org.isfpp.exceptions.AlredyExistException;
 import org.isfpp.exceptions.NotFoundException;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Random;
+import java.util.*;
 
 public class Equipment {
 	private String code;
@@ -15,12 +12,12 @@ public class Equipment {
 	private String modelo;
 	private List<String> ipAdresses;
 	private List<Port> ports;
-	private EquipmetType equipmentType;
+	private EquipmentType equipmentType;
 	private Location location;
 	private boolean status;
 
-	public Equipment(String code, String description, String marca, String modelo, PortType portType,int cantidad,
-			EquipmetType equipmentType, Location location,boolean status) {
+	public Equipment(String code, String description, String marca, String modelo, PortType portType, int portCapacity,
+					 EquipmentType equipmentType, Location location, boolean status) {
 		super();
 		this.code = code;
 		this.description = description;
@@ -28,13 +25,28 @@ public class Equipment {
 		this.modelo = modelo;
 		this.equipmentType = equipmentType;
 		this.location = location;
-		this.status=status;
+		this.status = status;
 
 		this.ipAdresses = new ArrayList<String>();
 		this.ports = new ArrayList<Port>();
-		this.ports.add(new Port(portType,cantidad));
-
+		this.addPort(portType, portCapacity);
 	}
+
+	public Equipment(String code, String description, String marca, String modelo,
+					 EquipmentType equipmentType, Location location, boolean status) {
+		super();
+		this.code = code;
+		this.description = description;
+		this.marca = marca;
+		this.modelo = modelo;
+		this.equipmentType = equipmentType;
+		this.location = location;
+		this.status = status;
+
+		this.ipAdresses = new ArrayList<String>();
+		this.ports = new ArrayList<Port>();
+	}
+
 	public static String generarMAC() {
 		Random random = new Random();
 		byte[] macAddr = new byte[6];
@@ -89,6 +101,14 @@ public class Equipment {
 
 	}
 
+	public HashMap<PortType, Integer> getAllPortsTypes() {
+		HashMap<PortType, Integer> portTypes = new HashMap<>();
+		for (Port port: ports) {
+			portTypes.put(port.getPortType(), port.getCantidad());
+		}
+		return portTypes;
+	}
+
 	public String getCode() {
 		return code;
 	}
@@ -137,12 +157,12 @@ public class Equipment {
 		this.ports = ports;
 	}
 
-	public EquipmetType getEquipmentType() {
+	public EquipmentType getEquipmentType() {
 		return equipmentType;
 	}
 
-	public void setEquipmentType(EquipmetType equipmentType) {
-		equipmentType = equipmentType;
+	public void setEquipmentType(EquipmentType equipmentType) {
+		this.equipmentType = equipmentType;
 	}
 
 	public Location getLocation() {
@@ -179,22 +199,27 @@ public class Equipment {
 	private class Port {
 		private PortType portType;
 		private int cantidad;
+
 		public Port(PortType portType, int cantidad) {
 			super();
 			this.portType = portType;
-			if (cantidad<0)
-				  throw new IllegalArgumentException("la cantidad de puertos no puede ser negativa");
+			if (cantidad < 0)
+				throw new IllegalArgumentException("la cantidad de puertos no puede ser negativa");
 			this.cantidad = cantidad;
 		}
+
 		public PortType getPortType() {
 			return portType;
 		}
+
 		public void setPortType(PortType portType) {
 			this.portType = portType;
 		}
+
 		public int getCantidad() {
 			return cantidad;
 		}
+
 		public void setCantidad(int cantidad) {
 			this.cantidad = cantidad;
 		}

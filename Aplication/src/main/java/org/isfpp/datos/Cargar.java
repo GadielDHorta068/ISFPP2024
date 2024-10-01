@@ -3,25 +3,27 @@ package org.isfpp.datos;
 import org.isfpp.modelo.*;
 
 import java.io.FileNotFoundException;
-import java.util.*;
 import java.io.File;
-
 import java.util.Scanner;
 
 public class Cargar {
-    public static Web cargarRed(String nombre, HashMap<String, Equipment> Hardware, HashMap<String, Connection> connections, HashMap<String, Location>) {
-        Web red = new Web(nombre);
-
+    public static Web cargarRed(String name, String equipmentFile, String connectionFile, String locationFile, String portTypeFile, String wireTypeFile, String equipmentTypeFile) throws FileNotFoundException {
         //Varios io stream por archivo en orden para no generar una conexion a la nada si no estan los nodos
+        Web red = new Web(name);
 
+        loadPortTypes(red, portTypeFile);
+        loadWireType(red, wireTypeFile);
+        loadEquipmentType(red, equipmentTypeFile);
+        loadLocations(red, locationFile);
+        loadEquipments(red, equipmentFile);
+        loadConnections(red, connectionFile);
 
         return red;
     }
 
-    public HashMap<String, Equipment> cargarEquipments(String fileName, HashMap<String, PortType> portTypes,
-                   HashMap<String, EquipmetType> equipmetTypes, HashMap<String, Location> locations) throws FileNotFoundException {
-        HashMap<String, Equipment> hardware = new HashMap<>();
+    public static void loadEquipments(Web red, String fileName) throws FileNotFoundException {
         Scanner read;
+        Equipment newEquipment;
         String code, description, marca, model;
         String[] portsArray, ipsArray;
         boolean status;
@@ -33,26 +35,23 @@ public class Cargar {
             description = read.next();
             marca = read.next();
             model = read.next();
-            EquipmetType equipmetType = equipmetTypes.get(read.next());
-            Location location = locations.get(read.next());
+            EquipmentType equipmentType = red.getEquipmentTypes().get(read.next());
+            Location location = red.getLocations().get(read.next());
             portsArray = read.next().split(",");
             ipsArray = read.next().split(",");
             status = read.nextBoolean();
 
-            Equipment newEquipment = new Equipment(code, description, marca, model,
-                    null, equipmetType, location, status);
+            newEquipment = red.addEquipment(code, description, marca, model, equipmentType, location, status);
             for (int i = 0; i < ipsArray.length; i++)
                 newEquipment.addIp(ipsArray[i]);
-            for (int i = 0; i < portsArray.length; i += 2)
-                newEquipment.addPort(portTypes.get(portsArray[i]), Integer.getInteger(portsArray[i + 1]));
 
+            for (int i = 0; i < portsArray.length; i += 2)
+                newEquipment.addPort(red.getPortTypes().get(portsArray[i]), Integer.getInteger(portsArray[i + 1]));
         }
         read.close();
-        return hardware;
     }
 
-    public List<PortType> cargarPortTypes(String fileName) throws FileNotFoundException{
-        List<PortType> ports = new ArrayList<>();
+    public static void loadPortTypes(Web red, String fileName) throws FileNotFoundException{
         Scanner read;
         String code, description;
         int speed;
@@ -64,60 +63,47 @@ public class Cargar {
             description = read.next();
             speed = read.nextInt();
 
-            PortType newPortType = new PortType(code, description, speed);
-            ports.add(newPortType);
+            red.addPort(code, description, speed);
         }
         read.close();
-        return ports;
     }
 
-    public HashMap<String, Connection> cargarConnections(String fileName,
-                    HashMap<String, WireType> wireList, HashMap<String, Equipment> hardware) throws FileNotFoundException{
-
-        HashMap<String, Connection> connections = new HashMap<>();
+    public static void loadConnections(Web red, String fileName) throws FileNotFoundException{
         Scanner read;
-        WireType wireTipe;
+        WireType wireType;
         Equipment equipment1, equipment2;
 
         read = new Scanner(new File(fileName));
         read.useDelimiter("\\s*;\\s*");
 
         while (read.hasNext()) {
-            equipment1 = hardware.get(read.next());
-            equipment2 = hardware.get(read.next());
-            wireTipe = wireList.get(read.next());
+            equipment1 = red.getHardware().get(read.next());
+            equipment2 = red.getHardware().get(read.next());
+            wireType = red.getWireTypes().get(read.next());
 
-            Connection newConnection = new Connection(wireTipe, equipment1, equipment2);
-            connections.put(equipment1.getCode() + "-" + equipment2.getCode(), newConnection);
+            red.addConection(wireType,equipment1,equipment2);
         }
-
         read.close();
-        return connections;
     }
 
-    public HashMap<String, WireType> cargarWireType(String fileName) throws FileNotFoundException{
-        HashMap<String, WireType> wireList = new HashMap<>();
+    public static void loadWireType(Web red, String fileName) throws FileNotFoundException{
         Scanner read;
         String code, description;
         int speed;
 
         read = new Scanner(new File(fileName));
         read.useDelimiter("\\s*;\\s*");
-
         while (read.hasNext()) {
             code = read.next();
             description = read.next();
             speed = read.nextInt();
 
-            WireType newWireType = new WireType(code, description, speed);
-            wireList.put(code, newWireType);
+            red.addWire(code, description, speed);
         }
         read.close();
-        return wireList;
     }
 
-    public HashMap<String, EquipmentType> cargarEquipmentType(String fileName) throws FileNotFoundException{
-        HashMap<String, EquipmentType> equipmentList = new HashMap<>();
+    public static void loadEquipmentType(Web red, String fileName) throws FileNotFoundException{
         Scanner read;
         String code, description;
 
@@ -127,16 +113,13 @@ public class Cargar {
             code = read.next();
             description = read.next();
 
-            EquipmentType newEquipmentType = new EquipmentType(code, description);
-            equipmentList.put(code, newEquipmentType);
+            red.addEquipmentType(code, description);
         }
 
         read.close();
-        return equipmentList;
     }
 
-    public HashMap<String, Location> cargarLocations(String fileName) throws FileNotFoundException{
-        HashMap<String, Location> locationList = new HashMap<>();
+    public static void loadLocations(Web red, String fileName) throws FileNotFoundException{
         Scanner read;
         String code, description;
 
@@ -146,11 +129,9 @@ public class Cargar {
             code = read.next();
             description = read.next();
 
-            Location newLocation = new Location(code, description);
-            locationList.put(code, newLocation);
+            red.addLocation(code, description);
         }
 
         read.close();
-        return locationList;
     }
 }

@@ -1,5 +1,10 @@
 package org.isfpp.datos;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+
 public class CargarParametros {
     private static String equipementFile;
     private static String connectionFile;
@@ -8,17 +13,17 @@ public class CargarParametros {
     private static String portTypeFile;
     private static String locationFile;
 
-    public static void parametros() throws IOException{
+    public static void parametros() throws IOException {
         Properties prop = new Properties();
-        InputStream  Imput = new FileInputStream("config.properties");
+        InputStream Imput = new FileInputStream("config.properties");
 
         prop.load(Imput);
-        equipementFile = prop.getProperty("");
-        connectionFile = prop.getProperty("");
-        wireTypeFile = prop.getProperty("");
-        equipementTypeFile = prop.getProperty("");
-        portTypeFile = prop.getProperty("");
-        locationFile = prop.getProperty("");
+        equipementFile = prop.getProperty("rs.equipment");
+        connectionFile = prop.getProperty("rs.conection");
+        wireTypeFile = prop.getProperty("rs.wireType");
+        equipementTypeFile = prop.getProperty("rs.equipmentType");
+        portTypeFile = prop.getProperty("rs.portType");
+        locationFile = prop.getProperty("rs.location");
     }
 
      public static String getequipementFile() {return equipementFile;}
