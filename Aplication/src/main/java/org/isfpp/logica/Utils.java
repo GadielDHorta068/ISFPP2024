@@ -13,7 +13,6 @@ import org.jgrapht.graph.SimpleWeightedGraph;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 
 public class Utils {
 
@@ -46,8 +45,6 @@ public class Utils {
             if (graph.containsEdge(sourceNode, targetNode)) graph.addEdge(sourceNode, targetNode, c);
 
         }
-
-
     }
 
     /**
@@ -83,7 +80,6 @@ public class Utils {
         SimpleWeightedGraph<Equipment, DefaultWeightedEdge> graphTemp = new SimpleWeightedGraph<>(DefaultWeightedEdge.class);
         HashMap<String, Equipment> equipmentMap = new HashMap<>();
 
-
         // Insertar vértices (equipos) activos en el grafo temporal
         for (Equipment e : graphTemp.vertexSet()) {
             if (e.isStatus()) {
@@ -99,7 +95,7 @@ public class Utils {
 
             if (equipmentMap.containsKey(source.getCode()) && equipmentMap.containsKey(source.getCode())) {
                 // Calcular la velocidad mínima entre los puertos de los equipos y la velocidad del cable
-                int edgeValue = getMinSpeed(source.getAllPortsTypes().keySet(), target.getAllPortsTypes().keySet(), edge.getWire().getSpeed());
+                int edgeValue = getMinSpeed(source.getAllPortsTypes(), target.getAllPortsTypes(), edge.getWire().getSpeed());
                 DefaultWeightedEdge newEdge = graphTemp.addEdge(source, target);
                 // Asignar el peso correspondiente a la arista
                 graphTemp.setEdgeWeight(newEdge, edgeValue);
@@ -128,7 +124,7 @@ public class Utils {
      * @return La velocidad mínima de conexión entre los dos equipos, que es la velocidad
      *         más baja de los puertos y la velocidad del cable.
      */
-    public static int getMinSpeed(Set<PortType> ports1, Set<PortType> ports2, int wireSpeed) {
+    public static int getMinSpeed(List<PortType> ports1, List<PortType> ports2, int wireSpeed) {
         // Encuentra el puerto más lento de ambos equipos
         ArrayList<Integer> port1Speed = new ArrayList<>();
         ArrayList<Integer> port2Speed = new ArrayList<>();
