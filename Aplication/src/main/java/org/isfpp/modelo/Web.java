@@ -107,9 +107,9 @@ public class Web {
 								  EquipmentType equipmentType, Location location,Boolean status)  {
 		if (hardware.containsKey(code))
 			throw new AlredyExistException("el equipo ya se encuentra");
-		if(!portTypes.containsKey(portType))
+		if(!portTypes.containsKey(portType.getCode()))
 			throw new NotFoundException("El puerto no se encuentra en la lista");
-		if(EquipmentTypes.containsKey(equipmentType))
+		if(!EquipmentTypes.containsKey(equipmentType.getCode()))
 			throw new NotFoundException("El tipo de equipo no se encuentra en la lista");
 		Equipment e = new Equipment(code, description, marca, model, portType,cantidad, equipmentType, location,status);
 		hardware.put(code, e);
