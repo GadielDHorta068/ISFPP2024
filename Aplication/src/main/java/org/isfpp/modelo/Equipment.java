@@ -32,21 +32,6 @@ public class Equipment {
 		this.addPort(portType, portCapacity);
 	}
 
-	public Equipment(String code, String description, String marca, String modelo,
-					 EquipmentType equipmentType, Location location, boolean status) {
-		super();
-		this.code = code;
-		this.description = description;
-		this.marca = marca;
-		this.modelo = modelo;
-		this.equipmentType = equipmentType;
-		this.location = location;
-		this.status = status;
-
-		this.ipAdresses = new ArrayList<String>();
-		this.ports = new ArrayList<Port>();
-	}
-
 	public static String generarMAC() {
 		Random random = new Random();
 		byte[] macAddr = new byte[6];
@@ -101,10 +86,10 @@ public class Equipment {
 
     }
 
-    public ArrayList<PortType> getAllPortsTypes() {
-        ArrayList<PortType> portTypes = new ArrayList<>();
-        for (Port p : ports) {
-            portTypes.add(p.getPortType());
+    public HashMap<PortType, Integer> getAllPortsTypes() {
+        HashMap<PortType, Integer> portTypes = new HashMap<>();
+        for (Port port: ports) {
+            portTypes.put(port.getPortType(), port.getCantidad());
         }
         return portTypes;
     }
