@@ -3,43 +3,54 @@ package org.isfpp.modelo;
 import org.isfpp.exceptions.AlredyExistException;
 import org.isfpp.exceptions.NotFoundException;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Random;
+import java.util.*;
 
 public class Equipment {
-    private String code;
-    private String description;
-    private String marca;
-    private String modelo;
-    private List<String> ipAdresses;
-    private List<Port> ports;
-    private EquipmetType equipmentType;
-    private Location location;
-    private boolean status;
+	private String code;
+	private String description;
+	private String marca;
+	private String modelo;
+	private List<String> ipAdresses;
+	private List<Port> ports;
+	private EquipmentType equipmentType;
+	private Location location;
+	private boolean status;
 
-    public Equipment(String code, String description, String marca, String modelo, PortType portType, int cantidad,
-                     EquipmetType equipmentType, Location location, boolean status) {
-        super();
-        this.code = code;
-        this.description = description;
-        this.marca = marca;
-        this.modelo = modelo;
-        this.equipmentType = equipmentType;
-        this.location = location;
-        this.status = status;
+	public Equipment(String code, String description, String marca, String modelo, PortType portType, int portCapacity,
+					 EquipmentType equipmentType, Location location, boolean status) {
+		super();
+		this.code = code;
+		this.description = description;
+		this.marca = marca;
+		this.modelo = modelo;
+		this.equipmentType = equipmentType;
+		this.location = location;
+		this.status = status;
 
-        this.ipAdresses = new ArrayList<String>();
-        this.ports = new ArrayList<Port>();
-        this.ports.add(new Port(portType, cantidad));
+		this.ipAdresses = new ArrayList<String>();
+		this.ports = new ArrayList<Port>();
+		this.addPort(portType, portCapacity);
+	}
 
-    }
+	public Equipment(String code, String description, String marca, String modelo,
+					 EquipmentType equipmentType, Location location, boolean status) {
+		super();
+		this.code = code;
+		this.description = description;
+		this.marca = marca;
+		this.modelo = modelo;
+		this.equipmentType = equipmentType;
+		this.location = location;
+		this.status = status;
 
-    public static String generarMAC() {
-        Random random = new Random();
-        byte[] macAddr = new byte[6];
-        random.nextBytes(macAddr);
+		this.ipAdresses = new ArrayList<String>();
+		this.ports = new ArrayList<Port>();
+	}
+
+	public static String generarMAC() {
+		Random random = new Random();
+		byte[] macAddr = new byte[6];
+		random.nextBytes(macAddr);
 
         StringBuilder macAddress = new StringBuilder(18);
         for (byte b : macAddr) {
@@ -146,10 +157,16 @@ public class Equipment {
         this.ports = ports;
     }
 
+	public EquipmentType getEquipmentType() {
+		return equipmentType;
+	}
     public EquipmetType getEquipmentType() {
         return equipmentType;
     }
 
+	public void setEquipmentType(EquipmentType equipmentType) {
+		this.equipmentType = equipmentType;
+	}
     public void setEquipmentType(EquipmetType equipmentType) {
         equipmentType = equipmentType;
     }
