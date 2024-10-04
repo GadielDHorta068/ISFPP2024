@@ -160,4 +160,16 @@ public class Web {
 				", portTypes=" + portTypes +
 				'}';
 	}
+
+	public HashMap<Object, EquipmentType> getEquipmentTypes() {
+		return equipmentTypes;
+	}
+
+	public HashMap<String, WireType> getWireTypes() {
+		return wireTypes;
+	}
+
+	public HashMap<String, PortType> getPortTypes() {
+		return portTypes;
+	}
 }

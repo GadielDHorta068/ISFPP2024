@@ -8,7 +8,6 @@ import java.util.Scanner;
 
 public class Cargar {
     public static Web cargarRed(String name, String equipmentFile, String connectionFile, String locationFile, String portTypeFile, String wireTypeFile, String equipmentTypeFile) throws FileNotFoundException {
-        //Varios io stream por archivo en orden para no generar una conexion a la nada si no estan los nodos
         Web red = new Web(name);
 
         loadPortTypes(red, portTypeFile);
@@ -40,6 +39,9 @@ public class Cargar {
             portsArray = read.next().split(",");
             ipsArray = read.next().split(",");
             status = read.nextBoolean();
+
+            /* addEquipment(String code, String description, String marca, String model, PortType portType, int cantidad,
+            EquipmentType equipmentType, Location location, Boolean status)*/
 
             newEquipment = red.addEquipment(code, description, marca, model, equipmentType, location, status);
             for (int i = 0; i < ipsArray.length; i++)
