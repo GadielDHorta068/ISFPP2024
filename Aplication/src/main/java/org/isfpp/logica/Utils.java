@@ -1,5 +1,6 @@
 package org.isfpp.logica;
 
+import org.isfpp.controller.Coordinator;
 import org.isfpp.exceptions.NotFoundException;
 import org.isfpp.modelo.Connection;
 import org.isfpp.modelo.Equipment;
@@ -18,6 +19,7 @@ import java.util.*;
 public class Utils {
 
     private Graph<Equipment, Connection> graph;
+    private Coordinator coordinator;
 
     /**
      * Crea un grafo no dirigido a partir de los equipos y las conexiones proporcionadas por el objeto {@code Web}.
@@ -101,7 +103,7 @@ public class Utils {
             Equipment source = graph.getEdgeSource(edge);
             Equipment target = graph.getEdgeTarget(edge);
 
-            if (equipmentMap.containsKey(source.getCode()) && equipmentMap.containsKey(source.getCode())) {
+            if (equipmentMap.containsKey(source.getCode()) && equipmentMap.containsKey(target.getCode())) {
                 // Calcular la velocidad mínima entre los puertos de los equipos y la velocidad del cable
                 int edgeValue = getMinSpeed(source.getAllPortsTypes(), target.getAllPortsTypes(), edge.getWire().getSpeed());
                 DefaultWeightedEdge newEdge = graphTemp.addEdge(source, target);
@@ -132,7 +134,7 @@ public class Utils {
      * @return La velocidad mínima de conexión entre los dos equipos, que es la velocidad
      *         más baja de los puertos y la velocidad del cable.
      */
-    public static int getMinSpeed(List<PortType> ports1, List<PortType> ports2, int wireSpeed) {
+    private static int getMinSpeed(List<PortType> ports1, List<PortType> ports2, int wireSpeed) {
         // Encuentra el puerto más lento de ambos equipos
         ArrayList<Integer> port1Speed = new ArrayList<>();
         ArrayList<Integer> port2Speed = new ArrayList<>();
@@ -184,6 +186,10 @@ public class Utils {
         }
         return mapStatus;
 
+    }
+
+    public void setCoordinator(Coordinator coordinator) {
+        this.coordinator = coordinator;
     }
 }
 

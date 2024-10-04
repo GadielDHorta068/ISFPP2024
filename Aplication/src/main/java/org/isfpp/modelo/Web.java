@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import org.isfpp.exceptions.AlredyExistException;
 import org.isfpp.exceptions.NotFoundException;
+import org.isfpp.controller.Coordinator;
 
 public class Web {
 	private HashMap<String, Equipment> hardware;
@@ -15,7 +16,7 @@ public class Web {
 	private HashMap<Object, EquipmentType> EquipmentTypes;
 	private HashMap<String,WireType>wireTypes;
 	private HashMap<String,PortType>portTypes;
-
+	private Coordinator cordinator;
 	public Web(String nombre) {
 		super();
 		this.nombre = nombre;
@@ -189,5 +190,8 @@ public class Web {
 				", wireTypes=" + wireTypes +
 				", portTypes=" + portTypes +
 				'}';
+	}
+	public void setCoordinador(Coordinator coordinador) {
+		this.cordinator = coordinador;
 	}
 }
