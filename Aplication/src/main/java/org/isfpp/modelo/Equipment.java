@@ -15,12 +15,12 @@ public class Equipment {
     private String modelo;
     private List<String> ipAdresses;
     private List<Port> ports;
-    private EquipmetType equipmentType;
+    private EquipmentType equipmentType;
     private Location location;
     private boolean status;
 
     public Equipment(String code, String description, String marca, String modelo, PortType portType, int cantidad,
-                     EquipmetType equipmentType, Location location, boolean status) {
+                     EquipmentType equipmentType, Location location, boolean status) {
         super();
         this.code = code;
         this.description = description;
@@ -74,6 +74,7 @@ public class Equipment {
     public boolean isStatus() {
         return status;
     }
+
 
     public void addPort(PortType portType, int cantidad) {
         Port p = new Port(portType, cantidad);
@@ -146,11 +147,11 @@ public class Equipment {
         this.ports = ports;
     }
 
-    public EquipmetType getEquipmentType() {
+    public EquipmentType getEquipmentType() {
         return equipmentType;
     }
 
-    public void setEquipmentType(EquipmetType equipmentType) {
+    public void setEquipmentType(EquipmentType equipmentType) {
         equipmentType = equipmentType;
     }
 

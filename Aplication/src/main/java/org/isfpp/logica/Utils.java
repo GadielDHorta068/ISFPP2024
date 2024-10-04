@@ -1,18 +1,18 @@
 package org.isfpp.logica;
 
+import org.isfpp.exceptions.NotFoundException;
 import org.isfpp.modelo.Connection;
 import org.isfpp.modelo.Equipment;
 import org.isfpp.modelo.PortType;
 import org.isfpp.modelo.Web;
 import org.jgrapht.Graph;
+import org.jgrapht.Graphs;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleGraph;
 import org.jgrapht.graph.SimpleWeightedGraph;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class Utils {
 
@@ -146,6 +146,48 @@ public class Utils {
         // Finalmente, compara con la velocidad del cable
         return Math.min(speedBetweenEquipments, wireSpeed);
     }
+    public static List<Equipment> detectConnectivityIssues(Graph<Equipment, Connection> graph, Equipment startNode) {
+        List<Equipment> reachableNodes = new ArrayList<>();
+        Queue<Equipment> queue = new LinkedList<>();
+        Set<Equipment> visited = new HashSet<>();
 
+        queue.add(startNode);
+        visited.add(startNode);
+        reachableNodes.add(startNode);
 
+        while (!queue.isEmpty()) {
+            Equipment currentNode = queue.poll();
+            for (Equipment neighbor : Graphs.neighborListOf(graph, currentNode)) {
+                // Verificar si la arista (Connection) entre currentNode y neighbor está activa
+                Connection edge = graph.getEdge(currentNode, neighbor);
+
+                // Verificar si ambos nodos están activos
+                if (neighbor.isStatus() && currentNode.isStatus() && !visited.contains(neighbor)) {
+                    visited.add(neighbor);
+                    queue.add(neighbor);
+                    reachableNodes.add(neighbor);
+                } else if (!currentNode.isStatus() || !neighbor.isStatus()) {
+                    return reachableNodes;  // Devuelve la ruta accesible hasta el problema
+                }
+            }
+        }
+        return reachableNodes;  // Devuelve la ruta completa si no hay problemas
+    }
+    public boolean ping(Equipment e1){
+        if(!graph.containsVertex(e1))
+            throw new NotFoundException("equipo no se encuentra");
+        return e1.isStatus();
+    }
+    public HashMap<Equipment, Boolean> ping(){
+        HashMap<Equipment,Boolean> mapStatus=new HashMap<>();
+        for(Equipment p: graph.iterables().vertices()){
+            mapStatus.put(p,p.isStatus());
+        }
+        return mapStatus;
+
+    }
 }
+
+
+
+
