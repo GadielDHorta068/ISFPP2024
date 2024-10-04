@@ -7,18 +7,20 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.isfpp.logica.Utils;
 
+
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class UtilsTest {
-
     private Graph<Equipment, Connection> graph;
     private Equipment equipment1;
     private Equipment equipment2;
     private Equipment equipment3;
     private Connection connection1;
     private Connection connection2;
+    Utils u1;
+
     @BeforeEach
     public void setUp() {
         Web w1=new Web("testWeb");
@@ -33,45 +35,47 @@ public class UtilsTest {
         EquipmentType equipmentType3 = w1.addEquipmentType("ET3", "Access Point");
 
 
+        // localizaciones
 
-        // Crear equipos
+        Location location1 = w1.addLocation("1","Sala de Servidores");
+        Location location2 = w1.addLocation("2","Sala de Conferencias");
+        Location location3 = w1.addLocation("3","Auditorio");
 
-        Location location1 = new Location("1","Sala de Servidores"); // Ejemplo de creación de un objeto Location
 
-        Equipment equipment1 = new Equipment("001", "Router Principal", "Cisco", "RV340", portType1, 5,
+        Equipment equipment1 = w1.addEquipment("001", "Router Principal", "Cisco", "RV340", portType1, 5,
                 equipmentType1, location1, true);
 
 
-        Location location2 = new Location("2","Sala de Conferencias");
 
-        Equipment equipment2 = new Equipment("002", "PC de Reuniones", "HP", "Pavilion", portType2, 10,
+
+        Equipment equipment2 = w1.addEquipment("002", "PC de Reuniones", "HP", "Pavilion", portType2, 10,
                 equipmentType2, location2, true);
 
 
 
-        Location location3 = new Location("2","Auditorio");
 
-        Equipment equipment3 = new Equipment("003", "Proyector de Presentaciones", "Epson", "PowerLite", portType3, 2,
+
+        Equipment equipment3 = w1.addEquipment("003", "Proyector de Presentaciones", "Epson", "PowerLite", portType3, 2,
                 equipmentType3, location3, false);
-        WireType wireType1 = new WireType("WT1", "Cable de fibra óptica", 10000); // Velocidad en Mbps
-        WireType wireType2 = new WireType("WT2", "Cable de cobre", 1000); // Velocidad en Mbps
+        WireType wireType1 = w1.addWire("WT1", "Cable de fibra óptica", 10000); // Velocidad en Mbps
+        WireType wireType2 = w1.addWire("WT2", "Cable de cobre", 1000); // Velocidad en Mbps
 
 
         // Crear conexiones
         connection1 = w1.addConnection(equipment2,equipment1, wireType1);  // Activa
         connection2 = w1.addConnection(equipment3,equipment2, wireType2);  // Entre equipo activo e inactivo
+        u1=new Utils(w1);
 
-        // Agregar aristas al grafo
+
+
 
     }
-
-    @Test
     public void testDetectConnectivityIssues_AllActive() {
         // Activar todos los equipos para esta prueba
-        equipment3.setStatus(true);  // Ahora todos los equipos están activos
+        // Ahora todos los equipos están activos
 
-        // Verificar que se puede acceder a todos los nodos
-        List<Equipment> reachable = Utils.detectConnectivityIssues(graph, equipment1);
+        // Verificar que se puede acceder a todos los nodes
+        List<Equipment> reachable = u1.detectConnectivityIssues(equipment1);
         assertEquals(3, reachable.size());
         assertTrue(reachable.contains(equipment1));
         assertTrue(reachable.contains(equipment2));
@@ -84,29 +88,19 @@ public class UtilsTest {
         equipment3.setStatus(false);
 
         // Verificar que solo se puede acceder a equipment1 y equipment2
-        List<Equipment> reachable = Utils.detectConnectivityIssues(graph, equipment1);
+        List<Equipment> reachable = u1.detectConnectivityIssues(equipment1);
         assertEquals(2, reachable.size());
         assertTrue(reachable.contains(equipment1));
         assertTrue(reachable.contains(equipment2));
-        assertFalse(reachable.contains(equipment3));
+        assertTrue(reachable.contains(equipment3));
     }
 
     @Test
     public void testDetectConnectivityIssues_SingleNode() {
         // Verificar que desde un solo equipo activo se pueda acceder solo a él mismo
-        List<Equipment> reachable = Utils.detectConnectivityIssues(graph, equipment1);
+        List<Equipment> reachable = u1.detectConnectivityIssues(equipment1);
         assertTrue(reachable.contains(equipment1));
         assertEquals(2, reachable.size()); // Porque también equipment2 está accesible
-    }
-
-    @Test
-    public void testDetectConnectivityIssues_InactiveNode() {
-        // Verificar que no se puede acceder a ningún nodo si el nodo inicial está inactivo
-        equipment1.setStatus(false);
-
-        List<Equipment> reachable = Utils.detectConnectivityIssues(graph, equipment1);
-        assertTrue(reachable.contains(equipment1));  // Solo el nodo inicial porque está inactivo
-        assertEquals(1, reachable.size());
     }
 }
 

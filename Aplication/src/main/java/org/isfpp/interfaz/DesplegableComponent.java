@@ -40,7 +40,7 @@ public class DesplegableComponent {
         for (int i = 0; i < equipmentList.size(); i++) {
             Equipment equipment = equipmentList.get(i);
             data[i][0] = equipment.getCode();
-            data[i][1] = equipment.getIp();
+            data[i][1] = equipment.getIpAdresses();
         }
 
         String[] columnNames = {"Nombre", "IP"};
@@ -102,7 +102,7 @@ public class DesplegableComponent {
         for (int i = 0; i < equipmentList.size(); i++) {
             Equipment equipment = equipmentList.get(i);
             data[i][0] = equipment.getCode();
-            data[i][1] = equipment.getIp();
+            data[i][1] = equipment.getIpAdresses();
         }
         table.setModel(new javax.swing.table.DefaultTableModel(data, new String[]{"Nombre", "IP"}));
     }

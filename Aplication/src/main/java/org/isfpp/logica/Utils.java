@@ -29,20 +29,26 @@ public class Utils {
      * @throws IllegalArgumentException Si se intenta agregar una conexión entre el mismo equipo o si hay una
      *                                  conexión duplicada en el grafo.
      */
-    public void createGraph(Web web) {
+    public Utils(Web web) {
+
+        System.out.println(("Ver"));
+
         HashMap<String, Equipment> hardware = web.getHardware();
         ArrayList<Connection> connections = web.getConections();
         // Crear un grafo no dirigido
-        graph = new SimpleGraph<>(Connection.class);
+        this.graph = new SimpleGraph<>(Connection.class);
         for (Equipment valor : hardware.values()) {
-            graph.addVertex(valor);
+            this.graph.addVertex(valor);
         }
+
+
         for (Connection c : connections) {
             Equipment sourceNode = c.getEquipment1();
             Equipment targetNode = c.getEquipment2();
 
             if (sourceNode.equals(targetNode)) throw new IllegalArgumentException("son el mismo equipo");
-            if (graph.containsEdge(sourceNode, targetNode)) graph.addEdge(sourceNode, targetNode, c);
+            if (this.graph.containsEdge(sourceNode, targetNode))
+                this.graph.addEdge(sourceNode, targetNode, c);
 
         }
 
@@ -146,7 +152,7 @@ public class Utils {
         // Finalmente, compara con la velocidad del cable
         return Math.min(speedBetweenEquipments, wireSpeed);
     }
-    public static List<Equipment> detectConnectivityIssues(Graph<Equipment, Connection> graph, Equipment startNode) {
+    public List<Equipment> detectConnectivityIssues(Equipment startNode) {
         List<Equipment> reachableNodes = new ArrayList<>();
         Queue<Equipment> queue = new LinkedList<>();
         Set<Equipment> visited = new HashSet<>();
@@ -158,21 +164,20 @@ public class Utils {
         while (!queue.isEmpty()) {
             Equipment currentNode = queue.poll();
             for (Equipment neighbor : Graphs.neighborListOf(graph, currentNode)) {
-                // Verificar si la arista (Connection) entre currentNode y neighbor está activa
                 Connection edge = graph.getEdge(currentNode, neighbor);
 
-                // Verificar si ambos nodos están activos
                 if (neighbor.isStatus() && currentNode.isStatus() && !visited.contains(neighbor)) {
                     visited.add(neighbor);
                     queue.add(neighbor);
                     reachableNodes.add(neighbor);
                 } else if (!currentNode.isStatus() || !neighbor.isStatus()) {
-                    return reachableNodes;  // Devuelve la ruta accesible hasta el problema
+                    return reachableNodes;
                 }
             }
         }
-        return reachableNodes;  // Devuelve la ruta completa si no hay problemas
+        return reachableNodes;
     }
+
     public boolean ping(Equipment e1){
         if(!graph.containsVertex(e1))
             throw new NotFoundException("equipo no se encuentra");
