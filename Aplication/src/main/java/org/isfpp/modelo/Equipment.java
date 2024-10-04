@@ -1,56 +1,45 @@
 package org.isfpp.modelo;
 
-import org.isfpp.exceptions.AlreadyExistException;
+import org.isfpp.exceptions.AlredyExistException;
 import org.isfpp.exceptions.NotFoundException;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Random;
 
 public class Equipment {
-	private String code;
-	private String description;
-	private String marca;
-	private String modelo;
-	private List<String> ipAdresses;
-	private List<Port> ports;
-	private EquipmentType equipmentType;
-	private Location location;
-	private boolean status;
+    private String code;
+    private String description;
+    private String marca;
+    private String modelo;
+    private List<String> ipAdresses;
+    private List<Port> ports;
+    private EquipmentType equipmentType;
+    private Location location;
+    private boolean status;
 
-	public Equipment(String code, String description, String marca, String modelo, PortType portType, int portCapacity,
-					 EquipmentType equipmentType, Location location, boolean status) {
-		super();
-		this.code = code;
-		this.description = description;
-		this.marca = marca;
-		this.modelo = modelo;
-		this.equipmentType = equipmentType;
-		this.location = location;
-		this.status = status;
+    public Equipment(String code, String description, String marca, String modelo, PortType portType, int cantidad,
+                     EquipmentType equipmentType, Location location, boolean status) {
+        super();
+        this.code = code;
+        this.description = description;
+        this.marca = marca;
+        this.modelo = modelo;
+        this.equipmentType = equipmentType;
+        this.location = location;
+        this.status = status;
 
-		this.ipAdresses = new ArrayList<String>();
-		this.ports = new ArrayList<Port>();
-		this.addPort(portType, portCapacity);
-	}
+        this.ipAdresses = new ArrayList<String>();
+        this.ports = new ArrayList<Port>();
+        this.ports.add(new Port(portType, cantidad));
 
-	public Equipment(String code, String description, String marca, String modelo,
-					 EquipmentType equipmentType, Location location, boolean status) {
-		super();
-		this.code = code;
-		this.description = description;
-		this.marca = marca;
-		this.modelo = modelo;
-		this.equipmentType = equipmentType;
-		this.location = location;
-		this.status = status;
+    }
 
-		this.ipAdresses = new ArrayList<String>();
-		this.ports = new ArrayList<Port>();
-	}
-
-	public static String generarMAC() {
-		Random random = new Random();
-		byte[] macAddr = new byte[6];
-		random.nextBytes(macAddr);
+    public static String generarMAC() {
+        Random random = new Random();
+        byte[] macAddr = new byte[6];
+        random.nextBytes(macAddr);
 
         StringBuilder macAddress = new StringBuilder(18);
         for (byte b : macAddr) {
@@ -66,7 +55,7 @@ public class Equipment {
     public void addIp(String ip) {
         // llamo al metodo check de ip
         if (ipAdresses.contains(ip))
-            throw new AlreadyExistException("la ip ya se encuentra");
+            throw new AlredyExistException("la ip ya se encuentra");
         ipAdresses.add(ip);
 
     }
@@ -86,17 +75,18 @@ public class Equipment {
         return status;
     }
 
+
     public void addPort(PortType portType, int cantidad) {
         Port p = new Port(portType, cantidad);
         if (ports.contains(p))
-            throw new AlreadyExistException("ese puerto ya esta en la lista de puertos del equipo");
+            throw new AlredyExistException("ese puerto ya esta en la lista de puertos del equipo");
         ports.add(p);
 
     }
 
     public void deletePort(PortType port) {
         if (!ports.contains(port))
-            throw new AlreadyExistException("ese puerto ya esta en la lista de puertos del equipo");
+            throw new AlredyExistException("ese puerto ya esta en la lista de puertos del equipo");
         ports.remove(port);
 
     }
@@ -157,13 +147,13 @@ public class Equipment {
         this.ports = ports;
     }
 
-	public EquipmentType getEquipmentType() {
-		return equipmentType;
-	}
+    public EquipmentType getEquipmentType() {
+        return equipmentType;
+    }
 
-	public void setEquipmentType(EquipmentType equipmentType) {
-		this.equipmentType = equipmentType;
-	}
+    public void setEquipmentType(EquipmentType equipmentType) {
+        equipmentType = equipmentType;
+    }
 
     public Location getLocation() {
         return location;
