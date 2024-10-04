@@ -11,6 +11,7 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleGraph;
 import org.jgrapht.graph.SimpleWeightedGraph;
+import org.jgrapht.traverse.BreadthFirstIterator;
 
 import java.util.*;
 
@@ -31,7 +32,6 @@ public class Utils {
      */
     public Utils(Web web) {
 
-        System.out.println(("Ver"));
 
         HashMap<String, Equipment> hardware = web.getHardware();
         ArrayList<Connection> connections = web.getConections();
@@ -152,30 +152,24 @@ public class Utils {
         // Finalmente, compara con la velocidad del cable
         return Math.min(speedBetweenEquipments, wireSpeed);
     }
+
+    public Graph<Equipment, Connection> getGraph() {
+        return graph;
+    }
+
+    public void setGraph(Graph<Equipment, Connection> graph) {
+        this.graph = graph;
+    }
+
     public List<Equipment> detectConnectivityIssues(Equipment startNode) {
-        List<Equipment> reachableNodes = new ArrayList<>();
-        Queue<Equipment> queue = new LinkedList<>();
-        Set<Equipment> visited = new HashSet<>();
+        List<Equipment> visitedNodes = new ArrayList<>();
+        BreadthFirstIterator<Equipment, Connection> bfsIterator = new BreadthFirstIterator<>(this.graph, startNode);
 
-        queue.add(startNode);
-        visited.add(startNode);
-        reachableNodes.add(startNode);
-
-        while (!queue.isEmpty()) {
-            Equipment currentNode = queue.poll();
-            for (Equipment neighbor : Graphs.neighborListOf(graph, currentNode)) {
-                Connection edge = graph.getEdge(currentNode, neighbor);
-
-                if (neighbor.isStatus() && currentNode.isStatus() && !visited.contains(neighbor)) {
-                    visited.add(neighbor);
-                    queue.add(neighbor);
-                    reachableNodes.add(neighbor);
-                } else if (!currentNode.isStatus() || !neighbor.isStatus()) {
-                    return reachableNodes;
-                }
-            }
+        while (bfsIterator.hasNext()) {
+            visitedNodes.add(bfsIterator.next());
         }
-        return reachableNodes;
+
+        return visitedNodes;
     }
 
     public boolean ping(Equipment e1){
