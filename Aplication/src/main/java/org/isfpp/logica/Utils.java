@@ -1,19 +1,19 @@
 package org.isfpp.logica;
 
+import org.isfpp.exceptions.NotFoundException;
 import org.isfpp.modelo.Connection;
 import org.isfpp.modelo.Equipment;
 import org.isfpp.modelo.PortType;
 import org.isfpp.modelo.Web;
 import org.jgrapht.Graph;
+import org.jgrapht.Graphs;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
+import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleGraph;
 import org.jgrapht.graph.SimpleWeightedGraph;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class Utils {
 
@@ -32,20 +32,25 @@ public class Utils {
      */
     public void createGraph(Web web) {
         HashMap<String, Equipment> hardware = web.getHardware();
-        ArrayList<Connection> connections = web.getConections();
+        ArrayList<Connection> connections = web.getConnections();
         // Crear un grafo no dirigido
         this.graph = new SimpleGraph<>(Connection.class);
         for (Equipment valor : hardware.values()) {
             this.graph.addVertex(valor);
         }
+
+
         for (Connection c : connections) {
             Equipment sourceNode = c.getEquipment1();
             Equipment targetNode = c.getEquipment2();
 
-            if (sourceNode.equals(targetNode)) throw new IllegalArgumentException("son el mismo equipo");
-            if (this.graph.containsEdge(sourceNode, targetNode))
-                this.graph.addEdge(sourceNode, targetNode, c);
-
+            if (sourceNode.equals(targetNode)) {
+                throw new IllegalArgumentException("Son el mismo equipo");
+            }
+            // Se debe verificar que no exista ya la arista antes de agregarla
+            if (!graph.containsEdge(sourceNode, targetNode)) {
+                graph.addEdge(sourceNode, targetNode, c);
+            }
         }
     }
 
@@ -106,12 +111,14 @@ public class Utils {
                 graphTemp.setEdgeWeight(newEdge, edgeValue);
             }
         }
+
         // Aplicar el algoritmo de Dijkstra para encontrar el camino más corto entre dos equipos
         DijkstraShortestPath<Equipment, DefaultWeightedEdge> dijkstraAlg = new DijkstraShortestPath<>(graphTemp);
 
         // Encontrar el camino más corto desde Router1 a PC1
         return dijkstraAlg.getPath(e1, e2).getEdgeList();
     }
+
     /**
      * Calcula la velocidad mínima de conexión entre dos equipos considerando
      * la velocidad de los puertos y la velocidad del cable.
@@ -150,5 +157,29 @@ public class Utils {
         // Finalmente, compara con la velocidad del cable
         return Math.min(speedBetweenEquipments, wireSpeed);
     }
+    public List<Equipment> detectConnectivityIssues(Equipment startNode) {
+        List<Equipment> reachableNodes = new ArrayList<>();
+        Queue<Equipment> queue = new LinkedList<>();
+        Set<Equipment> visited = new HashSet<>();
 
+        queue.add(startNode);
+        visited.add(startNode);
+        reachableNodes.add(startNode);
+
+        while (!queue.isEmpty()) {
+            Equipment currentNode = queue.poll();
+            for (Equipment neighbor : Graphs.neighborListOf(graph, currentNode)) {
+                Connection edge = graph.getEdge(currentNode, neighbor);
+
+                if (neighbor.isStatus() && currentNode.isStatus() && !visited.contains(neighbor)) {
+                    visited.add(neighbor);
+                    queue.add(neighbor);
+                    reachableNodes.add(neighbor);
+                } else if (!currentNode.isStatus() || !neighbor.isStatus()) {
+                    return reachableNodes;
+                }
+            }
+        }
+        return reachableNodes;
+    }
 }

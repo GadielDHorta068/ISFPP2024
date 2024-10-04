@@ -27,9 +27,24 @@ public class Equipment {
 		this.location = location;
 		this.status = status;
 
-		this.ipAdresses = new ArrayList<String>();
-		this.ports = new ArrayList<Port>();
+		this.ipAdresses = new ArrayList<>();
+		this.ports = new ArrayList<>();
 		this.addPort(portType, portCapacity);
+	}
+
+	public Equipment(String code, String description, String marca, String modelo,
+					 EquipmentType equipmentType, Location location, boolean status) {
+		super();
+		this.code = code;
+		this.description = description;
+		this.marca = marca;
+		this.modelo = modelo;
+		this.equipmentType = equipmentType;
+		this.location = location;
+		this.status = status;
+
+		this.ipAdresses = new ArrayList<>();
+		this.ports = new ArrayList<>();
 	}
 
 	public static String generarMAC() {

@@ -1,4 +1,5 @@
-package org.isfpp.interfaz;import com.mxgraph.layout.mxCircleLayout;
+package org.isfpp.interfaz;
+import com.mxgraph.layout.mxCircleLayout;
 import com.mxgraph.swing.mxGraphComponent;
 import com.mxgraph.view.mxGraph;
 import org.isfpp.modelo.Connection;

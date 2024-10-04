@@ -64,7 +64,7 @@ public class UtilsTest {
         // Crear conexiones
         connection1 = w1.addConnection(equipment2,equipment1, wireType1);  // Activa
         connection2 = w1.addConnection(equipment3,equipment2, wireType2);  // Entre equipo activo e inactivo
-        u1=new Utils(w1);
+        u1=new Utils();
 
 
 

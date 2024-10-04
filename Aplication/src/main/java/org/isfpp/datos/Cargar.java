@@ -42,8 +42,7 @@ public class Cargar {
             status = read.nextBoolean();
 
             newEquipment = red.addEquipment(code, description, marca, model, red.getPortTypes().get(portsArray[0]), Integer.getInteger(portsArray[1]),equipmentType, location, status);
-            for (int i = 0; i < ipsArray.length; i++)
-                newEquipment.addIp(ipsArray[i]);
+            for (String s : ipsArray) newEquipment.addIp(s);
 
             for (int i = 2; i < portsArray.length; i += 2)
                 newEquipment.addPort(red.getPortTypes().get(portsArray[i]), Integer.getInteger(portsArray[i + 1]));
@@ -81,7 +80,7 @@ public class Cargar {
             equipment2 = red.getHardware().get(read.next());
             wireType = red.getWireTypes().get(read.next());
 
-            red.addConection(wireType,equipment1,equipment2);
+            red.addConnection(equipment1,equipment2,wireType);
         }
         read.close();
     }
