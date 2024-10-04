@@ -1,22 +1,23 @@
 package org.isfpp.logica;
 
-import org.isfpp.exceptions.NotFoundException;
 import org.isfpp.modelo.Connection;
 import org.isfpp.modelo.Equipment;
 import org.isfpp.modelo.PortType;
 import org.isfpp.modelo.Web;
 import org.jgrapht.Graph;
-import org.jgrapht.Graphs;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleGraph;
 import org.jgrapht.graph.SimpleWeightedGraph;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Set;
 
 public class Utils {
 
-    private Graph<Equipment, Connection> graph;
+    private static Graph<Equipment, Connection> graph;
 
     /**
      * Crea un grafo no dirigido a partir de los equipos y las conexiones proporcionadas por el objeto {@code Web}.
@@ -29,10 +30,7 @@ public class Utils {
      * @throws IllegalArgumentException Si se intenta agregar una conexión entre el mismo equipo o si hay una
      *                                  conexión duplicada en el grafo.
      */
-    public Utils(Web web) {
-
-        System.out.println(("Ver"));
-
+    public void createGraph(Web web) {
         HashMap<String, Equipment> hardware = web.getHardware();
         ArrayList<Connection> connections = web.getConections();
         // Crear un grafo no dirigido
@@ -40,8 +38,6 @@ public class Utils {
         for (Equipment valor : hardware.values()) {
             this.graph.addVertex(valor);
         }
-
-
         for (Connection c : connections) {
             Equipment sourceNode = c.getEquipment1();
             Equipment targetNode = c.getEquipment2();
@@ -51,8 +47,6 @@ public class Utils {
                 this.graph.addEdge(sourceNode, targetNode, c);
 
         }
-
-
     }
 
     /**
@@ -71,6 +65,7 @@ public class Utils {
      * @throws IllegalArgumentException Si {@code e1} o {@code e2} son {@code null}, si son iguales,
      *                                  o si alguno de los equipos no está activo.
      */
+    //mirar parte de minSpeed
     public List<DefaultWeightedEdge> traceroute(Equipment e1, Equipment e2) throws IllegalArgumentException {
 
         if (e1 == null || e2 == null) {
@@ -103,7 +98,9 @@ public class Utils {
 
             if (equipmentMap.containsKey(source.getCode()) && equipmentMap.containsKey(source.getCode())) {
                 // Calcular la velocidad mínima entre los puertos de los equipos y la velocidad del cable
-                int edgeValue = getMinSpeed(source.getAllPortsTypes(), target.getAllPortsTypes(), edge.getWire().getSpeed());
+                int edgeValue = getMinSpeed(source.getAllPortsTypes().keySet(), target.getAllPortsTypes().keySet(), edge.getWire().getSpeed());
+
+                //int edgeValue = Math.min(minSpeedPort1, Math.min(minSpeedPort1, minSpeedPort2))
                 DefaultWeightedEdge newEdge = graphTemp.addEdge(source, target);
                 // Asignar el peso correspondiente a la arista
                 graphTemp.setEdgeWeight(newEdge, edgeValue);
@@ -132,7 +129,8 @@ public class Utils {
      * @return La velocidad mínima de conexión entre los dos equipos, que es la velocidad
      *         más baja de los puertos y la velocidad del cable.
      */
-    public static int getMinSpeed(List<PortType> ports1, List<PortType> ports2, int wireSpeed) {
+    //mirar
+    public static int getMinSpeed(Set<PortType> ports1, Set<PortType> ports2, int wireSpeed) {
         // Encuentra el puerto más lento de ambos equipos
         ArrayList<Integer> port1Speed = new ArrayList<>();
         ArrayList<Integer> port2Speed = new ArrayList<>();
@@ -152,47 +150,5 @@ public class Utils {
         // Finalmente, compara con la velocidad del cable
         return Math.min(speedBetweenEquipments, wireSpeed);
     }
-    public List<Equipment> detectConnectivityIssues(Equipment startNode) {
-        List<Equipment> reachableNodes = new ArrayList<>();
-        Queue<Equipment> queue = new LinkedList<>();
-        Set<Equipment> visited = new HashSet<>();
 
-        queue.add(startNode);
-        visited.add(startNode);
-        reachableNodes.add(startNode);
-
-        while (!queue.isEmpty()) {
-            Equipment currentNode = queue.poll();
-            for (Equipment neighbor : Graphs.neighborListOf(graph, currentNode)) {
-                Connection edge = graph.getEdge(currentNode, neighbor);
-
-                if (neighbor.isStatus() && currentNode.isStatus() && !visited.contains(neighbor)) {
-                    visited.add(neighbor);
-                    queue.add(neighbor);
-                    reachableNodes.add(neighbor);
-                } else if (!currentNode.isStatus() || !neighbor.isStatus()) {
-                    return reachableNodes;
-                }
-            }
-        }
-        return reachableNodes;
-    }
-
-    public boolean ping(Equipment e1){
-        if(!graph.containsVertex(e1))
-            throw new NotFoundException("equipo no se encuentra");
-        return e1.isStatus();
-    }
-    public HashMap<Equipment, Boolean> ping(){
-        HashMap<Equipment,Boolean> mapStatus=new HashMap<>();
-        for(Equipment p: graph.iterables().vertices()){
-            mapStatus.put(p,p.isStatus());
-        }
-        return mapStatus;
-
-    }
 }
-
-
-
-
