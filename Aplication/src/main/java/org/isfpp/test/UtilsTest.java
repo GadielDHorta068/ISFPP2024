@@ -70,12 +70,16 @@ public class UtilsTest {
 
 
     }
+    @Test
     public void testDetectConnectivityIssues_AllActive() {
         // Activar todos los equipos para esta prueba
         // Ahora todos los equipos están activos
 
         // Verificar que se puede acceder a todos los nodes
         List<Equipment> reachable = u1.detectConnectivityIssues(equipment1);
+        for(Equipment e:reachable){
+            System.out.println(e);
+        }
         assertEquals(3, reachable.size());
         assertTrue(reachable.contains(equipment1));
         assertTrue(reachable.contains(equipment2));
@@ -89,6 +93,9 @@ public class UtilsTest {
 
         // Verificar que solo se puede acceder a equipment1 y equipment2
         List<Equipment> reachable = u1.detectConnectivityIssues(equipment1);
+        for(Equipment e:reachable){
+            System.out.println(e);
+        }
         assertEquals(2, reachable.size());
         assertTrue(reachable.contains(equipment1));
         assertTrue(reachable.contains(equipment2));
