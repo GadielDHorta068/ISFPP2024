@@ -1,6 +1,6 @@
 package org.isfpp.modelo;
 
-import org.isfpp.exceptions.AlredyExistException;
+import org.isfpp.exceptions.AlreadyExistException;
 import org.isfpp.exceptions.NotFoundException;
 
 import java.util.*;
@@ -66,7 +66,7 @@ public class Equipment {
     public void addIp(String ip) {
         // llamo al metodo check de ip
         if (ipAdresses.contains(ip))
-            throw new AlredyExistException("la ip ya se encuentra");
+            throw new AlreadyExistException("la ip ya se encuentra");
         ipAdresses.add(ip);
 
     }
@@ -89,14 +89,14 @@ public class Equipment {
     public void addPort(PortType portType, int cantidad) {
         Port p = new Port(portType, cantidad);
         if (ports.contains(p))
-            throw new AlredyExistException("ese puerto ya esta en la lista de puertos del equipo");
+            throw new AlreadyExistException("ese puerto ya esta en la lista de puertos del equipo");
         ports.add(p);
 
     }
 
     public void deletePort(PortType port) {
         if (!ports.contains(port))
-            throw new AlredyExistException("ese puerto ya esta en la lista de puertos del equipo");
+            throw new AlreadyExistException("ese puerto ya esta en la lista de puertos del equipo");
         ports.remove(port);
 
     }
@@ -160,16 +160,10 @@ public class Equipment {
 	public EquipmentType getEquipmentType() {
 		return equipmentType;
 	}
-    public EquipmetType getEquipmentType() {
-        return equipmentType;
-    }
 
 	public void setEquipmentType(EquipmentType equipmentType) {
 		this.equipmentType = equipmentType;
 	}
-    public void setEquipmentType(EquipmetType equipmentType) {
-        equipmentType = equipmentType;
-    }
 
     public Location getLocation() {
         return location;
