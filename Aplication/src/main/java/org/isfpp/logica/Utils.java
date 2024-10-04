@@ -2,16 +2,16 @@ package org.isfpp.logica;
 
 import org.isfpp.modelo.Connection;
 import org.isfpp.modelo.Equipment;
+import org.isfpp.modelo.PortType;
 import org.isfpp.modelo.Web;
 import org.jgrapht.Graph;
+import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleGraph;
+import org.jgrapht.graph.SimpleWeightedGraph;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class Utils {
 
