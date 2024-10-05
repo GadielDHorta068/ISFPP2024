@@ -3,10 +3,7 @@ package org.isfpp.modelo;
 import org.isfpp.exceptions.AlredyExistException;
 import org.isfpp.exceptions.NotFoundException;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Random;
+import java.util.*;
 
 public class Equipment {
     private String code;
@@ -30,11 +27,9 @@ public class Equipment {
         this.location = location;
         this.status = status;
 
-        this.ipAdresses = new ArrayList<String>();
-        this.ports = new ArrayList<Port>();
-        this.ports.add(new Port(portType, cantidad));
-
-    }
+		this.ipAdresses = new ArrayList<String>();
+		this.ports = new ArrayList<Port>();
+	}
 
     public static String generarMAC() {
         Random random = new Random();
@@ -91,10 +86,10 @@ public class Equipment {
 
     }
 
-    public ArrayList<PortType> getAllPortsTypes() {
-        ArrayList<PortType> portTypes = new ArrayList<>();
-        for (Port p : ports) {
-            portTypes.add(p.getPortType());
+	public HashMap<PortType, Integer> getAllPortsTypes() {
+		HashMap<PortType, Integer> portTypes = new HashMap<>();
+		for (Port port: ports) {
+			portTypes.put(port.getPortType(), port.getCantidad());
         }
         return portTypes;
     }

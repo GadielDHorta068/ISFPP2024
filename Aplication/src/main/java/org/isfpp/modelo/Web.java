@@ -140,7 +140,7 @@ public class Web {
 			throw new NotFoundException("El puerto no se encuentra");
 		List<String> codes = new ArrayList<String>();
 		for (Equipment e : hardware.values()) {
-			if (e.getAllPortsTypes().contains(portType))
+			if (e.getAllPortsTypes().containsKey(portType))
 				codes.add(e.getCode());
 		}
 		if (!codes.isEmpty())
