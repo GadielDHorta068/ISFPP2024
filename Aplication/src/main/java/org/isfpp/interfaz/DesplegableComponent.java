@@ -49,7 +49,7 @@ public class DesplegableComponent<T> {
                 data[i][1] = location.getDescription();
             } else if (item instanceof Connection) {
                 // Maneja el tipo Connection u otros tipos
-                data[i][0] = STR."\{((Connection) item).getEquipment1()}\{((Connection) item).getEquipment2()}"; // Ajusta según el contenido de Connection
+                data[i][0] = STR."\{((Connection) item).getPort1()}\{((Connection) item).getPort2()}"; // Ajusta según el contenido de Connection
                 data[i][1] = ((Connection) item).getWire();
             }
         }
@@ -115,7 +115,7 @@ public class DesplegableComponent<T> {
                 data[i][0] = location.getCode();
                 data[i][1] = location.getDescription();
             } else if (item instanceof Connection) {
-                data[i][0] = ((Connection) item).getEquipment1() + " - " + ((Connection) item).getEquipment2();
+                data[i][0] = ((Connection) item).getPort1() + " - " + ((Connection) item).getPort2();
                 data[i][1] = ((Connection) item).getWire();
             }
         }

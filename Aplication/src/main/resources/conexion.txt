@@ -1,3 +1,4 @@
+//portType,Equipment;PortType,Equipment;wireType
 SE01;SW02;FOM;
 PC01;SW01;C5E;
 SW01;SW02;C5E;

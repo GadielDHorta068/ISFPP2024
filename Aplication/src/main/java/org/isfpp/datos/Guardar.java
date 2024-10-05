@@ -9,11 +9,18 @@ import java.util.HashMap;
 
 public class Guardar {
 
-//    public void saveAll(Web red, String f1, String f2, String f3, String f4, String f5, String f6){
-//
-//    }
+    public void saveAll(Web red, String equipmentFile, String equipmentTypeFile, String locationFile, String portTypeFile,
+                        String wireTypeFile, String connectionFile){
 
-    public void SaveEquipments(String fileName, Web red){
+        saveEquipments(equipmentFile, red);
+        saveConnetions(equipmentFile,red);
+        saveLocations(locationFile, red);
+        saveEquipmentTypes(equipmentTypeFile, red);
+        savePortTypes(portTypeFile, red);
+        saveWireTypes(wireTypeFile, red);
+    }
+
+    public void saveEquipments(String fileName, Web red){
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
             // Escribimos los objetos en el archivo en el formato personalizado
             String data;
@@ -22,8 +29,8 @@ public class Guardar {
             for (Equipment equipment: red.getHardware().values()){
                 data = equipment.getCode()+";"+
                         equipment.getDescription()+";"+
-                        equipment.getMarca()+";"+
-                        equipment.getModelo()+";"+
+                        equipment.getMake()+";"+
+                        equipment.getModel()+";"+
                         equipment.getEquipmentType()+";"+
                         equipment.getLocation()+";";
 
@@ -63,9 +70,11 @@ public class Guardar {
             String data;
 
             for (Connection connection : red.getConections()) {
-                data = connection.getEquipment1().getCode() + ";" +
-                        connection.getEquipment2().getCode() + ";" +
-                        connection.getWire().getCode() + ";";
+                data = connection.getPort1().getEquipment().getCode() + ","
+                        + connection.getPort1().getPortType().getCode() + ";"
+                        + connection.getPort2().getEquipment().getCode() + ","
+                        + connection.getPort2().getPortType().getCode() + ";"
+                        + connection.getWire().getCode() + ";";
 
                 writer.write(data);
                 writer.newLine();

@@ -23,8 +23,7 @@ public class Cargar {
 
     public static void loadEquipments(Web red, String fileName) throws FileNotFoundException {
         Scanner read;
-        Equipment newEquipment;
-        String code, description, marca, model;
+        String code, description, make, model;
         String[] portsArray, ipsArray;
         boolean status;
 
@@ -33,7 +32,7 @@ public class Cargar {
         while (read.hasNext()) {
             code = read.next();
             description = read.next();
-            marca = read.next();
+            make = read.next();
             model = read.next();
             EquipmentType equipmentType = red.getEquipmentTypes().get(read.next());
             Location location = red.getLocations().get(read.next());
@@ -41,12 +40,12 @@ public class Cargar {
             ipsArray = read.next().split(",");
             status = read.nextBoolean();
 
-            newEquipment = red.addEquipment(code, description, marca, model, red.getPortTypes().get(portsArray[0]), Integer.getInteger(portsArray[1]),equipmentType, location, status);
+            Equipment newEquipment = red.addEquipment(code, description, make, model, red.getPortTypes().get(portsArray[0]), Integer.getInteger(portsArray[1]),equipmentType, location, status);
             for (int i = 0; i < ipsArray.length; i++)
                 newEquipment.addIp(ipsArray[i]);
 
             for (int i = 2; i < portsArray.length; i += 2)
-                newEquipment.addPort(red.getPortTypes().get(portsArray[i]), Integer.getInteger(portsArray[i + 1]));
+                newEquipment.addPort(red.getPortTypes().get(portsArray[i]));
         }
         read.close();
     }
@@ -67,21 +66,25 @@ public class Cargar {
         }
         read.close();
     }
-
+    //modificarFile
     public static void loadConnections(Web red, String fileName) throws FileNotFoundException{
         Scanner read;
         WireType wireType;
-        Equipment equipment1, equipment2;
+        Port port1, port2;
+        String[] portReader;
 
         read = new Scanner(new File(fileName));
         read.useDelimiter("\\s*;\\s*");
 
         while (read.hasNext()) {
-            equipment1 = red.getHardware().get(read.next());
-            equipment2 = red.getHardware().get(read.next());
+            portReader = read.next().split(",");
+            port1 = red.getHardware().get(portReader[0]).checkPort(red.getPortTypes().get(portReader[1]));
+            portReader = read.next().split(",");
+            port2 = red.getHardware().get(portReader[0]).checkPort(red.getPortTypes().get(portReader[1]));
+
             wireType = red.getWireTypes().get(read.next());
 
-            red.addConection(wireType,equipment1,equipment2);
+            red.addConection(wireType,port1,port2);
         }
         read.close();
     }

@@ -73,11 +73,11 @@ public class Web {
 		this.conections = conections;
 	}
 
-	public org.isfpp.modelo.Connection addConection(WireType wire,Equipment equipment1, Equipment equipment2){
-		if (hardware.containsKey(equipment1.getCode()) || hardware.containsKey(equipment2.getCode()))
+	public org.isfpp.modelo.Connection addConection(WireType wire,Port port1, Port port2){
+		if (hardware.containsKey(port1.getEquipment().getCode()) || hardware.containsKey(port2.getEquipment().getCode()))
 			throw new NotFoundException("los equipos pedidos no se encuentran dentro de la red");
 
-		Connection newConnection = new Connection(wire, equipment1, equipment2);
+		Connection newConnection = new Connection(wire, port1, port2);
 		if (getConections().contains(newConnection))
 			throw new AlreadyExistException("la conexion ya se encuentra");
 
@@ -159,7 +159,7 @@ public class Web {
 	public PortType addPort(String code,String description,int speed){
 		if(portTypes.containsKey(code))
 			throw new AlreadyExistException("el tipo de puerto ya se encuentra");
-		PortType p=new PortType(code,description,speed);
+		PortType p = new PortType(code,description,speed);
 		portTypes.put(code,p);
 		return p;
 	}
@@ -196,7 +196,7 @@ public class Web {
 		List<String> codes = new ArrayList<String>();
 		for (org.isfpp.modelo.Connection connection : getConections()) {
 			if(connection.getWire().equals(wireType))
-				codes.add(connection.getEquipment1().getCode()+"<->"+connection.getEquipment2().getCode());
+				codes.add(connection.getPort1().getEquipment().getCode()+"<->"+connection.getPort2().getEquipment().getCode());
 		}
 		if (!codes.isEmpty())
 			throw new IllegalStateException("las siguientes conexiones tienen ese tipo de cable" + codes);
