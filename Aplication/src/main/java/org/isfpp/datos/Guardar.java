@@ -62,7 +62,7 @@ public class Guardar {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
             String data;
 
-            for (Connection connection : red.getConnections()) {
+            for (Connection connection : red.getConections()) {
                 data = connection.getEquipment1().getCode() + ";" +
                         connection.getEquipment2().getCode() + ";" +
                         connection.getWire().getCode() + ";";
