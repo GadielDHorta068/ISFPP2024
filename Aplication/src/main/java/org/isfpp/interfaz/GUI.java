@@ -1,6 +1,8 @@
 package org.isfpp.interfaz;
 
+import org.isfpp.datos.Cargar;
 import org.isfpp.interfaz.stylusUI.StylusUI;
+import org.isfpp.logica.Utils;
 import org.isfpp.modelo.Connection;
 import org.isfpp.modelo.Location;
 import org.isfpp.modelo.Web;
@@ -8,10 +10,11 @@ import org.isfpp.modelo.Equipment;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class GUI {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         JFrame frame = new JFrame("Prueba interfaz por modulos ISFPP24");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(new BorderLayout());
@@ -19,9 +22,7 @@ public class GUI {
 
         PanelDerecho panelDerecho = new PanelDerecho();
 
-        Web web = new Web("Red Principal");
-        web.addLocation("biblio", "Biblioteca");
-        web.addLocation("Labo 0", "Laboratorio 0");
+        Web web = Cargar.cargarRedDesdePropiedades("config.properties");
 
 
         DesplegableComponent<Equipment> desplegableNodos = new DesplegableComponent<>("Equipos", new ArrayList<>(web.getHardware().values()), panelDerecho, web);

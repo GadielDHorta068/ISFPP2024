@@ -7,7 +7,6 @@ import org.isfpp.modelo.Equipment;
 import org.isfpp.modelo.PortType;
 import org.isfpp.modelo.Web;
 import org.jgrapht.Graph;
-import org.jgrapht.Graphs;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleGraph;
@@ -23,7 +22,7 @@ public class Utils {
 
     /**
      * Crea un grafo no dirigido a partir de los equipos y las conexiones proporcionadas por el objeto {@code Web}.
-     *
+     * <p>
      * Este método toma un objeto {@code Web}, que contiene un mapa de equipos de hardware y una lista de conexiones,
      * y construye un grafo no dirigido. Cada equipo se agrega como un vértice en el grafo y cada conexión se agrega
      * como una arista entre los equipos correspondientes.
@@ -36,7 +35,7 @@ public class Utils {
 
 
         HashMap<String, Equipment> hardware = web.getHardware();
-        ArrayList<Connection> connections = web.getConections();
+        ArrayList<Connection> connections = web.getConnections();
         // Crear un grafo no dirigido
         this.graph = new SimpleGraph<>(Connection.class);
         for (Equipment valor : hardware.values()) {
@@ -59,7 +58,7 @@ public class Utils {
 
     /**
      * Encuentra el camino más corto entre dos equipos utilizando el algoritmo de Dijkstra.
-     *
+     * <p>
      * Este método toma dos objetos {@code Equipment} y verifica si son válidos y están activos.
      * Luego, construye un grafo temporal con los equipos activos y sus conexiones.
      * Utiliza el algoritmo de Dijkstra para calcular y devolver la lista de aristas que forman
@@ -68,8 +67,8 @@ public class Utils {
      * @param e1 El primer equipo de origen para el que se desea encontrar el camino.
      * @param e2 El segundo equipo de destino para el que se desea encontrar el camino.
      * @return Una lista de aristas ({@code DefaultWeightedEdge}) que representan el camino más corto
-     *         entre {@code e1} y {@code e2}. Puede devolver {@code null} si no se encuentra
-     *         un camino o si alguno de los equipos no está activo.
+     * entre {@code e1} y {@code e2}. Puede devolver {@code null} si no se encuentra
+     * un camino o si alguno de los equipos no está activo.
      * @throws IllegalArgumentException Si {@code e1} o {@code e2} son {@code null}, si son iguales,
      *                                  o si alguno de los equipos no está activo.
      */
@@ -105,7 +104,7 @@ public class Utils {
 
             if (equipmentMap.containsKey(source.getCode()) && equipmentMap.containsKey(target.getCode())) {
                 // Calcular la velocidad mínima entre los puertos de los equipos y la velocidad del cable
-                int edgeValue = getMinSpeed(source.getAllPortsTypes(), target.getAllPortsTypes(), edge.getWire().getSpeed());
+                int edgeValue = getMinSpeed(convertSetToList(source.getAllPortsTypes().keySet()), convertSetToList(target.getAllPortsTypes().keySet()), edge.getWire().getSpeed());
                 DefaultWeightedEdge newEdge = graphTemp.addEdge(source, target);
                 // Asignar el peso correspondiente a la arista
                 graphTemp.setEdgeWeight(newEdge, edgeValue);
@@ -117,22 +116,23 @@ public class Utils {
         // Encontrar el camino más corto desde Router1 a PC1
         return dijkstraAlg.getPath(e1, e2).getEdgeList();
     }
+
     /**
      * Calcula la velocidad mínima de conexión entre dos equipos considerando
      * la velocidad de los puertos y la velocidad del cable.
-     *
+     * <p>
      * Este método recibe dos listas de tipos de puertos (representando las velocidades de
      * los puertos de dos equipos) y la velocidad de un cable. Compara las velocidades
      * de los puertos para determinar cuál es la más baja y luego la compara con la
      * velocidad del cable, devolviendo el valor más bajo de los tres.
      *
-     * @param ports1 Una lista de objetos {@code PortType} que representan los puertos
-     *                del primer equipo.
-     * @param ports2 Una lista de objetos {@code PortType} que representan los puertos
-     *                del segundo equipo.
+     * @param ports1    Una lista de objetos {@code PortType} que representan los puertos
+     *                  del primer equipo.
+     * @param ports2    Una lista de objetos {@code PortType} que representan los puertos
+     *                  del segundo equipo.
      * @param wireSpeed La velocidad del cable de conexión entre los equipos.
      * @return La velocidad mínima de conexión entre los dos equipos, que es la velocidad
-     *         más baja de los puertos y la velocidad del cable.
+     * más baja de los puertos y la velocidad del cable.
      */
     private static int getMinSpeed(List<PortType> ports1, List<PortType> ports2, int wireSpeed) {
         // Encuentra el puerto más lento de ambos equipos
@@ -174,15 +174,16 @@ public class Utils {
         return visitedNodes;
     }
 
-    public boolean ping(Equipment e1){
-        if(!graph.containsVertex(e1))
+    public boolean ping(Equipment e1) {
+        if (!graph.containsVertex(e1))
             throw new NotFoundException("equipo no se encuentra");
         return e1.isStatus();
     }
-    public HashMap<Equipment, Boolean> ping(){
-        HashMap<Equipment,Boolean> mapStatus=new HashMap<>();
-        for(Equipment p: graph.iterables().vertices()){
-            mapStatus.put(p,p.isStatus());
+
+    public HashMap<Equipment, Boolean> ping() {
+        HashMap<Equipment, Boolean> mapStatus = new HashMap<>();
+        for (Equipment p : graph.iterables().vertices()) {
+            mapStatus.put(p, p.isStatus());
         }
         return mapStatus;
 
@@ -190,6 +191,10 @@ public class Utils {
 
     public void setCoordinator(Coordinator coordinator) {
         this.coordinator = coordinator;
+    }
+
+    public static List<PortType> convertSetToList(Set<PortType> set) {
+        return new ArrayList<>(set);
     }
 }
 
