@@ -96,7 +96,7 @@ public class DesplegableComponent<T> {
                 web.getLocations().remove(location.getCode());
             } else if (selectedItem instanceof Connection) {
                 Connection connection = (Connection) selectedItem;
-                web.getConections().remove(connection);
+                web.getConnections().remove(connection);
             }
             updateTable();
         }
