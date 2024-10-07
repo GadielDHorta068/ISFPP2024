@@ -1,5 +1,9 @@
 package org.isfpp.controller;
 
+import org.isfpp.interfaz.GUI;
+import org.isfpp.interfaz.IPFrame;
+import org.isfpp.interfaz.panelesCreadores.MainMenu;
+import org.isfpp.interfaz.panelesPrincipal.BarraMenu;
 import org.isfpp.logica.Utils;
 import org.isfpp.modelo.*;
 import org.jgrapht.Graph;
@@ -13,6 +17,7 @@ import java.util.List;
 public class Coordinator{
     private Web web;
     private Utils utils;
+    private MainMenu mainMenu;
 
 
     public Utils getUtils() {
@@ -109,5 +114,13 @@ public class Coordinator{
 
     public void setGraph(Graph<Equipment, Connection> graph) {
         this.utils.setGraph(graph);
+    }
+
+    public MainMenu getMainMenu() {
+        return mainMenu;
+    }
+
+    public void setMainMenu(MainMenu mainMenu) {
+        this.mainMenu = mainMenu;
     }
 }

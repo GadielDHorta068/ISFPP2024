@@ -25,11 +25,6 @@ public class IPFrame {
         frame = new JFrame("IP Scanner");
         frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         frame.setSize(400, 300);
-        try {
-            new Utils(Cargar.cargarRedDesdePropiedades("config.properties"));
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(frame, STR."Error al cargar el archivo de configuración: \{e.getMessage()}", "Error", JOptionPane.ERROR_MESSAGE);
-        }
 
         JTextField ipInicial = new JTextField("Ip a comenzar escaneo");
         StylusUI.aplicarEstiloCampoTexto(ipInicial);

@@ -18,8 +18,12 @@ import java.util.stream.IntStream;
 
 public class Utils {
 
+
     private static Graph<Equipment, Connection> graph;
     private Coordinator coordinator;
+
+    public Utils() {
+    }
 
     /**
      * Crea un grafo no dirigido a partir de los equipos y las conexiones proporcionadas por el objeto {@code Web}.
@@ -32,7 +36,7 @@ public class Utils {
      * @throws IllegalArgumentException Si se intenta agregar una conexión entre el mismo equipo o si hay una
      *                                  conexión duplicada en el grafo.
      */
-    public Utils(Web web) {
+    public void LoadData(Web web) {
         HashMap<String, Equipment> hardware = web.getHardware();
         ArrayList<Connection> connections = web.getConnections();
         // Crear un grafo no dirigido

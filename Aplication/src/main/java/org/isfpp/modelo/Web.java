@@ -3,6 +3,8 @@ package org.isfpp.modelo;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import org.isfpp.controller.Coordinator;
 import org.isfpp.exceptions.AlreadyExistException;
 import org.isfpp.exceptions.NotFoundException;
 
@@ -14,6 +16,8 @@ public class Web {
 	private final HashMap<Object, EquipmentType> EquipmentTypes;
 	private final HashMap<String,WireType>wireTypes;
 	private final HashMap<String,PortType>portTypes;
+	private Coordinator coordinator;
+
 
 	public Web(String nombre) {
 		super();
@@ -200,6 +204,9 @@ public class Web {
 				", wireTypes=" + wireTypes +
 				", portTypes=" + portTypes +
 				'}';
+	}
+	public void setCoordinator(Coordinator coordinator) {
+		this.coordinator = coordinator;
 	}
 
 
