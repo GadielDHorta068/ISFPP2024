@@ -1,12 +1,14 @@
 package org.isfpp.interfaz;
 
 import org.isfpp.datos.Cargar;
+import org.isfpp.interfaz.panelesPrincipal.BarraMenu;
+import org.isfpp.interfaz.panelesPrincipal.DesplegableComponent;
+import org.isfpp.interfaz.panelesPrincipal.PanelDerecho;
 import org.isfpp.interfaz.stylusUI.StylusUI;
-import org.isfpp.logica.Utils;
 import org.isfpp.modelo.Connection;
+import org.isfpp.modelo.Equipment;
 import org.isfpp.modelo.Location;
 import org.isfpp.modelo.Web;
-import org.isfpp.modelo.Equipment;
 
 import javax.swing.*;
 import java.awt.*;
@@ -29,7 +31,7 @@ public class GUI {
         DesplegableComponent<Location> desplegableCables = new DesplegableComponent<>("Ubicaciones", new ArrayList<>(web.getLocations().values()), panelDerecho, web);
         DesplegableComponent<Connection> desplegableConexiones = new DesplegableComponent<>("Conexiones", web.getConnections(), panelDerecho, web);
 
-        BarraMenu barraMenu = new BarraMenu(desplegableNodos);
+        BarraMenu barraMenu = new BarraMenu(web);
         JPanel panelIzquierdo = new JPanel();
         StylusUI.aplicarEstiloPanel(panelIzquierdo);
         panelIzquierdo.setLayout(new BoxLayout(panelIzquierdo, BoxLayout.Y_AXIS));

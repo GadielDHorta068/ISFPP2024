@@ -27,6 +27,7 @@ public class WireTypeServiceImpl implements WireTypeService {
     @Override
     public void erase(WireType wireType) {
         WireTypeDAO.erase(wireType);
+
     }
 
     @Override

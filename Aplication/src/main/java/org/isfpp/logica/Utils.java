@@ -14,10 +14,11 @@ import org.jgrapht.graph.SimpleWeightedGraph;
 import org.jgrapht.traverse.BreadthFirstIterator;
 
 import java.util.*;
+import java.util.stream.IntStream;
 
 public class Utils {
 
-    private Graph<Equipment, Connection> graph;
+    private static Graph<Equipment, Connection> graph;
     private Coordinator coordinator;
 
     /**
@@ -32,14 +33,12 @@ public class Utils {
      *                                  conexión duplicada en el grafo.
      */
     public Utils(Web web) {
-
-
         HashMap<String, Equipment> hardware = web.getHardware();
         ArrayList<Connection> connections = web.getConnections();
         // Crear un grafo no dirigido
-        this.graph = new SimpleGraph<>(Connection.class);
+        graph = new SimpleGraph<>(Connection.class);
         for (Equipment valor : hardware.values()) {
-            this.graph.addVertex(valor);
+            graph.addVertex(valor);
         }
 
 
@@ -48,8 +47,8 @@ public class Utils {
             Equipment targetNode = c.getEquipment2();
 
             if (sourceNode.equals(targetNode)) throw new IllegalArgumentException("son el mismo equipo");
-            if (this.graph.containsEdge(sourceNode, targetNode))
-                this.graph.addEdge(sourceNode, targetNode, c);
+            if (graph.containsEdge(sourceNode, targetNode))
+                graph.addEdge(sourceNode, targetNode, c);
 
         }
 
@@ -160,7 +159,7 @@ public class Utils {
     }
 
     public void setGraph(Graph<Equipment, Connection> graph) {
-        this.graph = graph;
+        Utils.graph = graph;
     }
 
     public List<Equipment> detectConnectivityIssues(Equipment startNode) {
@@ -173,11 +172,25 @@ public class Utils {
 
         return visitedNodes;
     }
-
+// metodo incorrecto, cuando se hace ping se entrega una ip, no se puede mandar una pc por internet(?
     public boolean ping(Equipment e1) {
         if (!graph.containsVertex(e1))
             throw new NotFoundException("equipo no se encuentra");
         return e1.isStatus();
+    }
+
+
+    public static boolean ping(String ip){
+        if(graph != null){
+            for (Equipment equipo : graph.vertexSet()) {
+                if(equipo.getIpAdresses().contains(ip)){
+                    return true;
+                }
+            }
+        }else{
+            System.out.println("El graph es null");
+        }
+        return false;
     }
 
     public HashMap<Equipment, Boolean> ping() {
@@ -195,6 +208,18 @@ public class Utils {
 
     public static List<PortType> convertSetToList(Set<PortType> set) {
         return new ArrayList<>(set);
+    }
+//Charlar este metodo con el profe
+    public static void scanIP(String ip){
+        List<String> direcciones = new ArrayList<>();
+        String[] parts = ip.split("\\.");
+        int start = Integer.parseInt(parts[3]);
+        IntStream.range(start, 256).forEach(i -> {
+            String nuevaIP = parts[0] + "." + parts[1] + "." + parts[2] + "." + parts[3];
+            if(ping(ip)){
+                direcciones.addLast(nuevaIP);
+            }
+        });
     }
 }
 

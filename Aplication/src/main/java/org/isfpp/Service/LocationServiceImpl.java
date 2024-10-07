@@ -6,7 +6,7 @@ import org.isfpp.modelo.Location;
 import java.util.List;
 
 public class LocationServiceImpl implements LocationService{
-    private final GenericDAO LocationDAO;
+    private GenericDAO LocationDAO;
 
     public LocationServiceImpl() {
         LocationDAO = new LocationSecuencialDAO();

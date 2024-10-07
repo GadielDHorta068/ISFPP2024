@@ -33,4 +33,8 @@ public class EquipmentTypeServiceImpl implements EquipmentTypeService {
         return EquipmentTypeDAO.searchAll();
     }
 
+
+
+
+
 }

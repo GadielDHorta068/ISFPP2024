@@ -1,12 +1,10 @@
-package org.isfpp.interfaz;
+package org.isfpp.interfaz.panelesPrincipal;
 
+import org.isfpp.interfaz.IconUtil;
 import org.isfpp.interfaz.stylusUI.StylusUI;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import javax.imageio.ImageIO;
 
 public class PanelDerecho {
     private JTextArea propiedades;
@@ -31,8 +29,9 @@ public class PanelDerecho {
         return panel;
     }
 
-    public void updateProperties(String text) {
+    public void updateProperties(String text, String equipmentType) {
         propiedades.setText(text);
+        setIcon(equipmentType);
     }
 
 
