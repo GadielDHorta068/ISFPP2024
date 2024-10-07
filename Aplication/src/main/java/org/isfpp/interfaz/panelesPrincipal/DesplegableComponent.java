@@ -1,4 +1,4 @@
-package org.isfpp.interfaz;
+package org.isfpp.interfaz.panelesPrincipal;
 
 import org.isfpp.interfaz.stylusUI.StylusUI;
 import org.isfpp.modelo.Connection;
@@ -38,7 +38,6 @@ public class DesplegableComponent<T> {
 
         for (int i = 0; i < dataList.size(); i++) {
             T item = dataList.get(i);
-            // Aquí es donde debes manejar el tipo de dato genérico
             if (item instanceof Equipment) {
                 Equipment equipment = (Equipment) item;
                 data[i][0] = equipment.getCode();
@@ -49,12 +48,11 @@ public class DesplegableComponent<T> {
                 data[i][1] = location.getDescription();
             } else if (item instanceof Connection) {
                 // Maneja el tipo Connection u otros tipos
-                data[i][0] = STR."\{((Connection) item).getPort1()}\{((Connection) item).getPort2()}"; // Ajusta según el contenido de Connection
+                data[i][0] = STR."\{((Connection) item).getEquipment1()}\{((Connection) item).getEquipment2()}";
                 data[i][1] = ((Connection) item).getWire();
             }
         }
 
-        //Aca levantar el nombre del string del objeto
         String[] columnNames = {"Nombre", "IP/Descripción"};
 
         table = new JTable(data, columnNames);
@@ -68,6 +66,16 @@ public class DesplegableComponent<T> {
         panel.add(toggleButton, BorderLayout.NORTH);
         panel.add(scrollPane, BorderLayout.CENTER);
         toggle();
+
+        table.getSelectionModel().addListSelectionListener(event -> {
+            if (!event.getValueIsAdjusting()) {
+                int selectedRow = table.getSelectedRow();
+                if (selectedRow >= 0) {
+                    Equipment selectedEquipment = (Equipment) table.getValueAt(selectedRow, 2);
+                    panelDerecho.updateProperties(selectedEquipment.toString(), selectedEquipment.getEquipmentType().getDescription());
+                }
+            }
+        });
     }
 
     private void toggle() {
@@ -96,29 +104,34 @@ public class DesplegableComponent<T> {
                 web.getLocations().remove(location.getCode());
             } else if (selectedItem instanceof Connection) {
                 Connection connection = (Connection) selectedItem;
-                web.getConections().remove(connection);
+                web.getConnections().remove(connection);
             }
             updateTable();
         }
     }
 
     private void updateTable() {
-        Object[][] data = new Object[dataList.size()][2];
+        Object[][] data = new Object[dataList.size()][3]; // Agrega una columna extra para almacenar el objeto completo
+
         for (int i = 0; i < dataList.size(); i++) {
             T item = dataList.get(i);
             if (item instanceof Equipment) {
                 Equipment equipment = (Equipment) item;
                 data[i][0] = equipment.getCode();
                 data[i][1] = equipment.getIpAdresses();
+                data[i][2] = equipment; // Almacena el objeto completo en la columna oculta
             } else if (item instanceof Location) {
                 Location location = (Location) item;
                 data[i][0] = location.getCode();
                 data[i][1] = location.getDescription();
+                data[i][2] = location; // Almacena el objeto completo en la columna oculta
             } else if (item instanceof Connection) {
-                data[i][0] = ((Connection) item).getPort1() + " - " + ((Connection) item).getPort2();
+                data[i][0] = ((Connection) item).getEquipment1() + " - " + ((Connection) item).getEquipment2();
                 data[i][1] = ((Connection) item).getWire();
+                data[i][2] = item; // Almacena el objeto completo en la columna oculta
             }
         }
-        table.setModel(new DefaultTableModel(data, new String[]{"Nombre", "IP/Descripción"}));
+
+        String[] columnNames = {"Nombre", "IP/Descripción", "Objeto"}; // Agrega la columna oculta
     }
 }

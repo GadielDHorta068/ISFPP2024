@@ -1,26 +1,29 @@
 package org.isfpp.logica;
 
+import org.isfpp.controller.Coordinator;
 import org.isfpp.exceptions.NotFoundException;
 import org.isfpp.modelo.Connection;
 import org.isfpp.modelo.Equipment;
 import org.isfpp.modelo.PortType;
 import org.isfpp.modelo.Web;
 import org.jgrapht.Graph;
-import org.jgrapht.Graphs;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleGraph;
 import org.jgrapht.graph.SimpleWeightedGraph;
+import org.jgrapht.traverse.BreadthFirstIterator;
 
 import java.util.*;
+import java.util.stream.IntStream;
 
 public class Utils {
 
-    private Graph<Equipment, Connection> graph;
+    private static Graph<Equipment, Connection> graph;
+    private Coordinator coordinator;
 
     /**
      * Crea un grafo no dirigido a partir de los equipos y las conexiones proporcionadas por el objeto {@code Web}.
-     *
+     * <p>
      * Este método toma un objeto {@code Web}, que contiene un mapa de equipos de hardware y una lista de conexiones,
      * y construye un grafo no dirigido. Cada equipo se agrega como un vértice en el grafo y cada conexión se agrega
      * como una arista entre los equipos correspondientes.
@@ -30,25 +33,22 @@ public class Utils {
      *                                  conexión duplicada en el grafo.
      */
     public Utils(Web web) {
-
-        System.out.println(("Ver"));
-
         HashMap<String, Equipment> hardware = web.getHardware();
-        ArrayList<Connection> connections = web.getConections();
+        ArrayList<Connection> connections = web.getConnections();
         // Crear un grafo no dirigido
-        this.graph = new SimpleGraph<>(Connection.class);
+        graph = new SimpleGraph<>(Connection.class);
         for (Equipment valor : hardware.values()) {
-            this.graph.addVertex(valor);
+            graph.addVertex(valor);
         }
 
 
         for (Connection c : connections) {
-            Equipment sourceNode = c.getPort1().getEquipment();
-            Equipment targetNode = c.getPort2().getEquipment();
+            Equipment sourceNode = c.getEquipment1();
+            Equipment targetNode = c.getEquipment2();
 
             if (sourceNode.equals(targetNode)) throw new IllegalArgumentException("son el mismo equipo");
-            if (this.graph.containsEdge(sourceNode, targetNode))
-                this.graph.addEdge(sourceNode, targetNode, c);
+            if (graph.containsEdge(sourceNode, targetNode))
+                graph.addEdge(sourceNode, targetNode, c);
 
         }
 
@@ -57,7 +57,7 @@ public class Utils {
 
     /**
      * Encuentra el camino más corto entre dos equipos utilizando el algoritmo de Dijkstra.
-     *
+     * <p>
      * Este método toma dos objetos {@code Equipment} y verifica si son válidos y están activos.
      * Luego, construye un grafo temporal con los equipos activos y sus conexiones.
      * Utiliza el algoritmo de Dijkstra para calcular y devolver la lista de aristas que forman
@@ -66,13 +66,13 @@ public class Utils {
      * @param e1 El primer equipo de origen para el que se desea encontrar el camino.
      * @param e2 El segundo equipo de destino para el que se desea encontrar el camino.
      * @return Una lista de aristas ({@code DefaultWeightedEdge}) que representan el camino más corto
-     *         entre {@code e1} y {@code e2}. Puede devolver {@code null} si no se encuentra
-     *         un camino o si alguno de los equipos no está activo.
+     * entre {@code e1} y {@code e2}. Puede devolver {@code null} si no se encuentra
+     * un camino o si alguno de los equipos no está activo.
      * @throws IllegalArgumentException Si {@code e1} o {@code e2} son {@code null}, si son iguales,
      *                                  o si alguno de los equipos no está activo.
      */
     public List<DefaultWeightedEdge> traceroute(Equipment e1, Equipment e2) throws IllegalArgumentException {
-        //CHECKEAR CON LOS CAMBIOS HECHOS
+
         if (e1 == null || e2 == null) {
             throw new IllegalArgumentException("Equipo invalido");
         }
@@ -101,9 +101,9 @@ public class Utils {
             Equipment source = graph.getEdgeSource(edge);
             Equipment target = graph.getEdgeTarget(edge);
 
-            if (equipmentMap.containsKey(source.getCode()) && equipmentMap.containsKey(source.getCode())) {
+            if (equipmentMap.containsKey(source.getCode()) && equipmentMap.containsKey(target.getCode())) {
                 // Calcular la velocidad mínima entre los puertos de los equipos y la velocidad del cable
-                int edgeValue = getMinSpeed(source.getAllPortsTypes().keySet(), target.getAllPortsTypes().keySet(), edge.getWire().getSpeed());
+                int edgeValue = getMinSpeed(convertSetToList(source.getAllPortsTypes().keySet()), convertSetToList(target.getAllPortsTypes().keySet()), edge.getWire().getSpeed());
                 DefaultWeightedEdge newEdge = graphTemp.addEdge(source, target);
                 // Asignar el peso correspondiente a la arista
                 graphTemp.setEdgeWeight(newEdge, edgeValue);
@@ -115,24 +115,25 @@ public class Utils {
         // Encontrar el camino más corto desde Router1 a PC1
         return dijkstraAlg.getPath(e1, e2).getEdgeList();
     }
+
     /**
      * Calcula la velocidad mínima de conexión entre dos equipos considerando
      * la velocidad de los puertos y la velocidad del cable.
-     *
+     * <p>
      * Este método recibe dos listas de tipos de puertos (representando las velocidades de
      * los puertos de dos equipos) y la velocidad de un cable. Compara las velocidades
      * de los puertos para determinar cuál es la más baja y luego la compara con la
      * velocidad del cable, devolviendo el valor más bajo de los tres.
      *
-     * @param ports1 Una lista de objetos {@code PortType} que representan los puertos
-     *                del primer equipo.
-     * @param ports2 Una lista de objetos {@code PortType} que representan los puertos
-     *                del segundo equipo.
+     * @param ports1    Una lista de objetos {@code PortType} que representan los puertos
+     *                  del primer equipo.
+     * @param ports2    Una lista de objetos {@code PortType} que representan los puertos
+     *                  del segundo equipo.
      * @param wireSpeed La velocidad del cable de conexión entre los equipos.
      * @return La velocidad mínima de conexión entre los dos equipos, que es la velocidad
-     *         más baja de los puertos y la velocidad del cable.
+     * más baja de los puertos y la velocidad del cable.
      */
-    public static int getMinSpeed(Set<PortType> ports1, Set<PortType> ports2, int wireSpeed) {
+    private static int getMinSpeed(List<PortType> ports1, List<PortType> ports2, int wireSpeed) {
         // Encuentra el puerto más lento de ambos equipos
         ArrayList<Integer> port1Speed = new ArrayList<>();
         ArrayList<Integer> port2Speed = new ArrayList<>();
@@ -152,43 +153,76 @@ public class Utils {
         // Finalmente, compara con la velocidad del cable
         return Math.min(speedBetweenEquipments, wireSpeed);
     }
-    public List<Equipment> detectConnectivityIssues(Equipment startNode) {
-        List<Equipment> reachableNodes = new ArrayList<>();
-        Queue<Equipment> queue = new LinkedList<>();
-        Set<Equipment> visited = new HashSet<>();
 
-        queue.add(startNode);
-        visited.add(startNode);
-        reachableNodes.add(startNode);
-
-        while (!queue.isEmpty()) {
-            Equipment currentNode = queue.poll();
-            for (Equipment neighbor : Graphs.neighborListOf(graph, currentNode)) {
-                Connection edge = graph.getEdge(currentNode, neighbor);
-
-                if (neighbor.isStatus() && currentNode.isStatus() && !visited.contains(neighbor)) {
-                    visited.add(neighbor);
-                    queue.add(neighbor);
-                    reachableNodes.add(neighbor);
-                } else if (!currentNode.isStatus() || !neighbor.isStatus()) {
-                    return reachableNodes;
-                }
-            }
-        }
-        return reachableNodes;
+    public Graph<Equipment, Connection> getGraph() {
+        return graph;
     }
 
-    public boolean ping(Equipment e1){
-        if(!graph.containsVertex(e1))
+    public void setGraph(Graph<Equipment, Connection> graph) {
+        Utils.graph = graph;
+    }
+
+    public List<Equipment> detectConnectivityIssues(Equipment startNode) {
+        List<Equipment> visitedNodes = new ArrayList<>();
+        BreadthFirstIterator<Equipment, Connection> bfsIterator = new BreadthFirstIterator<>(this.graph, startNode);
+
+        while (bfsIterator.hasNext()) {
+            visitedNodes.add(bfsIterator.next());
+        }
+
+        return visitedNodes;
+    }
+// metodo incorrecto, cuando se hace ping se entrega una ip, no se puede mandar una pc por internet(?
+    public boolean ping(Equipment e1) {
+        if (!graph.containsVertex(e1))
             throw new NotFoundException("equipo no se encuentra");
         return e1.isStatus();
     }
-    public HashMap<Equipment, Boolean> ping(){
-        HashMap<Equipment,Boolean> mapStatus=new HashMap<>();
-        for(Equipment p: graph.iterables().vertices()){
-            mapStatus.put(p,p.isStatus());
+
+
+    public static boolean ping(String ip){
+        if(graph != null){
+            for (Equipment equipo : graph.vertexSet()) {
+                if(equipo.getIpAdresses().contains(ip)){
+                    return true;
+                }
+            }
+        }else{
+            System.out.println("El graph es null");
+        }
+        return false;
+    }
+
+    public HashMap<Equipment, Boolean> ping() {
+        HashMap<Equipment, Boolean> mapStatus = new HashMap<>();
+        for (Equipment p : graph.iterables().vertices()) {
+            mapStatus.put(p, p.isStatus());
         }
         return mapStatus;
 
     }
+
+    public void setCoordinator(Coordinator coordinator) {
+        this.coordinator = coordinator;
+    }
+
+    public static List<PortType> convertSetToList(Set<PortType> set) {
+        return new ArrayList<>(set);
+    }
+//Charlar este metodo con el profe
+    public static void scanIP(String ip){
+        List<String> direcciones = new ArrayList<>();
+        String[] parts = ip.split("\\.");
+        int start = Integer.parseInt(parts[3]);
+        IntStream.range(start, 256).forEach(i -> {
+            String nuevaIP = parts[0] + "." + parts[1] + "." + parts[2] + "." + parts[3];
+            if(ping(ip)){
+                direcciones.addLast(nuevaIP);
+            }
+        });
+    }
 }
+
+
+
+

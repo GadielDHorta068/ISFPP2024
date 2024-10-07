@@ -2,35 +2,50 @@ package org.isfpp.datos;
 
 import org.isfpp.modelo.*;
 
+import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.BufferedWriter;
 import java.util.HashMap;
+import java.util.Properties;
 
 public class Guardar {
 
-    public void saveAll(Web red, String equipmentFile, String equipmentTypeFile, String locationFile, String portTypeFile,
-                        String wireTypeFile, String connectionFile){
+    private final Properties properties;
+
+    public Guardar(String propertiesFilePath) throws IOException {
+        properties = new Properties();
+        try (FileInputStream input = new FileInputStream(propertiesFilePath)) {
+            properties.load(input);
+        }
+    }
+
+    public void saveAll(Web red) throws IOException {
+        String equipmentFile = properties.getProperty("rs.equipment");
+        String locationFile = properties.getProperty("rs.location");
+        String connectionFile = properties.getProperty("rs.connection");
+        String wireTypeFile = properties.getProperty("rs.wireType");
+        String portTypeFile = properties.getProperty("rs.portType");
+        String equipmentTypeFile = properties.getProperty("rs.equipmentType");
 
         saveEquipments(equipmentFile, red);
-        saveConnetions(equipmentFile,red);
         saveLocations(locationFile, red);
-        saveEquipmentTypes(equipmentTypeFile, red);
-        savePortTypes(portTypeFile, red);
+        saveConnections(connectionFile, red);
         saveWireTypes(wireTypeFile, red);
+        savePortTypes(portTypeFile, red);
+        saveEquipmentTypes(equipmentTypeFile, red);
     }
 
     public void saveEquipments(String fileName, Web red){
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
-            // Escribimos los objetos en el archivo en el formato personalizado
             String data;
             HashMap<PortType, Integer> ports;
             StringBuilder sb = new StringBuilder();
             for (Equipment equipment: red.getHardware().values()){
                 data = equipment.getCode()+";"+
                         equipment.getDescription()+";"+
-                        equipment.getMake()+";"+
-                        equipment.getModel()+";"+
+                        equipment.getMarca()+";"+
+                        equipment.getModelo()+";"+
                         equipment.getEquipmentType()+";"+
                         equipment.getLocation()+";";
 
@@ -65,16 +80,14 @@ public class Guardar {
         }
     }
 
-    public void saveConnetions(String fileName, Web red) {
+    public void saveConnections(String fileName, Web red) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
             String data;
 
-            for (Connection connection : red.getConections()) {
-                data = connection.getPort1().getEquipment().getCode() + ","
-                        + connection.getPort1().getPortType().getCode() + ";"
-                        + connection.getPort2().getEquipment().getCode() + ","
-                        + connection.getPort2().getPortType().getCode() + ";"
-                        + connection.getWire().getCode() + ";";
+            for (Connection connection : red.getConnections()) {
+                data = connection.getEquipment1().getCode() + ";" +
+                        connection.getEquipment2().getCode() + ";" +
+                        connection.getWire().getCode() + ";";
 
                 writer.write(data);
                 writer.newLine();
