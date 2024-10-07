@@ -34,30 +34,48 @@ public class DesplegableComponent<T> {
         toggleButton.setHorizontalAlignment(SwingConstants.LEFT);
         toggleButton.addActionListener(e -> toggle());
 
-        Object[][] data = new Object[dataList.size()][2];
+        Object[][] data = new Object[dataList.size()][3];
 
         for (int i = 0; i < dataList.size(); i++) {
             T item = dataList.get(i);
             if (item instanceof Equipment) {
                 Equipment equipment = (Equipment) item;
                 data[i][0] = equipment.getCode();
-                data[i][1] = equipment.getIpAdresses();
+                data[i][1] = equipment.getDescription();
+                data[i][2] = equipment;
             } else if (item instanceof Location) {
                 Location location = (Location) item;
                 data[i][0] = location.getCode();
                 data[i][1] = location.getDescription();
+                data[i][2] = location;
             } else if (item instanceof Connection) {
-                // Maneja el tipo Connection u otros tipos
-                data[i][0] = STR."\{((Connection) item).getEquipment1()}\{((Connection) item).getEquipment2()}";
-                data[i][1] = ((Connection) item).getWire();
+                data[i][0] = ((Connection) item).getEquipment1().getCode() + " - " + ((Connection) item).getEquipment2().getCode();
+                data[i][1] = ((Connection) item).getWire().getDescription();
+                data[i][2] = item;
+            } else {
+                data[i][0] = item.toString();
+                data[i][1] = "";
+                data[i][2] = item;
             }
         }
 
-        String[] columnNames = {"Nombre", "IP/Descripción"};
+        String[] columnNames = {"Nombre", "Descripción/IP", "Objeto"};
 
-        table = new JTable(data, columnNames);
+        DefaultTableModel model = new DefaultTableModel(data, columnNames) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // Desactivar edición en la tabla
+            }
+        };
+
+        table = new JTable(model);
         StylusUI.aplicarEstiloTabla(table, false);
         table.setVisible(false);
+
+        // Ocultar la tercera columna que contiene el objeto completo
+        table.getColumnModel().getColumn(2).setMinWidth(0);
+        table.getColumnModel().getColumn(2).setMaxWidth(0);
+        table.getColumnModel().getColumn(2).setWidth(0);
 
         scrollPane = new JScrollPane(table);
         StylusUI.aplicarEstiloScrollPane(scrollPane);
@@ -71,8 +89,20 @@ public class DesplegableComponent<T> {
             if (!event.getValueIsAdjusting()) {
                 int selectedRow = table.getSelectedRow();
                 if (selectedRow >= 0) {
-                    Equipment selectedEquipment = (Equipment) table.getValueAt(selectedRow, 2);
-                    panelDerecho.updateProperties(selectedEquipment.toString(), selectedEquipment.getEquipmentType().getDescription());
+                    // Recupera el objeto completo desde la tercera columna oculta
+                    T selectedItem = (T) table.getValueAt(selectedRow, 2);
+                    // Maneja la actualización del PanelDerecho según el tipo de objeto seleccionado
+                    switch (selectedItem) {
+                        case Equipment selectedEquipment ->
+                                panelDerecho.updateProperties(selectedEquipment.toString(), selectedEquipment.getEquipmentType().getCode());
+                        case Location selectedLocation ->
+                                panelDerecho.updateProperties(STR."\{selectedLocation.getCode()} \{selectedLocation.getDescription()}", "help");
+                        case Connection selectedConnection ->
+                                panelDerecho.updateProperties(STR."\{selectedConnection.getEquipment1().getCode()} - \{selectedConnection.getEquipment2().getCode()}", selectedConnection.getWire().getCode());
+                        case null, default ->
+                            // Fallback para cualquier otro tipo de objeto
+                                panelDerecho.updateProperties(selectedItem.toString(), "Descripción no disponible");
+                    }
                 }
             }
         });
@@ -91,7 +121,7 @@ public class DesplegableComponent<T> {
         return panel;
     }
 
-    public void removeSelectedEquipment() {
+    public void removeSelectedItem() {
         int selectedRow = table.getSelectedRow();
         if (selectedRow != -1) {
             T selectedItem = dataList.get(selectedRow);
@@ -111,27 +141,37 @@ public class DesplegableComponent<T> {
     }
 
     private void updateTable() {
-        Object[][] data = new Object[dataList.size()][3]; // Agrega una columna extra para almacenar el objeto completo
+        Object[][] data = new Object[dataList.size()][3];
 
         for (int i = 0; i < dataList.size(); i++) {
             T item = dataList.get(i);
             if (item instanceof Equipment) {
                 Equipment equipment = (Equipment) item;
                 data[i][0] = equipment.getCode();
-                data[i][1] = equipment.getIpAdresses();
-                data[i][2] = equipment; // Almacena el objeto completo en la columna oculta
+                data[i][1] = equipment.getDescription();
+                data[i][2] = equipment;
             } else if (item instanceof Location) {
                 Location location = (Location) item;
                 data[i][0] = location.getCode();
                 data[i][1] = location.getDescription();
-                data[i][2] = location; // Almacena el objeto completo en la columna oculta
+                data[i][2] = location;
             } else if (item instanceof Connection) {
-                data[i][0] = ((Connection) item).getEquipment1() + " - " + ((Connection) item).getEquipment2();
-                data[i][1] = ((Connection) item).getWire();
-                data[i][2] = item; // Almacena el objeto completo en la columna oculta
+                data[i][0] = ((Connection) item).getEquipment1().getCode() + " - " + ((Connection) item).getEquipment2().getCode();
+                data[i][1] = ((Connection) item).getWire().getDescription();
+                data[i][2] = item;
+            } else {
+                data[i][0] = item.toString();
+                data[i][1] = "";
+                data[i][2] = item;
             }
         }
 
-        String[] columnNames = {"Nombre", "IP/Descripción", "Objeto"}; // Agrega la columna oculta
+        DefaultTableModel model = new DefaultTableModel(data, new String[]{"Nombre", "Descripción", "Objeto"});
+        table.setModel(model);
+
+        // Volver a ocultar la tercera columna
+        table.getColumnModel().getColumn(2).setMinWidth(0);
+        table.getColumnModel().getColumn(2).setMaxWidth(0);
+        table.getColumnModel().getColumn(2).setWidth(0);
     }
 }
