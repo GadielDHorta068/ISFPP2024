@@ -49,7 +49,7 @@ public class DesplegableComponent<T> {
                 data[i][1] = location.getDescription();
                 data[i][2] = location;
             } else if (item instanceof Connection) {
-                data[i][0] = ((Connection) item).getEquipment1().getCode() + " - " + ((Connection) item).getEquipment2().getCode();
+                data[i][0] = STR."\{((Connection) item).getPort1().getPortType().getCode()} - \{((Connection) item).getPort2().getPortType().getCode()}";
                 data[i][1] = ((Connection) item).getWire().getDescription();
                 data[i][2] = item;
             } else {
@@ -89,16 +89,14 @@ public class DesplegableComponent<T> {
             if (!event.getValueIsAdjusting()) {
                 int selectedRow = table.getSelectedRow();
                 if (selectedRow >= 0) {
-                    // Recupera el objeto completo desde la tercera columna oculta
                     T selectedItem = (T) table.getValueAt(selectedRow, 2);
-                    // Maneja la actualización del PanelDerecho según el tipo de objeto seleccionado
                     switch (selectedItem) {
                         case Equipment selectedEquipment ->
                                 panelDerecho.updateProperties(selectedEquipment.toString(), selectedEquipment.getEquipmentType().getCode());
                         case Location selectedLocation ->
                                 panelDerecho.updateProperties(STR."\{selectedLocation.getCode()} \{selectedLocation.getDescription()}", "help");
                         case Connection selectedConnection ->
-                                panelDerecho.updateProperties(STR."\{selectedConnection.getEquipment1().getCode()} - \{selectedConnection.getEquipment2().getCode()}", selectedConnection.getWire().getCode());
+                                panelDerecho.updateProperties(STR."\{selectedConnection.getPort1()} - \{selectedConnection.getPort2()}", selectedConnection.getWire().getCode());
                         case null, default ->
                             // Fallback para cualquier otro tipo de objeto
                                 panelDerecho.updateProperties(selectedItem.toString(), "Descripción no disponible");
@@ -156,7 +154,7 @@ public class DesplegableComponent<T> {
                 data[i][1] = location.getDescription();
                 data[i][2] = location;
             } else if (item instanceof Connection) {
-                data[i][0] = ((Connection) item).getEquipment1().getCode() + " - " + ((Connection) item).getEquipment2().getCode();
+                data[i][0] = ((Connection) item).getPort1() + " - " + ((Connection) item).getPort2().getEquipment().getCode();
                 data[i][1] = ((Connection) item).getWire().getDescription();
                 data[i][2] = item;
             } else {

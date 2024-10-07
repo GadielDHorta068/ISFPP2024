@@ -126,7 +126,7 @@ public class Web {
 		List<String> codes = new ArrayList<>();
 		for (org.isfpp.modelo.Connection connection : connections) {
 			if(connection.getWire().equals(w))
-				codes.add(connection.getEquipment1().getCode()+"<->"+connection.getEquipment2().getCode());
+				codes.add(STR."\{connection.getPort1().getEquipment().getCode()}<->\{connection.getPort2().getEquipment().getCode()}");
 		}
 		if (!codes.isEmpty())
 			throw new IllegalStateException("las siguientes conexiones tienen ese tipo de cable" + codes);
