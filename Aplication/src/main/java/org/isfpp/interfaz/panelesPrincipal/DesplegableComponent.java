@@ -1,4 +1,4 @@
-package org.isfpp.interfaz;
+package org.isfpp.interfaz.panelesPrincipal;
 
 import org.isfpp.interfaz.stylusUI.StylusUI;
 import org.isfpp.modelo.Connection;
@@ -38,7 +38,6 @@ public class DesplegableComponent<T> {
 
         for (int i = 0; i < dataList.size(); i++) {
             T item = dataList.get(i);
-            // Aquí es donde debes manejar el tipo de dato genérico
             if (item instanceof Equipment) {
                 Equipment equipment = (Equipment) item;
                 data[i][0] = equipment.getCode();
@@ -49,7 +48,7 @@ public class DesplegableComponent<T> {
                 data[i][1] = location.getDescription();
             } else if (item instanceof Connection) {
                 // Maneja el tipo Connection u otros tipos
-                data[i][0] = STR."\{((Connection) item).getEquipment1()}\{((Connection) item).getEquipment2()}"; // Ajusta según el contenido de Connection
+                data[i][0] = STR."\{((Connection) item).getEquipment1()}\{((Connection) item).getEquipment2()}";
                 data[i][1] = ((Connection) item).getWire();
             }
         }
@@ -68,6 +67,16 @@ public class DesplegableComponent<T> {
         panel.add(toggleButton, BorderLayout.NORTH);
         panel.add(scrollPane, BorderLayout.CENTER);
         toggle();
+
+        table.getSelectionModel().addListSelectionListener(event -> {
+            if (!event.getValueIsAdjusting()) {
+                int selectedRow = table.getSelectedRow();
+                if (selectedRow >= 0) {
+                    Equipment selectedEquipment = (Equipment) table.getValueAt(selectedRow, 0);
+                    panelDerecho.updateProperties(selectedEquipment.toString(), selectedEquipment.getEquipmentType().getDescription());
+                }
+            }
+        });
     }
 
     private void toggle() {
