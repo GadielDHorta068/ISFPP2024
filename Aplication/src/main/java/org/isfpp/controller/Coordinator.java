@@ -1,7 +1,5 @@
 package org.isfpp.controller;
 
-import org.isfpp.exceptions.AlredyExistException;
-import org.isfpp.exceptions.NotFoundException;
 import org.isfpp.logica.Utils;
 import org.isfpp.modelo.*;
 import org.jgrapht.Graph;
@@ -12,7 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 
 
-public class Coordinator {
+public class Coordinator{
     private Web web;
     private Utils utils;
 
@@ -39,12 +37,12 @@ public class Coordinator {
     public void setHardware(HashMap<String, Equipment> hardware) {
         web.setHardware(hardware);    }
 
-    public ArrayList<Connection> getConections() {
-        return web.getConections();
+    public ArrayList<Connection> getConnections() {
+        return web.getConnections();
     }
 
-    public void setConections(ArrayList<org.isfpp.modelo.Connection> conections) {
-        this.web.setConections(conections);
+    public void setConnections(ArrayList<org.isfpp.modelo.Connection> conections) {
+        this.web.setConnections(conections);
     }
 
     public HashMap<String, Location> getLocations() {

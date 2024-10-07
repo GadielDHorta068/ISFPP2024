@@ -1,14 +1,16 @@
 package org.isfpp.modelo;
 
+import javax.sound.sampled.Port;
 import java.util.Objects;
 
 public class Connection {
     private WireType wire;
     private Equipment equipment1;
     private Equipment equipment2;
-    
+
 	public Connection(WireType wire, Equipment equipment1, Equipment equipment2) {
 		super();
+
 		setEquipment1(equipment1);
 		setEquipment2(equipment2);
 		setWire(wire);
@@ -16,9 +18,9 @@ public class Connection {
 
 
 	public WireType getWire() {return wire;}
-	
+
 	public void setWire(WireType wire) {this.wire = wire;}
-	
+
 	public Equipment getEquipment1() {return equipment1;}
 	
 	public void setEquipment1(Equipment equipment1) {this.equipment1 = equipment1;}
@@ -39,7 +41,10 @@ public class Connection {
 		if (!(obj instanceof Connection))
 			return false;
 		Connection other = (Connection) obj;
-		return Objects.equals(equipment1, other.equipment1) && Objects.equals(equipment2, other.equipment2);
+		if ((equipment1.equals(other.equipment1) && equipment2.equals(other.equipment2))
+		|| (equipment1.equals(other.equipment2) && equipment2.equals(equipment1)))
+			return true;
+		return false;
 	}
 
 	@Override

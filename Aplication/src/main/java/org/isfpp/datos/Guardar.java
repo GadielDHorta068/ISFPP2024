@@ -2,20 +2,42 @@ package org.isfpp.datos;
 
 import org.isfpp.modelo.*;
 
+import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.BufferedWriter;
 import java.util.HashMap;
+import java.util.Properties;
 
 public class Guardar {
 
-//    public void saveAll(Web red, String f1, String f2, String f3, String f4, String f5, String f6){
-//
-//    }
+    private final Properties properties;
 
-    public void SaveEquipments(String fileName, Web red){
+    public Guardar(String propertiesFilePath) throws IOException {
+        properties = new Properties();
+        try (FileInputStream input = new FileInputStream(propertiesFilePath)) {
+            properties.load(input);
+        }
+    }
+
+    public void saveAll(Web red) throws IOException {
+        String equipmentFile = properties.getProperty("rs.equipment");
+        String locationFile = properties.getProperty("rs.location");
+        String connectionFile = properties.getProperty("rs.connection");
+        String wireTypeFile = properties.getProperty("rs.wireType");
+        String portTypeFile = properties.getProperty("rs.portType");
+        String equipmentTypeFile = properties.getProperty("rs.equipmentType");
+
+        saveEquipments(equipmentFile, red);
+        saveLocations(locationFile, red);
+        saveConnections(connectionFile, red);
+        saveWireTypes(wireTypeFile, red);
+        savePortTypes(portTypeFile, red);
+        saveEquipmentTypes(equipmentTypeFile, red);
+    }
+
+    public void saveEquipments(String fileName, Web red){
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
-            // Escribimos los objetos en el archivo en el formato personalizado
             String data;
             HashMap<PortType, Integer> ports;
             StringBuilder sb = new StringBuilder();
@@ -58,11 +80,11 @@ public class Guardar {
         }
     }
 
-    public void saveConnetions(String fileName, Web red) {
+    public void saveConnections(String fileName, Web red) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
             String data;
 
-            for (Connection connection : red.getConections()) {
+            for (Connection connection : red.getConnections()) {
                 data = connection.getEquipment1().getCode() + ";" +
                         connection.getEquipment2().getCode() + ";" +
                         connection.getWire().getCode() + ";";
