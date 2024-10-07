@@ -31,6 +31,8 @@ public class IPFrame {
             JOptionPane.showMessageDialog(frame, STR."Error al cargar el archivo de configuración: \{e.getMessage()}", "Error", JOptionPane.ERROR_MESSAGE);
         }
 
+        JTextField ipInicial = new JTextField("Ip a comenzar escaneo");
+        StylusUI.aplicarEstiloCampoTexto(ipInicial);
         textArea = new JTextArea();
         textArea.setEditable(false);
         JScrollPane scrollPane = new JScrollPane(textArea);
@@ -39,14 +41,14 @@ public class IPFrame {
         scanButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                scanIP("166.82.1.0"); // CambiarIP inicial
+                scanIP(ipInicial.getText());
                 updateTextArea();
             }
         });
 
         frame.getContentPane().add(scrollPane, BorderLayout.CENTER);
         frame.getContentPane().add(scanButton, BorderLayout.SOUTH);
-        
+        frame.getContentPane().add(ipInicial,BorderLayout.NORTH);
         StylusUI.aplicarEstiloScrollPane(scrollPane);
         StylusUI.styleTextArea(textArea);
         StylusUI.aplicarEstiloBoton(scanButton,true);
@@ -73,7 +75,6 @@ public class IPFrame {
         }
     }
 
-    //Modificar para usar la web original
         public static void main (String[]args){
             SwingUtilities.invokeLater(IPFrame::new);
     }

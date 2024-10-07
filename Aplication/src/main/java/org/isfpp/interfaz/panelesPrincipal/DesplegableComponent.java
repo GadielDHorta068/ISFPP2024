@@ -53,7 +53,6 @@ public class DesplegableComponent<T> {
             }
         }
 
-        //Aca levantar el nombre del string del objeto
         String[] columnNames = {"Nombre", "IP/Descripción"};
 
         table = new JTable(data, columnNames);
@@ -72,7 +71,7 @@ public class DesplegableComponent<T> {
             if (!event.getValueIsAdjusting()) {
                 int selectedRow = table.getSelectedRow();
                 if (selectedRow >= 0) {
-                    Equipment selectedEquipment = (Equipment) table.getValueAt(selectedRow, 0);
+                    Equipment selectedEquipment = (Equipment) table.getValueAt(selectedRow, 2);
                     panelDerecho.updateProperties(selectedEquipment.toString(), selectedEquipment.getEquipmentType().getDescription());
                 }
             }
@@ -112,22 +111,27 @@ public class DesplegableComponent<T> {
     }
 
     private void updateTable() {
-        Object[][] data = new Object[dataList.size()][2];
+        Object[][] data = new Object[dataList.size()][3]; // Agrega una columna extra para almacenar el objeto completo
+
         for (int i = 0; i < dataList.size(); i++) {
             T item = dataList.get(i);
             if (item instanceof Equipment) {
                 Equipment equipment = (Equipment) item;
                 data[i][0] = equipment.getCode();
                 data[i][1] = equipment.getIpAdresses();
+                data[i][2] = equipment; // Almacena el objeto completo en la columna oculta
             } else if (item instanceof Location) {
                 Location location = (Location) item;
                 data[i][0] = location.getCode();
                 data[i][1] = location.getDescription();
+                data[i][2] = location; // Almacena el objeto completo en la columna oculta
             } else if (item instanceof Connection) {
                 data[i][0] = ((Connection) item).getEquipment1() + " - " + ((Connection) item).getEquipment2();
                 data[i][1] = ((Connection) item).getWire();
+                data[i][2] = item; // Almacena el objeto completo en la columna oculta
             }
         }
-        table.setModel(new DefaultTableModel(data, new String[]{"Nombre", "IP/Descripción"}));
+
+        String[] columnNames = {"Nombre", "IP/Descripción", "Objeto"}; // Agrega la columna oculta
     }
 }
