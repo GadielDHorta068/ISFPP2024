@@ -1,16 +1,17 @@
 package org.isfpp.Service;
 
+import org.isfpp.dao.ConnectionDAO;
 import org.isfpp.dao.GenericDAO;
-import org.isfpp.dao.Secuencial.ConnectionSecuencialDAO;
+import org.isfpp.dao.Secuencial.ConnectionSequentialDAO;
 import org.isfpp.modelo.Connection;
 
 import java.util.List;
 
 public class ConnectionServiceImpl implements ConnectionService{
-    private GenericDAO ConnectionDAO;
+    private ConnectionDAO ConnectionDAO;
 
     public ConnectionServiceImpl() {
-        ConnectionDAO = new ConnectionSecuencialDAO();
+        ConnectionDAO = new ConnectionSequentialDAO();
     }
 
 

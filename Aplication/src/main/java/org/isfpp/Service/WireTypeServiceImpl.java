@@ -1,16 +1,18 @@
 package org.isfpp.Service;
 
 import org.isfpp.dao.GenericDAO;
+import org.isfpp.dao.Secuencial.WireTypeSequentialDAO;
+import org.isfpp.dao.WireTypeDAO;
 import org.isfpp.modelo.WireType;
 
 import java.util.List;
 
 
 public class WireTypeServiceImpl implements WireTypeService {
-    private GenericDAO WireTypeDAO;
+    private WireTypeDAO WireTypeDAO;
 
     public WireTypeServiceImpl() {
-        WireTypeDAO = new WireTypeSecuencialDAO();
+        WireTypeDAO = new WireTypeSequentialDAO();
     }
 
 
