@@ -6,7 +6,9 @@ public class PortType {
 	private String code;
 	private String description;
 	private int speed;
-	
+
+	public PortType(){}
+
 	public PortType(String code, String description, int speed) {
 		super();
 		setCode(code);

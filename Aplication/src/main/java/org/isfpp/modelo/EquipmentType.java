@@ -5,7 +5,9 @@ import java.util.Objects;
 public class EquipmentType {
 	private String code;
 	private String description;
-	
+
+	public EquipmentType(){}
+
 	public EquipmentType(String code, String description) {
 		super();
 		setCode(code);

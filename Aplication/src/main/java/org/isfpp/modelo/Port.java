@@ -9,9 +9,9 @@ public class Port {
 
     public Port(PortType portType, Equipment equipment) {
         super();
-        this.inUse = false;
-        this.portType = portType;
-        this.equipment = equipment;
+        setInUse(false);
+        setPortType(portType);
+        setEquipment(equipment);
     }
 
     public PortType getPortType() {

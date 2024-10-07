@@ -14,6 +14,7 @@ public class Coordinator{
     private Web web;
     private Utils utils;
 
+
     public Utils getUtils() {
         return utils;
     }
@@ -54,11 +55,11 @@ public class Coordinator{
     }
 
     public String getNombre() {
-        return web.getNombre();
+        return web.getName();
     }
 
     public void setNombre(String nombre) {
-        web.setNombre(nombre);
+        web.setName(nombre);
     }
     public Location addLocation(String code, String description) {return web.addLocation(code,description);
     }
@@ -86,8 +87,8 @@ public class Coordinator{
     public void erasePort(PortType portType){web.erasePort(portType);
     }
     // Agregar una conexión entre dos equipos
-    public Connection addConnection(Equipment equipment1, Equipment equipment2, WireType wire) {
-        return web.addConnection(equipment1, equipment2, wire);
+    public Connection addConnection(Port port1, Port port2, WireType wire) {
+        return web.addConnection(port1, port2, wire);
     }
 
 

@@ -7,8 +7,8 @@ public class Connection {
     private Port port1;
     private Port port2;
 
-
-	public Connection(WireType wire, Port port1, Port port2) {
+	public Connection(){}
+	public Connection(Port port1, Port port2,WireType wire) {
 		super();
 		if (port1.equals(port2))
 			throw new IllegalArgumentException("ambos son iguales");

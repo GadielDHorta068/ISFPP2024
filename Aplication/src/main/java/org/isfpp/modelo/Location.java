@@ -5,10 +5,13 @@ import java.util.Objects;
 public class Location {
 	private String code;
 	private String description;
+
+	public Location(){}
+
 	public Location(String code, String description) {
 		super();
-		this.code = code;
-		this.description = description;
+		setCode(code);
+		setDescription(description);
 	}
 	public String getCode() {
 		return code;

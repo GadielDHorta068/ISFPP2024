@@ -16,16 +16,18 @@ public class Equipment {
 	private Location location;
 	private boolean status;
 
+    public Equipment(){}
+
 	public Equipment(String code, String description, String make, String model, PortType portType, int portCapacity,
 					 EquipmentType equipmentType, Location location, boolean status) {
 		super();
-		this.code = code;
-		this.description = description;
-		this.make = make;
-		this.model = model;
-		this.equipmentType = equipmentType;
-		this.location = location;
-		this.status = status;
+        setCode(code);
+        setDescription(description);
+        setMake(make);
+        setModel(model);
+        setEquipmentType(equipmentType);
+        setLocation(location);
+        setStatus(status);
 
 		this.ipAdresses = new ArrayList<String>();
 		this.ports = new ArrayList<Port>();
@@ -188,6 +190,8 @@ public class Equipment {
 
         return portCatch;
     }
+
+
     @Override
     public int hashCode () {
         return Objects.hash(code);
