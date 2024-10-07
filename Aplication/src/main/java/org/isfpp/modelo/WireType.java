@@ -6,6 +6,8 @@ public class WireType {
 	private String code;
 	private String description;
 	private int speed;
+
+	public WireType(){}
 	
 	public WireType(String code, String description, int speed) {
 		super();

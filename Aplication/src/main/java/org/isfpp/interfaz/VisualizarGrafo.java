@@ -21,8 +21,8 @@ public class VisualizarGrafo extends JFrame {
             graph.addVertex(valor);
         }
         for (Connection c : connections) {
-            Equipment sourceNode = c.getEquipment1();
-            Equipment targetNode = c.getEquipment2();
+            Equipment sourceNode = c.getPort1().getEquipment();
+            Equipment targetNode = c.getPort2().getEquipment();
 
             if (sourceNode.equals(targetNode)) throw new IllegalArgumentException("son el mismo equipo");
             if (!graph.containsEdge(sourceNode, targetNode)) graph.addEdge(sourceNode, targetNode, c);

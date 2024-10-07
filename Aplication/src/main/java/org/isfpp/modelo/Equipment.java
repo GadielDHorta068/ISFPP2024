@@ -6,35 +6,40 @@ import org.isfpp.exceptions.NotFoundException;
 import java.util.*;
 
 public class Equipment {
-    private String code;
-    private String description;
-    private String marca;
-    private String modelo;
-    private List<String> ipAdresses;
-    private List<Port> ports;
-    private EquipmentType equipmentType;
-    private Location location;
-    private boolean status;
+	private String code;
+	private String description;
+	private String make;
+	private String model;
+	private List<String> ipAdresses;
+	private List<Port> ports;
+	private EquipmentType equipmentType;
+	private Location location;
+	private boolean status;
 
-    public Equipment(String code, String description, String marca, String modelo, PortType portType, int cantidad,
-                     EquipmentType equipmentType, Location location, boolean status) {
-        super();
-        this.code = code;
-        this.description = description;
-        this.marca = marca;
-        this.modelo = modelo;
-        this.equipmentType = equipmentType;
-        this.location = location;
-        this.status = status;
+    public Equipment(){}
+
+	public Equipment(String code, String description, String make, String model, PortType portType, int portCapacity,
+					 EquipmentType equipmentType, Location location, boolean status) {
+		super();
+        setCode(code);
+        setDescription(description);
+        setMake(make);
+        setModel(model);
+        setEquipmentType(equipmentType);
+        setLocation(location);
+        setStatus(status);
 
 		this.ipAdresses = new ArrayList<String>();
 		this.ports = new ArrayList<Port>();
+
+        for (int i = 0; i<portCapacity; i++)
+            this.addPort(portType);
 	}
 
-    public static String generarMAC() {
-        Random random = new Random();
-        byte[] macAddr = new byte[6];
-        random.nextBytes(macAddr);
+	public static String generarMAC() {
+		Random random = new Random();
+		byte[] macAddr = new byte[6];
+		random.nextBytes(macAddr);
 
         StringBuilder macAddress = new StringBuilder(18);
         for (byte b : macAddr) {
@@ -70,13 +75,9 @@ public class Equipment {
         return status;
     }
 
-
-    public void addPort(PortType portType, int cantidad) {
-        Port p = new Port(portType, cantidad);
-        if (ports.contains(p))
-            throw new AlreadyExistException("ese puerto ya esta en la lista de puertos del equipo");
+    public void addPort(PortType portType) {
+        Port p = new Port(portType, this);
         ports.add(p);
-
     }
 
     public void deletePort(PortType port) {
@@ -86,85 +87,118 @@ public class Equipment {
 
     }
 
-	public HashMap<PortType, Integer> getAllPortsTypes() {
-		HashMap<PortType, Integer> portTypes = new HashMap<>();
-		for (Port port: ports) {
-			portTypes.put(port.getPortType(), port.getCantidad());
-        }
-        return portTypes;
-    }
-
-    public String getCode() {
+    public String getCode () {
         return code;
     }
 
-    public void setCode(String code) {
+    public void setCode (String code){
         this.code = code;
     }
 
-    public String getDescription() {
+    public String getDescription () {
         return description;
     }
 
-    public void setDescription(String description) {
+    public void setDescription (String description){
         this.description = description;
     }
 
-    public String getMarca() {
-        return marca;
+    public String getMake () {
+        return make;
     }
 
-    public void setMarca(String marca) {
-        this.marca = marca;
+    public void setMake (String make){
+        this.make = make;
     }
 
-    public String getModelo() {
-        return modelo;
+    public String getModel () {
+        return model;
     }
 
-    public void setModelo(String modelo) {
-        this.modelo = modelo;
+    public void setModel (String model){
+        this.model = model;
     }
 
-    public List<String> getIpAdresses() {
+    public List<String> getIpAdresses () {
         return ipAdresses;
     }
 
-    public void setIpAdresses(List<String> ipAdresses) {
+    public void setIpAdresses (List < String > ipAdresses) {
         this.ipAdresses = ipAdresses;
     }
 
-    public List<Port> getPorts() {
+    public List<Port> getPorts () {
         return ports;
     }
 
-    public void setPorts(List<Port> ports) {
+    public void setPorts (List < Port > ports) {
         this.ports = ports;
     }
 
-    public EquipmentType getEquipmentType() {
+    public EquipmentType getEquipmentType () {
         return equipmentType;
     }
 
-    public void setEquipmentType(EquipmentType equipmentType) {
-        equipmentType = equipmentType;
+    public void setEquipmentType (EquipmentType equipmentType){
+        this.equipmentType = equipmentType;
     }
 
-    public Location getLocation() {
+    public Location getLocation () {
         return location;
     }
 
-    public void setLocation(Location location) {
+    public void setLocation (Location location){
         this.location = location;
     }
 
+    /**
+     * Retorna un mapa con donde se hace un recuento de la cantidad de puertos que hay, segun su tipo.
+     * @return Retorna un mapa donde la Clave es el tipo de puerto y el Valor es la cantidad estos que tiene el equipo.
+     */
+    public HashMap<PortType, Integer> getAllPortsTypes() {
+        HashMap<PortType, Integer> portTypes = new HashMap<>();
+        for (Port port : getPorts())
+            if (portTypes.containsKey(port.getPortType()))
+                portTypes.put(port.getPortType(), countPort(port.getPortType()));
+
+        return portTypes;
+    }
+
+    /**
+     * Hace un conteo de los puertos que sean del tipo dado.
+     * @param portType tipo de puerto requerido.
+     * @return retorna la cantidad de los puertos que sean de el mismo tipo del que se busca.
+     */
+    public int countPort (PortType portType){
+        int count = 0;
+        for (Port port : getPorts())
+            if (port.getPortType().getCode().equals(portType.getCode()))
+                count++;
+        return count;
+    }
+
+    /**
+     * Checkea si el existe un puerto del tipo dado disponible.
+     * @param portType tipo de puerto requerido
+     * @return retorna el primer puerto disponible encontrado y que sea del tipo requerido;
+     */
+    public Port checkPort(PortType portType) {
+        Port portCatch = null;
+        for (int i = 0; portCatch == null && i < getPorts().size();i++)
+            if (!getPorts().get(i).isInUse() && getPorts().get(i).getPortType().equals(portType))
+                portCatch = getPorts().get(i);
+
+        return portCatch;
+    }
+
+
     @Override
-    public int hashCode() {
+    public int hashCode () {
         return Objects.hash(code);
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals (Object obj){
         if (this == obj)
             return true;
         if (obj == null)
@@ -176,51 +210,8 @@ public class Equipment {
     }
 
     @Override
-    public String toString() {
-        return "Equipment [code=" + code + ", description=" + description + ", marca=" + marca + ", modelo=" + modelo
+    public String toString () {
+        return "Equipment [code=" + code + ", description=" + description + ", make=" + make + ", model=" + model
                 + ", ipAdresses=" + ipAdresses + ", ports=" + ports + ", location=" + location + "]";
     }
-
-    private class Port {
-        private PortType portType;
-        private int cantidad;
-
-        public Port(PortType portType, int cantidad) {
-            super();
-            this.portType = portType;
-            if (cantidad < 0)
-                throw new IllegalArgumentException("la cantidad de puertos no puede ser negativa");
-            this.cantidad = cantidad;
-        }
-
-        public PortType getPortType() {
-            return portType;
-        }
-
-        public void setPortType(PortType portType) {
-            this.portType = portType;
-        }
-
-        public int getCantidad() {
-            return cantidad;
-        }
-
-        public void setCantidad(int cantidad) {
-            this.cantidad = cantidad;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            Port port = (Port) o;
-            return Objects.equals(portType, port.portType);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hashCode(portType);
-        }
-    }
-
 }

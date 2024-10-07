@@ -2,12 +2,16 @@ package org.isfpp.datos;
 
 import org.isfpp.modelo.*;
 
-import java.io.*;
+import java.io.FileNotFoundException;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 import java.util.Scanner;
 
 public class Cargar {
-    public static Web cargarRed(String name, String equipmentFile, String connectionFile, String locationFile, String portTypeFile, String wireTypeFile, String equipmentTypeFile) throws FileNotFoundException {
+   public static Web cargarRed(String name, String equipmentFile, String connectionFile, String locationFile,
+                               String portTypeFile, String wireTypeFile, String equipmentTypeFile) throws FileNotFoundException {
         Web red = new Web(name);
 
         loadPortTypes(red, portTypeFile);
@@ -47,8 +51,9 @@ public class Cargar {
             newEquipment = red.addEquipment(code, description, marca, model, red.getPortTypes().get(portsArray[0]), Integer.parseInt(portsArray[1]), equipmentType, location, status);
             for (String s : ipsArray) newEquipment.addIp(s);
 
-            for (int i = 2; i < portsArray.length; i += 2)
-                newEquipment.addPort(red.getPortTypes().get(portsArray[i]), Integer.parseInt(portsArray[i + 1]));
+            for (int i = 0; i < portsArray.length; i += 2)
+                for (int cap = 0;cap < Integer.parseInt(portsArray[i + 1]);cap++)
+                    newEquipment.addPort(red.getPortTypes().get(portsArray[i]));
         }
         read.close();
     }
@@ -78,6 +83,7 @@ public class Cargar {
     public static void loadConnections(Web red, String fileName) throws FileNotFoundException{
         WireType wireType;
         Equipment equipment1, equipment2;
+        PortType portType1, portType2;
 
         // Mensaje de depuración
         System.out.println("Cargando conexiones desde el archivo: " + fileName);
@@ -91,10 +97,12 @@ public class Cargar {
 
         while (read.hasNext()) {
             equipment1 = red.getHardware().get(read.next());
+            portType1 = red.getPortTypes().get(read.next());
             equipment2 = red.getHardware().get(read.next());
+            portType2 = red.getPortTypes().get(read.next());
             wireType = red.getWireTypes().get(read.next());
 
-            red.addConnection(equipment1,equipment2,wireType);
+            red.addConnection(equipment1.checkPort(portType1),equipment2.checkPort(portType2),wireType);
         }
         read.close();
     }
@@ -160,8 +168,6 @@ public class Cargar {
 
         read.close();
     }
-
-
     /**
      * Metodo para cargar la red desde el archivo propierties
      * El mismo debe ser llamado como el siguiente ejemplo
@@ -190,7 +196,5 @@ public class Cargar {
 
         return cargarRed(name, equipmentFile, connectionFile, locationFile, portTypeFile, wireTypeFile, equipmentTypeFile);
     }
-
-
 
 }

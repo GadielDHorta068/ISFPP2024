@@ -1,18 +1,26 @@
 package org.isfpp.modelo;
 
-import javax.sound.sampled.Port;
 import java.util.Objects;
 
 public class Connection {
     private WireType wire;
-    private Equipment equipment1;
-    private Equipment equipment2;
+    private Port port1;
+    private Port port2;
 
-	public Connection(WireType wire, Equipment equipment1, Equipment equipment2) {
+	public Connection(){}
+	public Connection(Port port1, Port port2,WireType wire) {
 		super();
+		if (port1.equals(port2))
+			throw new IllegalArgumentException("ambos son iguales");
+		if(port1.getEquipment().equals(port2.getEquipment()))
+			throw new IllegalArgumentException("ambos puertos pertenecen al mismo equipo");
+		if (port1.isInUse() || port2.isInUse())
+			throw new IllegalArgumentException("uno o ambos puertos se encuentran en uso");
 
-		setEquipment1(equipment1);
-		setEquipment2(equipment2);
+		setPort1(port1);
+		port1.setInUse(true);
+		setPort2(port2);
+		port2.setInUse(true);
 		setWire(wire);
 	}
 
@@ -21,17 +29,17 @@ public class Connection {
 
 	public void setWire(WireType wire) {this.wire = wire;}
 
-	public Equipment getEquipment1() {return equipment1;}
+	public Port getPort1() {return port1;}
 	
-	public void setEquipment1(Equipment equipment1) {this.equipment1 = equipment1;}
+	public void setPort1(Port port1) {this.port1 = port1;}
 	
-	public Equipment getEquipment2() {return equipment2;}
+	public Port getPort2() {return port2;}
 	
-	public void setEquipment2(Equipment equipment2) {this.equipment2 = equipment2;}
+	public void setPort2(Port port2) {this.port2 = port2;}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(equipment1, equipment2);
+		return Objects.hash(port1, port2);
 	}
 
 	@Override
@@ -41,14 +49,14 @@ public class Connection {
 		if (!(obj instanceof Connection))
 			return false;
 		Connection other = (Connection) obj;
-		if ((equipment1.equals(other.equipment1) && equipment2.equals(other.equipment2))
-		|| (equipment1.equals(other.equipment2) && equipment2.equals(equipment1)))
+		if ((port1.equals(other.port1) && port2.equals(other.port2))
+		|| (port1.equals(other.port2) && port2.equals(port1)))
 			return true;
 		return false;
 	}
 
 	@Override
 	public String toString() {
-		return "Conection [wire=" + wire + ", equipment1=" + equipment1 + ", equipment2=" + equipment2 + "]";
+		return "Conection [wire=" + wire + ", equipment1=" + port1 + ", equipment2=" + port2 + "]";
 	}
 }
