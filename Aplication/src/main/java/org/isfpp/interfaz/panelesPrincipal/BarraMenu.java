@@ -1,5 +1,6 @@
 package org.isfpp.interfaz.panelesPrincipal;
 
+import org.isfpp.controller.Coordinator;
 import org.isfpp.datos.Guardar;
 import org.isfpp.interfaz.IPFrame;
 import org.isfpp.interfaz.VisualizarGrafo;
@@ -16,6 +17,7 @@ import java.io.IOException;
 
 public class BarraMenu {
     private final Web web;
+    private Coordinator coordinator;
 
     public BarraMenu(Web web) {
         this.web = web;
@@ -147,5 +149,8 @@ public class BarraMenu {
         menuBar.add(herramientasMenu);
 
         return menuBar;
+    }
+    public void setCoordinador(Coordinator coordinator) {
+        this.coordinator = coordinator;
     }
 }
