@@ -1,16 +1,16 @@
 package org.isfpp.Service;
 
-import org.isfpp.dao.GenericDAO;
-import org.isfpp.dao.Secuencial.EquipmentSecuencialDAO;
+import org.isfpp.dao.EquipmentDAO;
+import org.isfpp.dao.Secuencial.EquipmentSequentialDAO;
 import org.isfpp.modelo.Equipment;
 
 import java.util.List;
 
 public class EquipmentServiceImpl implements EquipmentService {
-    private GenericDAO equipmentDAO;
+    private EquipmentDAO equipmentDAO;
 
     public EquipmentServiceImpl() {
-        equipmentDAO = new EquipmentSecuencialDAO();
+        equipmentDAO = new EquipmentSequentialDAO();
     }
 
 
