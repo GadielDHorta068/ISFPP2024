@@ -102,7 +102,7 @@ public class Cargar {
             portType2 = red.getPortTypes().get(read.next());
             wireType = red.getWireTypes().get(read.next());
 
-            red.addConnection(equipment1,equipment2,wireType);
+            red.addConnection(equipment1.checkPort(portType1),equipment2.checkPort(portType2),wireType);
         }
         read.close();
     }

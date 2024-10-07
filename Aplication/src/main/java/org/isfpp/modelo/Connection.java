@@ -10,7 +10,7 @@ public class Connection {
 	public Connection(){}
 	public Connection(Port port1, Port port2,WireType wire) {
 		super();
-		if (port1.equals(port2))
+		if (port1.getEquipment().equals(port2.getEquipment()))
 			throw new IllegalArgumentException("ambos son iguales");
 		if(port1.getEquipment().equals(port2.getEquipment()))
 			throw new IllegalArgumentException("ambos puertos pertenecen al mismo equipo");

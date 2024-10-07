@@ -43,8 +43,8 @@ public class Utils {
 
 
         for (Connection c : connections) {
-            Equipment sourceNode = c.getEquipment1();
-            Equipment targetNode = c.getEquipment2();
+            Equipment sourceNode = c.getPort1().getEquipment();
+            Equipment targetNode = c.getPort1().getEquipment();
 
             if (sourceNode.equals(targetNode)) throw new IllegalArgumentException("son el mismo equipo");
             if (graph.containsEdge(sourceNode, targetNode))

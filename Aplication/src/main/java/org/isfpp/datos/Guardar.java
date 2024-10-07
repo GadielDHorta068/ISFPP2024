@@ -44,8 +44,8 @@ public class Guardar {
             for (Equipment equipment: red.getHardware().values()){
                 data = equipment.getCode()+";"+
                         equipment.getDescription()+";"+
-                        equipment.getMarca()+";"+
-                        equipment.getModelo()+";"+
+//                        equipment.get+";"+
+//                        equipment.getModelo()+";"+
                         equipment.getEquipmentType()+";"+
                         equipment.getLocation()+";";
 
@@ -85,11 +85,11 @@ public class Guardar {
             String data;
 
             for (Connection connection : red.getConnections()) {
-                data = connection.getEquipment1().getCode() + ";" +
-                        connection.getEquipment2().getCode() + ";" +
-                        connection.getWire().getCode() + ";";
-
-                writer.write(data);
+//                data = connection.getEquipment1().getCode() + ";" +
+////                        connection.getEquipment2().getCode() + ";" +
+//                        connection.getWire().getCode() + ";";
+//
+//                writer.write(data);
                 writer.newLine();
             }
         } catch (IOException e) {

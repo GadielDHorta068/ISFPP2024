@@ -61,10 +61,10 @@ public class UtilsTest {
         WireType wireType2 = w1.addWire("WT2", "Cable de cobre", 1000); // Velocidad en Mbps
 
 
-        // Crear conexiones
-        connection1 = w1.addConnection(equipment2,equipment1, wireType1);  // Activa
-        connection2 = w1.addConnection(equipment3,equipment2, wireType2);  // Entre equipo activo e inactivo
-        u1=new Utils(w1);
+//        // Crear conexiones
+//        connection1 = w1.addConnection(equipment2,equipment1, wireType1);  // Activa
+//        connection2 = w1.addConnection(equipment3,equipment2, wireType2);  // Entre equipo activo e inactivo
+//        u1=new Utils(w1);
 
 
 

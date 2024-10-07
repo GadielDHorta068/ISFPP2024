@@ -55,11 +55,11 @@ public class Coordinator{
     }
 
     public String getNombre() {
-        return web.getName();
+        return web.getNombre();
     }
 
     public void setNombre(String nombre) {
-        web.setName(nombre);
+        web.setNombre(nombre);
     }
     public Location addLocation(String code, String description) {return web.addLocation(code,description);
     }

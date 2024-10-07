@@ -146,19 +146,19 @@ public class Web {
 		locations.remove(portType.getCode(),portType);
 	}
 	// Agregar una conexión entre dos equipos
-	public org.isfpp.modelo.Connection addConnection(Equipment equipment1, Equipment equipment2, WireType wire) {
+	public org.isfpp.modelo.Connection addConnection(Port port1, Port port2, WireType wire) {
 		// Verificar si los equipos existen en el hardware
-		if (!hardware.containsKey(equipment1.getCode())) {
-			throw new NotFoundException("El equipo " + equipment1.getCode() + " no se encuentra.");
+		if (!hardware.containsKey(port1.getEquipment().getCode())) {
+			throw new NotFoundException("El equipo " + port1.getEquipment().getCode() + " no se encuentra.");
 		}
-		if (!hardware.containsKey(equipment2.getCode())) {
-			throw new NotFoundException("El equipo " + equipment2.getCode() + " no se encuentra.");
+		if (!hardware.containsKey(port2.getEquipment().getCode())) {
+			throw new NotFoundException("El equipo " + port2.getEquipment().getCode() + " no se encuentra.");
 		}
 
-		org.isfpp.modelo.Connection connection = new org.isfpp.modelo.Connection(wire, equipment2, equipment1);
+		org.isfpp.modelo.Connection connection = new Connection(port2,port1, wire);
 
 		if (connections.contains(connection)) {
-			throw new AlreadyExistException("La conexión entre " + equipment1.getCode() + " y " + equipment2.getCode() + " ya existe.");
+			throw new AlreadyExistException("La conexión entre " + port1.getEquipment().getCode() + " y " + port2.getEquipment().getCode() + " ya existe.");
 		}
 
 		// Agregar la conexión a la lista de conexiones
