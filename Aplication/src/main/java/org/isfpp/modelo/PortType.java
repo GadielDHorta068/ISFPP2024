@@ -43,6 +43,9 @@ public class PortType {
 
 	@Override
 	public String toString() {
-		return "PortType [code=" + code + ", description=" + description + ", speed=" + speed + "]";
+		return STR."""
+\{code}
+\{description}
+\{speed}""";
 	}
 }

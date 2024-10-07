@@ -211,7 +211,12 @@ public class Equipment {
 
     @Override
     public String toString () {
-        return "Equipment [code=" + code + ", description=" + description + ", make=" + make + ", model=" + model
-                + ", ipAdresses=" + ipAdresses + ", ports=" + ports + ", location=" + location + "]";
+        return code + "\n"
+                + description + "\n"
+                + make + "\n"
+                +  model + "\n"
+                + ipAdresses + "\n"
+                +  location;
+
     }
 }

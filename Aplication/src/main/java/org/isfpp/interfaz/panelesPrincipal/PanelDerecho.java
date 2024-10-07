@@ -31,6 +31,7 @@ public class PanelDerecho {
 
     public void updateProperties(String text, String equipmentType) {
         propiedades.setText(text);
+        System.out.println(equipmentType);
         setIcon(equipmentType);
     }
 

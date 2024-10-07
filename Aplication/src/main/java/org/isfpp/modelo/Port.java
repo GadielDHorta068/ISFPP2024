@@ -49,4 +49,9 @@ public class Port {
     public int hashCode() {
         return Objects.hashCode(portType);
     }
+
+    @Override
+    public String toString() {
+        return STR."{portType=\{portType}\{'}'}";
+    }
 }

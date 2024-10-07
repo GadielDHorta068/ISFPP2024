@@ -42,7 +42,8 @@ public class Location {
 	}
 	@Override
 	public String toString() {
-		return "Location [code=" + code + ", description=" + description + "]";
+		return code + "\n" +
+				 description;
 	}
 	
 	

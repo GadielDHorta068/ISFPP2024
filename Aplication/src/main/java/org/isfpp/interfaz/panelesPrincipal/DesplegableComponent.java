@@ -16,35 +16,30 @@ public class DesplegableComponent<T> {
     private final JPanel panel;
     private final JButton toggleButton;
     private final JTable table;
-    private JScrollPane scrollPane;
-    private PanelDerecho panelDerecho;
-    private List<T> dataList;
-    private Web web;
+    private final List<T> dataList;
+    private final Web web;
 
     public DesplegableComponent(String titulo, List<T> dataList, PanelDerecho panelDerecho, Web web) {
         this.web = web;
         this.dataList = dataList;
-        this.panelDerecho = panelDerecho;
 
         panel = new JPanel();
         panel.setLayout(new BorderLayout());
 
-        toggleButton = new JButton("▶ " + titulo);
+        toggleButton = new JButton(STR."▶ \{titulo}");
         StylusUI.aplicarEstiloBoton(toggleButton, false);
         toggleButton.setHorizontalAlignment(SwingConstants.LEFT);
-        toggleButton.addActionListener(e -> toggle());
+        //toggleButton.addActionListener(e -> toggle());
 
         Object[][] data = new Object[dataList.size()][3];
 
         for (int i = 0; i < dataList.size(); i++) {
             T item = dataList.get(i);
-            if (item instanceof Equipment) {
-                Equipment equipment = (Equipment) item;
+            if (item instanceof Equipment equipment) {
                 data[i][0] = equipment.getCode();
                 data[i][1] = equipment.getDescription();
                 data[i][2] = equipment;
-            } else if (item instanceof Location) {
-                Location location = (Location) item;
+            } else if (item instanceof Location location) {
                 data[i][0] = location.getCode();
                 data[i][1] = location.getDescription();
                 data[i][2] = location;
@@ -59,12 +54,12 @@ public class DesplegableComponent<T> {
             }
         }
 
-        String[] columnNames = {"Nombre", "Descripción/IP", "Objeto"};
+        String[] columnNames = {"Nombre", "Descripción", "Objeto"};
 
         DefaultTableModel model = new DefaultTableModel(data, columnNames) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return false; // Desactivar edición en la tabla
+                return false;
             }
         };
 
@@ -72,12 +67,11 @@ public class DesplegableComponent<T> {
         StylusUI.aplicarEstiloTabla(table, false);
         table.setVisible(false);
 
-        // Ocultar la tercera columna que contiene el objeto completo
         table.getColumnModel().getColumn(2).setMinWidth(0);
         table.getColumnModel().getColumn(2).setMaxWidth(0);
         table.getColumnModel().getColumn(2).setWidth(0);
 
-        scrollPane = new JScrollPane(table);
+        JScrollPane scrollPane = new JScrollPane(table);
         StylusUI.aplicarEstiloScrollPane(scrollPane);
         scrollPane.setColumnHeaderView(table.getTableHeader());
 
@@ -92,11 +86,11 @@ public class DesplegableComponent<T> {
                     T selectedItem = (T) table.getValueAt(selectedRow, 2);
                     switch (selectedItem) {
                         case Equipment selectedEquipment ->
-                                panelDerecho.updateProperties(selectedEquipment.toString(), selectedEquipment.getEquipmentType().getCode());
+                                panelDerecho.updateProperties(selectedEquipment.toString().replace("-", "\n"), selectedEquipment.getEquipmentType().getCode());
                         case Location selectedLocation ->
-                                panelDerecho.updateProperties(STR."\{selectedLocation.getCode()} \{selectedLocation.getDescription()}", "help");
+                                panelDerecho.updateProperties(selectedLocation.toString().replace("-", "\n"), "LOC");
                         case Connection selectedConnection ->
-                                panelDerecho.updateProperties(STR."\{selectedConnection.getPort1()} - \{selectedConnection.getPort2()}", selectedConnection.getWire().getCode());
+                                panelDerecho.updateProperties(String.format("%s", selectedConnection.toString()), selectedConnection.getWire().getCode());
                         case null, default ->
                             // Fallback para cualquier otro tipo de objeto
                                 panelDerecho.updateProperties(selectedItem.toString(), "Descripción no disponible");
@@ -110,7 +104,7 @@ public class DesplegableComponent<T> {
         isExpanded = !isExpanded;
         table.setVisible(isExpanded);
         table.getTableHeader().setVisible(isExpanded);
-        toggleButton.setText(isExpanded ? "▼ " + toggleButton.getText().substring(2) : "▶ " + toggleButton.getText().substring(2));
+        toggleButton.setText(isExpanded ? STR."▼ \{toggleButton.getText().substring(2)}" : "▶ " + toggleButton.getText().substring(2));
         panel.revalidate();
         panel.repaint();
     }
@@ -124,14 +118,11 @@ public class DesplegableComponent<T> {
         if (selectedRow != -1) {
             T selectedItem = dataList.get(selectedRow);
             dataList.remove(selectedRow);
-            if (selectedItem instanceof Equipment) {
-                Equipment equipment = (Equipment) selectedItem;
+            if (selectedItem instanceof Equipment equipment) {
                 web.getHardware().remove(equipment.getCode());
-            } else if (selectedItem instanceof Location) {
-                Location location = (Location) selectedItem;
+            } else if (selectedItem instanceof Location location) {
                 web.getLocations().remove(location.getCode());
-            } else if (selectedItem instanceof Connection) {
-                Connection connection = (Connection) selectedItem;
+            } else if (selectedItem instanceof Connection connection) {
                 web.getConnections().remove(connection);
             }
             updateTable();
@@ -143,18 +134,16 @@ public class DesplegableComponent<T> {
 
         for (int i = 0; i < dataList.size(); i++) {
             T item = dataList.get(i);
-            if (item instanceof Equipment) {
-                Equipment equipment = (Equipment) item;
+            if (item instanceof Equipment equipment) {
                 data[i][0] = equipment.getCode();
                 data[i][1] = equipment.getDescription();
                 data[i][2] = equipment;
-            } else if (item instanceof Location) {
-                Location location = (Location) item;
+            } else if (item instanceof Location location) {
                 data[i][0] = location.getCode();
                 data[i][1] = location.getDescription();
                 data[i][2] = location;
             } else if (item instanceof Connection) {
-                data[i][0] = ((Connection) item).getPort1() + " - " + ((Connection) item).getPort2().getEquipment().getCode();
+                data[i][0] = STR."\{((Connection) item).getPort1()} - \{((Connection) item).getPort2().getEquipment().getCode()}";
                 data[i][1] = ((Connection) item).getWire().getDescription();
                 data[i][2] = item;
             } else {
@@ -167,7 +156,6 @@ public class DesplegableComponent<T> {
         DefaultTableModel model = new DefaultTableModel(data, new String[]{"Nombre", "Descripción", "Objeto"});
         table.setModel(model);
 
-        // Volver a ocultar la tercera columna
         table.getColumnModel().getColumn(2).setMinWidth(0);
         table.getColumnModel().getColumn(2).setMaxWidth(0);
         table.getColumnModel().getColumn(2).setWidth(0);

@@ -28,7 +28,6 @@ public class VisualizarGrafo extends JFrame {
             if (!graph.containsEdge(sourceNode, targetNode)) graph.addEdge(sourceNode, targetNode, c);
         }
 
-        // Crear el grafo en JGraphX manualmente
         mxGraph mxGraph = new mxGraph();
         Object parent = mxGraph.getDefaultParent();
         mxGraph.getModel().beginUpdate();
@@ -46,7 +45,7 @@ public class VisualizarGrafo extends JFrame {
             for (Connection edge : graph.edgeSet()) {
                 Equipment source = graph.getEdgeSource(edge);
                 Equipment target = graph.getEdgeTarget(edge);
-                mxGraph.insertEdge(parent, null, edge, vertexMap.get(source), vertexMap.get(target));
+                mxGraph.insertEdge(parent, null, edge.getWire().getSpeed(), vertexMap.get(source), vertexMap.get(target));
             }
         } finally {
             mxGraph.getModel().endUpdate();
@@ -60,7 +59,7 @@ public class VisualizarGrafo extends JFrame {
         layout.execute(mxGraph.getDefaultParent());
 
         setTitle("Visualización del Grafo");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         setSize(800, 600);
         setVisible(true);
     }

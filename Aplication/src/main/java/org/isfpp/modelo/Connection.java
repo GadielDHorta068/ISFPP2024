@@ -57,6 +57,9 @@ public class Connection {
 
 	@Override
 	public String toString() {
-		return "Conection [wire=" + wire + ", equipment1=" + port1 + ", equipment2=" + port2 + "]";
+		return STR."""
+\{wire}
+\{port1.toString()}
+\{port2.toString()}""";
 	}
 }

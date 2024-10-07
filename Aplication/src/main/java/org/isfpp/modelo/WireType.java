@@ -43,7 +43,7 @@ public class WireType {
 
 	@Override
 	public String toString() {
-		return "WireType [code=" + code + ", description=" + description + ", speed=" + speed + "]";
+		return code +  description  + speed ;
 	}
 }
 
