@@ -7,8 +7,11 @@ import org.isfpp.interfaz.VisualizarGrafo;
 import org.isfpp.interfaz.panelesCreadores.EquipmentFormPanel;
 import org.isfpp.interfaz.panelesCreadores.LocationFormPanel;
 import org.isfpp.interfaz.panelesCreadores.PortTypeFormPanel;
+import org.isfpp.interfaz.panelesEditadores.EditEquipmentFormPanel;
+import org.isfpp.interfaz.panelesEditadores.EditLocationFormPanel;
+import org.isfpp.interfaz.panelesEditadores.EditPortTypeFormPanel;
 import org.isfpp.interfaz.stylusUI.StylusUI;
-import org.isfpp.modelo.Web;
+import org.isfpp.modelo.*;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -18,6 +21,7 @@ import java.io.IOException;
 public class BarraMenu {
     private final Web web;
     private Coordinator coordinator;
+    //Obtener en una variable el item seleccionado de las tablas
 
     public BarraMenu(Web web) {
         this.web = web;
@@ -36,43 +40,34 @@ public class BarraMenu {
         JMenuItem salirItem = new JMenuItem("Salir");
         StylusUI.styleMenuItem(salirItem);
 
-        cargarItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Lógica para cargar
-                System.out.println("Cargar seleccionado");
-            }
+        cargarItem.addActionListener(e -> {
+            // Lógica para cargar
+            System.out.println("Cargar seleccionado");
         });
 
-        guardarItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JFileChooser fileChooser = new JFileChooser();
-                fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-                int result = fileChooser.showSaveDialog(null);
+        guardarItem.addActionListener(e -> {
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            int result = fileChooser.showSaveDialog(null);
 
-                if (result == JFileChooser.APPROVE_OPTION) {
-                    String directory = fileChooser.getSelectedFile().getAbsolutePath();
-                    System.out.println("Guardar seleccionado: " + directory);
+            if (result == JFileChooser.APPROVE_OPTION) {
+                String directory = fileChooser.getSelectedFile().getAbsolutePath();
+                System.out.println(STR."Guardar seleccionado: \{directory}");
 
-                    // Actualizar las rutas de los archivos en el objeto Guardar
-                    try {
-                        Guardar guardar = new Guardar("config.properties");
-                        //guardar.saveAll();
-                    } catch (IOException ex) {
-                        ex.printStackTrace();
-                    }
+                // Actualizar las rutas de los archivos en el objeto Guardar
+                try {
+                    Guardar guardar = new Guardar("config.properties");
+                    //guardar.saveAll();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
                 }
             }
         });
 
 
-        salirItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Lógica para salir
-                System.exit(0);
-            }
+        salirItem.addActionListener(e -> {
+            // Lógica para salir
+            System.exit(0);
         });
 
         archivoMenu.add(cargarItem);
@@ -95,39 +90,48 @@ public class BarraMenu {
         JMenuItem verGrafo = new JMenuItem("Visualizar Grafo");
         StylusUI.styleMenuItem(verGrafo);
 
-        agregarEquipoItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new EquipmentFormPanel(web);
-            }
-        });
+        JMenuItem editarItem = new JMenuItem("Editar");
+        StylusUI.styleMenuItem(editarItem);
 
-        agregarPuertoItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new PortTypeFormPanel(web);
+        editarItem.addActionListener(e -> {
+            Object editar = coordinator.getSelectedItem();
+            switch (editar) {
+                case Equipment equipment -> new EditEquipmentFormPanel(web, equipment.getCode());
+                case Location location -> new EditLocationFormPanel(web, location.getCode());
+                case PortType puerto -> new EditPortTypeFormPanel(web, puerto.getCode());
+                case null, default -> {
+                    assert editar != null;
+                    System.out.println(STR."Clase no detectada\{editar.getClass()}");
+                }
             }
-        });
 
-        agregarUbicacionItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new LocationFormPanel(web);
+        });
+        agregarEquipoItem.addActionListener(e -> new EquipmentFormPanel(web));
+
+        agregarPuertoItem.addActionListener(e -> new PortTypeFormPanel(web));
+
+        agregarUbicacionItem.addActionListener(_ -> new LocationFormPanel(web));
+
+        verGrafo.addActionListener(_ -> new VisualizarGrafo(web.getHardware() , web.getConnections()));
+
+        eliminarItem.addActionListener(e ->{
+            Object editar = coordinator.getSelectedItem();
+            switch (editar) {
+                case Equipment equipment -> web.eraseEquipment(equipment);
+                case Location location -> web.eraseLocation(location);
+                case PortType puerto -> web.erasePort(puerto);
+                case Connection connection -> web.eraseConnection(connection);
+                case null, default -> {
+                    assert editar != null;
+                    System.out.println(STR."Clase no detectada\{editar.getClass()}");
+                }
             }
-        });
-
-        verGrafo.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new VisualizarGrafo(web.getHardware() , web.getConnections());
-            }
-        });
-
-        //eliminarItem.addActionListener(e -> desplegableComponent.removeSelectedEquipment());
+                });
         editarMenu.add(agregarEquipoItem);
         editarMenu.add(agregarPuertoItem);
         editarMenu.add(agregarUbicacionItem);
         editarMenu.add(eliminarItem);
+        editarMenu.add(editarItem);
         JMenu ayudaMenu = new JMenu("Ayuda");
         StylusUI.styleMenu(ayudaMenu);
         JMenu herramientasMenu = new JMenu("Herramientas");
@@ -137,12 +141,8 @@ public class BarraMenu {
         StylusUI.styleMenu(herramientasMenu);
         herramientasMenu.add(verGrafo);
 
-        ipScan.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new IPFrame();
-            }
-        });
+
+        ipScan.addActionListener(e -> new IPFrame());
 
         menuBar.add(editarMenu);
         menuBar.add(ayudaMenu);

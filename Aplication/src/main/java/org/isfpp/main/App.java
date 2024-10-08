@@ -35,12 +35,14 @@ public class App {
         utils.setCoordinator(coordinator);
         mainMenu.SetCoordinator(coordinator);
 
+
         /* Se establecen relaciones con la clase coordinador */
         coordinator.setWeb(web);
         coordinator.setUtils(utils);
         coordinator.setMainMenu(mainMenu);
         utils.LoadData(coordinator.getWeb());
         mainMenu.components(coordinator.getWeb());
+
     }
 
 }

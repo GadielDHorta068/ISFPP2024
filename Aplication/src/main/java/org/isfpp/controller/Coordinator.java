@@ -3,7 +3,6 @@ package org.isfpp.controller;
 import org.isfpp.interfaz.GUI;
 import org.isfpp.interfaz.IPFrame;
 import org.isfpp.interfaz.panelesCreadores.MainMenu;
-import org.isfpp.interfaz.panelesPrincipal.BarraMenu;
 import org.isfpp.logica.Utils;
 import org.isfpp.modelo.*;
 import org.jgrapht.Graph;
@@ -13,12 +12,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-
 public class Coordinator{
     private Web web;
     private Utils utils;
     private MainMenu mainMenu;
-
+    private Object selectedItem;
 
     public Utils getUtils() {
         return utils;
@@ -122,5 +120,13 @@ public class Coordinator{
 
     public void setMainMenu(MainMenu mainMenu) {
         this.mainMenu = mainMenu;
+    }
+
+    public Object getSelectedItem() {
+        return selectedItem;
+    }
+
+    public void setSelectedItem(Object selectedItem) {
+        this.selectedItem = selectedItem;
     }
 }

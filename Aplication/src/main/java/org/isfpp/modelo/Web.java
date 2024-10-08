@@ -123,6 +123,11 @@ public class Web {
 		if (!hardware.containsKey(e.getCode()))
 			throw new NotFoundException("equipo invalido");
 		hardware.remove(e.getCode(), e);
+		for (Connection c : connections){
+			if(c.getPort1().getEquipment().equals(e) || c.getPort2().getEquipment().equals(e)){
+				eraseConnection(c);
+			}
+		}
 	}
     public void eraseWire(WireType w){
 		if(!wireTypes.containsKey(w.getCode()))

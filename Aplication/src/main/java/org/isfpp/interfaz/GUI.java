@@ -26,17 +26,18 @@ public class GUI {
 
         Web web = Cargar.cargarRedDesdePropiedades("config.properties");
 
-        DesplegableComponent<Equipment> desplegableNodos = new DesplegableComponent<>("Equipos", new ArrayList<>(web.getHardware().values()), panelDerecho, web);
-        DesplegableComponent<Location> desplegableCables = new DesplegableComponent<>("Ubicaciones", new ArrayList<>(web.getLocations().values()), panelDerecho, web);
-        DesplegableComponent<Connection> desplegableConexiones = new DesplegableComponent<>("Conexiones", web.getConnections(), panelDerecho, web);
+   //     DesplegableComponent<Equipment> desplegableNodos = new DesplegableComponent<>();
+      //  desplegableNodos.IniciarTabla("Equipos", new ArrayList<>(web.getHardware().values()), panelDerecho, coordinator);
+     //   DesplegableComponent<Location> desplegableCables = new DesplegableComponent<>("Ubicaciones", new ArrayList<>(web.getLocations().values()), panelDerecho, null);
+    //    DesplegableComponent<Connection> desplegableConexiones = new DesplegableComponent<>("Conexiones", web.getConnections(), panelDerecho, null);
 
         BarraMenu barraMenu = new BarraMenu(web);
         JPanel panelIzquierdo = new JPanel();
         StylusUI.aplicarEstiloPanel(panelIzquierdo);
         panelIzquierdo.setLayout(new BoxLayout(panelIzquierdo, BoxLayout.Y_AXIS));
-        panelIzquierdo.add(desplegableNodos.getPanel());
-        panelIzquierdo.add(desplegableConexiones.getPanel());
-        panelIzquierdo.add(desplegableCables.getPanel());
+   //     panelIzquierdo.add(desplegableNodos.getPanel());
+    //    panelIzquierdo.add(desplegableConexiones.getPanel());
+ //       panelIzquierdo.add(desplegableCables.getPanel());
 
 
         frame.setJMenuBar(barraMenu.crearBarraMenu());

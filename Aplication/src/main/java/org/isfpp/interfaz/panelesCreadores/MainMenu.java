@@ -26,16 +26,27 @@ public class MainMenu {
     public void components(Web web){
         StylusUI.inicializar(false);
         PanelDerecho panelDerecho = new PanelDerecho();
-        DesplegableComponent<Equipment> desplegableNodos = new DesplegableComponent<>("Equipos", new ArrayList<>(web.getHardware().values()), panelDerecho,web);
-        DesplegableComponent<Location> desplegableCables = new DesplegableComponent<>("Ubicaciones", new ArrayList<>(web.getLocations().values()), panelDerecho,web);
-        DesplegableComponent<Connection> desplegableConexiones = new DesplegableComponent<>("Conexiones", web.getConnections(), panelDerecho,web);
+
+        DesplegableComponent<Equipment> desplegableNodos = new DesplegableComponent<>();
+        desplegableNodos.setCoordinator(coordinator);
+        desplegableNodos.IniciarTabla("Equipos", new ArrayList<>(web.getHardware().values()), panelDerecho);
+
+        DesplegableComponent<Location> desplegableUbicaciones = new DesplegableComponent<>();
+        desplegableUbicaciones.setCoordinator(coordinator);
+        desplegableUbicaciones.IniciarTabla("Ubicaciones", new ArrayList<>(web.getLocations().values()), panelDerecho);
+
+        DesplegableComponent<Connection> desplegableConexiones = new DesplegableComponent<>();
+        desplegableConexiones.setCoordinator(coordinator);
+        desplegableConexiones.IniciarTabla("Conexiones", web.getConnections(), panelDerecho);
+
         BarraMenu barraMenu = new BarraMenu(web);
+        barraMenu.setCoordinador(coordinator);
         JPanel panelIzquierdo = new JPanel();
         StylusUI.aplicarEstiloPanel(panelIzquierdo);
         panelIzquierdo.setLayout(new BoxLayout(panelIzquierdo, BoxLayout.Y_AXIS));
         panelIzquierdo.add(desplegableNodos.getPanel());
-        panelIzquierdo.add(desplegableConexiones.getPanel());
-        panelIzquierdo.add(desplegableCables.getPanel());
+       panelIzquierdo.add(desplegableConexiones.getPanel());
+        panelIzquierdo.add(desplegableUbicaciones.getPanel());
         frame.setJMenuBar(barraMenu.crearBarraMenu());
         frame.add(panelIzquierdo, BorderLayout.WEST);
         frame.add(panelDerecho.crearPanelDerecho(), BorderLayout.EAST);
