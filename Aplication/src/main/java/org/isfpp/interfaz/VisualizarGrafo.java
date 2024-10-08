@@ -5,6 +5,7 @@ import com.mxgraph.swing.mxGraphComponent;
 import com.mxgraph.util.mxConstants;
 import com.mxgraph.view.mxGraph;
 import com.mxgraph.view.mxStylesheet;
+import org.isfpp.interfaz.stylusUI.StylusUI;
 import org.isfpp.modelo.Connection;
 import org.isfpp.modelo.Equipment;
 import org.jgrapht.Graph;
@@ -77,6 +78,7 @@ public class VisualizarGrafo extends JFrame {
         }
 
         mxGraphComponent graphComponent = new mxGraphComponent(mxGraph);
+        graphComponent.getViewport().setBackground(StylusUI.COLOR_PRIMARIO);
         getContentPane().add(graphComponent);
 
         // Aplicar un layout circular al grafo
