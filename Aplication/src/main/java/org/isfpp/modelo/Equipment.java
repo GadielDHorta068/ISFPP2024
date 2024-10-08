@@ -16,7 +16,9 @@ public class Equipment {
 	private Location location;
 	private boolean status;
 
-    public Equipment(){}
+    public Equipment(){
+        this.ipAdresses = new ArrayList<String>();
+        this.ports = new ArrayList<Port>();}
 
 	public Equipment(String code, String description, String make, String model, PortType portType, int portCapacity,
 					 EquipmentType equipmentType, Location location, boolean status) {
@@ -77,7 +79,7 @@ public class Equipment {
 
     public void addPort(PortType portType) {
         Port p = new Port(portType, this);
-        ports.add(p);
+        this.ports.add(p);
     }
 
     public void deletePort(PortType port) {
@@ -216,7 +218,7 @@ public class Equipment {
                 + make + "\n"
                 +  model + "\n"
                 + ipAdresses + "\n"
-                +  location;
+                +  location.getDescription();
 
     }
 }
