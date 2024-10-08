@@ -94,6 +94,8 @@ public class BarraMenu {
         StylusUI.styleMenuItem(eliminarItem);
         JMenuItem verGrafo = new JMenuItem("Visualizar Grafo");
         StylusUI.styleMenuItem(verGrafo);
+        JMenuItem traceRouter = new JMenuItem("tracerouter");
+        StylusUI.styleMenuItem(traceRouter);
 
         agregarEquipoItem.addActionListener(new ActionListener() {
             @Override
@@ -136,11 +138,20 @@ public class BarraMenu {
         StylusUI.styleMenuItem(ipScan);
         StylusUI.styleMenu(herramientasMenu);
         herramientasMenu.add(verGrafo);
+        herramientasMenu.add(traceRouter);
+
+        traceRouter.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            }
+        });
 
         ipScan.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new IPFrame();
+                IPFrame ipFrame=new IPFrame();
+                ipFrame.setCoordinator(coordinator);
+                ipFrame.scanIp();
             }
         });
 
