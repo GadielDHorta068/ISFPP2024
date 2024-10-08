@@ -1,7 +1,5 @@
 package org.isfpp.controller;
 
-import org.isfpp.interfaz.GUI;
-import org.isfpp.interfaz.IPFrame;
 import org.isfpp.interfaz.panelesCreadores.MainMenu;
 import org.isfpp.logica.Utils;
 import org.isfpp.modelo.*;
@@ -11,12 +9,14 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 
 public class Coordinator{
     private Web web;
     private Utils utils;
     private MainMenu mainMenu;
-    private Object selectedItem;
+
 
     public Utils getUtils() {
         return utils;
@@ -121,12 +121,8 @@ public class Coordinator{
     public void setMainMenu(MainMenu mainMenu) {
         this.mainMenu = mainMenu;
     }
+    public List<String> scanIP(String ip){return utils.scanIP(ip);}
 
-    public Object getSelectedItem() {
-        return selectedItem;
-    }
-
-    public void setSelectedItem(Object selectedItem) {
-        this.selectedItem = selectedItem;
+    public void LoadData(Web web) {this.utils.LoadData(web);
     }
 }
