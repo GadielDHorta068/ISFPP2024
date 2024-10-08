@@ -11,6 +11,7 @@ import org.isfpp.interfaz.panelesEditadores.EditEquipmentFormPanel;
 import org.isfpp.interfaz.panelesEditadores.EditLocationFormPanel;
 import org.isfpp.interfaz.panelesEditadores.EditPortTypeFormPanel;
 import org.isfpp.interfaz.stylusUI.StylusUI;
+import org.isfpp.interfaz.stylusUI.Traceroute;
 import org.isfpp.modelo.*;
 
 import javax.swing.*;
@@ -161,6 +162,9 @@ public class BarraMenu {
         traceRouter.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                Traceroute traceroute = new Traceroute();
+                traceroute.setCoordinator(coordinator);
+                traceroute.trace();
             }
         });
 
