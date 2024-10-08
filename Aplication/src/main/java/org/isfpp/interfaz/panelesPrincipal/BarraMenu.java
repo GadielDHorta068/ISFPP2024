@@ -7,11 +7,12 @@ import org.isfpp.interfaz.VisualizarGrafo;
 import org.isfpp.interfaz.panelesCreadores.EquipmentFormPanel;
 import org.isfpp.interfaz.panelesCreadores.LocationFormPanel;
 import org.isfpp.interfaz.panelesCreadores.PortTypeFormPanel;
+import org.isfpp.interfaz.panelesEditadores.EditConnection;
 import org.isfpp.interfaz.panelesEditadores.EditEquipmentFormPanel;
 import org.isfpp.interfaz.panelesEditadores.EditLocationFormPanel;
 import org.isfpp.interfaz.panelesEditadores.EditPortTypeFormPanel;
 import org.isfpp.interfaz.stylusUI.StylusUI;
-import org.isfpp.interfaz.stylusUI.Traceroute;
+import org.isfpp.logica.Traceroute;
 import org.isfpp.modelo.*;
 
 import javax.swing.*;
@@ -91,11 +92,13 @@ public class BarraMenu {
         StylusUI.styleMenuItem(agregarPuertoItem);
         JMenuItem agregarUbicacionItem = new JMenuItem("Agregar Ubicacion");
         StylusUI.styleMenuItem(agregarUbicacionItem);
+        JMenuItem agregarConItem = new JMenuItem("Agregar Conexion");
+        StylusUI.styleMenuItem(agregarConItem);
         JMenuItem eliminarItem = new JMenuItem("Eliminar");
         StylusUI.styleMenuItem(eliminarItem);
         JMenuItem verGrafo = new JMenuItem("Visualizar Grafo");
         StylusUI.styleMenuItem(verGrafo);
-        JMenuItem traceRouter = new JMenuItem("tracerouter");
+        JMenuItem traceRouter = new JMenuItem("Traceroute");
         StylusUI.styleMenuItem(traceRouter);
 
         JMenuItem editarItem = new JMenuItem("Editar");
@@ -107,11 +110,41 @@ public class BarraMenu {
                 case Equipment equipment -> new EditEquipmentFormPanel(web, equipment.getCode());
                 case Location location -> new EditLocationFormPanel(web, location.getCode());
                 case PortType puerto -> new EditPortTypeFormPanel(web, puerto.getCode());
+                case Connection connection -> new EditConnection(web, connection);
                 case null, default -> {
                     assert editar != null;
                     System.out.println(STR."Clase no detectada\{editar.getClass()}");
                 }
 
+            }
+        });
+
+        agregarConItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new EditConnection(web, null);
+            }
+        });
+
+        agregarUbicacionItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new LocationFormPanel(web);
+                coordinator.updateTablas();
+            }
+        });
+        agregarEquipoItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new EquipmentFormPanel(web);
+            }
+        });
+
+
+        agregarPuertoItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new PortTypeFormPanel(web);
             }
         });
 
@@ -121,11 +154,6 @@ public class BarraMenu {
                 new LocationFormPanel(web);
             }
         });
-        agregarEquipoItem.addActionListener(e -> new EquipmentFormPanel(web));
-
-        agregarPuertoItem.addActionListener(e -> new PortTypeFormPanel(web));
-
-        agregarUbicacionItem.addActionListener(_ -> new LocationFormPanel(web));
 
         verGrafo.addActionListener(_ -> new VisualizarGrafo(web.getHardware(), web.getConnections()));
 
@@ -141,12 +169,14 @@ public class BarraMenu {
                     System.out.println(STR."Clase no detectada\{editar.getClass()}");
                 }
             }
+            coordinator.updateTablas();
         });
 
         //eliminarItem.addActionListener(e -> desplegableComponent.removeSelectedEquipment());
         editarMenu.add(agregarEquipoItem);
         editarMenu.add(agregarPuertoItem);
         editarMenu.add(agregarUbicacionItem);
+        editarMenu.add(agregarConItem);
         editarMenu.add(eliminarItem);
         editarMenu.add(editarItem);
         JMenu ayudaMenu = new JMenu("Ayuda");

@@ -10,6 +10,7 @@ import org.isfpp.modelo.Web;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class DesplegableComponent<T> {
@@ -55,8 +56,19 @@ public class DesplegableComponent<T> {
         }
     }
 
-    private void updateTable() {
+    public void updateTable() {
         Object[][] data = new Object[dataList.size()][3];
+        Object e = dataList.getFirst();
+        if(e instanceof Equipment eq){
+            dataList = new ArrayList<>();
+            dataList = (List<T>) new ArrayList<>(web.getHardware().values());
+        }else if(e instanceof Location loc){
+            dataList = new ArrayList<>();
+            dataList = (List<T>) new ArrayList<>(web.getLocations().values());
+        }else if(e instanceof Location loc){
+            dataList = new ArrayList<>();
+            dataList = (List<T>) new ArrayList<>(web.getConnections());
+    }
 
         for (int i = 0; i < dataList.size(); i++) {
             T item = dataList.get(i);
@@ -68,9 +80,9 @@ public class DesplegableComponent<T> {
                 data[i][0] = location.getCode();
                 data[i][1] = location.getDescription();
                 data[i][2] = location;
-            } else if (item instanceof Connection) {
-                data[i][0] = STR."\{((Connection) item).getPort1()} - \{((Connection) item).getPort2().getEquipment().getCode()}";
-                data[i][1] = ((Connection) item).getWire().getDescription();
+            } else if (item instanceof Connection connection) {
+                data[i][0] = STR."\{((Connection) item).getPort1().getPortType().getCode()} - \{((Connection) item).getPort2().getPortType().getCode()}";
+                data[i][1] = connection.getWire().getDescription();
                 data[i][2] = item;
             } else {
                 data[i][0] = item.toString();
@@ -85,6 +97,7 @@ public class DesplegableComponent<T> {
         table.getColumnModel().getColumn(2).setMinWidth(0);
         table.getColumnModel().getColumn(2).setMaxWidth(0);
         table.getColumnModel().getColumn(2).setWidth(0);
+        table.repaint();
     }
 
     public void setCoordinator(Coordinator coordinator) {
@@ -178,4 +191,5 @@ public class DesplegableComponent<T> {
             }
         });
     }
+
 }

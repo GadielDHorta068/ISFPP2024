@@ -10,12 +10,15 @@ public class Connection {
 	public Connection(){}
 	public Connection(Port port1, Port port2,WireType wire) {
 		super();
+		System.out.println(port1.isInUse());
+		System.out.println(port2.isInUse());
+		System.out.println(wire);
 		if (port1.getEquipment().equals(port2.getEquipment()))
 			throw new IllegalArgumentException("ambos son iguales");
 		if(port2.getEquipment().equals(port1.getEquipment()))
 			throw new IllegalArgumentException("ambos puertos pertenecen al mismo equipo");
-		if (port1.isInUse() || port2.isInUse())
-			throw new IllegalArgumentException("uno o ambos puertos se encuentran en uso");
+//		if (port1.isInUse() || port2.isInUse())
+//			throw new IllegalArgumentException("uno o ambos puertos se encuentran en uso");
 
 		setPort1(port1);
 		port1.setInUse(true);

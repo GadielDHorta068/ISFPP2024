@@ -2,11 +2,14 @@ package org.isfpp.modelo;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 import org.isfpp.controller.Coordinator;
 import org.isfpp.exceptions.AlreadyExistException;
 import org.isfpp.exceptions.NotFoundException;
+
+import javax.swing.*;
 
 public class Web {
 	private HashMap<String, Equipment> hardware;
@@ -28,6 +31,7 @@ public class Web {
 		this.wireTypes= new HashMap<>();
 		this.portTypes= new HashMap<>();
 		this.EquipmentTypes= new HashMap<>();
+		coordinator = new Coordinator();
 	}
 
 	public HashMap<String, Equipment> getHardware() {
@@ -63,26 +67,29 @@ public class Web {
 	}
 
 	public Location addLocation(String code, String description) {
-		if (locations.containsKey(code))
+		if (locations.containsKey(code)){
+			JOptionPane.showMessageDialog(null,"La localizacion ya se encuentra", "Error de duplicacion", JOptionPane.INFORMATION_MESSAGE);
 			throw new AlreadyExistException("la localizacion ya se encuentra");
 
+		}
 		Location l = new Location(code, description);
 		locations.put(code, l);
+		coordinator.updateTablas();
 		return l;
 	}
 
 	public void eraseLocation(Location l) {
 		if (!locations.containsKey(l.getCode()))
-			throw new NotFoundException("Localizacion invalida");
+			JOptionPane.showMessageDialog(null,"Error de locacion", "Error de dependencia", JOptionPane.INFORMATION_MESSAGE);
 		List<String> codes = new ArrayList<>();
 		for (Equipment e : hardware.values()) {
 			if (e.getLocation().equals(l))
 				codes.add(e.getCode());
 		}
 		if (!codes.isEmpty())
-			throw new IllegalStateException("Hay equipos que dependen de esa ubicación: " + codes);
+			JOptionPane.showMessageDialog(null,"Hay equipos que dependen de la ubicacion", "Error de dependencia", JOptionPane.INFORMATION_MESSAGE);
 		locations.remove(l.getCode(), l);
-
+		coordinator.updateTablas();
 	}
 
 	public PortType addPort(String code,String description,int speed){
@@ -90,6 +97,7 @@ public class Web {
 			throw new AlreadyExistException("el tipo de puerto ya se encuentra");
 		PortType p=new PortType(code,description,speed);
 		portTypes.put(code,p);
+		coordinator.updateTablas();
 		return p;
 	}
 	public WireType addWire(String code,String description,int speed){
@@ -97,6 +105,7 @@ public class Web {
 			throw new AlreadyExistException("el tipo de cable ya existe");
 		WireType w=new WireType(code,description,speed);
 		wireTypes.put(code,w);
+		coordinator.updateTablas();
 		return w;
 	}
 	public EquipmentType addEquipmentType(String code,String description){
@@ -104,6 +113,7 @@ public class Web {
 			throw new AlreadyExistException("el tipo de equipo ya existe");
 		EquipmentType e=new EquipmentType(code,description);
 		EquipmentTypes.put(code,e);
+		coordinator.updateTablas();
 		return e;
 	}
 	public Equipment addEquipment(String code, String description, String marca, String model, PortType portType,int cantidad,
@@ -116,19 +126,33 @@ public class Web {
 			throw new NotFoundException("El tipo de equipo no se encuentra en la lista");
 		Equipment e = new Equipment(code, description, marca, model, portType,cantidad, equipmentType, location,status);
 		hardware.put(code, e);
+		coordinator.updateTablas();
 		return e;
 	}
 
 	public void eraseEquipment(Equipment e) {
-		if (!hardware.containsKey(e.getCode()))
+		if (!hardware.containsKey(e.getCode())) {
 			throw new NotFoundException("equipo invalido");
-		hardware.remove(e.getCode(), e);
-		for (Connection c : connections){
-			if(c.getPort1().getEquipment().equals(e) || c.getPort2().getEquipment().equals(e)){
-				eraseConnection(c);
+		}
+
+		Iterator<Connection> iterator = connections.iterator();
+		while (iterator.hasNext()) {
+			Connection c = iterator.next();
+			// Eliminar la conexión del equipo si coincide con alguno de los puertos
+			if (c.getPort1().getEquipment().equals(e) || c.getPort2().getEquipment().equals(e)) {
+				iterator.remove(); // Elimina la conexión del Iterator para evitar ConcurrentModificationException
+				if (connections.contains(c)) {
+					eraseConnection(c); // Solo llama a eraseConnection si la conexión aún está en la lista
+				}
 			}
 		}
+
+		hardware.remove(e.getCode(), e);  // Eliminar el equipo del hardware
+		coordinator.updateTablas();
+
 	}
+
+
     public void eraseWire(WireType w){
 		if(!wireTypes.containsKey(w.getCode()))
 			throw new NotFoundException("El cable no se encuentra");
@@ -140,7 +164,7 @@ public class Web {
 		if (!codes.isEmpty())
 			throw new IllegalStateException("las siguientes conexiones tienen ese tipo de cable" + codes);
 		wireTypes.remove(w.getCode(),w);
-
+		coordinator.updateTablas();
 	}
 	public void erasePort(PortType portType){
 		if(!portTypes.containsKey(portType.getCode()))
@@ -153,9 +177,10 @@ public class Web {
 		if (!codes.isEmpty())
 			throw new IllegalStateException("Hay equipos que usan ese tipo de puertos: " + codes);
 		locations.remove(portType.getCode(),portType);
+		coordinator.updateTablas();
 	}
 	// Agregar una conexión entre dos equipos
-	public org.isfpp.modelo.Connection addConnection(Port port1, Port port2, WireType wire) {
+	public Connection addConnection(Port port1, Port port2, WireType wire) {
 		// Verificar si los equipos existen en el hardware
 		if (!hardware.containsKey(port1.getEquipment().getCode())) {
 			throw new NotFoundException("El equipo " + port1.getEquipment().getCode() + " no se encuentra.");
@@ -164,7 +189,7 @@ public class Web {
 			throw new NotFoundException("El equipo " + port2.getEquipment().getCode() + " no se encuentra.");
 		}
 
-		org.isfpp.modelo.Connection connection = new Connection(port2,port1, wire);
+		Connection connection = new Connection(port2,port1, wire);
 
 		if (connections.contains(connection)) {
 			throw new AlreadyExistException("La conexión entre " + port1.getEquipment().getCode() + " y " + port2.getEquipment().getCode() + " ya existe.");
@@ -172,6 +197,7 @@ public class Web {
 
 		// Agregar la conexión a la lista de conexiones
 		connections.add(connection);
+		coordinator.updateTablas();
 		return connection;
 	}
 
@@ -188,7 +214,7 @@ public class Web {
 	}
 
 	// Eliminar una conexión
-	public void eraseConnection(org.isfpp.modelo.Connection connection) {
+	public void eraseConnection(Connection connection) {
 		// Verificar si la conexión existe
 		if (!connections.contains(connection)) {
 			throw new NotFoundException("La conexión no se encuentra.");
@@ -196,6 +222,7 @@ public class Web {
 
 		// Eliminar la conexión de la lista
 		connections.remove(connection);
+		coordinator.updateTablas();
 	}
 
 	@Override

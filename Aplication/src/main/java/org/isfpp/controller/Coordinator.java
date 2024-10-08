@@ -1,6 +1,7 @@
 package org.isfpp.controller;
 
 import org.isfpp.interfaz.panelesCreadores.MainMenu;
+import org.isfpp.interfaz.panelesPrincipal.DesplegableComponent;
 import org.isfpp.logica.Utils;
 import org.isfpp.modelo.*;
 import org.jgrapht.Graph;
@@ -16,6 +17,7 @@ public class Coordinator{
     private Utils utils;
     private MainMenu mainMenu;
     private Object selectedItem;
+    private List<DesplegableComponent> tablas = new ArrayList<>();
 
     public Utils getUtils() {
         return utils;
@@ -95,7 +97,7 @@ public class Coordinator{
 
 
     // Eliminar una conexión
-    public void eraseConnection(org.isfpp.modelo.Connection connection) {web.eraseConnection(connection);}
+    public void eraseConnection(Connection connection) {web.eraseConnection(connection);}
     //Utils
     public HashMap<Equipment, Boolean> ping(){return utils.ping();}
     public boolean ping(Equipment e1){return utils.ping(e1);
@@ -131,5 +133,14 @@ public class Coordinator{
 
     public void setSelectedItem(Object selectedItem) {
         this.selectedItem = selectedItem;
+    }
+
+    public  void updateTablas(){
+        for (DesplegableComponent tabla : tablas) {
+            tabla.updateTable();
+        }
+    }
+    public void addTabla(DesplegableComponent d){
+        tablas.add(d);
     }
 }
