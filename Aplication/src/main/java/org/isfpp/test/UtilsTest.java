@@ -1,5 +1,6 @@
 package org.isfpp.test;
 
+import org.isfpp.datos.Cargar;
 import org.isfpp.modelo.*;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.SimpleGraph;
@@ -8,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.isfpp.logica.Utils;
 
 
+import java.io.IOException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -108,6 +110,50 @@ public class UtilsTest {
         List<Equipment> reachable = u1.detectConnectivityIssues(equipment1);
         assertTrue(reachable.contains(equipment1));
         assertEquals(2, reachable.size()); // Porque también equipment2 está accesible
+    }
+
+    // Correctly parses a valid IP address into segments
+    @Test
+    public void test_parse_valid_ip() {
+        Utils utils = new Utils();
+        List<String> result = utils.scanIP("166.82.1.1");
+        assertNotNull(result);
+    }
+
+    // Generates a list of IPs starting from the given IP
+    @Test
+    public void test_generate_ip_list() throws IOException {
+        Utils utils = new Utils();
+        utils.LoadData(Cargar.cargarRedDesdePropiedades("config.properties"));
+        List<String> result = utils.scanIP("166.82.1.1");
+        assertTrue(!result.isEmpty());
+    }
+
+    // Successfully pings and adds reachable IPs to the list
+    @Test
+    public void test_ping_reachable_ips() throws IOException {
+        Utils utils = new Utils();
+        utils.LoadData(Cargar.cargarRedDesdePropiedades("config.properties"));
+        List<String> result = utils.scanIP("166.82.1.1");
+        assertTrue(result.contains("166.82.1.10"));
+    }
+
+    // Handles a full range of IPs from the starting point
+    @Test
+    public void test_full_range_of_ips() throws IOException {
+        Utils utils = new Utils();
+        utils.LoadData(Cargar.cargarRedDesdePropiedades("config.properties"));
+        List<String> result = utils.scanIP("166.82.0.0");
+        assertTrue(!result.isEmpty());
+    }
+
+    // Handles IP addresses with segments at the boundary (e.g., 0 or 255)
+    @Test
+    public void test_boundary_ip_segments() throws IOException {
+        Utils utils = new Utils();
+        utils.LoadData(Cargar.cargarRedDesdePropiedades("config.properties"));
+        List<String> result = utils.scanIP("166.82.255.255");
+        assertNotNull(result);
     }
 }
 

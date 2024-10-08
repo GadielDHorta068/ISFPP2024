@@ -19,7 +19,7 @@ public class MainMenu {
     JFrame frame;
 
     public MainMenu() {
-        frame = new JFrame("Prueba interfaz por modulos ISFPP24");
+        frame = new JFrame("ISFPP24");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(new BorderLayout());
     }
@@ -28,14 +28,17 @@ public class MainMenu {
         PanelDerecho panelDerecho = new PanelDerecho();
 
         DesplegableComponent<Equipment> desplegableNodos = new DesplegableComponent<>();
+        coordinator.addTabla(desplegableNodos);
         desplegableNodos.setCoordinator(coordinator);
         desplegableNodos.IniciarTabla("Equipos", new ArrayList<>(web.getHardware().values()), panelDerecho);
 
         DesplegableComponent<Location> desplegableUbicaciones = new DesplegableComponent<>();
+        coordinator.addTabla(desplegableUbicaciones);
         desplegableUbicaciones.setCoordinator(coordinator);
         desplegableUbicaciones.IniciarTabla("Ubicaciones", new ArrayList<>(web.getLocations().values()), panelDerecho);
 
         DesplegableComponent<Connection> desplegableConexiones = new DesplegableComponent<>();
+        coordinator.addTabla(desplegableConexiones);
         desplegableConexiones.setCoordinator(coordinator);
         desplegableConexiones.IniciarTabla("Conexiones", web.getConnections(), panelDerecho);
 

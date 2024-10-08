@@ -1,6 +1,7 @@
-package org.isfpp.interfaz.stylusUI;
+package org.isfpp.logica;
 
 import org.isfpp.controller.Coordinator;
+import org.isfpp.interfaz.stylusUI.StylusUI;
 import org.isfpp.modelo.Equipment;
 import org.jgrapht.graph.DefaultWeightedEdge;
 

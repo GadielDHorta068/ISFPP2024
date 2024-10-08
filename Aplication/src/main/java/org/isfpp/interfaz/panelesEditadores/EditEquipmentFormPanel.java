@@ -116,6 +116,7 @@ public class EditEquipmentFormPanel extends JPanel {
                 eq.setStatus(status);
 
                 JOptionPane.showMessageDialog(this, "Equipo modificado con éxito");
+                web.getCoordinator().updateTablas();
                 frame.setVisible(false);
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, "Error al mod equipo: " + ex.getMessage());

@@ -10,6 +10,7 @@ import org.isfpp.modelo.Web;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class DesplegableComponent<T> {
@@ -55,9 +56,22 @@ public class DesplegableComponent<T> {
         }
     }
 
-    private void updateTable() {
+    public void updateTable() {
+        // Inicializa dataList basado en el tipo del primer elemento
+        Object e = dataList.isEmpty() ? null : dataList.get(0);
+
+        if (e instanceof Equipment) {
+            dataList = (List<T>) new ArrayList<>(web.getHardware().values());
+        } else if (e instanceof Location) {
+            dataList = (List<T>) new ArrayList<>(web.getLocations().values());
+        } else if (e instanceof Connection) {
+            dataList = (List<T>) new ArrayList<>(web.getConnections());
+        }
+
+        // Ahora inicializa el array `data` con el tamaño adecuado de dataList
         Object[][] data = new Object[dataList.size()][3];
 
+        // Rellena los datos de la tabla
         for (int i = 0; i < dataList.size(); i++) {
             T item = dataList.get(i);
             if (item instanceof Equipment equipment) {
@@ -68,10 +82,10 @@ public class DesplegableComponent<T> {
                 data[i][0] = location.getCode();
                 data[i][1] = location.getDescription();
                 data[i][2] = location;
-            } else if (item instanceof Connection) {
-                data[i][0] = STR."\{((Connection) item).getPort1()} - \{((Connection) item).getPort2().getEquipment().getCode()}";
-                data[i][1] = ((Connection) item).getWire().getDescription();
-                data[i][2] = item;
+            } else if (item instanceof Connection connection) {
+                data[i][0] = String.format("%s - %s", connection.getPort1().getPortType().getCode(), connection.getPort2().getPortType().getCode());
+                data[i][1] = connection.getWire().getDescription();
+                data[i][2] = connection;
             } else {
                 data[i][0] = item.toString();
                 data[i][1] = "";
@@ -79,13 +93,18 @@ public class DesplegableComponent<T> {
             }
         }
 
+        // Actualiza el modelo de la tabla
         DefaultTableModel model = new DefaultTableModel(data, new String[]{"Nombre", "Descripción", "Objeto"});
         table.setModel(model);
 
+        // Oculta la columna de objetos
         table.getColumnModel().getColumn(2).setMinWidth(0);
         table.getColumnModel().getColumn(2).setMaxWidth(0);
         table.getColumnModel().getColumn(2).setWidth(0);
+
+        table.repaint();  // Redibuja la tabla
     }
+
 
     public void setCoordinator(Coordinator coordinator) {
         this.coordinator = coordinator;
@@ -178,4 +197,5 @@ public class DesplegableComponent<T> {
             }
         });
     }
+
 }

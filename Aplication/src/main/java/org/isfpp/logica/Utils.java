@@ -53,7 +53,7 @@ public class Utils {
             Equipment targetNode = c.getPort2().getEquipment();
 
             if (sourceNode.equals(targetNode)) throw new IllegalArgumentException("son el mismo equipo");
-            if (graph.containsEdge(sourceNode, targetNode))
+            if (!graph.containsEdge(sourceNode, targetNode))
                 graph.addEdge(sourceNode, targetNode, c);
         }
 
@@ -94,7 +94,7 @@ public class Utils {
         HashMap<String, Equipment> equipmentMap = new HashMap<>();
 
         // Insertar vértices (equipos) activos en el grafo temporal
-        for (Equipment e : graphTemp.vertexSet()) {
+        for (Equipment e : graph.vertexSet()) {
             if (e.isStatus()) {
                 graphTemp.addVertex(e);
                 equipmentMap.put(e.getCode(), e);
@@ -243,7 +243,7 @@ public class Utils {
 
         IntStream.range(startThirdSegment, 256).forEach(j -> {
             IntStream.range(start, 256).forEach(i -> {
-                String nuevaIP = parts[0] + "." + parts[1] + "." + j + "." + i;
+                String nuevaIP = STR."\{parts[0]}.\{parts[1]}.\{j}.\{i}";
                 System.out.println(nuevaIP);
                 if (Utils.ping(nuevaIP)) {
                     System.out.println("encontro");
