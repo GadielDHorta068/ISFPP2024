@@ -4,7 +4,6 @@ import org.isfpp.controller.Coordinator;
 import org.isfpp.datos.CargarParametros;
 import org.isfpp.interfaz.panelesCreadores.MainMenu;
 import org.isfpp.logica.Utils;
-import org.isfpp.modelo.Equipment;
 import org.isfpp.modelo.Web;
 
 import java.io.IOException;
@@ -12,7 +11,7 @@ import java.io.IOException;
 public class App {
 
     // l�gica
-    private Web web =null;
+    private Web web = null;
     private Utils utils;
     // vista
 
@@ -21,11 +20,11 @@ public class App {
     private Coordinator coordinator;
 
     public static void main(String[] args) throws IOException {
-         App app = new App();
+        App app = new App();
         CargarParametros.parametros();
-         app.inicio();
-         app.luanch();
-         app.minitest();
+        app.inicio();
+        app.luanch();
+        app.minitest();
 
     }
 
