@@ -9,7 +9,6 @@ import org.isfpp.modelo.PortType;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.*;
-import java.io.File;
 
 public class PortTypeSequentialDAO implements PortTypeDAO {
     private Hashtable<String, PortType> map;
@@ -37,7 +36,6 @@ public class PortTypeSequentialDAO implements PortTypeDAO {
                 portType.setCode(inFile.next());
                 portType.setDescription(inFile.next());
                 portType.setSpeed(inFile.nextInt());
-                System.out.println(portType.getCode()+"-"+portType.getDescription()+"-"+portType.getSpeed());
                 map.put(portType.getCode(),portType);
             }
         } catch (FileNotFoundException fileNotFoundException) {

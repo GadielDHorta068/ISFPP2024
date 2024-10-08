@@ -49,7 +49,6 @@ public class ConnectionSequentialDAO implements ConnectionDAO {
                 connection.setPort1(equipments.get(inFile.next()).checkPort(portTypes.get(inFile.next())));
                 connection.setPort2(equipments.get(inFile.next()).checkPort(portTypes.get(inFile.next())));
                 connection.setWire(wireTypes.get(inFile.next()));
-                System.out.println("dd"+"4");
                 map.add(connection);
             }
         } catch (FileNotFoundException fileNotFoundException) {
