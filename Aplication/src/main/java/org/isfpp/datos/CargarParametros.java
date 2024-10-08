@@ -1,6 +1,7 @@
 package org.isfpp.datos;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -15,11 +16,14 @@ public class CargarParametros {
 
     public static void parametros() throws IOException {
         Properties prop = new Properties();
-        InputStream Imput = new FileInputStream("config.properties");
-
-        prop.load(Imput);
+        try (InputStream input = Cargar.class.getClassLoader().getResourceAsStream("config.properties")) {
+            if (input == null) {
+                throw new FileNotFoundException("Archivo de propiedades no encontrado: " + "config.properties");
+            }
+            prop.load(input);
+        }
         equipementFile = prop.getProperty("rs.equipment");
-        connectionFile = prop.getProperty("rs.conection");
+        connectionFile = prop.getProperty("rs.connection");
         wireTypeFile = prop.getProperty("rs.wireType");
         equipementTypeFile = prop.getProperty("rs.equipmentType");
         portTypeFile = prop.getProperty("rs.portType");

@@ -4,6 +4,8 @@ import org.isfpp.dao.EquipmentDAO;
 import org.isfpp.dao.EquipmentTypeDAO;
 import org.isfpp.dao.LocationDAO;
 import org.isfpp.dao.PortTypeDAO;
+import org.isfpp.datos.Cargar;
+import org.isfpp.datos.CargarParametros;
 import org.isfpp.modelo.Equipment;
 import org.isfpp.modelo.EquipmentType;
 import org.isfpp.modelo.Location;
@@ -11,11 +13,12 @@ import org.isfpp.modelo.PortType;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.*;
 
 public class EquipmentSequentialDAO implements EquipmentDAO{
-    private HashMap<String, Equipment> map;
-    private String name;
+    private Hashtable<String, Equipment> map;
+    private String fileName;
     private boolean update;
     private Hashtable<String, PortType> portTypes;
     private Hashtable<String,EquipmentType> equipmentTypes;
@@ -25,17 +28,20 @@ public class EquipmentSequentialDAO implements EquipmentDAO{
         equipmentTypes = readEquipmentTypes();
         locations = readLocations();
         portTypes = readPortTypes();
-        ResourceBundle rb = ResourceBundle.getBundle("secuencial");
-        name = rb.getString("Equipments");
+        fileName = CargarParametros.getequipementFile();
         update = true;
     }
 
-    private HashMap<String, Equipment> readFromFile(String fileName) {
-        HashMap<String, Equipment> map = new HashMap<>();
+    private Hashtable<String, Equipment> readFromFile(String fileName) {
+        Hashtable<String, Equipment> map = new Hashtable<>();
         Scanner inFile = null;
 
         try {
-            inFile = new Scanner(new File(fileName));
+            InputStream inputStream = Cargar.class.getClassLoader().getResourceAsStream(fileName);
+            if (inputStream == null) {
+                throw new FileNotFoundException("Archivo no encontrado: " + fileName);
+            }
+            inFile = new Scanner(inputStream);
             inFile.useDelimiter("\\s*;\\s*");
             String[] minireader, minireader2;
             while (inFile.hasNext()) {
@@ -74,7 +80,7 @@ public class EquipmentSequentialDAO implements EquipmentDAO{
         return map;
     }
 
-    private void writeToFile(HashMap<String,Equipment> equipmentMap, String fileName) {
+    private void writeToFile(Hashtable<String,Equipment> equipmentMap, String fileName) {
         Formatter outFile = null;
         try {
             outFile = new Formatter(fileName);
@@ -113,7 +119,7 @@ public class EquipmentSequentialDAO implements EquipmentDAO{
     @Override
     public void insert(Equipment equipment) {
         map.put(equipment.getCode(),equipment);
-        writeToFile(map,name);
+        writeToFile(map,fileName);
         update = true;
     }
 
@@ -126,42 +132,30 @@ public class EquipmentSequentialDAO implements EquipmentDAO{
     @Override
     public void erase(Equipment equipment) {
         map.remove(equipment.getCode());
-        writeToFile(map, name);
+        writeToFile(map, fileName);
         update = true;
     }
 
     @Override
-    public List searchAll() {
+    public Hashtable<String,Equipment> searchAll() {
         if (update) {
-            map = readFromFile(name);
+            map = readFromFile(fileName);
             update = false;
         }
-        return new ArrayList<>(map.values());
+        return map;
     }
 
     private Hashtable<String, EquipmentType> readEquipmentTypes() {
-        Hashtable<String, EquipmentType> equipmentTypes = new Hashtable<String, EquipmentType>();
         EquipmentTypeDAO equipmentTypeDAO = new EquipmentTypeSequentialDAO();
-        List<EquipmentType> typeList = equipmentTypeDAO.searchAll();
-        for (EquipmentType type: typeList)
-            equipmentTypes.put(type.getCode(), type);
-        return equipmentTypes;
+       return equipmentTypeDAO.searchAll();
     }
     private Hashtable<String,Location> readLocations(){
-        Hashtable<String,Location> locations = new Hashtable<>();
         LocationDAO locationDAO = new LocationSequentialDAO();
-        List<Location> locationList = locationDAO.searchAll();
-        for (Location location: locationList)
-            locations.put(location.getCode(),location);
-        return locations;
+        return  locationDAO.searchAll();
     }
 
     private Hashtable<String, PortType> readPortTypes() {
-        Hashtable<String,PortType> portTypes = new Hashtable<>();
         PortTypeDAO portTypeDAO = new PortTypeSequentialDAO();
-        List<PortType> portTypeList = portTypeDAO.searchAll();
-        for (PortType portType: portTypeList)
-            portTypes.put(portType.getCode(),portType);
-        return portTypes;
+        return portTypeDAO.searchAll();
     }
 }

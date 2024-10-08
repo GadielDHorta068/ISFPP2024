@@ -2,31 +2,36 @@ package org.isfpp.dao.Secuencial;
 
 import org.isfpp.dao.EquipmentDAO;
 import org.isfpp.dao.EquipmentTypeDAO;
+import org.isfpp.datos.Cargar;
+import org.isfpp.datos.CargarParametros;
 import org.isfpp.modelo.Equipment;
 import org.isfpp.modelo.EquipmentType;
 import org.isfpp.modelo.PortType;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.*;
 
 public class EquipmentTypeSequentialDAO implements EquipmentTypeDAO {
-    private HashMap<String, EquipmentType> map;
-    private String name;
+    private Hashtable<String, EquipmentType> map;
+    private String fileName;
     private boolean update;
 
     public EquipmentTypeSequentialDAO() {
-        ResourceBundle rb = ResourceBundle.getBundle("secuencial");
-        name = rb.getString("Equipments");
+        fileName = CargarParametros.geequipementTypeFile();
         update = true;
     }
 
-    private HashMap<String, EquipmentType> readFromFile(String fileName) {
-        HashMap<String, EquipmentType> map = new HashMap<>();
+    private Hashtable<String, EquipmentType> readFromFile(String fileName) {
+        Hashtable<String, EquipmentType> map = new Hashtable<>();
         Scanner inFile = null;
-
         try {
-            inFile = new Scanner(new File(fileName));
+            InputStream inputStream = Cargar.class.getClassLoader().getResourceAsStream(fileName);
+            if (inputStream == null) {
+                throw new FileNotFoundException("Archivo no encontrado: " + fileName);
+            }
+            inFile = new Scanner(inputStream);
             inFile.useDelimiter("\\s*;\\s*");
             String[] minireader, minireader2;
             while (inFile.hasNext()) {
@@ -52,7 +57,7 @@ public class EquipmentTypeSequentialDAO implements EquipmentTypeDAO {
         return map;
     }
 
-    private void writeToFile(HashMap<String,EquipmentType> equipmentTypeMap, String fileName) {
+    private void writeToFile(Hashtable<String,EquipmentType> equipmentTypeMap, String fileName) {
         Formatter outFile = null;
         try {
             outFile = new Formatter(fileName);
@@ -72,7 +77,7 @@ public class EquipmentTypeSequentialDAO implements EquipmentTypeDAO {
     @Override
     public void insert(EquipmentType equipmentType) {
         map.put(equipmentType.getCode(),equipmentType);
-        writeToFile(map,name);
+        writeToFile(map,fileName);
         update = true;
     }
 
@@ -85,16 +90,16 @@ public class EquipmentTypeSequentialDAO implements EquipmentTypeDAO {
     @Override
     public void erase(EquipmentType equipmentType) {
         map.remove(equipmentType.getCode());
-        writeToFile(map, name);
+        writeToFile(map, fileName);
         update = true;
     }
 
     @Override
-    public List<EquipmentType> searchAll() {
+    public Hashtable<String,EquipmentType> searchAll() {
         if (update) {
-            map = readFromFile(name);
+            map = readFromFile("data" + File.separator + "tipoEquipo.txt");
             update = false;
         }
-        return new ArrayList<>(map.values());
+        return map;
     }
 }

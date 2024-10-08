@@ -2,6 +2,7 @@ package org.isfpp.Service;
 
 import org.isfpp.modelo.Location;
 
+import java.util.Hashtable;
 import java.util.List;
 
 public interface LocationService {
@@ -12,5 +13,5 @@ public interface LocationService {
 
     void erase(Location location);
 
-    List<Location> searchAll();
+    Hashtable<String,Location> searchAll();
 }

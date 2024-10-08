@@ -5,6 +5,7 @@ import org.isfpp.dao.LocationDAO;
 import org.isfpp.dao.Secuencial.LocationSequentialDAO;
 import org.isfpp.modelo.Location;
 
+import java.util.Hashtable;
 import java.util.List;
 
 public class LocationServiceImpl implements LocationService{
@@ -32,7 +33,7 @@ public class LocationServiceImpl implements LocationService{
     }
 
     @Override
-    public List<Location> searchAll() {
+    public Hashtable<String,Location> searchAll() {
         return LocationDAO.searchAll();
     }
 }

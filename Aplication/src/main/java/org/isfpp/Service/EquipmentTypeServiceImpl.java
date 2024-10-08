@@ -4,6 +4,7 @@ import org.isfpp.dao.EquipmentTypeDAO;
 import org.isfpp.modelo.EquipmentType;
 import org.isfpp.dao.Secuencial.EquipmentTypeSequentialDAO;
 
+import java.util.Hashtable;
 import java.util.List;
 
 public class EquipmentTypeServiceImpl implements EquipmentTypeService {
@@ -30,7 +31,7 @@ public class EquipmentTypeServiceImpl implements EquipmentTypeService {
     }
 
     @Override
-    public List<EquipmentType> searchAll() {
+    public Hashtable<String,EquipmentType> searchAll() {
         return EquipmentTypeDAO.searchAll();
     }
 

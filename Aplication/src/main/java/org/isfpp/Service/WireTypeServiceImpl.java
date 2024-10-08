@@ -5,6 +5,7 @@ import org.isfpp.dao.Secuencial.WireTypeSequentialDAO;
 import org.isfpp.dao.WireTypeDAO;
 import org.isfpp.modelo.WireType;
 
+import java.util.Hashtable;
 import java.util.List;
 
 
@@ -33,7 +34,7 @@ public class WireTypeServiceImpl implements WireTypeService {
     }
 
     @Override
-    public List<WireType> searchAll() {
+    public Hashtable<String,WireType> searchAll() {
         return WireTypeDAO.searchAll();
     }
 }

@@ -4,20 +4,53 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.isfpp.Service.*;
 import org.isfpp.controller.Coordinator;
+import org.isfpp.datos.CargarParametros;
 import org.isfpp.exceptions.AlreadyExistException;
 import org.isfpp.exceptions.NotFoundException;
 
 public class Web {
-	private HashMap<String, Equipment> hardware;
-	private ArrayList<Connection> connections;
-	private HashMap<String, Location> locations;
-	private String nombre;
-	private final HashMap<Object, EquipmentType> EquipmentTypes;
-	private final HashMap<String,WireType>wireTypes;
-	private final HashMap<String,PortType>portTypes;
+	private static  Web web = null;
 	private Coordinator coordinator;
 
+	private String nombre;
+	private HashMap<String, Equipment> hardware;
+	private EquipmentService equipmentService;
+	private ArrayList<Connection> connections;
+	private ConnectionService connectionService;
+	private HashMap<String, Location> locations;
+	private LocationService locationService;
+	private final HashMap<Object, EquipmentType> equipmentTypes;
+	private EquipmentTypeService equipmentTypeService;
+	private final HashMap<String,WireType>wireTypes;
+	private WireTypeService wireTypeService;
+	private final HashMap<String,PortType>portTypes;
+	private PortTypeService portTypeService;
+
+	//constructor protoDao-Service
+	public Web() {
+		super();
+		setNombre("RedLocal");
+		this.wireTypes				= new HashMap<>();
+		this.wireTypeService 		= new WireTypeServiceImpl();
+		wireTypes.putAll(wireTypeService.searchAll());
+		this.portTypes				= new HashMap<>();
+		this.portTypeService 		= new PortTypeServiceImpl();
+		portTypes.putAll(portTypeService.searchAll());
+		this.equipmentTypes			= new HashMap<>();
+		this.equipmentTypeService 	= new EquipmentTypeServiceImpl();
+		equipmentTypes.putAll(equipmentTypeService.searchAll());
+		this.locations 				= new HashMap<>();
+		this.locationService 		= new LocationServiceImpl();
+		locations.putAll(locationService.searchAll());
+		this.hardware     			= new HashMap<>();
+		this.equipmentService 		= new EquipmentServiceImpl();
+		hardware.putAll(equipmentService.searchAll());
+		this.connections 			= new ArrayList<>();
+		this.connectionService 		= new ConnectionServiceImpl();
+		connections.addAll(connectionService.searchAll());
+	}
 
 	public Web(String nombre) {
 		super();
@@ -27,7 +60,34 @@ public class Web {
 		this.locations = new HashMap<>();
 		this.wireTypes= new HashMap<>();
 		this.portTypes= new HashMap<>();
-		this.EquipmentTypes= new HashMap<>();
+		this.equipmentTypes= new HashMap<>();
+	}
+
+	public static Web getWeb() {
+		if (web ==  null)
+			web = new Web();
+		return web;
+	}
+
+	public void addEquipment1(Equipment equipment) throws AlreadyExistException {
+		if (hardware.containsKey(equipment.getCode()))
+			throw new AlreadyExistException("el equipo ya existe");
+		hardware.put(equipment.getCode(),equipment);
+		equipmentService.insert(equipment);
+	}
+
+	public void updateEquipment(Equipment equipment) {
+		hardware.replace(equipment.getCode(), equipment);
+		equipmentService.update(equipment);
+	}
+
+	public void deleteEquipment(Equipment equipment) {
+		hardware.remove(equipment.getCode());
+		equipmentService.erase(equipment);
+	}
+
+	public Equipment searchEquipment(Equipment equipment) {
+		return hardware.get(equipment.getCode());
 	}
 
 	public HashMap<String, Equipment> getHardware() {
@@ -100,10 +160,10 @@ public class Web {
 		return w;
 	}
 	public EquipmentType addEquipmentType(String code,String description){
-		if(EquipmentTypes.containsKey(code))
+		if(equipmentTypes.containsKey(code))
 			throw new AlreadyExistException("el tipo de equipo ya existe");
 		EquipmentType e=new EquipmentType(code,description);
-		EquipmentTypes.put(code,e);
+		equipmentTypes.put(code,e);
 		return e;
 	}
 	public Equipment addEquipment(String code, String description, String marca, String model, PortType portType,int cantidad,
@@ -112,7 +172,7 @@ public class Web {
 			throw new AlreadyExistException("el equipo ya se encuentra");
 		if(!portTypes.containsKey(portType.getCode()))
 			throw new NotFoundException("El puerto no se encuentra en la lista");
-		if(!EquipmentTypes.containsKey(equipmentType.getCode()))
+		if(!equipmentTypes.containsKey(equipmentType.getCode()))
 			throw new NotFoundException("El tipo de equipo no se encuentra en la lista");
 		Equipment e = new Equipment(code, description, marca, model, portType,cantidad, equipmentType, location,status);
 		hardware.put(code, e);
@@ -135,7 +195,7 @@ public class Web {
 		List<String> codes = new ArrayList<>();
 		for (org.isfpp.modelo.Connection connection : connections) {
 			if(connection.getWire().equals(w))
-				codes.add(STR."\{connection.getPort1().getEquipment().getCode()}<->\{connection.getPort2().getEquipment().getCode()}");
+				codes.add(connection.getPort1().getEquipment().getCode()+"<->"+connection.getPort2().getEquipment().getCode());
 		}
 		if (!codes.isEmpty())
 			throw new IllegalStateException("las siguientes conexiones tienen ese tipo de cable" + codes);
@@ -164,7 +224,7 @@ public class Web {
 			throw new NotFoundException("El equipo " + port2.getEquipment().getCode() + " no se encuentra.");
 		}
 
-		org.isfpp.modelo.Connection connection = new Connection(port2,port1, wire);
+		org.isfpp.modelo.Connection connection = new org.isfpp.modelo.Connection(port1, port2,wire);
 
 		if (connections.contains(connection)) {
 			throw new AlreadyExistException("La conexión entre " + port1.getEquipment().getCode() + " y " + port2.getEquipment().getCode() + " ya existe.");
@@ -176,7 +236,7 @@ public class Web {
 	}
 
 	public HashMap<Object, EquipmentType> getEquipmentTypes() {
-		return EquipmentTypes;
+		return equipmentTypes;
 	}
 
 	public HashMap<String, WireType> getWireTypes() {
@@ -198,6 +258,10 @@ public class Web {
 		connections.remove(connection);
 	}
 
+	public void setCoordinator(Coordinator coordinator) {
+		this.coordinator = coordinator;
+	}
+
 	@Override
 	public String toString() {
 		return "Web{" +
@@ -205,14 +269,9 @@ public class Web {
 				", connections=" + connections +
 				", locations=" + locations +
 				", nombre='" + nombre + '\'' +
-				", EquipmentTypes=" + EquipmentTypes +
+				", EquipmentTypes=" + equipmentTypes +
 				", wireTypes=" + wireTypes +
 				", portTypes=" + portTypes +
 				'}';
 	}
-	public void setCoordinator(Coordinator coordinator) {
-		this.coordinator = coordinator;
-	}
-
-
 }

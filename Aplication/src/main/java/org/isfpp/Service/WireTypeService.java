@@ -2,6 +2,7 @@ package org.isfpp.Service;
 
 import org.isfpp.modelo.WireType;
 
+import java.util.Hashtable;
 import java.util.List;
 
 public interface WireTypeService {
@@ -11,6 +12,6 @@ public interface WireTypeService {
 
     void erase(WireType wireType);
 
-    List<WireType> searchAll();
+    Hashtable<String,WireType> searchAll();
 
 }

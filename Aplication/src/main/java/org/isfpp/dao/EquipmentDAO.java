@@ -1,5 +1,8 @@
 package org.isfpp.dao;
 import org.isfpp.modelo.Equipment;
+
+import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 
 public interface EquipmentDAO {
@@ -9,5 +12,5 @@ public interface EquipmentDAO {
 
     void erase(Equipment equipment);   // Elimina un Equipment por su ID
 
-    List<Equipment> searchAll();       // Lee todos los Equipments
+    Hashtable<String,Equipment> searchAll();       // Lee todos los Equipments
 }
