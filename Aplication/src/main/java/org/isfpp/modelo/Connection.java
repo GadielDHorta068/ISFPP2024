@@ -12,7 +12,7 @@ public class Connection {
 		super();
 		if (port1.getEquipment().equals(port2.getEquipment()))
 			throw new IllegalArgumentException("ambos son iguales");
-		if(port1.getEquipment().equals(port2.getEquipment()))
+		if(port2.getEquipment().equals(port1.getEquipment()))
 			throw new IllegalArgumentException("ambos puertos pertenecen al mismo equipo");
 		if (port1.isInUse() || port2.isInUse())
 			throw new IllegalArgumentException("uno o ambos puertos se encuentran en uso");

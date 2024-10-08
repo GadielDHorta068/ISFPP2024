@@ -11,12 +11,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-
 public class Coordinator{
     private Web web;
     private Utils utils;
     private MainMenu mainMenu;
-
+    private Object selectedItem;
 
     public Utils getUtils() {
         return utils;
@@ -124,5 +123,13 @@ public class Coordinator{
     public List<String> scanIP(String ip){return utils.scanIP(ip);}
 
     public void LoadData(Web web) {this.utils.LoadData(web);
+    }
+
+    public Object getSelectedItem() {
+        return selectedItem;
+    }
+
+    public void setSelectedItem(Object selectedItem) {
+        this.selectedItem = selectedItem;
     }
 }

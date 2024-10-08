@@ -55,7 +55,6 @@ public class Utils {
             if (sourceNode.equals(targetNode)) throw new IllegalArgumentException("son el mismo equipo");
             if (graph.containsEdge(sourceNode, targetNode))
                 graph.addEdge(sourceNode, targetNode, c);
-
         }
 
 
