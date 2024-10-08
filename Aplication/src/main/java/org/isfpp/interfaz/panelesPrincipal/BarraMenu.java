@@ -11,6 +11,7 @@ import org.isfpp.interfaz.panelesEditadores.EditConnection;
 import org.isfpp.interfaz.panelesEditadores.EditEquipmentFormPanel;
 import org.isfpp.interfaz.panelesEditadores.EditLocationFormPanel;
 import org.isfpp.interfaz.panelesEditadores.EditPortTypeFormPanel;
+import org.isfpp.interfaz.stylusUI.PingListEquipment;
 import org.isfpp.interfaz.stylusUI.StylusUI;
 import org.isfpp.logica.Traceroute;
 import org.isfpp.modelo.*;
@@ -183,11 +184,24 @@ public class BarraMenu {
         StylusUI.styleMenu(ayudaMenu);
         JMenu herramientasMenu = new JMenu("Herramientas");
         JMenuItem ipScan = new JMenuItem("Scan IP");
+        JMenuItem ipList = new JMenuItem("lista IP");
         herramientasMenu.add(ipScan);
+        herramientasMenu.add(ipList);
         StylusUI.styleMenuItem(ipScan);
+        StylusUI.styleMenuItem(ipList);
         StylusUI.styleMenu(herramientasMenu);
+
         herramientasMenu.add(verGrafo);
         herramientasMenu.add(traceRouter);
+        ipList.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                PingListEquipment pingListEquipment = new PingListEquipment();
+                pingListEquipment.setCoordinator(coordinator);
+                pingListEquipment.ping();
+            }
+        });
+
 
         traceRouter.addActionListener(new ActionListener() {
             @Override
