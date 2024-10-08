@@ -105,6 +105,7 @@ public class EditConnection extends JPanel {
                 web.addConnection(port1,port2,wire);
 
                 JOptionPane.showMessageDialog(this, "Red creada con éxito");
+                web.getCoordinator().updateTablas();
                 frame.setVisible(false);
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, "Error al crear equipo: " + ex.getMessage());

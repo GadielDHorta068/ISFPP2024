@@ -11,7 +11,7 @@ import org.isfpp.interfaz.panelesEditadores.EditConnection;
 import org.isfpp.interfaz.panelesEditadores.EditEquipmentFormPanel;
 import org.isfpp.interfaz.panelesEditadores.EditLocationFormPanel;
 import org.isfpp.interfaz.panelesEditadores.EditPortTypeFormPanel;
-import org.isfpp.interfaz.stylusUI.PingListEquipment;
+import org.isfpp.interfaz.PingListEquipment;
 import org.isfpp.interfaz.stylusUI.StylusUI;
 import org.isfpp.logica.Traceroute;
 import org.isfpp.modelo.*;

@@ -240,6 +240,9 @@ public class Web {
 	public void setCoordinator(Coordinator coordinator) {
 		this.coordinator = coordinator;
 	}
+	public Coordinator getCoordinator(){
+		return coordinator;
+	}
 
 
 }

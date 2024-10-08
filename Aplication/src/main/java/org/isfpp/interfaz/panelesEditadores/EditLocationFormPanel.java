@@ -49,6 +49,7 @@ public class EditLocationFormPanel extends JPanel {
                 loc.setCode(code);
                 loc.setDescription(description);
                 JOptionPane.showMessageDialog(this, "Ubicacion modificado con éxito");
+                web.getCoordinator().updateTablas();
                 frame.setVisible(false);
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, STR."Error modificar: \{ex.getMessage()}");

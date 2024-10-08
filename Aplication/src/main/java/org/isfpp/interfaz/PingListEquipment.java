@@ -1,16 +1,12 @@
-package org.isfpp.interfaz.stylusUI;
+package org.isfpp.interfaz;
 
 import org.isfpp.controller.Coordinator;
+import org.isfpp.interfaz.stylusUI.StylusUI;
 import org.isfpp.modelo.Equipment;
-import org.jgrapht.graph.DefaultWeightedEdge;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class PingListEquipment {
@@ -30,6 +26,7 @@ public class PingListEquipment {
         textArea.setEditable(false);
         JScrollPane scrollPane = new JScrollPane(textArea);
         direcciones=coordinator.ping();
+        updateTextArea();
         JPanel northPanel = new JPanel();
         frame.getContentPane().add(scrollPane, BorderLayout.CENTER);// Añadir el panel con los dos JTextField
         StylusUI.aplicarEstiloScrollPane(scrollPane);
