@@ -235,22 +235,25 @@ public class Utils {
     }
 
     //Charlar este metodo con el profe
-    public List<String> scanIP(String ip) {
+        public List<String> scanIP(String ip) {
         String[] parts = ip.split("\\.");
-        List<String> ipList=new ArrayList<>();
+        List<String> ipList = new ArrayList<>();
         int start = Integer.parseInt(parts[3]);
-        IntStream.range(start, 256).forEach(i -> {
-            String nuevaIP = parts[0] + "." + parts[1] + "." + parts[2] + "." + i;
-            System.out.println(nuevaIP);
-            if (Utils.ping(nuevaIP)) {
-                System.out.println("encontro");
-                ipList.add(nuevaIP);
-            }
+        int startThirdSegment = Integer.parseInt(parts[2]);
+
+        IntStream.range(startThirdSegment, 256).forEach(j -> {
+            IntStream.range(start, 256).forEach(i -> {
+                String nuevaIP = parts[0] + "." + parts[1] + "." + j + "." + i;
+                System.out.println(nuevaIP);
+                if (Utils.ping(nuevaIP)) {
+                    System.out.println("encontro");
+                    ipList.add(nuevaIP);
+                }
+            });
         });
 
         return ipList; // Devolver la lista de IPs válidas
     }
-
 }
 
 
