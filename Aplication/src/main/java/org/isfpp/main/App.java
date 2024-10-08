@@ -40,7 +40,7 @@ public class App {
         coordinator.setWeb(web);
         coordinator.setUtils(utils);
         coordinator.setMainMenu(mainMenu);
-        utils.LoadData(coordinator.getWeb());
+        coordinator.LoadData(coordinator.getWeb());
         mainMenu.components(coordinator.getWeb());
 
     }

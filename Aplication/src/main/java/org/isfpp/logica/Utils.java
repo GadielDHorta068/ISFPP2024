@@ -14,6 +14,8 @@ import org.jgrapht.graph.SimpleWeightedGraph;
 import org.jgrapht.traverse.BreadthFirstIterator;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.IntStream;
 
 public class Utils {
@@ -175,7 +177,8 @@ public class Utils {
 
         return visitedNodes;
     }
-// metodo incorrecto, cuando se hace ping se entrega una ip, no se puede mandar una pc por internet(?
+
+    // metodo incorrecto, cuando se hace ping se entrega una ip, no se puede mandar una pc por internet(?
     public boolean ping(Equipment e1) {
         if (!graph.containsVertex(e1))
             throw new NotFoundException("equipo no se encuentra");
@@ -183,14 +186,14 @@ public class Utils {
     }
 
 
-    public static boolean ping(String ip){
-        if(graph != null){
+    public static boolean ping(String ip) {
+        if (graph != null) {
             for (Equipment equipo : graph.vertexSet()) {
-                if(equipo.getIpAdresses().contains(ip)){
+                if (equipo.getIpAdresses().contains(ip)) {
                     return true;
                 }
             }
-        }else{
+        } else {
             System.out.println("El graph es null");
         }
         return false;
@@ -205,6 +208,24 @@ public class Utils {
 
     }
 
+    private boolean checkIp(String ip) {
+        String[] parts = ip.split("\\.");
+        if (parts.length != 4) return false;
+
+        for (String part : parts) {
+            try {
+                int value = Integer.parseInt(part);
+                if (value < 0 || value > 255) {
+                    return false;
+                }
+            } catch (NumberFormatException e) {
+                throw new NumberFormatException("es una ip valida");
+            }
+        }
+        return true;
+    }
+
+
     public void setCoordinator(Coordinator coordinator) {
         this.coordinator = coordinator;
     }
@@ -212,18 +233,24 @@ public class Utils {
     public static List<PortType> convertSetToList(Set<PortType> set) {
         return new ArrayList<>(set);
     }
-//Charlar este metodo con el profe
-    public static void scanIP(String ip){
-        List<String> direcciones = new ArrayList<>();
+
+    //Charlar este metodo con el profe
+    public List<String> scanIP(String ip) {
         String[] parts = ip.split("\\.");
+        List<String> ipList=new ArrayList<>();
         int start = Integer.parseInt(parts[3]);
         IntStream.range(start, 256).forEach(i -> {
-            String nuevaIP = parts[0] + "." + parts[1] + "." + parts[2] + "." + parts[3];
-            if(ping(ip)){
-                direcciones.addLast(nuevaIP);
+            String nuevaIP = parts[0] + "." + parts[1] + "." + parts[2] + "." + i;
+            System.out.println(nuevaIP);
+            if (Utils.ping(nuevaIP)) {
+                System.out.println("encontro");
+                ipList.add(nuevaIP);
             }
         });
+
+        return ipList; // Devolver la lista de IPs válidas
     }
+
 }
 
 

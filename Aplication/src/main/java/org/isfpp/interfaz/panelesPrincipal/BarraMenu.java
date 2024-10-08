@@ -21,7 +21,6 @@ import java.io.IOException;
 public class BarraMenu {
     private final Web web;
     private Coordinator coordinator;
-    //Obtener en una variable el item seleccionado de las tablas
 
     public BarraMenu(Web web) {
         this.web = web;
@@ -40,26 +39,32 @@ public class BarraMenu {
         JMenuItem salirItem = new JMenuItem("Salir");
         StylusUI.styleMenuItem(salirItem);
 
-        cargarItem.addActionListener(e -> {
-            // Lógica para cargar
-            System.out.println("Cargar seleccionado");
+        cargarItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Lógica para cargar
+                System.out.println("Cargar seleccionado");
+            }
         });
 
-        guardarItem.addActionListener(e -> {
-            JFileChooser fileChooser = new JFileChooser();
-            fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-            int result = fileChooser.showSaveDialog(null);
+        guardarItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFileChooser fileChooser = new JFileChooser();
+                fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+                int result = fileChooser.showSaveDialog(null);
 
-            if (result == JFileChooser.APPROVE_OPTION) {
-                String directory = fileChooser.getSelectedFile().getAbsolutePath();
-                System.out.println(STR."Guardar seleccionado: \{directory}");
+                if (result == JFileChooser.APPROVE_OPTION) {
+                    String directory = fileChooser.getSelectedFile().getAbsolutePath();
+                    System.out.println("Guardar seleccionado: " + directory);
 
-                // Actualizar las rutas de los archivos en el objeto Guardar
-                try {
-                    Guardar guardar = new Guardar("config.properties");
-                    //guardar.saveAll();
-                } catch (IOException ex) {
-                    ex.printStackTrace();
+                    // Actualizar las rutas de los archivos en el objeto Guardar
+                    try {
+                        Guardar guardar = new Guardar("config.properties");
+                        //guardar.saveAll();
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
                 }
             }
         });
@@ -89,6 +94,8 @@ public class BarraMenu {
         StylusUI.styleMenuItem(eliminarItem);
         JMenuItem verGrafo = new JMenuItem("Visualizar Grafo");
         StylusUI.styleMenuItem(verGrafo);
+        JMenuItem traceRouter = new JMenuItem("tracerouter");
+        StylusUI.styleMenuItem(traceRouter);
 
         JMenuItem editarItem = new JMenuItem("Editar");
         StylusUI.styleMenuItem(editarItem);
@@ -105,6 +112,11 @@ public class BarraMenu {
                 }
             }
 
+        agregarUbicacionItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new LocationFormPanel(web);
+            }
         });
         agregarEquipoItem.addActionListener(e -> new EquipmentFormPanel(web));
 
@@ -126,7 +138,9 @@ public class BarraMenu {
                     System.out.println(STR."Clase no detectada\{editar.getClass()}");
                 }
             }
-                });
+        });
+
+        //eliminarItem.addActionListener(e -> desplegableComponent.removeSelectedEquipment());
         editarMenu.add(agregarEquipoItem);
         editarMenu.add(agregarPuertoItem);
         editarMenu.add(agregarUbicacionItem);
@@ -140,9 +154,22 @@ public class BarraMenu {
         StylusUI.styleMenuItem(ipScan);
         StylusUI.styleMenu(herramientasMenu);
         herramientasMenu.add(verGrafo);
+        herramientasMenu.add(traceRouter);
 
+        traceRouter.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            }
+        });
 
-        ipScan.addActionListener(e -> new IPFrame());
+        ipScan.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                IPFrame ipFrame=new IPFrame();
+                ipFrame.setCoordinator(coordinator);
+                ipFrame.scanIp();
+            }
+        });
 
         menuBar.add(editarMenu);
         menuBar.add(ayudaMenu);
