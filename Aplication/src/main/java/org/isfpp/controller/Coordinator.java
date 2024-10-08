@@ -1,9 +1,6 @@
 package org.isfpp.controller;
 
-import org.isfpp.interfaz.GUI;
-import org.isfpp.interfaz.IPFrame;
 import org.isfpp.interfaz.panelesCreadores.MainMenu;
-import org.isfpp.interfaz.panelesPrincipal.BarraMenu;
 import org.isfpp.logica.Utils;
 import org.isfpp.modelo.*;
 import org.jgrapht.Graph;
@@ -12,6 +9,7 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 
 public class Coordinator{
@@ -122,5 +120,9 @@ public class Coordinator{
 
     public void setMainMenu(MainMenu mainMenu) {
         this.mainMenu = mainMenu;
+    }
+    public List<String> scanIP(String ip){return utils.scanIP(ip);}
+
+    public void LoadData(Web web) {this.utils.LoadData(web);
     }
 }
