@@ -110,7 +110,9 @@ public class BarraMenu {
                     assert editar != null;
                     System.out.println(STR."Clase no detectada\{editar.getClass()}");
                 }
+
             }
+        });
 
         agregarUbicacionItem.addActionListener(new ActionListener() {
             @Override
@@ -124,9 +126,9 @@ public class BarraMenu {
 
         agregarUbicacionItem.addActionListener(_ -> new LocationFormPanel(web));
 
-        verGrafo.addActionListener(_ -> new VisualizarGrafo(web.getHardware() , web.getConnections()));
+        verGrafo.addActionListener(_ -> new VisualizarGrafo(web.getHardware(), web.getConnections()));
 
-        eliminarItem.addActionListener(e ->{
+        eliminarItem.addActionListener(e -> {
             Object editar = coordinator.getSelectedItem();
             switch (editar) {
                 case Equipment equipment -> web.eraseEquipment(equipment);
@@ -156,7 +158,7 @@ public class BarraMenu {
         herramientasMenu.add(verGrafo);
         herramientasMenu.add(traceRouter);
 
-        traceRouter.addActionListener(new ActionListener(){
+        traceRouter.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
             }
@@ -165,7 +167,7 @@ public class BarraMenu {
         ipScan.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                IPFrame ipFrame=new IPFrame();
+                IPFrame ipFrame = new IPFrame();
                 ipFrame.setCoordinator(coordinator);
                 ipFrame.scanIp();
             }
@@ -177,7 +179,10 @@ public class BarraMenu {
 
         return menuBar;
     }
+
+
     public void setCoordinador(Coordinator coordinator) {
         this.coordinator = coordinator;
     }
 }
+
