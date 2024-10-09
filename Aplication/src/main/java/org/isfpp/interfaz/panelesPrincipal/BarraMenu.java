@@ -185,7 +185,7 @@ public class BarraMenu {
                 traceroute.trace();
             }
         });
-        ipScan.addActionListener(new ActionListener() {
+        connectionIssues.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 ConnectionIssues connection = new ConnectionIssues();

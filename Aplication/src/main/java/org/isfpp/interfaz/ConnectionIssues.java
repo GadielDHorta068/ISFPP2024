@@ -64,7 +64,9 @@ public class ConnectionIssues {
             public void actionPerformed(ActionEvent e) {
                 direcciones.clear();
                 try {
-                    direcciones = coordinator.detectConnectivityIssues(coordinator.getHardware().get(defecto));
+                    textArea.setText("");
+                    String equipo=ipInicial.getText().toUpperCase();
+                    direcciones = coordinator.detectConnectivityIssues(coordinator.getHardware().get(equipo));
                     updateTextArea();
                 } catch (Exception exception) {
                     textArea.setText("");
@@ -87,8 +89,13 @@ public class ConnectionIssues {
 
     private void updateTextArea () {
         textArea.setText("");
-        for (Equipment direccion : direcciones) {
-            textArea.append(direccion.getCode() + "\n");
+        if (direcciones.size()==1){
+            textArea.append("no esta conectado a ningun equipo");
+        }
+        else {
+            for (Equipment direccion : direcciones) {
+                textArea.append(direccion.getCode() + "\n");
+            }
         }
     }
 

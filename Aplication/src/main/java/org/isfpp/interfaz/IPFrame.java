@@ -93,9 +93,12 @@ public class IPFrame {
 
         private void updateTextArea () {
         textArea.setText("");
-        for (String direccion : direcciones) {
-            textArea.append(direccion + "\n");
-        }
+        System.out.println(direcciones.size());
+
+            for (String direccion : direcciones) {
+                textArea.append(direccion + "\n");
+            }
+
     }
 
     public void setCoordinator(Coordinator coordinator) {
