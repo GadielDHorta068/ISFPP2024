@@ -215,10 +215,7 @@ public class Equipment {
     public String toString () {
         return code + "\n"
                 + description + "\n"
-                + make + "\n"
-                +  model + "\n"
-                + ipAdresses + "\n"
-                +  location.getDescription();
+                ;
 
     }
 }

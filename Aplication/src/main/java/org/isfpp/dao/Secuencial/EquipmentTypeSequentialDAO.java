@@ -8,9 +8,7 @@ import org.isfpp.modelo.Equipment;
 import org.isfpp.modelo.EquipmentType;
 import org.isfpp.modelo.PortType;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.*;
 
 public class EquipmentTypeSequentialDAO implements EquipmentTypeDAO {
@@ -58,19 +56,15 @@ public class EquipmentTypeSequentialDAO implements EquipmentTypeDAO {
     }
 
     private void writeToFile(Hashtable<String,EquipmentType> equipmentTypeMap, String fileName) {
-        Formatter outFile = null;
-        try {
-            outFile = new Formatter(fileName);
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, false))) {
             for (EquipmentType equipmentType: equipmentTypeMap.values()) {
-                outFile.format("%s;%s;\n", equipmentType.getCode(),equipmentType.getDescription());
+                writer.write(String.format("%s;%s;", equipmentType.getCode(),equipmentType.getDescription()));
+                writer.newLine();
             }
-        } catch (FileNotFoundException fileNotFoundException) {
-            System.err.println("Error creating file.");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         } catch (FormatterClosedException formatterClosedException) {
             System.err.println("Error writing to file.");
-        } finally {
-            if (outFile != null)
-                outFile.close();
         }
     }
 

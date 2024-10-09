@@ -6,8 +6,7 @@ import org.isfpp.datos.Cargar;
 import org.isfpp.datos.CargarParametros;
 import org.isfpp.modelo.PortType;
 
-import java.io.FileNotFoundException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.*;
 
 public class PortTypeSequentialDAO implements PortTypeDAO {
@@ -55,19 +54,12 @@ public class PortTypeSequentialDAO implements PortTypeDAO {
     }
 
     private void writeToFile(Hashtable<String,PortType> portTypeMap, String fileName) {
-        Formatter outFile = null;
-        try {
-            outFile = new Formatter(fileName);
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, false))) {
             for (PortType portType: portTypeMap.values()) {
-                outFile.format("%s;%s;%s;\n", portType.getCode(), portType.getDescription(), portType.getSpeed());
+                writer.write(String.format("%s;%s;%s;\n", portType.getCode(), portType.getDescription(), portType.getSpeed()));
             }
-        } catch (FileNotFoundException fileNotFoundException) {
-            System.err.println("Error creating file.");
-        } catch (FormatterClosedException formatterClosedException) {
-            System.err.println("Error writing to file.");
-        } finally {
-            if (outFile != null)
-                outFile.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 

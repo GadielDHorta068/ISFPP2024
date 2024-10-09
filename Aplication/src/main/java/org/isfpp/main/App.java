@@ -9,13 +9,13 @@ import org.isfpp.modelo.Web;
 import java.io.IOException;
 
 public class App {
-
     // l�gica
     private Web web = null;
     private Utils utils;
-    // vista
 
+    // vista
     private MainMenu mainMenu;
+
     // controlador
     private Coordinator coordinator;
 

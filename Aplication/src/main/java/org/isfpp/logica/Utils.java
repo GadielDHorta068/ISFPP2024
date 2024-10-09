@@ -90,9 +90,9 @@ public class Utils {
         }
 
         // Crear un grafo temporal que contendrá solo los equipos activos
+        List<Connection> connectionList = new ArrayList<>();
         SimpleWeightedGraph<Equipment, DefaultWeightedEdge> graphTemp = new SimpleWeightedGraph<>(DefaultWeightedEdge.class);
         HashMap<String, Equipment> equipmentMap = new HashMap<>();
-
         // Insertar vértices (equipos) activos en el grafo temporal
         for (Equipment e : graph.vertexSet()) {
             if (e.isStatus()) {
@@ -108,7 +108,8 @@ public class Utils {
 
             if (equipmentMap.containsKey(source.getCode()) && equipmentMap.containsKey(target.getCode())) {
                 // Calcular la velocidad mínima entre los puertos de los equipos y la velocidad del cable
-                int edgeValue = getMinSpeed(convertSetToList(source.getAllPortsTypes().keySet()), convertSetToList(target.getAllPortsTypes().keySet()), edge.getWire().getSpeed());
+                int edgeValue = Math.min(edge.getPort1().getPortType().getSpeed(),edge.getPort2().getPortType().getSpeed());
+                edgeValue = Math.min(edgeValue,edge.getWire().getSpeed());
                 DefaultWeightedEdge newEdge = graphTemp.addEdge(source, target);
                 // Asignar el peso correspondiente a la arista
                 graphTemp.setEdgeWeight(newEdge, edgeValue);

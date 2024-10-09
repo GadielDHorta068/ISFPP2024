@@ -11,9 +11,7 @@ import org.isfpp.modelo.EquipmentType;
 import org.isfpp.modelo.Location;
 import org.isfpp.modelo.PortType;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.*;
 
 public class EquipmentSequentialDAO implements EquipmentDAO{
@@ -43,7 +41,7 @@ public class EquipmentSequentialDAO implements EquipmentDAO{
             }
             inFile = new Scanner(inputStream);
             inFile.useDelimiter("\\s*;\\s*");
-            String[] minireader, minireader2;
+            String[] minireader;
             while (inFile.hasNext()) {
                 Equipment equipment = new Equipment();
                 equipment.setCode(inFile.next());
@@ -57,9 +55,9 @@ public class EquipmentSequentialDAO implements EquipmentDAO{
                     for (int cap = 0;cap < Integer.parseInt(minireader[i + 1]);cap++)
                         equipment.addPort(portTypes.get(minireader[i]));
 
-                minireader2 = inFile.next().split(",");
-                for (int i = 0; i< minireader2.length;i++)
-                   equipment.addIp(minireader2[i]);
+                minireader = inFile.next().split(",");
+                for (int i = 0; i < minireader.length;i++)
+                   equipment.addIp(minireader[i]);
 
                 equipment.setStatus(inFile.nextBoolean());
                 map.put(equipment.getCode(),equipment);
@@ -81,38 +79,36 @@ public class EquipmentSequentialDAO implements EquipmentDAO{
     }
 
     private void writeToFile(Hashtable<String,Equipment> equipmentMap, String fileName) {
-        Formatter outFile = null;
-        try {
-            outFile = new Formatter(fileName);
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, false))) {
             HashMap<PortType, Integer> portMap;
             for (Equipment equipment: equipmentMap.values()) {
                 portMap = equipment.getAllPortsTypes();
-                outFile.format("%s;%s;%s;%s;%s;%s;", equipment.getCode(),
-                                equipment.getDescription(),equipment.getMake(),equipment.getModel(),
-                                equipment.getEquipmentType().getCode(),equipment.getLocation().getCode());
+                writer.write(String.format("%s;%s;%s;%s;%s;%s;",equipment.getCode(),
+                        equipment.getDescription(),equipment.getMake(),equipment.getModel(),
+                        equipment.getEquipmentType().getCode(),equipment.getLocation().getCode()));
 
                 for (PortType portType: portMap.keySet())
-                    outFile.format("%s,%s",portType.getCode(),portMap.get(portType));
-                outFile.format(";");
+                    writer.write(String.format("%s,%s",portType.getCode(),portMap.get(portType)));
+                writer.write(";");
 
                 for (int i = 1; i<equipment.getIpAdresses().size();i++)
-                    if (!(i ==equipment.getIpAdresses().size()))
-                        outFile.format("%s,",equipment.getIpAdresses().get(i));
+                    if (!(i == equipment.getIpAdresses().size()))
+                        writer.write(String.format("%s,",equipment.getIpAdresses().get(i)));
                     else
-                        outFile.format("%s;",equipment.getIpAdresses().get(i));
+                        writer.write(String.format("%s;",equipment.getIpAdresses().get(i)));
 
                 if (equipment.isStatus())
-                    outFile.format("true;\n");
+                    writer.write(String.format("true;"));
                 else
-                    outFile.format("false;\n");
+                    writer.write(String.format("false;"));
+
+                writer.newLine();  // Escribir salto de línea después de cada línea
             }
-        } catch (FileNotFoundException fileNotFoundException) {
-            System.err.println("Error creating file.");
+            System.out.println("Archivo reescrito exitosamente.");
+        }catch (IOException e) {
+            e.printStackTrace();  // Manejo de excepciones
         } catch (FormatterClosedException formatterClosedException) {
             System.err.println("Error writing to file.");
-        } finally {
-            if (outFile != null)
-                outFile.close();
         }
     }
 

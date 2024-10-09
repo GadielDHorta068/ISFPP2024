@@ -6,9 +6,7 @@ import org.isfpp.datos.CargarParametros;
 import org.isfpp.modelo.EquipmentType;
 import org.isfpp.modelo.WireType;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.*;
 
 public class WireTypeSequentialDAO implements WireTypeDAO {
@@ -32,7 +30,6 @@ public class WireTypeSequentialDAO implements WireTypeDAO {
             }
             inFile = new Scanner(inputStream);
             inFile.useDelimiter("\\s*;\\s*");
-            String[] minireader, minireader2;
             while (inFile.hasNext()) {
                 WireType wireType = new WireType();
                 wireType.setCode(inFile.next());
@@ -58,19 +55,12 @@ public class WireTypeSequentialDAO implements WireTypeDAO {
     }
 
     private void writeToFile(Hashtable<String,WireType> wireTypeMap, String fileName) {
-        Formatter outFile = null;
-        try {
-            outFile = new Formatter(fileName);
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, false))) {
             for (WireType wireType: wireTypeMap.values()) {
-                outFile.format("%s;%s;%s;\n", wireType.getCode(),wireType.getDescription(),wireType.getSpeed());
+                writer.write(String.format("%s;%s;%s;\n", wireType.getCode(), wireType.getDescription(), wireType.getSpeed()));
             }
-        } catch (FileNotFoundException fileNotFoundException) {
-            System.err.println("Error creating file.");
-        } catch (FormatterClosedException formatterClosedException) {
-            System.err.println("Error writing to file.");
-        } finally {
-            if (outFile != null)
-                outFile.close();
+            } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 

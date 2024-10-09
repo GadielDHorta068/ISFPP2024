@@ -11,9 +11,7 @@ import org.isfpp.modelo.Equipment;
 import org.isfpp.modelo.PortType;
 import org.isfpp.modelo.WireType;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.*;
 
 public class ConnectionSequentialDAO implements ConnectionDAO {
@@ -68,27 +66,42 @@ public class ConnectionSequentialDAO implements ConnectionDAO {
     }
 
     private void writeToFile(List<Connection> connectionList, String fileName) {
-        Formatter outFile = null;
-        try {
-            outFile = new Formatter(fileName);
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, false))) {
             for (Connection connection: connectionList) {
-                outFile.format("%s;%s;%s;%s;%s;\n", connection.getPort1().getEquipment().getCode(), connection.getPort1().getPortType().getCode(),
+                writer.write(String.format("%s;%s;%s;%s;%s;\n", connection.getPort1().getEquipment().getCode(), connection.getPort1().getPortType().getCode(),
                         connection.getPort2().getEquipment().getCode(), connection.getPort2().getPortType().getCode(),
-                        connection.getWire().getCode());
+                        connection.getWire().getCode()));
+
+                writer.newLine();  // Escribir salto de línea después de cada línea
             }
-        } catch (FileNotFoundException fileNotFoundException) {
-            System.err.println("Error creating file.");
+        }catch (FileNotFoundException fileNotFoundException) {
+            System.err.println("Error creating file Connection.");
         } catch (FormatterClosedException formatterClosedException) {
-            System.err.println("Error writing to file.");
-        } finally {
-            if (outFile != null)
-                outFile.close();
+            System.err.println("Error writing to file of Connection.");
+        } catch (IOException ioException) {
+            System.err.println("Error in File of Connection");
+        }
+    }
+    private void appendToFile(Connection connection, String fileName) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true))) {
+                writer.write(String.format("%s;%s;%s;%s;%s;\n", connection.getPort1().getEquipment().getCode(), connection.getPort1().getPortType().getCode(),
+                        connection.getPort2().getEquipment().getCode(), connection.getPort2().getPortType().getCode(),
+                        connection.getWire().getCode()));
+
+                writer.newLine();  // Escribir salto de línea después de cada línea
+
+        }catch (FileNotFoundException fileNotFoundException) {
+            System.err.println("Error creating file Connection.");
+        } catch (FormatterClosedException formatterClosedException) {
+            System.err.println("Error writing to file of Connection.");
+        } catch (IOException ioException) {
+            System.err.println("Error in File of Connection");
         }
     }
     @Override
     public void insert(Connection connection) {
         list.add(connection);
-        writeToFile(list,fileName);
+        appendToFile(connection,fileName);
         update = true;
     }
 
