@@ -143,4 +143,18 @@ public class Coordinator{
     public void addTabla(DesplegableComponent d){
         tablas.add(d);
     }
+
+    //add, erase;vertex, edge from Utils
+    public void addVertex(Equipment equipment){
+        this.utils.addVertex(equipment);
+    }
+    public void eraseVertex(Equipment equipment){
+        this.utils.eraseVertex(equipment);
+    }
+    public void addEdge(Connection connection){
+        this.utils.addEdge(connection);
+    }
+    public void eraseEdge(Connection connection){
+        this.utils.eraseEdge(connection);
+    }
 }

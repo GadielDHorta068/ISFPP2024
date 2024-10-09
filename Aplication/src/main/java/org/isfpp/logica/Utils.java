@@ -1,6 +1,7 @@
 package org.isfpp.logica;
 
 import org.isfpp.controller.Coordinator;
+import org.isfpp.exceptions.AlreadyExistException;
 import org.isfpp.exceptions.NotFoundException;
 import org.isfpp.modelo.Connection;
 import org.isfpp.modelo.Equipment;
@@ -60,6 +61,27 @@ public class Utils {
 
     }
 
+    public void addVertex(Equipment equipment){
+        if (!graph.addVertex(equipment))
+            throw new AlreadyExistException("The equipment Already exist");
+
+        graph.addVertex(equipment);
+    }
+
+    public void eraseVertex(Equipment equipment){
+        graph.removeVertex(equipment);
+    }
+
+    public void addEdge(Connection connection){
+        if (graph.containsEdge(connection))
+            throw new AlreadyExistException("The connection already exist");
+
+        graph.addEdge(connection.getPort1().getEquipment(),connection.getPort2().getEquipment(),connection);
+    }
+
+    public void eraseEdge(Connection connection){
+        graph.removeEdge(connection);
+    }
     /**
      * Encuentra el camino más corto entre dos equipos utilizando el algoritmo de Dijkstra.
      * <p>
