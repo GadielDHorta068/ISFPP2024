@@ -19,7 +19,6 @@ import java.util.List;
 public class Traceroute {
     private JFrame frame;
     private JTextArea textArea;
-    private JButton okButton;
     private Coordinator coordinator;
     private GraphPath<Equipment, DefaultWeightedEdge> direcciones;
    private JTextField textE1;
@@ -39,11 +38,12 @@ public class Traceroute {
         textArea = new JTextArea();
         textArea.setEditable(false);
         JScrollPane scrollPane = new JScrollPane(textArea);
-        okButton = new JButton("Tracerouter");
+        JButton okButton = new JButton("Tracerouter");
         okButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
+                    textArea.setText("");
                     Equipment e1=coordinator.getHardware().get(textE1.getText().toUpperCase());
                     Equipment e2=coordinator.getHardware().get(textE2.getText().toUpperCase());
                     direcciones = coordinator.traceroute(e1,e2);
@@ -97,7 +97,7 @@ public class Traceroute {
 
         frame.getContentPane().add(scrollPane, BorderLayout.CENTER);
         frame.getContentPane().add(okButton, BorderLayout.SOUTH);
-        frame.getContentPane().add(northPanel, BorderLayout.NORTH); // Añadir el panel con los dos JTextField
+        frame.getContentPane().add(northPanel, BorderLayout.NORTH);
         StylusUI.aplicarEstiloScrollPane(scrollPane);
         StylusUI.styleTextArea(textArea);
         StylusUI.aplicarEstiloBoton(okButton, true);
@@ -109,8 +109,10 @@ public class Traceroute {
         textE1.setText("");
         textE2.setText("");
 
-        for(DefaultWeightedEdge e:direcciones.getEdgeList()){
-            textArea.append(e.toString());
+        for(Equipment e:direcciones.getVertexList()){
+            textArea.append(STR."""
+\{e.getCode()}
+""");
         }
 
     }

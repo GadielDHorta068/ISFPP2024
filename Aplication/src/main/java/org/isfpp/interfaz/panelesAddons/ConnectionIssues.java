@@ -1,4 +1,4 @@
-package org.isfpp.interfaz;
+package org.isfpp.interfaz.panelesAddons;
 
 import org.isfpp.controller.Coordinator;
 import org.isfpp.interfaz.stylusUI.StylusUI;
@@ -27,7 +27,7 @@ public class ConnectionIssues {
 
     public void scanIp() {
         direcciones = new ArrayList<>();
-        frame = new JFrame("IP Scanner");
+        frame = new JFrame("Alcanze del equipo");
         frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         frame.setSize(400, 300);
         JTextField ipInicial = new JTextField("IP a escanear");

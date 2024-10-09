@@ -7,6 +7,7 @@ import org.isfpp.modelo.Equipment;
 import org.isfpp.modelo.PortType;
 import org.isfpp.modelo.Web;
 import org.jgrapht.Graph;
+import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleGraph;
@@ -53,7 +54,7 @@ public class Utils {
             Equipment targetNode = c.getPort2().getEquipment();
 
             if (sourceNode.equals(targetNode)) throw new IllegalArgumentException("son el mismo equipo");
-            if (graph.containsEdge(sourceNode, targetNode))
+            if (!graph.containsEdge(sourceNode, targetNode))
                 graph.addEdge(sourceNode, targetNode, c);
         }
 
@@ -65,7 +66,7 @@ public class Utils {
      * <p>
      * Este método toma dos objetos {@code Equipment} y verifica si son válidos y están activos.
      * Luego, construye un grafo temporal con los equipos activos y sus conexiones.
-     * Utiliza el algoritmo de Dijkstra para calcular y devolver la lista de aristas que forman
+     * Usa el algoritmo de Dijkstra para calcular y devolver la lista de aristas que forman
      * el camino más corto entre los dos equipos especificados.
      *
      * @param e1 El primer equipo de origen para el que se desea encontrar el camino.
@@ -76,29 +77,29 @@ public class Utils {
      * @throws IllegalArgumentException Si {@code e1} o {@code e2} son {@code null}, si son iguales,
      *                                  o si alguno de los equipos no está activo.
      */
-    public List<DefaultWeightedEdge> traceroute(Equipment e1, Equipment e2) throws IllegalArgumentException {
+    public GraphPath<Equipment, DefaultWeightedEdge> traceroute(Equipment e1, Equipment e2) throws IllegalArgumentException {
 
         if (e1 == null || e2 == null) {
-            throw new IllegalArgumentException("Equipo invalido");
+            throw new IllegalArgumentException("Equipo inválido");
         }
         if (e1.equals(e2)) {
             throw new IllegalArgumentException("Equipo duplicado");
         }
 
         if (!e1.isStatus() || !e2.isStatus()) {
-            throw new IllegalArgumentException("Uno de los equipos no está activo \n" + e1.getCode() + e1.isStatus() + "\n" + e2.getCode() + e2.isStatus());// Devolver null si alguno de los equipos no está activo
+            throw new IllegalArgumentException(STR."""
+Uno de los equipos no está activo\s
+\{e1.getCode()}\{e1.isStatus()}
+\{e2.getCode()}\{e2.isStatus()}""");
         }
 
         // Crear un grafo temporal que contendrá solo los equipos activos
         SimpleWeightedGraph<Equipment, DefaultWeightedEdge> graphTemp = new SimpleWeightedGraph<>(DefaultWeightedEdge.class);
-        HashMap<String, Equipment> equipmentMap = new HashMap<>();
 
         // Insertar vértices (equipos) activos en el grafo temporal
         for (Equipment e : graph.vertexSet()) {
-            if (e.isStatus()) {
+            if (e.isStatus())
                 graphTemp.addVertex(e);
-                equipmentMap.put(e.getCode(), e);
-            }
         }
 
         // Insertar aristas con conexiones activas
@@ -106,7 +107,7 @@ public class Utils {
             Equipment source = graph.getEdgeSource(edge);
             Equipment target = graph.getEdgeTarget(edge);
 
-            if (equipmentMap.containsKey(source.getCode()) && equipmentMap.containsKey(target.getCode())) {
+            if (graphTemp.containsVertex(source) && graphTemp.containsVertex(target) && !graphTemp.containsEdge(source, target)) {
                 // Calcular la velocidad mínima entre los puertos de los equipos y la velocidad del cable
                 int edgeValue = getMinSpeed(convertSetToList(source.getAllPortsTypes().keySet()), convertSetToList(target.getAllPortsTypes().keySet()), edge.getWire().getSpeed());
                 DefaultWeightedEdge newEdge = graphTemp.addEdge(source, target);
@@ -114,12 +115,17 @@ public class Utils {
                 graphTemp.setEdgeWeight(newEdge, edgeValue);
             }
         }
-        // Aplicar el algoritmo de Dijkstra para encontrar el camino más corto entre dos equipos
-        DijkstraShortestPath<Equipment, DefaultWeightedEdge> dijkstraAlg = new DijkstraShortestPath<>(graphTemp);
 
-        // Encontrar el camino más corto desde Router1 a PC1
-        return dijkstraAlg.getPath(e1, e2).getEdgeList();
+        // Encontrar el camino más corto desde e1 a e2
+        GraphPath<Equipment, DefaultWeightedEdge> path = DijkstraShortestPath.findPathBetween(graphTemp, e1, e2);
+        if (path == null) {
+            throw new IllegalArgumentException("No existe un camino entre los equipos.");
+        }
+
+        // Devolver el camino completo
+        return path;
     }
+
 
     /**
      * Calcula la velocidad mínima de conexión entre dos equipos considerando

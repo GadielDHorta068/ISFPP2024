@@ -2,12 +2,12 @@ package org.isfpp.interfaz.panelesPrincipal;
 
 import org.isfpp.controller.Coordinator;
 import org.isfpp.datos.Guardar;
+import org.isfpp.interfaz.panelesAddons.ConnectionIssues;
 import org.isfpp.interfaz.panelesAddons.IPFrame;
 import org.isfpp.interfaz.panelesAddons.VisualizarGrafo;
 import org.isfpp.interfaz.panelesCreadores.EquipmentFormPanel;
 import org.isfpp.interfaz.panelesCreadores.LocationFormPanel;
 import org.isfpp.interfaz.panelesCreadores.PortTypeFormPanel;
-import org.isfpp.interfaz.panelesEditadores.EditConnection;
 import org.isfpp.interfaz.panelesEditadores.EditConnection;
 import org.isfpp.interfaz.panelesEditadores.EditEquipmentFormPanel;
 import org.isfpp.interfaz.panelesEditadores.EditLocationFormPanel;
@@ -185,10 +185,10 @@ public class BarraMenu {
         StylusUI.styleMenu(ayudaMenu);
         JMenu herramientasMenu = new JMenu("Herramientas");
         JMenuItem ipScan = new JMenuItem("Ping en rango");
-        JMenuItem ipList = new JMenuItem("Lista IP");
+        JMenuItem ipList = new JMenuItem("Equipos Activos");
         JMenuItem connectionIssues = new JMenuItem("Conexiones");
         herramientasMenu.add(ipScan);
-        herramientasMenu.add(ipList);
+       herramientasMenu.add(ipList);
         herramientasMenu.add(connectionIssues);
         StylusUI.styleMenuItem(connectionIssues);
         StylusUI.styleMenuItem(ipScan);

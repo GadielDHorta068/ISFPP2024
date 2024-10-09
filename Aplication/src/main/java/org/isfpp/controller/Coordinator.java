@@ -53,7 +53,7 @@ public class Coordinator{
         return web.getConnections();
     }
 
-    public void setConnections(ArrayList<org.isfpp.modelo.Connection> conections) {
+    public void setConnections(ArrayList<Connection> conections) {
         this.web.setConnections(conections);
     }
 
@@ -145,6 +145,7 @@ public class Coordinator{
     public  void updateTablas(){
         for (DesplegableComponent tabla : tablas) {
             tabla.updateTable();
+            LoadData(web);
         }
     }
     public void addTabla(DesplegableComponent d){

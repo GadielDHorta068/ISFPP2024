@@ -59,7 +59,6 @@ public class DesplegableComponent<T> {
     public void updateTable() {
         // Inicializa dataList basado en el tipo del primer elemento
         Object e = dataList.isEmpty() ? null : dataList.get(0);
-
         if (e instanceof Equipment) {
             dataList = (List<T>) new ArrayList<>(web.getHardware().values());
         } else if (e instanceof Location) {
