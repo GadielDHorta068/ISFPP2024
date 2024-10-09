@@ -175,6 +175,8 @@ Uno de los equipos no está activo\s
 
 
     public List<Equipment> detectConnectivityIssues(Equipment startNode) {
+        if (!graph.containsVertex(startNode))
+            throw new NotFoundException("equipo no se encuentra");
         List<Equipment> visitedNodes = new ArrayList<>();
         BreadthFirstIterator<Equipment, Connection> bfsIterator = new BreadthFirstIterator<>(this.graph, startNode);
 
