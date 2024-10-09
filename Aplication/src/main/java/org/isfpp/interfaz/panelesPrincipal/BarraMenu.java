@@ -2,6 +2,7 @@ package org.isfpp.interfaz.panelesPrincipal;
 
 import org.isfpp.controller.Coordinator;
 import org.isfpp.datos.Guardar;
+import org.isfpp.interfaz.ConnectionIssues;
 import org.isfpp.interfaz.IPFrame;
 import org.isfpp.interfaz.VisualizarGrafo;
 import org.isfpp.interfaz.panelesCreadores.EquipmentFormPanel;
@@ -155,8 +156,11 @@ public class BarraMenu {
         JMenu herramientasMenu = new JMenu("Herramientas");
         JMenuItem ipScan = new JMenuItem("Scan IP");
         JMenuItem ipList = new JMenuItem("lista IP");
+        JMenuItem connectionIssues = new JMenuItem("Conexiones");
         herramientasMenu.add(ipScan);
         herramientasMenu.add(ipList);
+        herramientasMenu.add(connectionIssues);
+        StylusUI.styleMenuItem(connectionIssues);
         StylusUI.styleMenuItem(ipScan);
         StylusUI.styleMenuItem(ipList);
         StylusUI.styleMenu(herramientasMenu);
@@ -181,6 +185,15 @@ public class BarraMenu {
                 traceroute.trace();
             }
         });
+        ipScan.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ConnectionIssues connection = new ConnectionIssues();
+                connection.setCoordinator(coordinator);
+                connection.scanIp();
+            }
+        });
+
 
         ipScan.addActionListener(new ActionListener() {
             @Override

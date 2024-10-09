@@ -4,6 +4,8 @@ import org.isfpp.controller.Coordinator;
 import org.isfpp.datos.Cargar;
 import org.isfpp.interfaz.panelesCreadores.MainMenu;
 import org.isfpp.logica.Utils;
+import org.isfpp.modelo.Connection;
+import org.isfpp.modelo.Equipment;
 import org.isfpp.modelo.Web;
 
 import java.io.IOException;
@@ -27,6 +29,7 @@ public class App {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
         Coordinator coordinator= new Coordinator();
         Utils utils=new Utils();
         MainMenu mainMenu= new MainMenu();
@@ -42,6 +45,7 @@ public class App {
         coordinator.setMainMenu(mainMenu);
         coordinator.LoadData(coordinator.getWeb());
         mainMenu.components(coordinator.getWeb());
+
 
     }
 

@@ -30,6 +30,7 @@ public class PingListEquipment {
         textArea.setEditable(false);
         JScrollPane scrollPane = new JScrollPane(textArea);
         direcciones=coordinator.ping();
+        updateTextArea();
         JPanel northPanel = new JPanel();
         frame.getContentPane().add(scrollPane, BorderLayout.CENTER);// Añadir el panel con los dos JTextField
         StylusUI.aplicarEstiloScrollPane(scrollPane);
