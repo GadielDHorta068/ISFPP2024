@@ -78,7 +78,7 @@ public class Utils {
      * @throws IllegalArgumentException Si {@code e1} o {@code e2} son {@code null}, si son iguales,
      *                                  o si alguno de los equipos no está activo.
      */
-    public GraphPath<Equipment, DefaultWeightedEdge> traceroute(Equipment e1, Equipment e2) throws IllegalArgumentException {
+    public List<DefaultWeightedEdge> traceroute(Equipment e1, Equipment e2) throws IllegalArgumentException {
 
         if (e1 == null || e2 == null) {
             throw new IllegalArgumentException("Equipo invalido");
@@ -113,9 +113,11 @@ public class Utils {
                 graphTemp.setEdgeWeight(newEdge, edgeValue);
             }
         }
-        GraphPath<Equipment, DefaultWeightedEdge> path = DijkstraShortestPath.findPathBetween(graphTemp, e1, e2);
+        // Aplicar el algoritmo de Dijkstra para encontrar el camino más corto entre dos equipos
+        DijkstraShortestPath<Equipment, DefaultWeightedEdge> dijkstraAlg = new DijkstraShortestPath<>(graphTemp);
+
         // Encontrar el camino más corto desde Router1 a PC1
-        return     DijkstraShortestPath.findPathBetween(graphTemp,e1,e2);
+        return dijkstraAlg.getPath(e1, e2).getEdgeList();
     }
 
     /**
@@ -170,7 +172,7 @@ public class Utils {
     }
 
 
-    public static boolean ping(String ip) {
+    private static boolean ping(String ip) {
         if (graph != null) {
             for (Equipment equipo : graph.vertexSet()) {
                 if (equipo.getIpAdresses().contains(ip)) {

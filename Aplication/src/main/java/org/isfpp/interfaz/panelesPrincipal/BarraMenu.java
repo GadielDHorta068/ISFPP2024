@@ -13,7 +13,6 @@ import org.isfpp.interfaz.panelesEditadores.EditLocationFormPanel;
 import org.isfpp.interfaz.panelesEditadores.EditPortTypeFormPanel;
 import org.isfpp.interfaz.stylusUI.PingListEquipment;
 import org.isfpp.interfaz.stylusUI.StylusUI;
-import org.isfpp.interfaz.stylusUI.Traceroute;
 import org.isfpp.modelo.*;
 
 import javax.swing.*;

@@ -116,6 +116,7 @@ public class Web {
 			throw new NotFoundException("El tipo de equipo no se encuentra en la lista");
 		Equipment e = new Equipment(code, description, marca, model, portType,cantidad, equipmentType, location,status);
 		hardware.put(code, e);
+
 		return e;
 	}
 

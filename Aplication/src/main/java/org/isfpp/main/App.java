@@ -15,7 +15,6 @@ public class App {
     // l�gica
     private Web web;
     private Utils utils;
-
     // vista
 
     private MainMenu mainMenu;

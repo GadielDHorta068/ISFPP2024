@@ -4,7 +4,6 @@ import org.isfpp.interfaz.panelesCreadores.MainMenu;
 import org.isfpp.logica.Utils;
 import org.isfpp.modelo.*;
 import org.jgrapht.Graph;
-import org.jgrapht.GraphPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
 import java.util.ArrayList;
@@ -22,6 +21,7 @@ public class Coordinator{
         this.utils=null;
         this.mainMenu=null;
         this.selectedItem=null;
+        System.out.println("crear coordinador");
     }
 
     public Utils getUtils() {
@@ -109,7 +109,7 @@ public class Coordinator{
     }
     public List<Equipment> detectConnectivityIssues(Equipment startNode) {
         return utils.detectConnectivityIssues(startNode);}
-    public GraphPath<Equipment, DefaultWeightedEdge> traceroute(Equipment e1, Equipment e2){return utils.traceroute(e1, e2);}
+    public List<DefaultWeightedEdge> traceroute(Equipment e1, Equipment e2){return utils.traceroute(e1, e2);}
 
 
     public Graph<Equipment, Connection> getGraph() {
