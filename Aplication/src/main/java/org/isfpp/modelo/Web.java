@@ -79,15 +79,21 @@ public class Web {
 	}
 
 	public void eraseLocation(Location l) {
-		if (!locations.containsKey(l.getCode()))
+		if (!locations.containsKey(l.getCode())){
 			JOptionPane.showMessageDialog(null,"Error de locacion", "Error de dependencia", JOptionPane.INFORMATION_MESSAGE);
+			return;
+		}
+
 		List<String> codes = new ArrayList<>();
 		for (Equipment e : hardware.values()) {
 			if (e.getLocation().equals(l))
 				codes.add(e.getCode());
 		}
-		if (!codes.isEmpty())
+		if (!codes.isEmpty()){
 			JOptionPane.showMessageDialog(null,"Hay equipos que dependen de la ubicacion", "Error de dependencia", JOptionPane.INFORMATION_MESSAGE);
+			return;
+		}
+
 		locations.remove(l.getCode(), l);
 		coordinator.updateTablas();
 	}
@@ -175,7 +181,7 @@ public class Web {
 				codes.add(e.getCode());
 		}
 		if (!codes.isEmpty())
-			throw new IllegalStateException("Hay equipos que usan ese tipo de puertos: " + codes);
+			throw new IllegalStateException(STR."Hay equipos que usan ese tipo de puertos: \{codes}");
 		locations.remove(portType.getCode(),portType);
 		coordinator.updateTablas();
 	}

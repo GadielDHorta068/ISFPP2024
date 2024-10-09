@@ -183,10 +183,10 @@ public class BarraMenu {
         JMenu ayudaMenu = new JMenu("Ayuda");
         StylusUI.styleMenu(ayudaMenu);
         JMenu herramientasMenu = new JMenu("Herramientas");
-        JMenuItem ipScan = new JMenuItem("Scan IP");
-        JMenuItem ipList = new JMenuItem("lista IP");
+        JMenuItem ipScan = new JMenuItem("Ping en rango");
+        JMenuItem ipList = new JMenuItem("Lista IP");
         herramientasMenu.add(ipScan);
-        herramientasMenu.add(ipList);
+    //    herramientasMenu.add(ipList);
         StylusUI.styleMenuItem(ipScan);
         StylusUI.styleMenuItem(ipList);
         StylusUI.styleMenu(herramientasMenu);

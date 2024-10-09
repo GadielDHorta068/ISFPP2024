@@ -1,6 +1,5 @@
 package org.isfpp.interfaz.panelesCreadores;
 
-import org.isfpp.datos.Cargar;
 import org.isfpp.interfaz.stylusUI.StylusUI;
 import org.isfpp.modelo.EquipmentType;
 import org.isfpp.modelo.Location;
@@ -9,17 +8,16 @@ import org.isfpp.modelo.Web;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.IOException;
 
 public class EquipmentFormPanel extends JPanel {
-    private JTextField codeField;
-    private JTextField descriptionField;
-    private JTextField marcaField;
-    private JTextField modeloField;
-    private JComboBox<EquipmentType> equipmentTypeCombo;
-    private JComboBox<Location> locationCombo;
-    private JComboBox<PortType> portTypeCombo;
-    private JCheckBox statusCheckBox;
+    private final JTextField codeField;
+    private final JTextField descriptionField;
+    private final JTextField marcaField;
+    private final JTextField modeloField;
+    private final JComboBox<EquipmentType> equipmentTypeCombo;
+    private final JComboBox<Location> locationCombo;
+    private final JComboBox<PortType> portTypeCombo;
+    private final JCheckBox statusCheckBox;
     private JTextField ipField;
     private JButton addIpButton;
     private DefaultListModel<String> ipListModel;
@@ -122,7 +120,7 @@ public class EquipmentFormPanel extends JPanel {
                 web.getCoordinator().updateTablas();
                 frame.setVisible(false);
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this, "Error al crear equipo: " + ex.getMessage());
+                JOptionPane.showMessageDialog(this, STR."Error al crear equipo: \{ex.getMessage()}");
             }
 
         });
