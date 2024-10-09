@@ -210,13 +210,17 @@ public class Equipment {
     }
 
     @Override
-    public String toString () {
-        return code + "\n"
-                + description + "\n"
-                + make + "\n"
-                +  model + "\n"
-                + ipAdresses + "\n"
-                +  location;
-
+    public String toString() {
+        return STR."""
+Código: \{code}
+Descripción: \{description}
+Marca: \{make}
+Modelo: \{model}
+Direcciones IP: \{String.join(", ", ipAdresses)}
+Tipo de Equipo: \{equipmentType.getDescription()}
+Ubicación: \{location.getDescription()}
+Estado: \{status ? "Activo" : "Inactivo"}
+Puertos: \{ports.size()}""";
     }
+
 }

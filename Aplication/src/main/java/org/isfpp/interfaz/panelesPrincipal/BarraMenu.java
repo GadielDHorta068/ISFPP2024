@@ -2,8 +2,8 @@ package org.isfpp.interfaz.panelesPrincipal;
 
 import org.isfpp.controller.Coordinator;
 import org.isfpp.datos.Guardar;
-import org.isfpp.interfaz.IPFrame;
-import org.isfpp.interfaz.VisualizarGrafo;
+import org.isfpp.interfaz.panelesAddons.IPFrame;
+import org.isfpp.interfaz.panelesAddons.VisualizarGrafo;
 import org.isfpp.interfaz.panelesCreadores.EquipmentFormPanel;
 import org.isfpp.interfaz.panelesCreadores.LocationFormPanel;
 import org.isfpp.interfaz.panelesCreadores.PortTypeFormPanel;
@@ -11,9 +11,9 @@ import org.isfpp.interfaz.panelesEditadores.EditConnection;
 import org.isfpp.interfaz.panelesEditadores.EditEquipmentFormPanel;
 import org.isfpp.interfaz.panelesEditadores.EditLocationFormPanel;
 import org.isfpp.interfaz.panelesEditadores.EditPortTypeFormPanel;
-import org.isfpp.interfaz.PingListEquipment;
+import org.isfpp.interfaz.panelesAddons.PingListEquipment;
 import org.isfpp.interfaz.stylusUI.StylusUI;
-import org.isfpp.logica.Traceroute;
+import org.isfpp.interfaz.panelesAddons.Traceroute;
 import org.isfpp.modelo.*;
 
 import javax.swing.*;

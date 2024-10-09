@@ -1,4 +1,4 @@
-package org.isfpp.interfaz;
+package org.isfpp.interfaz.panelesAddons;
 
 import com.mxgraph.layout.mxCompactTreeLayout;
 import com.mxgraph.swing.mxGraphComponent;

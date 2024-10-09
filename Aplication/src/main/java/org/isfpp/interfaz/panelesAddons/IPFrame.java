@@ -1,11 +1,8 @@
-package org.isfpp.interfaz;
+package org.isfpp.interfaz.panelesAddons;
 
 import org.isfpp.controller.Coordinator;
-import org.isfpp.datos.Cargar;
 import org.isfpp.interfaz.stylusUI.StylusUI;
-import org.isfpp.logica.Utils;
 import org.isfpp.modelo.Equipment;
-import org.isfpp.modelo.Web;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,11 +10,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.IntStream;
 
 
 public class IPFrame {

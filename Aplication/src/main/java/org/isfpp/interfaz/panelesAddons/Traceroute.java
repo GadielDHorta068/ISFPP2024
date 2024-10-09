@@ -1,4 +1,4 @@
-package org.isfpp.logica;
+package org.isfpp.interfaz.panelesAddons;
 
 import org.isfpp.controller.Coordinator;
 import org.isfpp.interfaz.stylusUI.StylusUI;
@@ -9,6 +9,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,8 +60,41 @@ public class Traceroute {
                 }
             }
         });
+
+        textE1.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                if (textE1.getText().equals("codigo equipo 1")){
+                    textE1.setText("");
+                }
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                if(textE1.getText().isEmpty()){
+                    textE1.setText("codigo equipo 1");
+                }
+            }
+        });
+
+        textE2.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                if (textE2.getText().equals("codigo equipo 2")){
+                    textE2.setText("");
+                }
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                if(textE2.getText().isEmpty()){
+                    textE2.setText("codigo equipo 2");
+                }
+            }
+        });
+
         JPanel northPanel = new JPanel();
-        northPanel.setLayout(new GridLayout(1, 2)); // Distribuir los dos componentes verticalmente
+        northPanel.setLayout(new GridLayout(1, 2));
         northPanel.add(textE1);
         northPanel.add(textE2);
 
@@ -70,6 +105,7 @@ public class Traceroute {
         StylusUI.styleTextArea(textArea);
         StylusUI.aplicarEstiloBoton(okButton, true);
         frame.setVisible(true);
+        frame.requestFocus();
 
     }
     private void updateTextArea () {

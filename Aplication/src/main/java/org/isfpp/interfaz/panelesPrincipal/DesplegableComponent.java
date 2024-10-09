@@ -31,7 +31,7 @@ public class DesplegableComponent<T> {
         isExpanded = !isExpanded;
         table.setVisible(isExpanded);
         table.getTableHeader().setVisible(isExpanded);
-        toggleButton.setText(isExpanded ? STR."▼ \{toggleButton.getText().substring(2)}" : "▶ " + toggleButton.getText().substring(2));
+        toggleButton.setText(isExpanded ? STR."▼ \{toggleButton.getText().substring(2)}" : STR."▶ \{toggleButton.getText().substring(2)}");
         panel.revalidate();
         panel.repaint();
     }
@@ -68,10 +68,8 @@ public class DesplegableComponent<T> {
             dataList = (List<T>) new ArrayList<>(web.getConnections());
         }
 
-        // Ahora inicializa el array `data` con el tamaño adecuado de dataList
         Object[][] data = new Object[dataList.size()][3];
 
-        // Rellena los datos de la tabla
         for (int i = 0; i < dataList.size(); i++) {
             T item = dataList.get(i);
             if (item instanceof Equipment equipment) {
@@ -83,7 +81,7 @@ public class DesplegableComponent<T> {
                 data[i][1] = location.getDescription();
                 data[i][2] = location;
             } else if (item instanceof Connection connection) {
-                data[i][0] = String.format("%s - %s", connection.getPort1().getPortType().getCode(), connection.getPort2().getPortType().getCode());
+                data[i][0] = String.format("%s - %s - %s - %s", connection.getPort1().getEquipment().getCode(),connection.getPort1().getPortType().getCode(), connection.getPort2().getPortType().getCode(), connection.getPort2().getEquipment().getCode());
                 data[i][1] = connection.getWire().getDescription();
                 data[i][2] = connection;
             } else {
@@ -93,18 +91,16 @@ public class DesplegableComponent<T> {
             }
         }
 
-        // Actualiza el modelo de la tabla
         DefaultTableModel model = new DefaultTableModel(data, new String[]{"Nombre", "Descripción", "Objeto"});
+
         table.setModel(model);
 
-        // Oculta la columna de objetos
         table.getColumnModel().getColumn(2).setMinWidth(0);
         table.getColumnModel().getColumn(2).setMaxWidth(0);
         table.getColumnModel().getColumn(2).setWidth(0);
 
-        table.repaint();  // Redibuja la tabla
+        table.repaint();
     }
-
 
     public void setCoordinator(Coordinator coordinator) {
         this.coordinator = coordinator;
@@ -138,7 +134,7 @@ public class DesplegableComponent<T> {
                     data[i][2] = location;
                 }
                 case Connection connection -> {
-                    data[i][0] = STR."\{((Connection) item).getPort1().getPortType().getCode()} - \{((Connection) item).getPort2().getPortType().getCode()}";
+                    data[i][0] = String.format("%s - %s - %s - %s", connection.getPort1().getEquipment().getCode(),connection.getPort1().getPortType().getCode(), connection.getPort2().getPortType().getCode(), connection.getPort2().getEquipment().getCode());
                     data[i][1] = connection.getWire().getDescription();
                     data[i][2] = item;
                 }
@@ -184,11 +180,11 @@ public class DesplegableComponent<T> {
                     coordinator.setSelectedItem(selectedItem);
                     switch (selectedItem) {
                         case Equipment selectedEquipment ->
-                                panelDerecho.updateProperties(selectedEquipment.toString().replace("-", "\n"), selectedEquipment.getEquipmentType().getCode());
+                                panelDerecho.updateProperties(selectedEquipment);
                         case Location selectedLocation ->
-                                panelDerecho.updateProperties(selectedLocation.toString().replace("-", "\n"), "LOC");
+                                panelDerecho.updateProperties(selectedLocation);
                         case Connection selectedConnection ->
-                                panelDerecho.updateProperties(String.format("%s", selectedConnection.toString()), selectedConnection.getWire().getCode());
+                                panelDerecho.updateProperties(selectedConnection);
                         case null, default ->
                             // Fallback para cualquier otro tipo de objeto
                                 panelDerecho.updateProperties(selectedItem.toString(), "Descripción no disponible");
@@ -196,6 +192,10 @@ public class DesplegableComponent<T> {
                 }
             }
         });
+    }
+
+    public boolean isCellEditable(int row, int column) {
+        return false;
     }
 
 }
