@@ -1,4 +1,4 @@
-package org.isfpp.interfaz.panelesAddons;
+package org.isfpp.interfaz;
 
 import org.isfpp.controller.Coordinator;
 import org.isfpp.interfaz.stylusUI.StylusUI;
@@ -14,16 +14,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-
-public class IPFrame {
+public class ConnectionIssues {
     private JFrame frame;
     private JTextArea textArea;
     private JButton scanButton;
-    private List<String> direcciones;
+    private List<Equipment> direcciones;
     private Coordinator coordinator;
 
 
-    public IPFrame() {
+    public ConnectionIssues() {
     }
 
     public void scanIp() {
@@ -65,7 +64,9 @@ public class IPFrame {
             public void actionPerformed(ActionEvent e) {
                 direcciones.clear();
                 try {
-                    direcciones = coordinator.scanIP(ipInicial.getText());
+                    textArea.setText("");
+                    String equipo=ipInicial.getText().toUpperCase();
+                    direcciones = coordinator.detectConnectivityIssues(coordinator.getHardware().get(equipo));
                     updateTextArea();
                 } catch (Exception exception) {
                     textArea.setText("");
@@ -86,14 +87,16 @@ public class IPFrame {
         frame.requestFocus();
     }
 
-        private void updateTextArea () {
+    private void updateTextArea () {
         textArea.setText("");
-        System.out.println(direcciones.size());
-
-            for (String direccion : direcciones) {
-                textArea.append(direccion + "\n");
+        if (direcciones.size()==1){
+            textArea.append("no esta conectado a ningun equipo");
+        }
+        else {
+            for (Equipment direccion : direcciones) {
+                textArea.append(direccion.getCode() + "\n");
             }
-
+        }
     }
 
     public void setCoordinator(Coordinator coordinator) {
@@ -102,13 +105,11 @@ public class IPFrame {
     private String getIPSeleccionada(){
         if(coordinator.getSelectedItem() != null){
             if(coordinator.getSelectedItem() instanceof Equipment eq){
-                String ip = eq.getIpAdresses().getFirst();
-                String[] partes = ip.split("\\.") ;
-                partes[2] = "0";
-                partes[3] = "0";
-                return String.join(".", partes);
+
+                return eq.getCode();
             }
         }
         return "0";
     }
 }
+

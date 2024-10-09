@@ -3,6 +3,8 @@ package org.isfpp.interfaz.panelesAddons;
 import org.isfpp.controller.Coordinator;
 import org.isfpp.interfaz.stylusUI.StylusUI;
 import org.isfpp.modelo.Equipment;
+import org.jgrapht.GraphIterables;
+import org.jgrapht.GraphPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
 import javax.swing.*;
@@ -19,7 +21,7 @@ public class Traceroute {
     private JTextArea textArea;
     private JButton okButton;
     private Coordinator coordinator;
-    private List<DefaultWeightedEdge> direcciones;
+    private GraphPath<Equipment, DefaultWeightedEdge> direcciones;
    private JTextField textE1;
     private JTextField textE2;
 
@@ -27,7 +29,6 @@ public class Traceroute {
 
     }
     public void trace (){
-            direcciones = new ArrayList<>();
         frame = new JFrame("TraceRouter");
         frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         frame.setSize(400, 300);
@@ -39,13 +40,9 @@ public class Traceroute {
         textArea.setEditable(false);
         JScrollPane scrollPane = new JScrollPane(textArea);
         okButton = new JButton("Tracerouter");
-        for(String e: coordinator.getWeb().getHardware().keySet()) {
-            System.out.println( coordinator.getWeb().getHardware().get(e));
-        }
         okButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                direcciones.clear();
                 try {
                     Equipment e1=coordinator.getHardware().get(textE1.getText().toUpperCase());
                     Equipment e2=coordinator.getHardware().get(textE2.getText().toUpperCase());
@@ -111,9 +108,11 @@ public class Traceroute {
     private void updateTextArea () {
         textE1.setText("");
         textE2.setText("");
-        for (DefaultWeightedEdge direccion : direcciones) {
-            textArea.append(direccion + "\n");
+
+        for(DefaultWeightedEdge e:direcciones.getEdgeList()){
+            textArea.append(e.toString());
         }
+
     }
 
     public void setCoordinator(Coordinator coordinator) {

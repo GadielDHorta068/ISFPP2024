@@ -53,7 +53,7 @@ public class Utils {
             Equipment targetNode = c.getPort2().getEquipment();
 
             if (sourceNode.equals(targetNode)) throw new IllegalArgumentException("son el mismo equipo");
-            if (!graph.containsEdge(sourceNode, targetNode))
+            if (graph.containsEdge(sourceNode, targetNode))
                 graph.addEdge(sourceNode, targetNode, c);
         }
 
@@ -166,6 +166,7 @@ public class Utils {
     public void setGraph(Graph<Equipment, Connection> graph) {
         Utils.graph = graph;
     }
+
 
     public List<Equipment> detectConnectivityIssues(Equipment startNode) {
         List<Equipment> visitedNodes = new ArrayList<>();

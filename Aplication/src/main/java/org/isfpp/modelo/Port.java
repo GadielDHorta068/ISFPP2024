@@ -37,12 +37,13 @@ public class Port {
     public void setInUse(Boolean is){
         this.inUse = is;
     }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Port port = (Port) o;
-        return Objects.equals(portType, port.portType);
+        return Objects.equals(portType, port.portType) && Objects.equals(equipment, port.equipment);
     }
 
     @Override

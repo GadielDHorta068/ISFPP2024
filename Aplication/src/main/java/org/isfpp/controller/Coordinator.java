@@ -5,12 +5,12 @@ import org.isfpp.interfaz.panelesPrincipal.DesplegableComponent;
 import org.isfpp.logica.Utils;
 import org.isfpp.modelo.*;
 import org.jgrapht.Graph;
+import org.jgrapht.GraphPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Coordinator{
     private Web web;
@@ -18,6 +18,13 @@ public class Coordinator{
     private MainMenu mainMenu;
     private Object selectedItem;
     private List<DesplegableComponent> tablas = new ArrayList<>();
+
+    public Coordinator() {
+        this.web =null;
+        this.utils=null;
+        this.mainMenu=null;
+        this.selectedItem=null;
+    }
 
     public Utils getUtils() {
         return utils;
@@ -104,7 +111,7 @@ public class Coordinator{
     }
     public List<Equipment> detectConnectivityIssues(Equipment startNode) {
         return utils.detectConnectivityIssues(startNode);}
-    public List<DefaultWeightedEdge> traceroute(Equipment e1, Equipment e2){return utils.traceroute(e1, e2);}
+    public GraphPath<Equipment, DefaultWeightedEdge> traceroute(Equipment e1, Equipment e2){return utils.traceroute(e1, e2);}
 
 
     public Graph<Equipment, Connection> getGraph() {

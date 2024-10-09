@@ -8,6 +8,7 @@ import org.isfpp.interfaz.panelesCreadores.EquipmentFormPanel;
 import org.isfpp.interfaz.panelesCreadores.LocationFormPanel;
 import org.isfpp.interfaz.panelesCreadores.PortTypeFormPanel;
 import org.isfpp.interfaz.panelesEditadores.EditConnection;
+import org.isfpp.interfaz.panelesEditadores.EditConnection;
 import org.isfpp.interfaz.panelesEditadores.EditEquipmentFormPanel;
 import org.isfpp.interfaz.panelesEditadores.EditLocationFormPanel;
 import org.isfpp.interfaz.panelesEditadores.EditPortTypeFormPanel;
@@ -185,8 +186,11 @@ public class BarraMenu {
         JMenu herramientasMenu = new JMenu("Herramientas");
         JMenuItem ipScan = new JMenuItem("Ping en rango");
         JMenuItem ipList = new JMenuItem("Lista IP");
+        JMenuItem connectionIssues = new JMenuItem("Conexiones");
         herramientasMenu.add(ipScan);
-    //    herramientasMenu.add(ipList);
+        herramientasMenu.add(ipList);
+        herramientasMenu.add(connectionIssues);
+        StylusUI.styleMenuItem(connectionIssues);
         StylusUI.styleMenuItem(ipScan);
         StylusUI.styleMenuItem(ipList);
         StylusUI.styleMenu(herramientasMenu);
@@ -211,6 +215,15 @@ public class BarraMenu {
                 traceroute.trace();
             }
         });
+        connectionIssues.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ConnectionIssues connection = new ConnectionIssues();
+                connection.setCoordinator(coordinator);
+                connection.scanIp();
+            }
+        });
+
 
         ipScan.addActionListener(new ActionListener() {
             @Override
