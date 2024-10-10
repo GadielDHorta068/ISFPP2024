@@ -87,10 +87,11 @@ public class Utils {
         }
 
         if (!e1.isStatus() || !e2.isStatus()) {
-            throw new IllegalArgumentException(STR."""
-Uno de los equipos no está activo\s
-\{e1.getCode()}\{e1.isStatus()}
-\{e2.getCode()}\{e2.isStatus()}""");
+            throw new IllegalArgumentException(String.format(
+                    "Uno de los equipos no está activo\n%s: %b\n%s: %b",
+                    e1.getCode(), e1.isStatus(),
+                    e2.getCode(), e2.isStatus()
+            ));
         }
 
         // Crear un grafo temporal que contendrá solo los equipos activos
@@ -252,7 +253,7 @@ Uno de los equipos no está activo\s
 
         IntStream.range(startThirdSegment, 256).forEach(j -> {
             IntStream.range(start, 256).forEach(i -> {
-                String nuevaIP = STR."\{parts[0]}.\{parts[1]}.\{j}.\{i}";
+                String nuevaIP = String.format("%s.%s.%d.%d", parts[0], parts[1], j, i);
                 System.out.println(nuevaIP);
                 if (Utils.ping(nuevaIP)) {
                     System.out.println("encontro");

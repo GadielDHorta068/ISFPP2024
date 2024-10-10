@@ -48,7 +48,7 @@ public class EditPortTypeFormPanel extends JPanel {
         StylusUI.aplicarEstiloBoton(createButton,true);
         add(createButton, BorderLayout.SOUTH);
 
-        createButton.addActionListener(_ -> {
+        createButton.addActionListener(e -> {
             String code = codeField.getText();
             String description = descriptionField.getText();
             int portSpeed = Integer.parseInt(speedField.getText());
@@ -61,7 +61,7 @@ public class EditPortTypeFormPanel extends JPanel {
                 web.getCoordinator().updateTablas();
                 frame.setVisible(false);
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this, STR."Error al modificar: \{ex.getMessage()}");
+                JOptionPane.showMessageDialog(this, "Error al modificar: " + ex.getMessage());
             }
         });
         frame.add(this);

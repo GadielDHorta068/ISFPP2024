@@ -120,7 +120,7 @@ public class EquipmentFormPanel extends JPanel {
                 web.getCoordinator().updateTablas();
                 frame.setVisible(false);
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this, STR."Error al crear equipo: \{ex.getMessage()}");
+                JOptionPane.showMessageDialog(this, "Error al crear equipo: " + ex.getMessage());
             }
 
         });

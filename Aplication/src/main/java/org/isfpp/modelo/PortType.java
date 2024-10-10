@@ -43,9 +43,11 @@ public class PortType {
 
 	@Override
 	public String toString() {
-		return STR."""
-\{code}
-\{description}
-\{speed}""";
+		return String.format("%s \n%s \n%s",
+				code,
+				description,
+				speed
+		);
 	}
+
 }

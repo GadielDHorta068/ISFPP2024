@@ -15,6 +15,7 @@ public class Equipment {
 	private EquipmentType equipmentType;
 	private Location location;
 	private boolean status;
+    private int portCapacity;
 
     public Equipment(){}
 
@@ -29,7 +30,8 @@ public class Equipment {
         setLocation(location);
         setStatus(status);
 
-		this.ipAdresses = new ArrayList<String>();
+        this.portCapacity = portCapacity;
+		this.ipAdresses = new ArrayList<String>(portCapacity);
 		this.ports = new ArrayList<Port>();
 
         for (int i = 0; i<portCapacity; i++)
@@ -211,16 +213,18 @@ public class Equipment {
 
     @Override
     public String toString() {
-        return STR."""
-Código: \{code}
-Descripción: \{description}
-Marca: \{make}
-Modelo: \{model}
-Direcciones IP: \{String.join(", ", ipAdresses)}
-Tipo de Equipo: \{equipmentType.getDescription()}
-Ubicación: \{location.getDescription()}
-Estado: \{status ? "Activo" : "Inactivo"}
-Puertos: \{ports.size()}""";
+        return "Código: " + code + " \n" +
+                "Descripción: " + description + " \n" +
+                "Marca: " + make + " \n" +
+                "Modelo: " + model + " \n" +
+                "Direcciones IP: " + String.join(", ", ipAdresses) + " \n" +
+                "Tipo de Equipo: " + equipmentType.getDescription() + " \n" +
+                "Ubicación: " + location.getDescription() + " \n" +
+                "Estado: " + (status ? "Activo" : "Inactivo") + " \n" +
+                "Puertos: " + ports.size();
     }
 
+    public int getPortCapacity(){
+        return portCapacity;
+    }
 }

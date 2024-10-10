@@ -1,4 +1,4 @@
-package org.isfpp.interfaz.panelesCreadores;
+package org.isfpp.interfaz;
 
 import org.isfpp.controller.Coordinator;
 import org.isfpp.interfaz.panelesPrincipal.BarraMenu;

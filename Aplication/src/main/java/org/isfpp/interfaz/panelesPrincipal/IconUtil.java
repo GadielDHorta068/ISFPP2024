@@ -1,9 +1,10 @@
-package org.isfpp.interfaz;
+package org.isfpp.interfaz.panelesPrincipal;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Objects;
 import java.util.Properties;
 
 public class IconUtil {
@@ -24,7 +25,7 @@ public class IconUtil {
     public static ImageIcon getIcon(String iconName) {
         String iconFileName = prop.getProperty("icon." + iconName);
         if (iconFileName != null) {
-            ImageIcon icon = new ImageIcon(IconUtil.class.getClassLoader().getResource(iconFileName));
+            ImageIcon icon = new ImageIcon(Objects.requireNonNull(IconUtil.class.getClassLoader().getResource(iconFileName)));
 
             // Convertimos el ImageIcon a BufferedImage
             Image image = icon.getImage();

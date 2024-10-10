@@ -26,7 +26,7 @@ public class Cargar {
     public static void loadEquipments(Web red, String fileName) throws FileNotFoundException {
         InputStream inputStream = Cargar.class.getClassLoader().getResourceAsStream(fileName);
         if (inputStream == null) {
-            throw new FileNotFoundException(STR."Archivo no encontrado: \{fileName}");
+            throw new FileNotFoundException("Archivo no encontrado:" +fileName);
         }
         Scanner read = new Scanner(inputStream);
         read.useDelimiter("\\s*;\\s*");
@@ -61,7 +61,7 @@ public class Cargar {
     public static void loadPortTypes(Web red, String fileName) throws FileNotFoundException {
         InputStream inputStream = Cargar.class.getClassLoader().getResourceAsStream(fileName);
         if (inputStream == null) {
-            throw new FileNotFoundException(STR."Archivo no encontrado: \{fileName}");
+            throw new FileNotFoundException("Archivo no encontrado: " + fileName);
         }
         Scanner read = new Scanner(inputStream);
         read.useDelimiter("\\s*;\\s*");
@@ -85,12 +85,9 @@ public class Cargar {
         Equipment equipment1, equipment2;
         PortType portType1, portType2;
 
-        // Mensaje de depuración
-        System.out.println(STR."Cargando conexiones desde el archivo: \{fileName}");
-
         InputStream inputStream = Cargar.class.getClassLoader().getResourceAsStream(fileName);
         if (inputStream == null) {
-            throw new FileNotFoundException(STR."Archivo no encontrado: \{fileName}");
+            throw new FileNotFoundException("Archivo no encontrado: "+fileName);
         }
         Scanner read = new Scanner(inputStream);
         read.useDelimiter("\\s*;\\s*");
@@ -113,7 +110,7 @@ public class Cargar {
 
         InputStream inputStream = Cargar.class.getClassLoader().getResourceAsStream(fileName);
         if (inputStream == null) {
-            throw new FileNotFoundException(STR."Archivo no encontrado: \{fileName}");
+            throw new FileNotFoundException("Archivo no encontrado:" +fileName);
         }
         Scanner read = new Scanner(inputStream);
         read.useDelimiter("\\s*;\\s*");
@@ -133,7 +130,7 @@ public class Cargar {
         String code, description;
         InputStream inputStream = Cargar.class.getClassLoader().getResourceAsStream(fileName);
         if (inputStream == null) {
-            throw new FileNotFoundException(STR."Archivo no encontrado: \{fileName}");
+            throw new FileNotFoundException("Archivo no encontrado:"+fileName);
         }
         Scanner read = new Scanner(inputStream);
         read.useDelimiter("\\s*;\\s*");
@@ -154,7 +151,7 @@ public class Cargar {
 
         InputStream inputStream = Cargar.class.getClassLoader().getResourceAsStream(fileName);
         if (inputStream == null) {
-            throw new FileNotFoundException(STR."Archivo no encontrado: \{fileName}");
+            throw new FileNotFoundException("Archivo no encontrado: "+fileName);
         }
         Scanner read = new Scanner(inputStream);
         read.useDelimiter("\\s*;\\s*");
@@ -182,7 +179,7 @@ public class Cargar {
         Properties properties = new Properties();
         try (InputStream input = Cargar.class.getClassLoader().getResourceAsStream(propertiesFile)) {
             if (input == null) {
-                throw new FileNotFoundException(STR."Archivo de propiedades no encontrado: \{propertiesFile}");
+                throw new FileNotFoundException("Archivo de propiedades no encontrado:" +propertiesFile);
             }
             properties.load(input);
         }
