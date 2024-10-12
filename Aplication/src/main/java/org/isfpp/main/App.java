@@ -2,13 +2,15 @@ package org.isfpp.main;
 
 import org.isfpp.controller.Coordinator;
 import org.isfpp.datos.Cargar;
-import org.isfpp.interfaz.MainMenu;
+import org.isfpp.interfaz.panelesCreadores.MainMenu;
 import org.isfpp.logica.Utils;
+import org.isfpp.modelo.Connection;
+import org.isfpp.modelo.Equipment;
 import org.isfpp.modelo.Web;
 
 import java.io.IOException;
 
-public class Main {
+public class App {
 
     // l�gica
     private Web web;

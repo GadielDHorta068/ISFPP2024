@@ -48,7 +48,7 @@ public class PortTypeFormPanel extends JPanel {
         StylusUI.aplicarEstiloBoton(createButton,true);
         add(createButton, BorderLayout.SOUTH);
 
-        createButton.addActionListener(e -> {
+        createButton.addActionListener(_ -> {
             String code = codeField.getText();
             String description = descriptionField.getText();
             int portSpeed = Integer.parseInt(speedField.getText());
@@ -57,7 +57,7 @@ public class PortTypeFormPanel extends JPanel {
                 JOptionPane.showMessageDialog(this, "Tipo de puerto creado con éxito");
                 frame.setVisible(false);
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this, "Error al crear equipo: " + ex.getMessage());
+                JOptionPane.showMessageDialog(this, STR."Error al crear equipo: \{ex.getMessage()}");
             }
         });
         frame.add(this);

@@ -1,6 +1,6 @@
 package org.isfpp.controller;
 
-import org.isfpp.interfaz.MainMenu;
+import org.isfpp.interfaz.panelesCreadores.MainMenu;
 import org.isfpp.interfaz.panelesPrincipal.DesplegableComponent;
 import org.isfpp.logica.Utils;
 import org.isfpp.modelo.*;

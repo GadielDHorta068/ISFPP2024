@@ -1,17 +1,14 @@
-package org.isfpp.modelo;
+package modelo;
 
 import java.util.Objects;
 
 public class Location {
 	private String code;
 	private String description;
-
-	public Location(){}
-
 	public Location(String code, String description) {
 		super();
-		setCode(code);
-		setDescription(description);
+		this.code = code;
+		this.description = description;
 	}
 	public String getCode() {
 		return code;
@@ -42,8 +39,7 @@ public class Location {
 	}
 	@Override
 	public String toString() {
-		return code + "\n" +
-				 description;
+		return "Location [code=" + code + ", description=" + description + "]";
 	}
 	
 	

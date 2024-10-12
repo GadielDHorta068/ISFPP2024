@@ -41,7 +41,7 @@ public class EditLocationFormPanel extends JPanel {
         StylusUI.aplicarEstiloBoton(createButton,true);
         add(createButton, BorderLayout.SOUTH);
 
-        createButton.addActionListener(e -> {
+        createButton.addActionListener(_ -> {
             String code = codeField.getText();
             String description = descriptionField.getText();
 
@@ -52,7 +52,7 @@ public class EditLocationFormPanel extends JPanel {
                 web.getCoordinator().updateTablas();
                 frame.setVisible(false);
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this, "Error modificar: " + ex.getMessage());
+                JOptionPane.showMessageDialog(this, STR."Error modificar: \{ex.getMessage()}");
             }
         });
 

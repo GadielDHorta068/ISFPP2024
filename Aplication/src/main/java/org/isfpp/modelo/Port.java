@@ -53,6 +53,6 @@ public class Port {
 
     @Override
     public String toString() {
-        return  portType.toString();
+        return STR."{portType=\{portType}\{'}'}";
     }
 }

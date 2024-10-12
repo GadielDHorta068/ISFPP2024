@@ -60,11 +60,9 @@ public class Connection {
 
 	@Override
 	public String toString() {
-		return String.format("%s\n%s\n%s",
-				wire,
-				port1.toString(),
-				port2.toString()
-		);
+		return STR."""
+\{wire}
+\{port1.toString()}
+\{port2.toString()}""";
 	}
-
 }

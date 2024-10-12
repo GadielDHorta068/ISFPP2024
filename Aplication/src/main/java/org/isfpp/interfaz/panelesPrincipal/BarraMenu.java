@@ -115,6 +115,7 @@ public class BarraMenu {
                 case Connection connection -> new EditConnection(web, connection);
                 case null, default -> {
                     assert editar != null;
+                    System.out.println(STR."Clase no detectada\{editar.getClass()}");
                 }
 
             }
@@ -156,7 +157,7 @@ public class BarraMenu {
             }
         });
 
-        verGrafo.addActionListener(e -> new VisualizarGrafo(web.getHardware(), web.getConnections()));
+        verGrafo.addActionListener(_ -> new VisualizarGrafo(web.getHardware(), web.getConnections()));
 
         eliminarItem.addActionListener(e -> {
             Object editar = coordinator.getSelectedItem();
@@ -167,6 +168,7 @@ public class BarraMenu {
                 case Connection connection -> web.eraseConnection(connection);
                 case null, default -> {
                     assert editar != null;
+                    System.out.println(STR."Clase no detectada\{editar.getClass()}");
                 }
             }
             coordinator.updateTablas();

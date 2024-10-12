@@ -1,5 +1,6 @@
 package org.isfpp.interfaz.panelesPrincipal;
 
+import org.isfpp.interfaz.IconUtil;
 import org.isfpp.interfaz.stylusUI.StylusUI;
 import org.isfpp.modelo.Connection;
 import org.isfpp.modelo.Equipment;
@@ -7,6 +8,8 @@ import org.isfpp.modelo.Location;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PanelDerecho {
     private JTextArea propiedades;
@@ -43,17 +46,22 @@ public class PanelDerecho {
             setIcon(eq.getEquipmentType().getCode());
         } else if (e instanceof Location lo) {
             setIcon("LOC");
-            propiedades.setText("Codigo: " + lo.getCode() + "\n\n" +
-                    "Descripcion:\n" + lo.getDescription());
+            propiedades.setText(STR."""
+Codigo:\{lo.getCode()}
+
+Descripcion:
+\{lo.getDescription()}""");
         } else if (e instanceof Connection con) {
             setIcon(con.getWire().getCode());
-            propiedades.setText("Equipo origen: " + con.getPort1().getEquipment().getCode() + "\n" +
-                    "Puerto: " + con.getPort1().getPortType().getCode() + "\n\n" +
-                    "Equipo Destino: " + con.getPort2().getEquipment().getCode() + "\n" +
-                    "Puerto: " + con.getPort2().getPortType().getCode());
+            propiedades.setText(STR."""
+Equipo origen: \{con.getPort1().getEquipment().getCode()}
+Puerto: \{con.getPort1().getPortType().getCode()}
+
+Equipo Destino: \{con.getPort2().getEquipment().getCode()}
+Puerto: \{con.getPort2().getPortType().getCode()}
+""");
         }
     }
-
 
 
     private ImageIcon resizeImage(ImageIcon imageIcon, int width, int height) {

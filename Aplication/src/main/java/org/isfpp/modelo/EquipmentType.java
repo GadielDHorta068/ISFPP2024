@@ -37,8 +37,9 @@ public class EquipmentType {
 
 	 @Override
     public String toString() {
-        return
-                "codigo: '" + code + '\'' +
-                " descripcion: " + description;
+        return "TipoEquipo{" +
+                "codigo='" + code + '\'' +
+                ", descripcion='" + description + '\'' +
+                '}';
     }
 }

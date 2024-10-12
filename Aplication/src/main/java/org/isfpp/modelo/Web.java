@@ -4,12 +4,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.stream.IntStream;
 
 import org.isfpp.controller.Coordinator;
 import org.isfpp.exceptions.AlreadyExistException;
 import org.isfpp.exceptions.NotFoundException;
-import org.isfpp.interfaz.panelesAddons.PingListEquipment;
 
 import javax.swing.*;
 
@@ -167,11 +165,7 @@ public class Web {
 		List<String> codes = new ArrayList<>();
 		for (org.isfpp.modelo.Connection connection : connections) {
 			if(connection.getWire().equals(w))
-				codes.add(String.format("%s<->%s",
-						connection.getPort1().getEquipment().getCode(),
-						connection.getPort2().getEquipment().getCode()
-				));
-
+				codes.add(STR."\{connection.getPort1().getEquipment().getCode()}<->\{connection.getPort2().getEquipment().getCode()}");
 		}
 		if (!codes.isEmpty())
 			throw new IllegalStateException("las siguientes conexiones tienen ese tipo de cable" + codes);
@@ -187,26 +181,18 @@ public class Web {
 				codes.add(e.getCode());
 		}
 		if (!codes.isEmpty())
-			throw new IllegalStateException("Hay equipos que usan ese tipo de puertos: "+codes);
+			throw new IllegalStateException(STR."Hay equipos que usan ese tipo de puertos: \{codes}");
 		locations.remove(portType.getCode(),portType);
 		coordinator.updateTablas();
 	}
 	// Agregar una conexión entre dos equipos
 	public Connection addConnection(Port port1, Port port2, WireType wire) {
-		Equipment eq1 = port1.getEquipment();
-		Equipment eq2 = port2.getEquipment();
 		// Verificar si los equipos existen en el hardware
-		if (!hardware.containsKey(eq1.getCode())) {
+		if (!hardware.containsKey(port1.getEquipment().getCode())) {
 			throw new NotFoundException("El equipo " + port1.getEquipment().getCode() + " no se encuentra.");
 		}
-		if (!hardware.containsKey(eq2.getCode())) {
+		if (!hardware.containsKey(port2.getEquipment().getCode())) {
 			throw new NotFoundException("El equipo " + port2.getEquipment().getCode() + " no se encuentra.");
-		}
-		if(eq1.getIpAdresses().size() == eq1.getPortCapacity()){
-	//		throw new NotFoundException("El equipo " + eq1.getCode() + " tiene todos los puertos ocupados.");
-		}
-		if(eq2.getIpAdresses().size() == eq2.getPortCapacity()){
-		//	throw new NotFoundException("El equipo " + eq2.getCode() + " tiene todos los puertos ocupados.");
 		}
 
 		Connection connection = new Connection(port2,port1, wire);
@@ -216,54 +202,7 @@ public class Web {
 		}
 
 		// Agregar la conexión a la lista de conexiones
-
-
-		String nuevaIP= "a";
-		if (eq1.getEquipmentType().getCode().equals("SW") || eq1.getEquipmentType().getCode().equals("RT") || eq1.getEquipmentType().getCode().equals("AP")){
-			String[] parts = eq1.getIpAdresses().getFirst().split("\\.");
-			List<String> ipList = new ArrayList<>();
-			if(parts.length >= 3){
-				int pool = Integer.parseInt(parts[3]);
-
-				boolean t = true;
-				while (t){
-					t= false;
-					pool += 1;
-					nuevaIP = String.format("%s.%s.%s.%d", parts[0], parts[1], parts[2], pool);
-					for (Equipment eq : this.getHardware().values()){
-						if (eq.getIpAdresses().contains(nuevaIP)) {
-							t = true;
-							break;
-						}
-					}
-				}
-			}
-
-
-		}
-
-		if ((eq1.getEquipmentType().getCode().equals("SW") || eq1.getEquipmentType().getCode().equals("RT") || eq1.getEquipmentType().getCode().equals("AP")) && (eq2.getEquipmentType().getCode().equals("SW") || eq2.getEquipmentType().getCode().equals("RT") || eq2.getEquipmentType().getCode().equals("AP"))){
-			String[] parts = eq1.getIpAdresses().getFirst().split("\\.");
-			List<String> ipList = new ArrayList<>();
-			if(parts.length >= 3){
-				int pool = Integer.parseInt(parts[2]);
-				boolean t = true;
-				while (t){
-					t= false;
-					pool += 1;
-					nuevaIP = String.format("%s.%s.%d.%s", parts[0], parts[1], pool, parts[3]);
-					for (Equipment eq : this.getHardware().values()){
-						if (eq.getIpAdresses().contains(nuevaIP)) {
-							t = true;
-							break;
-						}
-					}
-				}
-			}
-
-		}
 		connections.add(connection);
-		eq2.addIp(nuevaIP);
 		coordinator.updateTablas();
 		return connection;
 	}
