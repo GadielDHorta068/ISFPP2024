@@ -4,6 +4,7 @@ import org.isfpp.exceptions.AlreadyExistException;
 import org.isfpp.exceptions.NotFoundException;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Equipment {
 	private String code;
@@ -29,27 +30,12 @@ public class Equipment {
         setLocation(location);
         setStatus(status);
 
-		this.ipAdresses = new ArrayList<String>();
-		this.ports = new ArrayList<Port>();
+		this.ipAdresses = new ArrayList<>();
+		this.ports = new ArrayList<>();
 
         for (int i = 0; i<portCapacity; i++)
             this.addPort(portType);
 	}
-
-	public static String generarMAC() {
-		Random random = new Random();
-		byte[] macAddr = new byte[6];
-		random.nextBytes(macAddr);
-
-        StringBuilder macAddress = new StringBuilder(18);
-        for (byte b : macAddr) {
-            if (!macAddress.isEmpty()) {
-                macAddress.append(":");
-            }
-            macAddress.append(String.format("%02x", b));
-        }
-        return macAddress.toString().toUpperCase();
-    }
 
 
     public void addIp(String ip) {
@@ -80,12 +66,12 @@ public class Equipment {
         ports.add(p);
     }
 
-    public void deletePort(PortType port) {
+    public void deletePort(Port port) {
         if (!ports.contains(port))
-            throw new AlreadyExistException("ese puerto ya esta en la lista de puertos del equipo");
+            throw new NotFoundException("El puerto no se encuentra en la lista de puertos del equipo");
         ports.remove(port);
-
     }
+
 
     public String getCode () {
         return code;
@@ -157,12 +143,12 @@ public class Equipment {
      */
     public HashMap<PortType, Integer> getAllPortsTypes() {
         HashMap<PortType, Integer> portTypes = new HashMap<>();
-        for (Port port : getPorts())
-            if (portTypes.containsKey(port.getPortType()))
-                portTypes.put(port.getPortType(), countPort(port.getPortType()));
-
+        for (Port port : getPorts()) {
+            portTypes.put(port.getPortType(), portTypes.getOrDefault(port.getPortType(), 0) + 1);
+        }
         return portTypes;
     }
+
 
     /**
      * Hace un conteo de los puertos que sean del tipo dado.
@@ -223,6 +209,11 @@ public class Equipment {
                 status ? "Activo" : "Inactivo",
                 ports.size()
         );
+    }
+    public List<Port> getPortsNotInUse() {
+        return getPorts().stream()
+                .filter(port -> !port.isInUse())
+                .collect(Collectors.toList());
     }
 
 

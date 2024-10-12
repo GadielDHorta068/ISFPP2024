@@ -1,17 +1,21 @@
 package org.isfpp.modelo;
 
+import org.isfpp.logica.Utils;
+
 import java.util.Objects;
 
 public class Port {
     private Boolean inUse;
     private PortType portType;
     private Equipment equipment;
+    private String MACAdress;
 
     public Port(PortType portType, Equipment equipment) {
         super();
         setInUse(false);
         setPortType(portType);
         setEquipment(equipment);
+        MACAdress = Utils.generarMAC();
     }
 
     public PortType getPortType() {

@@ -88,7 +88,7 @@ public class EquipmentFormPanel extends JPanel {
         StylusUI.aplicarEstiloEtiqueta(estado);
         formPanel.add(estado);
         statusCheckBox = new JCheckBox();
-        StylusUI.aplicarEstiloCheckBox(statusCheckBox);
+        //StylusUI.aplicarEstiloCheckBox(statusCheckBox);
         formPanel.add(statusCheckBox);
 
 

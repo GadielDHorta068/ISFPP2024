@@ -7,6 +7,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class EditConnection extends JPanel {
     private JComboBox<Equipment> eq1ComboBox;
@@ -40,7 +42,7 @@ public class EditConnection extends JPanel {
         formPanel.add(tipoPuerto1);
         Equipment e1 = (Equipment) eq1ComboBox.getSelectedItem();
         assert e1 != null;
-        port1ComboBox = new JComboBox<>( e1.getPorts().toArray(new Port[0]));
+        port1ComboBox = new JComboBox<>( e1.getPortsNotInUse().toArray(new Port[0]));
         StylusUI.aplicarEstiloComboBox(port1ComboBox);
         formPanel.add(port1ComboBox);
 
@@ -49,7 +51,7 @@ public class EditConnection extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 Equipment selected1 = (Equipment) eq1ComboBox.getSelectedItem();
                 if (selected1 != null){
-                    port1ComboBox.setModel(new DefaultComboBoxModel<>(selected1.getPorts().toArray(new Port[0])));
+                    port1ComboBox.setModel(new DefaultComboBoxModel<>(selected1.getPortsNotInUse().toArray(new Port[0])));
                 }
             }
         }));
@@ -66,7 +68,7 @@ public class EditConnection extends JPanel {
         formPanel.add(tipoPuerto2);
         Equipment e2 = (Equipment) eq1ComboBox.getSelectedItem();
         assert e2 != null;
-        port2ComboBox = new JComboBox<>( e2.getPorts().toArray(new Port[0]));
+        port2ComboBox = new JComboBox<>( e2.getPortsNotInUse().toArray(new Port[0]));
         StylusUI.aplicarEstiloComboBox(port2ComboBox);
         formPanel.add(port2ComboBox);
 
@@ -75,7 +77,7 @@ public class EditConnection extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 Equipment selected2 = (Equipment) eq2ComboBox.getSelectedItem();
                 if (selected2 != null){
-                    port2ComboBox.setModel(new DefaultComboBoxModel<>(selected2.getPorts().toArray(new Port[0])));
+                    port2ComboBox.setModel(new DefaultComboBoxModel<>(selected2.getPortsNotInUse().toArray(new Port[0])));
                 }
             }
         }));

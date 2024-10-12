@@ -8,22 +8,29 @@ public class Connection {
     private Port port2;
 
 	public Connection(){}
-	public Connection(Port port1, Port port2,WireType wire) {
+	public Connection(Port port1, Port port2, WireType wire) {
 		super();
-		System.out.println(port1.isInUse());
-		System.out.println(port2.isInUse());
-		System.out.println(wire);
-		if (port1.getEquipment().equals(port2.getEquipment()))
-			throw new IllegalArgumentException("ambos son iguales");
-		if(port2.getEquipment().equals(port1.getEquipment()))
-			throw new IllegalArgumentException("ambos puertos pertenecen al mismo equipo");
-//		if (port1.isInUse() || port2.isInUse())
-//			throw new IllegalArgumentException("uno o ambos puertos se encuentran en uso");
 
+		// Verificamos que ambos puertos no estén en uso
+		if (port1.isInUse()) {
+			throw new IllegalArgumentException("El puerto 1 ya está en uso");
+		}
+		if (port2.isInUse()) {
+			throw new IllegalArgumentException("El puerto 2 ya está en uso");
+		}
+
+		// Verificamos que los puertos no pertenezcan al mismo equipo
+		if (port1.getEquipment().equals(port2.getEquipment())) {
+			throw new IllegalArgumentException("Ambos puertos pertenecen al mismo equipo");
+		}
+
+		// Configuramos los puertos y marcamos como en uso
 		setPort1(port1);
 		port1.setInUse(true);
 		setPort2(port2);
 		port2.setInUse(true);
+
+		// Configuramos el tipo de cable
 		setWire(wire);
 	}
 

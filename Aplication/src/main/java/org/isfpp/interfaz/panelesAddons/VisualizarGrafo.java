@@ -114,7 +114,7 @@ public class VisualizarGrafo extends JFrame {
 
         if (imagePath != null) {
             style.put("shape", "image");
-            style.put("image", getClass().getClassLoader().getResource(imagePath).toString()); // Asegurarse de que la ruta es correcta y accesible
+            style.put("image", Objects.requireNonNull(getClass().getClassLoader().getResource(imagePath)).toString()); // Asegurarse de que la ruta es correcta y accesible
         } else {
             style.put("shape", "ellipse");
             style.put("fillColor", "#C3D9FF");
