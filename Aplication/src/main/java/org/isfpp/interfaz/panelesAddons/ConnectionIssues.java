@@ -58,7 +58,7 @@ public class ConnectionIssues {
         textArea = new JTextArea();
         textArea.setEditable(false);
         JScrollPane scrollPane = new JScrollPane(textArea);
-        scanButton = new JButton("Scan IPs");
+        scanButton = new JButton("Conexiones");
         scanButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

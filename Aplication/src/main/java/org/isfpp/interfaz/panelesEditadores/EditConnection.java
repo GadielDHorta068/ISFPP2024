@@ -28,14 +28,14 @@ public class EditConnection extends JPanel {
         JPanel formPanel = new JPanel(new GridLayout(11, 2, 10, 10));
         StylusUI.aplicarEstiloPanel(formPanel);
 
-        JLabel equipo1 = new JLabel("Equipo1");
+        JLabel equipo1 = new JLabel("Equipo origen");
         StylusUI.aplicarEstiloEtiqueta(equipo1);
         formPanel.add(equipo1);
         eq1ComboBox = new JComboBox<>(web.getHardware().values().toArray(new Equipment[0]));
         StylusUI.aplicarEstiloComboBox(eq1ComboBox);
         formPanel.add(eq1ComboBox);
 
-        JLabel tipoPuerto1 = new JLabel("Puerto equipo1");
+        JLabel tipoPuerto1 = new JLabel("Puerto origen");
         StylusUI.aplicarEstiloEtiqueta(tipoPuerto1);
         formPanel.add(tipoPuerto1);
         Equipment e1 = (Equipment) eq1ComboBox.getSelectedItem();
@@ -54,14 +54,14 @@ public class EditConnection extends JPanel {
             }
         }));
 
-        JLabel equipo2 = new JLabel("Equipo2");
+        JLabel equipo2 = new JLabel("Equipo destino");
         StylusUI.aplicarEstiloEtiqueta(equipo2);
         formPanel.add(equipo2);
         eq2ComboBox = new JComboBox<>(web.getHardware().values().toArray(new Equipment[1]));
         StylusUI.aplicarEstiloComboBox(eq2ComboBox);
         formPanel.add(eq2ComboBox);
 
-        JLabel tipoPuerto2 = new JLabel("Puerto equipo2");
+        JLabel tipoPuerto2 = new JLabel("Puerto destino");
         StylusUI.aplicarEstiloEtiqueta(tipoPuerto2);
         formPanel.add(tipoPuerto2);
         Equipment e2 = (Equipment) eq1ComboBox.getSelectedItem();

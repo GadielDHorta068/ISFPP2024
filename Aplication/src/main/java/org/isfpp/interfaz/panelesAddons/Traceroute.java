@@ -110,9 +110,7 @@ public class Traceroute {
         textE2.setText("");
 
         for(Equipment e:direcciones.getVertexList()){
-            textArea.append(STR."""
-\{e.getCode()}
-""");
+            textArea.append(e.getCode() + "\n");
         }
 
     }

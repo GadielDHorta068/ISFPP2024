@@ -42,7 +42,7 @@ public class Location {
 	}
 	@Override
 	public String toString() {
-		return code + "\n" +
+		return code + " \n" +
 				 description;
 	}
 	

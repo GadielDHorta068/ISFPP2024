@@ -108,7 +108,7 @@ public class VisualizarGrafo extends JFrame {
     private String getVertexStyle(mxGraph mxGraph, Equipment equipment) {
         // Configurar estilos de vértices con imágenes basadas en el archivo de propiedades
         String equipmentType = equipment.getEquipmentType().getCode();
-        String imagePath = properties.getProperty(STR."icon.\{equipmentType}");
+        String imagePath = properties.getProperty("icon."+ equipmentType);
 
         Map<String, Object> style = new Hashtable<>();
 
@@ -126,7 +126,7 @@ public class VisualizarGrafo extends JFrame {
 
         style.put("fontSize", 16);
         style.put("fontColor", "#000000");
-        String styleName = STR."\{equipmentType}_STYLE";
+        String styleName = equipmentType +"_STYLE";
         mxGraph.getStylesheet().putCellStyle(styleName, style);
         return styleName;
     }

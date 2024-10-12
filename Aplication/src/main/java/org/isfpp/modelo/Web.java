@@ -163,10 +163,12 @@ public class Web {
 		if(!wireTypes.containsKey(w.getCode()))
 			throw new NotFoundException("El cable no se encuentra");
 		List<String> codes = new ArrayList<>();
-		for (org.isfpp.modelo.Connection connection : connections) {
-			if(connection.getWire().equals(w))
-				codes.add(STR."\{connection.getPort1().getEquipment().getCode()}<->\{connection.getPort2().getEquipment().getCode()}");
+		for (Connection connection : connections) {
+			if (connection.getWire().equals(w)) {
+				codes.add(connection.getPort1().getEquipment().getCode() + " <-> " + connection.getPort2().getEquipment().getCode());
+			}
 		}
+
 		if (!codes.isEmpty())
 			throw new IllegalStateException("las siguientes conexiones tienen ese tipo de cable" + codes);
 		wireTypes.remove(w.getCode(),w);
@@ -181,7 +183,7 @@ public class Web {
 				codes.add(e.getCode());
 		}
 		if (!codes.isEmpty())
-			throw new IllegalStateException(STR."Hay equipos que usan ese tipo de puertos: \{codes}");
+			throw new IllegalStateException("Hay equipos que usan ese tipo de puertos: "+codes);
 		locations.remove(portType.getCode(),portType);
 		coordinator.updateTablas();
 	}

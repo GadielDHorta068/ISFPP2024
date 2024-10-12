@@ -31,7 +31,7 @@ public class DesplegableComponent<T> {
         isExpanded = !isExpanded;
         table.setVisible(isExpanded);
         table.getTableHeader().setVisible(isExpanded);
-        toggleButton.setText(isExpanded ? STR."▼ \{toggleButton.getText().substring(2)}" : STR."▶ \{toggleButton.getText().substring(2)}");
+        toggleButton.setText(isExpanded ? "▼ " + toggleButton.getText().substring(2) : "▶" + toggleButton.getText().substring(2));
         panel.revalidate();
         panel.repaint();
     }
@@ -112,7 +112,7 @@ public class DesplegableComponent<T> {
         panel = new JPanel();
         panel.setLayout(new BorderLayout());
 
-        toggleButton = new JButton(STR."▶ \{titulo}");
+        toggleButton = new JButton("▶ "+titulo);
         StylusUI.aplicarEstiloBoton(toggleButton, false);
         toggleButton.setHorizontalAlignment(SwingConstants.LEFT);
         //toggleButton.addActionListener(e -> toggle());

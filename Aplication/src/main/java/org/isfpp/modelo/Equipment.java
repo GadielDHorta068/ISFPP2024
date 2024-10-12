@@ -211,16 +211,19 @@ public class Equipment {
 
     @Override
     public String toString() {
-        return STR."""
-Código: \{code}
-Descripción: \{description}
-Marca: \{make}
-Modelo: \{model}
-Direcciones IP: \{String.join(", ", ipAdresses)}
-Tipo de Equipo: \{equipmentType.getDescription()}
-Ubicación: \{location.getDescription()}
-Estado: \{status ? "Activo" : "Inactivo"}
-Puertos: \{ports.size()}""";
+        return String.format(
+                "Código: %s\n\n Descripción: %s\n\n Marca: %s\n\n Modelo: %s\n\n Direcciones IP: %s\n\n Tipo de Equipo: %s\n\n Ubicación: %s\n\n Estado: %s\n\n Puertos: %d",
+                code,
+                description,
+                make,
+                model,
+                String.join(", ", ipAdresses),
+                equipmentType.getDescription(),
+                location.getDescription(),
+                status ? "Activo" : "Inactivo",
+                ports.size()
+        );
     }
+
 
 }
