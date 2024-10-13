@@ -59,4 +59,8 @@ public class Port {
     public String toString() {
         return portType.toString();
     }
+
+    public String getMACAdress(){
+        return MACAdress;
+    }
 }

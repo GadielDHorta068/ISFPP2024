@@ -126,9 +126,19 @@ public class BarraMenu {
         StylusUI.styleMenuItem(verGrafo);
         JMenuItem traceRouter = new JMenuItem("Traceroute");
         StylusUI.styleMenuItem(traceRouter);
-
+        JMenuItem cambiarEstado = new JMenuItem("On/Off Equipo");
+        StylusUI.styleMenuItem(cambiarEstado);
         JMenuItem editarItem = new JMenuItem("Editar");
         StylusUI.styleMenuItem(editarItem);
+
+        cambiarEstado.addActionListener(e -> {
+            Object editar = coordinator.getSelectedItem();
+            if(editar instanceof Equipment eq){
+                eq.setStatus(!eq.isStatus());
+                JOptionPane op = new JOptionPane(eq.getCode() + "estado activo cambiado a " + eq.isStatus());
+                coordinator.updateTablas();
+            }
+        });
 
         editarItem.addActionListener(e -> {
             Object editar = coordinator.getSelectedItem();
@@ -198,13 +208,13 @@ public class BarraMenu {
             coordinator.updateTablas();
         });
 
-        //eliminarItem.addActionListener(e -> desplegableComponent.removeSelectedEquipment());
         editarMenu.add(agregarEquipoItem);
         editarMenu.add(agregarPuertoItem);
         editarMenu.add(agregarUbicacionItem);
         editarMenu.add(agregarConItem);
         editarMenu.add(eliminarItem);
         editarMenu.add(editarItem);
+
         JMenu ayudaMenu = new JMenu("Ayuda");
         StylusUI.styleMenu(ayudaMenu);
         JMenu herramientasMenu = new JMenu("Herramientas");
@@ -213,6 +223,7 @@ public class BarraMenu {
         JMenuItem connectionIssues = new JMenuItem("Conexiones");
         herramientasMenu.add(ipScan);
        herramientasMenu.add(ipList);
+       herramientasMenu.add(cambiarEstado);
         herramientasMenu.add(connectionIssues);
         StylusUI.styleMenuItem(connectionIssues);
         StylusUI.styleMenuItem(ipScan);

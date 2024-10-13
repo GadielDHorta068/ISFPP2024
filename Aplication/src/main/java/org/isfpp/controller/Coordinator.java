@@ -17,7 +17,7 @@ public class Coordinator{
     private Utils utils;
     private MainMenu mainMenu;
     private Object selectedItem;
-    private List<DesplegableComponent> tablas = new ArrayList<>();
+    private final List<DesplegableComponent> tablas = new ArrayList<>();
 
     public Coordinator() {
         this.web =null;
