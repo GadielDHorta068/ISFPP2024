@@ -2,6 +2,7 @@ package org.isfpp.datos;
 
 import org.isfpp.modelo.*;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -60,6 +61,7 @@ public class Cargar {
 
     public static void loadPortTypes(Web red, String fileName) throws FileNotFoundException {
         InputStream inputStream = Cargar.class.getClassLoader().getResourceAsStream(fileName);
+        System.out.println(inputStream);
         if (inputStream == null) {
             throw new FileNotFoundException("Archivo no encontrado: "+fileName);
         }
@@ -169,14 +171,14 @@ public class Cargar {
         read.close();
     }
     /**
-     * Metodo para cargar la red desde el archivo propierties
+     * Metodo para cargar la red desde el archivo properties
      * El mismo debe ser llamado como el siguiente ejemplo
      *  <blockquote><pre>
      *      Web web = Cargar.cargarRedDesdePropiedades(config.properties)
      *  </pre></blockquote>
      * @param propertiesFile archivo de propiedades
      * @return  Web a ser devuelta
-     * @throws IOException No se encuentra el archivo propierties
+     * @throws IOException No se encuentra el archivo properties
      */
     public static Web cargarRedDesdePropiedades(String propertiesFile) throws IOException {
         Properties properties = new Properties();
@@ -193,6 +195,23 @@ public class Cargar {
         String portTypeFile = properties.getProperty("rs.portType");
         String wireTypeFile = properties.getProperty("rs.wireType");
         String equipmentTypeFile = properties.getProperty("rs.equipmentType");
+
+        return cargarRed(name, equipmentFile, connectionFile, locationFile, portTypeFile, wireTypeFile, equipmentTypeFile);
+    }
+    public Web cargarRedDesdeDirectorio(String directoryPath) throws IOException {
+        File dataDir = new File(directoryPath, "data");
+        if (!dataDir.exists()) {
+            throw new FileNotFoundException("La carpeta 'data' no fue encontrada en: " + dataDir.getAbsolutePath());
+        }
+
+        String name = "red local";
+        String equipmentFile = new File(dataDir, "equipo.txt").getAbsolutePath();
+        String connectionFile = new File(dataDir, "conexion.txt").getAbsolutePath();
+        String locationFile = new File(dataDir, "ubicacion.txt").getAbsolutePath();
+        String portTypeFile = new File(dataDir, "tipoPuerto.txt").getAbsolutePath();
+        String wireTypeFile = new File(dataDir, "tipoCable.txt").getAbsolutePath();
+        String equipmentTypeFile = new File(dataDir, "tipoEquipo.txt").getAbsolutePath();
+
 
         return cargarRed(name, equipmentFile, connectionFile, locationFile, portTypeFile, wireTypeFile, equipmentTypeFile);
     }

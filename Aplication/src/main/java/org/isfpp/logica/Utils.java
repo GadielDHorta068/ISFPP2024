@@ -280,6 +280,37 @@ public class Utils {
         }
         return macAddress.toString().toUpperCase();
     }
+
+    public static void verificarPuertosOcupados(Equipment equipo) {
+        if (equipo.getIpAdresses().size() == equipo.getPorts().size()) {
+            throw new NotFoundException("El equipo " + equipo.getCode() + " tiene todos los puertos ocupados.");
+        }
+    }
+
+    public static boolean esEquipoRed(Equipment equipo) {
+        String code = equipo.getEquipmentType().getCode();
+        return code.equals("SW") || code.equals("RT") || code.equals("AP");
+    }
+
+    public static String generarNuevaIP(Equipment equipo, Web web) {
+        String[] parts = equipo.getIpAdresses().getFirst().split("\\.");
+        String nuevaIP = "";
+        int pool = Integer.parseInt(parts[3]);
+
+        boolean t = true;
+        while (t) {
+            t = false;
+            pool += 1;
+            nuevaIP = String.format("%s.%s.%s.%d", parts[0], parts[1], parts[2], pool);
+            for (Equipment eq :  web.getHardware().values()) {
+                if (eq.getIpAdresses().contains(nuevaIP)) {
+                    t = true;
+                    break;
+                }
+            }
+        }
+        return nuevaIP;
+    }
 }
 
 

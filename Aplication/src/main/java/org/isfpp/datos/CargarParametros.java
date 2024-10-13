@@ -19,17 +19,17 @@ public class CargarParametros {
 
         prop.load(Imput);
         equipementFile = prop.getProperty("rs.equipment");
-        connectionFile = prop.getProperty("rs.conection");
+        connectionFile = prop.getProperty("rs.connection");
         wireTypeFile = prop.getProperty("rs.wireType");
         equipementTypeFile = prop.getProperty("rs.equipmentType");
         portTypeFile = prop.getProperty("rs.portType");
         locationFile = prop.getProperty("rs.location");
     }
 
-     public static String getequipementFile() {return equipementFile;}
+    public static String getequipementFile() {return equipementFile;}
     public static String getconnectionFile() {return connectionFile;}
     public static String getWireTypeFile() {return wireTypeFile;}
-    public static String geequipementTypeFile() {return equipementTypeFile;}
+    public static String getquipementTypeFile() {return equipementTypeFile;}
     public static String getportTypeFile() {return portTypeFile;}
     public static String getlocationFile() {return locationFile;}
 }

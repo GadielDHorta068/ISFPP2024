@@ -8,8 +8,11 @@ import java.util.List;
 import org.isfpp.controller.Coordinator;
 import org.isfpp.exceptions.AlreadyExistException;
 import org.isfpp.exceptions.NotFoundException;
+import org.isfpp.logica.Utils;
 
 import javax.swing.*;
+
+import static org.isfpp.logica.Utils.*;
 
 public class Web {
 	private HashMap<String, Equipment> hardware;
@@ -189,25 +192,43 @@ public class Web {
 	}
 	// Agregar una conexión entre dos equipos
 	public Connection addConnection(Port port1, Port port2, WireType wire) {
+		Equipment eq1 = port1.getEquipment();
+		Equipment eq2 = port2.getEquipment();
+
 		// Verificar si los equipos existen en el hardware
-		if (!hardware.containsKey(port1.getEquipment().getCode())) {
+		if (!hardware.containsKey(eq1.getCode())) {
 			throw new NotFoundException("El equipo " + port1.getEquipment().getCode() + " no se encuentra.");
 		}
-		if (!hardware.containsKey(port2.getEquipment().getCode())) {
+		if (!hardware.containsKey(eq2.getCode())) {
 			throw new NotFoundException("El equipo " + port2.getEquipment().getCode() + " no se encuentra.");
 		}
 
-		Connection connection = new Connection(port2,port1, wire);
+
+		verificarPuertosOcupados(eq1);
+		verificarPuertosOcupados(eq2);
+
+		Connection connection = new Connection(port2, port1, wire);
 
 		if (connections.contains(connection)) {
-			throw new AlreadyExistException("La conexión entre " + port1.getEquipment().getCode() + " y " + port2.getEquipment().getCode() + " ya existe.");
+			throw new AlreadyExistException("La conexión entre " + eq1.getCode() + " y " + eq2.getCode() + " ya existe.");
+		}
+
+		// Determinar si es necesario generar una nueva IP
+		String nuevaIP = "";
+		if (esEquipoRed(eq1) || (esEquipoRed(eq1) && esEquipoRed(eq2))) {
+			nuevaIP = generarNuevaIP(eq1, this);
+		} else {
+			nuevaIP = generarNuevaIP(eq1, this);
 		}
 
 		// Agregar la conexión a la lista de conexiones
 		connections.add(connection);
+		eq2.addIp(nuevaIP);
 		coordinator.updateTablas();
 		return connection;
 	}
+
+
 
 	public HashMap<Object, EquipmentType> getEquipmentTypes() {
 		return EquipmentTypes;

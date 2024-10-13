@@ -57,6 +57,7 @@ public class MainMenu {
         frame.setSize(800, 600);
         panelIzquierdo.setPreferredSize(new Dimension(frame.getWidth()- 262, 400));
         frame.setVisible(true);
+        frame.setResizable(false);
     }
     public void SetCoordinator(Coordinator coordinator){this.coordinator=coordinator;}
 }

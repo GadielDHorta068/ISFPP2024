@@ -1,6 +1,7 @@
 package org.isfpp.interfaz.panelesPrincipal;
 
 import org.isfpp.controller.Coordinator;
+import org.isfpp.datos.Cargar;
 import org.isfpp.datos.Guardar;
 import org.isfpp.interfaz.panelesAddons.ConnectionIssues;
 import org.isfpp.interfaz.panelesAddons.IPFrame;
@@ -20,6 +21,7 @@ import org.isfpp.modelo.*;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.io.IOException;
 
 public class BarraMenu {
@@ -46,8 +48,24 @@ public class BarraMenu {
         cargarItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Lógica para cargar
+
                 System.out.println("Cargar seleccionado");
+                JFileChooser fileChooser = new JFileChooser();
+                fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+                int result = fileChooser.showSaveDialog(null);
+
+                if (result == JFileChooser.APPROVE_OPTION) {
+                    String directory = fileChooser.getSelectedFile().getAbsolutePath();
+                    System.out.println("Cargar seleccionado: " + directory);
+
+                    try {
+                        Cargar cargar = new Cargar();
+                        coordinator.setWeb(cargar.cargarRedDesdeDirectorio(directory));
+                        coordinator.updateTablas();
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                }
             }
         });
 
@@ -61,17 +79,23 @@ public class BarraMenu {
                 if (result == JFileChooser.APPROVE_OPTION) {
                     String directory = fileChooser.getSelectedFile().getAbsolutePath();
                     System.out.println("Guardar seleccionado: " + directory);
+                    File selectedDirectory = fileChooser.getSelectedFile().getAbsoluteFile();
+                    File dataDir = new File(selectedDirectory, "data");
+                    if (!dataDir.exists()) {
+                        dataDir.mkdirs();  // Crea la subcarpeta 'data' si no existe
+                    }
+                    System.out.println("Carpeta 'data' creada en: " + dataDir.getAbsolutePath());
 
-                    // Actualizar las rutas de los archivos en el objeto Guardar
                     try {
-                        Guardar guardar = new Guardar("config.properties");
-                        //guardar.saveAll();
+                        Guardar guardar = new Guardar();
+                        guardar.saveAll(web, directory);
                     } catch (IOException ex) {
                         ex.printStackTrace();
                     }
                 }
             }
         });
+
 
 
         salirItem.addActionListener(e -> {
