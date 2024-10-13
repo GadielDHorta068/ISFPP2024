@@ -5,6 +5,7 @@ import org.isfpp.modelo.*;
 import java.io.*;
 import java.util.HashMap;
 import java.util.Properties;
+import java.util.StringJoiner;
 
 public class Guardar {
 
@@ -38,7 +39,7 @@ public class Guardar {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
             for (Equipment equipment : red.getHardware().values()) {
                 //SW02;Switch 2;HP Aruba;1930 48G 4SFP/SFP+;SW;SS;1G,48,SFP+,4;166.82.100.100;true;
-                //SW02;Switch 2;HP Aruba;1930 48G 4SFP/SFP+;SW;SS;1G,96;SFP+,4;166.82.100.100,166.82.1.14,166.82.100.103,true
+               // SW02;Switch 2;HP Aruba;1930 48G 4SFP/SFP+;SW;SS;1G,96;SFP+,4;166.82.100.100,166.82.1.14,166.82.100.103;true
                 StringBuilder data = new StringBuilder(equipment.getCode() + ";" +
                         equipment.getDescription() + ";" +
                         equipment.getMake() + ";" +
@@ -46,19 +47,21 @@ public class Guardar {
                         equipment.getEquipmentType().getCode() + ";" +
                         equipment.getLocation().getCode() + ";");
 
-                // Guardar tipos de puerto y cantidades
                 HashMap<PortType, Integer> ports = equipment.getAllPortsTypes();
                 for (PortType portType : ports.keySet()) {
                     data.append(portType.getCode()).append(",").append(ports.get(portType)).append(";");
                 }
 
-                // Guardar direcciones IP
+
+                StringJoiner ipJoiner = new StringJoiner(",");
                 for (String ip : equipment.getIpAdresses()) {
-                    data.append(ip).append(",");
+                    ipJoiner.add(ip);
                 }
+                data.append(ipJoiner.toString());
 
+                data.append(";");
                 data.append(equipment.isStatus() ? "true" : "false");
-
+                data.append(";");
                 writer.write(data.toString());
                 writer.newLine();
             }

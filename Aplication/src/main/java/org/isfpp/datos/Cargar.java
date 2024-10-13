@@ -2,10 +2,8 @@ package org.isfpp.datos;
 
 import org.isfpp.modelo.*;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
+import java.util.InputMismatchException;
 import java.util.Properties;
 import java.util.Scanner;
 
@@ -14,86 +12,173 @@ public class Cargar {
                                String portTypeFile, String wireTypeFile, String equipmentTypeFile) throws FileNotFoundException {
         Web red = new Web(name);
 
-        loadPortTypes(red, portTypeFile);
-        loadWireType(red, wireTypeFile);
         loadEquipmentType(red, equipmentTypeFile);
-        loadLocations(red, locationFile);
-        loadEquipments(red, equipmentFile);
+       loadPortTypes(red, portTypeFile);
+       loadLocations(red, locationFile);
+       loadEquipments(red, equipmentFile);
+        loadWireType(red, wireTypeFile);
         loadConnections(red, connectionFile);
 
         return red;
     }
 
-    public static void loadEquipments(Web red, String fileName) throws FileNotFoundException {
-        InputStream inputStream = Cargar.class.getClassLoader().getResourceAsStream(fileName);
-        if (inputStream == null) {
-            throw new FileNotFoundException("Archivo no encontrado: " + fileName);
-        }
-        Scanner read = new Scanner(inputStream);
-        read.useDelimiter("\\s*;\\s*");
+    public static void loadEquipments(Web red, String filePath) throws FileNotFoundException {
+        InputStream inputStream;
 
+        // Verificar si es un archivo local
+        File file = new File(filePath);
+        if (file.exists()) {
+            // Cargar desde el sistema de archivos local
+            try (Scanner read = new Scanner(file)) {
+                read.useDelimiter("\\s*;\\s*");
+                processEquipments(read, red);
+            }
+        } else {
+            // Cargar desde el JAR
+            inputStream = Cargar.class.getClassLoader().getResourceAsStream(filePath);
+            if (inputStream == null) {
+                throw new FileNotFoundException("Archivo no encontrado: " + filePath);
+            }
+
+            try (Scanner read = new Scanner(inputStream)) {
+                read.useDelimiter("\\s*;\\s*");
+                processEquipments(read, red);
+            }
+        }
+    }
+    private static void processEquipments(Scanner read, Web red) {
         Equipment newEquipment;
         String code, description, marca, model;
         String[] portsArray, ipsArray;
         boolean status;
+        String ipPattern = "^([0-9]{1,3}\\.){3}[0-9]{1,3}$";
 
-        while (read.hasNext()) {
-            code = read.next();
-            description = read.next();
-            marca = read.next();
-            model = read.next();
-            EquipmentType equipmentType = red.getEquipmentTypes().get(read.next());
-            Location location = red.getLocations().get(read.next());
-            portsArray = read.next().split(",");
-            ipsArray = read.next().split(",");
-            status = read.nextBoolean();
-            System.out.println(status);
+        while (read.hasNextLine()) {
+            String line = read.nextLine().trim();
+            if (!line.endsWith(";")) {
+                line += ";"; // Asegúrate de que la línea termine con un punto y coma
+            }
 
-            newEquipment = red.addEquipment(code, description, marca, model, red.getPortTypes().get(portsArray[0]), Integer.parseInt(portsArray[1]), equipmentType, location, status);
-            for (String s : ipsArray) newEquipment.addIp(s);
+            String[] parts = line.split(";");
+            if (parts.length < 8) { // Debe haber al menos 8 partes (Código, descripción, marca, modelo, tipo, ubicación, IPs, estado)
+                System.err.println("Error de entrada: Línea con formato incorrecto: " + line);
+                continue;
+            }
 
-            for (int i = 0; i < portsArray.length; i += 2)
-                for (int cap = 0;cap < Integer.parseInt(portsArray[i + 1]);cap++)
-                    newEquipment.addPort(red.getPortTypes().get(portsArray[i]));
+            try {
+                code = parts[0]; // Código del equipo
+                description = parts[1]; // Descripción
+                marca = parts[2]; // Marca
+                model = parts[3]; // Modelo
+                EquipmentType equipmentType = red.getEquipmentTypes().get(parts[4]); // Tipo de equipo
+                Location location = red.getLocations().get(parts[5]); // Ubicación
+                portsArray = parts[6].split(","); // Puertos
+                ipsArray = parts[7].split(","); // Direcciones IP
+                String statusStr = parts[8]; // Estado
+
+                // Validar el estado
+                if (!statusStr.equalsIgnoreCase("true") && !statusStr.equalsIgnoreCase("false")) {
+                    throw new InputMismatchException("El valor de estado no es válido: " + statusStr);
+                }
+                status = Boolean.parseBoolean(statusStr);
+
+                // Crear el nuevo equipo
+                newEquipment = red.addEquipment(code, description, marca, model,
+                        red.getPortTypes().get(portsArray[0]),
+                        Integer.parseInt(portsArray[1]),
+                        equipmentType, location, status);
+
+                if (newEquipment == null) {
+                    System.err.println("Error al agregar equipo: " + code);
+                    continue; // Saltar a la siguiente línea
+                }
+
+                // Manejo de direcciones IP, ya sea una única o múltiples
+                for (String ip : ipsArray) {
+                    ip = ip.trim();
+                    if (!ip.isEmpty() && ip.matches(ipPattern)) {
+                        System.out.println(ip);
+                        newEquipment.addIp(ip);
+                    }
+                }
+
+                // Manejo de puertos
+                for (int i = 0; i < portsArray.length; i += 2) {
+                    String portType = portsArray[i];
+                    int portCount = Integer.parseInt(portsArray[i + 1]);
+                    for (int cap = 0; cap < portCount; cap++) {
+                        newEquipment.addPort(red.getPortTypes().get(portType));
+                    }
+                }
+            } catch (InputMismatchException e) {
+                System.err.println("Error de entrada: " + e.getMessage());
+            } catch (Exception e) {
+                System.err.println("Error inesperado: " + e.getMessage());
+            }
         }
-        read.close();
     }
 
-    public static void loadPortTypes(Web red, String fileName) throws FileNotFoundException {
-        InputStream inputStream = Cargar.class.getClassLoader().getResourceAsStream(fileName);
-        System.out.println(inputStream);
-        if (inputStream == null) {
-            throw new FileNotFoundException("Archivo no encontrado: "+fileName);
+
+
+
+
+
+    public static void loadPortTypes(Web red, String filePath) throws FileNotFoundException {
+        File file = new File(filePath);
+
+        // Verificar si es un archivo local
+        if (file.exists()) {
+            // Cargar desde el sistema de archivos local
+            try (Scanner read = new Scanner(file)) {
+                read.useDelimiter("\\s*;\\s*");
+                while (read.hasNext()) {
+                    String code = read.next();
+                    String description = read.next();
+                    int speed = read.nextInt();
+                    red.addPort(code, description, speed);
+                }
+            }
+        } else {
+            // Cargar desde el JAR
+            InputStream inputStream = Cargar.class.getResourceAsStream("/" + filePath);
+            if (inputStream == null) {
+                throw new FileNotFoundException("Archivo no encontrado: " + filePath);
+            }
+
+            try (Scanner read = new Scanner(inputStream)) {
+                read.useDelimiter("\\s*;\\s*");
+                while (read.hasNext()) {
+                    String code = read.next();
+                    String description = read.next();
+                    int speed = read.nextInt();
+                    red.addPort(code, description, speed);
+                }
+            }
         }
-        Scanner read = new Scanner(inputStream);
-        read.useDelimiter("\\s*;\\s*");
-
-        String code, description;
-        int speed;
-
-        while (read.hasNext()) {
-            code = read.next();
-            description = read.next();
-            speed = read.nextInt();
-
-            red.addPort(code, description, speed);
-        }
-        read.close();
     }
 
 
-    public static void loadConnections(Web red, String fileName) throws FileNotFoundException{
+
+    public static void loadConnections(Web red, String fileName) throws FileNotFoundException {
         WireType wireType;
         Equipment equipment1, equipment2;
         PortType portType1, portType2;
 
         // Mensaje de depuración
-        System.out.println("Cargando conexiones desde el archivo: "+ fileName);
+        System.out.println("Cargando conexiones desde el archivo: " + fileName);
 
         InputStream inputStream = Cargar.class.getClassLoader().getResourceAsStream(fileName);
+
+        // Intentar cargar desde el sistema de archivos si no se encuentra en el classpath
         if (inputStream == null) {
-            throw new FileNotFoundException("Archivo no encontrado: "+fileName);
+            File file = new File(fileName);
+            if (file.exists()) {
+                inputStream = new FileInputStream(file);
+            } else {
+                throw new FileNotFoundException("Archivo no encontrado: " + fileName);
+            }
         }
+
         Scanner read = new Scanner(inputStream);
         read.useDelimiter("\\s*;\\s*");
 
@@ -104,72 +189,131 @@ public class Cargar {
             portType2 = red.getPortTypes().get(read.next());
             wireType = red.getWireTypes().get(read.next());
 
-            red.addConnection(equipment1.checkPort(portType1),equipment2.checkPort(portType2),wireType);
+            red.addConnection(equipment1.checkPort(portType1), equipment2.checkPort(portType2), wireType);
         }
         read.close();
     }
 
-    public static void loadWireType(Web red, String fileName) throws FileNotFoundException{
+
+    public static void loadWireType(Web red, String filePath) throws FileNotFoundException {
         String code, description;
         int speed;
 
-        InputStream inputStream = Cargar.class.getClassLoader().getResourceAsStream(fileName);
-        if (inputStream == null) {
-            throw new FileNotFoundException("Archivo no encontrado: "+fileName);
+        File file = new File(filePath);
+
+        // Verificar si es un archivo local
+        if (file.exists()) {
+            // Cargar desde el sistema de archivos local
+            try (Scanner read = new Scanner(file)) {
+                read.useDelimiter("\\s*;\\s*");
+
+                while (read.hasNext()) {
+                    code = read.next();
+                    description = read.next();
+                    speed = read.nextInt();
+
+                    red.addWire(code, description, speed);
+                }
+            }
+        } else {
+            // Cargar desde el JAR
+            InputStream inputStream = Cargar.class.getClassLoader().getResourceAsStream(filePath);
+            if (inputStream == null) {
+                throw new FileNotFoundException("Archivo no encontrado: " + filePath);
+            }
+
+            try (Scanner read = new Scanner(inputStream)) {
+                read.useDelimiter("\\s*;\\s*");
+
+                while (read.hasNext()) {
+                    code = read.next();
+                    description = read.next();
+                    speed = read.nextInt();
+
+                    red.addWire(code, description, speed);
+                }
+            }
         }
-        Scanner read = new Scanner(inputStream);
-        read.useDelimiter("\\s*;\\s*");
-
-
-        while (read.hasNext()) {
-            code = read.next();
-            description = read.next();
-            speed = read.nextInt();
-
-            red.addWire(code, description, speed);
-        }
-        read.close();
     }
 
-    public static void loadEquipmentType(Web red, String fileName) throws FileNotFoundException{
+
+    public static void loadEquipmentType(Web red, String filePath) throws FileNotFoundException {
         String code, description;
-        InputStream inputStream = Cargar.class.getClassLoader().getResourceAsStream(fileName);
-        if (inputStream == null) {
-            throw new FileNotFoundException("Archivo no encontrado: "+fileName);
+
+        File file = new File(filePath);
+
+        // Verificar si es un archivo local
+        if (file.exists()) {
+            // Cargar desde el sistema de archivos local
+            try (Scanner read = new Scanner(file)) {
+                read.useDelimiter("\\s*;\\s*");
+
+                while (read.hasNext()) {
+                    code = read.next();
+                    description = read.next();
+
+                    red.addEquipmentType(code, description);
+                }
+            }
+        } else {
+            // Cargar desde el JAR
+            InputStream inputStream = Cargar.class.getClassLoader().getResourceAsStream(filePath);
+            if (inputStream == null) {
+                throw new FileNotFoundException("Archivo no encontrado: " + filePath);
+            }
+
+            try (Scanner read = new Scanner(inputStream)) {
+                read.useDelimiter("\\s*;\\s*");
+
+                while (read.hasNext()) {
+                    code = read.next();
+                    description = read.next();
+
+                    red.addEquipmentType(code, description);
+                }
+            }
         }
-        Scanner read = new Scanner(inputStream);
-        read.useDelimiter("\\s*;\\s*");
-
-        while (read.hasNext()) {
-            code = read.next();
-            description = read.next();
-
-            red.addEquipmentType(code, description);
-        }
-
-        read.close();
     }
 
-    public static void loadLocations(Web red, String fileName) throws FileNotFoundException{
 
+    public static void loadLocations(Web red, String filePath) throws FileNotFoundException {
         String code, description;
 
-        InputStream inputStream = Cargar.class.getClassLoader().getResourceAsStream(fileName);
-        if (inputStream == null) {
-            throw new FileNotFoundException("Archivo no encontrado: "+fileName);
+        File file = new File(filePath);
+
+        // Verificar si es un archivo local
+        if (file.exists()) {
+            // Cargar desde el sistema de archivos local
+            try (Scanner read = new Scanner(file)) {
+                read.useDelimiter("\\s*;\\s*");
+
+                while (read.hasNext()) {
+                    code = read.next();
+                    description = read.next();
+
+                    red.addLocation(code, description);
+                }
+            }
+        } else {
+            // Cargar desde el JAR
+            InputStream inputStream = Cargar.class.getClassLoader().getResourceAsStream(filePath);
+            if (inputStream == null) {
+                throw new FileNotFoundException("Archivo no encontrado: " + filePath);
+            }
+
+            try (Scanner read = new Scanner(inputStream)) {
+                read.useDelimiter("\\s*;\\s*");
+
+                while (read.hasNext()) {
+                    code = read.next();
+                    description = read.next();
+
+                    red.addLocation(code, description);
+                }
+            }
         }
-        Scanner read = new Scanner(inputStream);
-        read.useDelimiter("\\s*;\\s*");
-
-        while (read.hasNext()) {
-            code = read.next();
-            description = read.next();
-
-            red.addLocation(code, description);
-        }
-
-        read.close();
     }
+
     /**
      * Metodo para cargar la red desde el archivo properties
      * El mismo debe ser llamado como el siguiente ejemplo
@@ -195,6 +339,7 @@ public class Cargar {
         String portTypeFile = properties.getProperty("rs.portType");
         String wireTypeFile = properties.getProperty("rs.wireType");
         String equipmentTypeFile = properties.getProperty("rs.equipmentType");
+        System.out.println(portTypeFile);
 
         return cargarRed(name, equipmentFile, connectionFile, locationFile, portTypeFile, wireTypeFile, equipmentTypeFile);
     }
@@ -211,7 +356,7 @@ public class Cargar {
         String portTypeFile = new File(dataDir, "tipoPuerto.txt").getAbsolutePath();
         String wireTypeFile = new File(dataDir, "tipoCable.txt").getAbsolutePath();
         String equipmentTypeFile = new File(dataDir, "tipoEquipo.txt").getAbsolutePath();
-
+        System.out.println(portTypeFile);
 
         return cargarRed(name, equipmentFile, connectionFile, locationFile, portTypeFile, wireTypeFile, equipmentTypeFile);
     }
