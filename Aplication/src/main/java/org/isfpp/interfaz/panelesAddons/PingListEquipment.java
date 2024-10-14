@@ -13,10 +13,12 @@ public class PingListEquipment {
     private JTextArea textArea;
     private Coordinator coordinator;
     private HashMap<Equipment, Boolean> direcciones;
+
     public PingListEquipment() {
 
     }
-    public void ping (){
+
+    public void ping() {
         direcciones = new HashMap<>();
         JFrame frame = new JFrame("Equipos Activos");
         frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -25,7 +27,7 @@ public class PingListEquipment {
         textArea.setEditable(false);
         textArea.setFont(textArea.getFont().deriveFont(Font.PLAIN, 20));
         JScrollPane scrollPane = new JScrollPane(textArea);
-        direcciones=coordinator.ping();
+        direcciones = coordinator.ping();
         updateTextArea();
         frame.getContentPane().add(scrollPane, BorderLayout.CENTER);
         StylusUI.aplicarEstiloScrollPane(scrollPane);
@@ -33,7 +35,8 @@ public class PingListEquipment {
         frame.setVisible(true);
 
     }
-    private void updateTextArea () {
+
+    private void updateTextArea() {
         for (Map.Entry<Equipment, Boolean> entry : direcciones.entrySet()) {
             textArea.append(entry.getKey().getCode() + " : " + entry.getValue() + "\n");
         }

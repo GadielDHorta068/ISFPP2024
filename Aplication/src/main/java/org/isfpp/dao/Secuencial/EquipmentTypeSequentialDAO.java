@@ -17,7 +17,7 @@ public class EquipmentTypeSequentialDAO implements EquipmentTypeDAO {
     private boolean update;
 
     public EquipmentTypeSequentialDAO() {
-        fileName = CargarParametros.geequipementTypeFile();
+        fileName = CargarParametros.getquipementTypeFile();
         update = true;
     }
 

@@ -33,7 +33,7 @@ public class ConnectionIssues {
         JTextField ipInicial = new JTextField("IP a escanear");
         String defecto = getIPSeleccionada();
         System.out.println(defecto);
-        if (!Objects.equals(defecto, "0")){
+        if (!Objects.equals(defecto, "0")) {
             ipInicial.setText(defecto);
         }
 
@@ -42,14 +42,14 @@ public class ConnectionIssues {
         ipInicial.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
-                if (ipInicial.getText().equals("IP a escanear")){
+                if (ipInicial.getText().equals("IP a escanear")) {
                     ipInicial.setText("");
                 }
             }
 
             @Override
             public void focusLost(FocusEvent e) {
-                if(ipInicial.getText().isEmpty()){
+                if (ipInicial.getText().isEmpty()) {
                     ipInicial.setText("IP a escanear");
                 }
             }
@@ -65,7 +65,7 @@ public class ConnectionIssues {
                 direcciones.clear();
                 try {
                     textArea.setText("");
-                    String equipo=ipInicial.getText().toUpperCase();
+                    String equipo = ipInicial.getText().toUpperCase();
                     direcciones = coordinator.detectConnectivityIssues(coordinator.getHardware().get(equipo));
                     updateTextArea();
                 } catch (Exception exception) {
@@ -87,12 +87,11 @@ public class ConnectionIssues {
         frame.requestFocus();
     }
 
-    private void updateTextArea () {
+    private void updateTextArea() {
         textArea.setText("");
-        if (direcciones.size()==1){
+        if (direcciones.size() == 1) {
             textArea.append("no esta conectado a ningun equipo");
-        }
-        else {
+        } else {
             for (Equipment direccion : direcciones) {
                 textArea.append(direccion.getCode() + "\n");
             }
@@ -102,9 +101,10 @@ public class ConnectionIssues {
     public void setCoordinator(Coordinator coordinator) {
         this.coordinator = coordinator;
     }
-    private String getIPSeleccionada(){
-        if(coordinator.getSelectedItem() != null){
-            if(coordinator.getSelectedItem() instanceof Equipment eq){
+
+    private String getIPSeleccionada() {
+        if (coordinator.getSelectedItem() != null) {
+            if (coordinator.getSelectedItem() instanceof Equipment eq) {
 
                 return eq.getCode();
             }

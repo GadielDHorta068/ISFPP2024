@@ -25,7 +25,6 @@ public class SlidingDialog extends JDialog {
         panel.add(messageLabel, BorderLayout.CENTER);
 
 
-
         // Crear un panel para el bot�n
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         buttonPanel.setBackground(StylusUI.COLOR_PRIMARIO.darker());

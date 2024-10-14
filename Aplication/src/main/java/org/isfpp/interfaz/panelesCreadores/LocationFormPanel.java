@@ -1,4 +1,5 @@
 package org.isfpp.interfaz.panelesCreadores;
+
 import org.isfpp.interfaz.stylusUI.StylusUI;
 import org.isfpp.modelo.Web;
 
@@ -13,7 +14,7 @@ public class LocationFormPanel extends JPanel {
 
         JFrame frame = new JFrame("Agregar Ubicación");
         frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        frame.setSize(400 , 150);
+        frame.setSize(400, 150);
 
         setLayout(new BorderLayout());
 
@@ -36,7 +37,7 @@ public class LocationFormPanel extends JPanel {
         add(formPanel, BorderLayout.CENTER);
 
         JButton createButton = new JButton("Crear Ubicacion");
-        StylusUI.aplicarEstiloBoton(createButton,true);
+        StylusUI.aplicarEstiloBoton(createButton, true);
         add(createButton, BorderLayout.SOUTH);
 
         createButton.addActionListener(e -> {

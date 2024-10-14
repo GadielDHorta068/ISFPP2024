@@ -163,16 +163,31 @@ public class Utils {
         return Math.min(speedBetweenEquipments, wireSpeed);
     }
 
+    /**
+     * Obtiene el grafo de equipos y conexiones.
+     *
+     * @return El grafo de equipos y conexiones.
+     */
     public Graph<Equipment, Connection> getGraph() {
         return graph;
     }
 
-
+    /**
+     * Establece el grafo de equipos y conexiones.
+     *
+     * @param graph El grafo de equipos y conexiones.
+     */
     public void setGraph(Graph<Equipment, Connection> graph) {
         Utils.graph = graph;
     }
 
-
+    /**
+     * Detecta problemas de conectividad a partir de un nodo de inicio.
+     *
+     * @param startNode El nodo de inicio.
+     * @return Una lista de equipos visitados.
+     * @throws NotFoundException Si el nodo de inicio no se encuentra en el grafo.
+     */
     public List<Equipment> detectConnectivityIssues(Equipment startNode) {
         if (!graph.containsVertex(startNode))
             throw new NotFoundException("equipo no se encuentra");
@@ -187,7 +202,11 @@ public class Utils {
     }
 
     /**
+     * Realiza una prueba de conectividad (ping) a un equipo.
      *
+     * @param e1 El equipo al que se quiere hacer ping.
+     * @return {@code true} si el equipo está activo, {@code false} en caso contrario.
+     * @throws NotFoundException Si el equipo no se encuentra en el grafo.
      */
     public boolean ping(Equipment e1) {
         if (!graph.containsVertex(e1))
@@ -195,7 +214,12 @@ public class Utils {
         return e1.isStatus();
     }
 
-
+    /**
+     * Realiza una prueba de conectividad (ping) a una dirección IP.
+     *
+     * @param ip La dirección IP a la que se quiere hacer ping.
+     * @return {@code true} si la dirección IP se encuentra en el grafo, {@code false} en caso contrario.
+     */
     public static boolean ping(String ip) {
         if (graph != null) {
             for (Equipment equipo : graph.vertexSet()) {
@@ -209,15 +233,26 @@ public class Utils {
         return false;
     }
 
+    /**
+     * Realiza una prueba de conectividad (ping) a todos los equipos en el grafo.
+     *
+     * @return Un mapa que contiene cada equipo y su estado de conectividad.
+     */
     public HashMap<Equipment, Boolean> ping() {
         HashMap<Equipment, Boolean> mapStatus = new HashMap<>();
         for (Equipment p : graph.iterables().vertices()) {
             mapStatus.put(p, p.isStatus());
         }
         return mapStatus;
-
     }
 
+    /**
+     * Verifica si una dirección IP es válida.
+     *
+     * @param ip La dirección IP a verificar.
+     * @return {@code true} si la dirección IP es válida, {@code false} en caso contrario.
+     * @throws NumberFormatException Si algún segmento de la dirección IP no es un número válido.
+     */
     private boolean checkIp(String ip) {
         String[] parts = ip.split("\\.");
         if (parts.length != 4) return false;
@@ -235,23 +270,40 @@ public class Utils {
         return true;
     }
 
-
+    /**
+     * Establece el coordinador.
+     *
+     * @param coordinator El coordinador.
+     */
     public void setCoordinator(Coordinator coordinator) {
     }
 
+    /**
+     * Convierte un conjunto de tipos de puertos a una lista.
+     *
+     * @param set El conjunto de tipos de puertos.
+     * @return Una lista de tipos de puertos.
+     */
     public static List<PortType> convertSetToList(Set<PortType> set) {
         return new ArrayList<>(set);
     }
 
     //Charlar este metodo con el profe
-        public List<String> scanIP(String ip) {
+
+    /**
+     * Escanea direcciones IP a partir de una IP base.
+     *
+     * @param ip La IP base.
+     * @return Una lista de direcciones IP válidas.
+     */
+    public List<String> scanIP(String ip) {
         String[] parts = ip.split("\\.");
         List<String> ipList = new ArrayList<>();
         int start = Integer.parseInt(parts[3]);
         int startThirdSegment = Integer.parseInt(parts[2]);
 
         IntStream.range(startThirdSegment, 256).forEach(j -> IntStream.range(start, 256).forEach(i -> {
-            String nuevaIP = parts[0] +parts[1] + j +i;
+            String nuevaIP = parts[0] + parts[1] + j + i;
             System.out.println(nuevaIP);
             if (Utils.ping(nuevaIP)) {
                 System.out.println("encontro");
@@ -262,6 +314,11 @@ public class Utils {
         return ipList; // Devolver la lista de IPs válidas
     }
 
+    /**
+     * Genera una dirección MAC aleatoria.
+     *
+     * @return La dirección MAC generada.
+     */
     public static String generarMAC() {
         Random random = new Random();
         byte[] macAddr = new byte[6];
@@ -277,17 +334,36 @@ public class Utils {
         return macAddress.toString().toUpperCase();
     }
 
+    /**
+     * Verifica si un equipo tiene todos los puertos ocupados.
+     *
+     * @param equipo El equipo a verificar.
+     * @throws NotFoundException Si todos los puertos del equipo están ocupados.
+     */
     public static void verificarPuertosOcupados(Equipment equipo) {
         if (equipo.getIpAdresses().size() == equipo.getPorts().size()) {
             throw new NotFoundException("El equipo " + equipo.getCode() + " tiene todos los puertos ocupados.");
         }
     }
 
+    /**
+     * Verifica si un equipo es de red.
+     *
+     * @param equipo El equipo a verificar.
+     * @return {@code true} si el equipo es de red, {@code false} en caso contrario.
+     */
     public static boolean esEquipoRed(Equipment equipo) {
         String code = equipo.getEquipmentType().getCode();
         return code.equals("SW") || code.equals("RT") || code.equals("AP");
     }
 
+    /**
+     * Genera una nueva dirección IP para un equipo.
+     *
+     * @param equipo El equipo para el que se quiere generar la IP.
+     * @param web    El objeto {@code Web} que contiene la información de la red.
+     * @return La nueva dirección IP generada.
+     */
     public static String generarNuevaIP(Equipment equipo, Web web) {
         String[] parts = equipo.getIpAdresses().getFirst().split("\\.");
         String nuevaIP = "";
@@ -298,7 +374,7 @@ public class Utils {
             t = false;
             pool += 1;
             nuevaIP = String.format("%s.%s.%s.%d", parts[0], parts[1], parts[2], pool);
-            for (Equipment eq :  web.getHardware().values()) {
+            for (Equipment eq : web.getHardware().values()) {
                 if (eq.getIpAdresses().contains(nuevaIP)) {
                     t = true;
                     break;
@@ -308,7 +384,3 @@ public class Utils {
         return nuevaIP;
     }
 }
-
-
-
-

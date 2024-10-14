@@ -22,7 +22,7 @@ public class StylusUI {
     public static final Color COLOR_SECUNDARIO = new Color(0, 91, 173); // Pantone 7687 C (Azul profundo)
     public static final Color COLOR_TERCIARIO = new Color(3, 3, 65, 249);//Mejorar este tono
     public static final Color COLOR_FONDO_BOTON = new Color(51, 63, 72); // Pantone 7546 C (Gris azulado)
-    public static final Color COLOR_TEXTO = new Color(240,240,240); // Menos blanco par reducir contraste
+    public static final Color COLOR_TEXTO = new Color(240, 240, 240); // Menos blanco par reducir contraste
     public static final Color COLOR_HOVER_BOTON = new Color(132, 146, 156); // Pantone 7544 C (Gris medio)
     public static final Color COLOR_PRESIONADO_BOTON = new Color(60, 75, 83); // Pantone 7545 C (Gris profundo)
 
@@ -47,7 +47,7 @@ public class StylusUI {
             }
 
             try (InputStream fuenteStream = fuenteURL.openStream()) {
-               FUENTE_TEXTO = Font.createFont(Font.TRUETYPE_FONT, fuenteStream).deriveFont(14f);
+                FUENTE_TEXTO = Font.createFont(Font.TRUETYPE_FONT, fuenteStream).deriveFont(14f);
                 FUENTE_TITULO = FUENTE_TEXTO.deriveFont(Font.ITALIC, 16f);
                 GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
                 ge.registerFont(FUENTE_TEXTO);
@@ -70,7 +70,8 @@ public class StylusUI {
 
     /**
      * Esta clase recibe un boton como parametro y le aplica toda la configuracion personalizada que deseemos
-     * @param boton boton a ser alterado
+     *
+     * @param boton   boton a ser alterado
      * @param relleno true si el boton sera solo texto y el resto de sus componentes transparente
      */
     public static void aplicarEstiloBoton(JButton boton, Boolean relleno) {
@@ -84,9 +85,9 @@ public class StylusUI {
         boton.setMargin(new Insets(2, 5, 2, 5));    //Esto hace que el boton tenga mas "tama�o"
         boton.setPreferredSize(new Dimension(85, 35));  // Tama�o ajustado, me quedaba muy grande
         boton.setContentAreaFilled(relleno);  // Mantener el relleno, caso contrario logramos hacer un boton "transparente" con texto legible
-       if (!relleno){
-           boton.setBorder(null);
-       }
+        if (!relleno) {
+            boton.setBorder(null);
+        }
         boton.setCursor(new Cursor(Cursor.HAND_CURSOR));    //HandCursor hace que al poner el mouse sobre un boton cambie a "la manito"
 
         // Ajustar tama�o al contenido del texto del bot�n
@@ -97,18 +98,18 @@ public class StylusUI {
         boton.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                if (!relleno){
+                if (!relleno) {
                     boton.setForeground(COLOR_HOVER_BOTON);
-                }else{
+                } else {
                     boton.setBackground(COLOR_HOVER_BOTON);
                 }
             }
 
             @Override
             public void mouseExited(java.awt.event.MouseEvent evt) {
-                if (!relleno){
+                if (!relleno) {
                     boton.setForeground(COLOR_TEXTO);
-                }else{
+                } else {
                     boton.setBackground(COLOR_FONDO_BOTON);
                 }
             }
@@ -117,6 +118,7 @@ public class StylusUI {
 
     /**
      * Cambia la fuente y el fondo a una etiqueta
+     *
      * @param etiqueta etiqueta a cambiar
      */
     public static void aplicarEstiloEtiqueta(JLabel etiqueta) {
@@ -126,6 +128,7 @@ public class StylusUI {
 
     /**
      * Cambia el fondo del panel
+     *
      * @param panel panel a ser tratado
      */
     public static void aplicarEstiloPanel(JPanel panel) {
@@ -134,7 +137,8 @@ public class StylusUI {
 
     /**
      * Recibe una tabla y se le cambian los aspectos de la misma
-     * @param tabla tabla a ser tratada
+     *
+     * @param tabla     tabla a ser tratada
      * @param reajustar si es verdadero, se ajustara el largo de las columnas al largo del texto del titulo que las contenga
      */
     public static void aplicarEstiloTabla(JTable tabla, boolean reajustar) {
@@ -168,13 +172,14 @@ public class StylusUI {
                 return c;
             }
         });
-        if (reajustar){
+        if (reajustar) {
             ajustarAnchoColumnas(tabla);
         }
     }
 
     /**
      * Modifica las visuale de un campo de texto
+     *
      * @param textField texto a ser tratado
      */
     public static void aplicarEstiloCampoTexto(JTextField textField) {
@@ -188,6 +193,7 @@ public class StylusUI {
     /**
      * Este metodo recibe una jtable y ajusta el largo de cada columna al largo de su texto,
      * para no dejar titulos ilegibles
+     *
      * @param tabla a ser tratada
      */
     public static void ajustarAnchoColumnas(JTable tabla) {
@@ -209,6 +215,7 @@ public class StylusUI {
 
     /**
      * JDialog a ser tratado medio generico
+     *
      * @param dialog dialog a ser tratado
      */
     public static void aplicarEstiloDialogo(JDialog dialog) {
@@ -251,15 +258,16 @@ public class StylusUI {
                 clip.open(audioInputStream);
                 clip.start();
             } else {
-                System.err.println("Archivo de sonido no encontrado: "+StylusUI.NAME_BUTTON_SOUND);
+                System.err.println("Archivo de sonido no encontrado: " + StylusUI.NAME_BUTTON_SOUND);
             }
         } catch (Exception e) {
-            System.err.println("Error al reproducir el sonido: "+e.getMessage());
+            System.err.println("Error al reproducir el sonido: " + e.getMessage());
         }
     }
 
     /**
      * Configura el estilo de la interfaz a los combobox
+     *
      * @param comboBox combobox a ser personalizado
      */
     public static void aplicarEstiloComboBox(JComboBox<?> comboBox) {
@@ -282,6 +290,7 @@ public class StylusUI {
 
     /**
      * Personaliza los scrollpanes para que este en armonia con la UI
+     *
      * @param scrollPane
      */
     public static void aplicarEstiloScrollPane(JScrollPane scrollPane) {
@@ -304,6 +313,7 @@ public class StylusUI {
 
     /**
      * Estiliza la barra de progreso
+     *
      * @param progressBar Objeto a ser personalizado
      */
     public static void aplicarEstiloProgressBar(JProgressBar progressBar, Boolean textoBarra) {
@@ -319,6 +329,7 @@ public class StylusUI {
 
     /**
      * Estiliza los botones radio
+     *
      * @param radioButton objeto a ser tratado
      */
     public static void aplicarEstiloRadioButton(JRadioButton radioButton) {
@@ -334,6 +345,7 @@ public class StylusUI {
 
     /**
      * Personalizar checkboxes
+     *
      * @param checkBox objeto a personalizar
      */
     public static void aplicarEstiloCheckBox(JCheckBox checkBox) {
@@ -348,6 +360,7 @@ public class StylusUI {
 
     /**
      * Personalizar Tabs
+     *
      * @param tabbedPane objeto a tratar
      */
     public static void aplicarEstiloTabbedPane(JTabbedPane tabbedPane) {
@@ -381,7 +394,7 @@ public class StylusUI {
         });
     }
 
-//  No funciona bien, tengo que econtrar manera de pasar la clase y que trate automaticamente todos los elementos
+    //  No funciona bien, tengo que econtrar manera de pasar la clase y que trate automaticamente todos los elementos
     public static void aplicarEstilosGlobales() {
         // Colores y estilos globales
         UIManager.put("Button.background", COLOR_FONDO_BOTON);
@@ -432,8 +445,9 @@ public class StylusUI {
 
     /**
      * Ajusta el tama�o del texto y la ventana en un JDialog para que se adapte al contenido.
+     *
      * @param dialog El JDialog a ajustar.
-     * @param texto El texto que se mostrar� en el di�logo.
+     * @param texto  El texto que se mostrar� en el di�logo.
      */
     public static void ajustarDialogo(JDialog dialog, String texto) {
         // Crear un JLabel con el texto proporcionado
@@ -451,11 +465,12 @@ public class StylusUI {
 
     /**
      * Metodo para inicializar variables globales
+     *
      * @param rick true if you never gona give you up
      */
     public static void inicializar(boolean rick) {
         aplicarEstilosGlobales();
-        if (rick){
+        if (rick) {
             configurarRickrolleo();
         }
     }
@@ -463,21 +478,22 @@ public class StylusUI {
     /**
      * never gona give you up
      */
-    private static void configurarRickrolleo(){
+    private static void configurarRickrolleo() {
         Thread.setDefaultUncaughtExceptionHandler((thread, throwable) -> {
-            System.err.println("Se ha producido una excepci�n no manejada: "+throwable.getMessage());
+            System.err.println("Se ha producido una excepci�n no manejada: " + throwable.getMessage());
             try {
                 if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
                     Desktop.getDesktop().browse(new URI("https://www.youtube.com/watch?v=dQw4w9WgXcQ"));
                 }
             } catch (IOException | URISyntaxException e) {
-                System.err.println("Error al intentar abrir el enlace: "+e.getMessage());
+                System.err.println("Error al intentar abrir el enlace: " + e.getMessage());
             }
         });
     }
 
     /**
      * Aplica un estilo personalizado a un JMenuItem.
+     *
      * @param menuItem el JMenuItem a personalizar
      */
     public static void styleMenuItem(JMenuItem menuItem) {
@@ -521,6 +537,7 @@ public class StylusUI {
 
     /**
      * Aplica un estilo personalizado a un JTextArea.
+     *
      * @param textArea el JTextArea a personalizar
      */
     public static void styleTextArea(JTextArea textArea) {

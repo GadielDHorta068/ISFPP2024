@@ -31,7 +31,7 @@ public class IPFrame {
         JTextField ipInicial = new JTextField("IP a escanear");
         String defecto = getIPSeleccionada();
         System.out.println(defecto);
-        if (!Objects.equals(defecto, "0")){
+        if (!Objects.equals(defecto, "0")) {
             ipInicial.setText(defecto);
         }
 
@@ -40,14 +40,14 @@ public class IPFrame {
         ipInicial.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
-                if (ipInicial.getText().equals("IP a escanear")){
+                if (ipInicial.getText().equals("IP a escanear")) {
                     ipInicial.setText("");
                 }
             }
 
             @Override
             public void focusLost(FocusEvent e) {
-                if(ipInicial.getText().isEmpty()){
+                if (ipInicial.getText().isEmpty()) {
                     ipInicial.setText("IP a escanear");
                 }
             }
@@ -80,24 +80,25 @@ public class IPFrame {
         frame.requestFocus();
     }
 
-        private void updateTextArea () {
+    private void updateTextArea() {
         textArea.setText("");
         System.out.println(direcciones.size());
 
-            for (String direccion : direcciones) {
-                textArea.append(direccion + "\n");
-            }
+        for (String direccion : direcciones) {
+            textArea.append(direccion + "\n");
+        }
 
     }
 
     public void setCoordinator(Coordinator coordinator) {
         this.coordinator = coordinator;
     }
-    private String getIPSeleccionada(){
-        if(coordinator.getSelectedItem() != null){
-            if(coordinator.getSelectedItem() instanceof Equipment eq){
+
+    private String getIPSeleccionada() {
+        if (coordinator.getSelectedItem() != null) {
+            if (coordinator.getSelectedItem() instanceof Equipment eq) {
                 String ip = eq.getIpAdresses().getFirst();
-                String[] partes = ip.split("\\.") ;
+                String[] partes = ip.split("\\.");
                 partes[2] = "0";
                 partes[3] = "0";
                 return String.join(".", partes);

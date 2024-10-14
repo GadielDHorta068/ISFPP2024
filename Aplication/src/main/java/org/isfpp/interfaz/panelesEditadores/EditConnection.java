@@ -36,13 +36,13 @@ public class EditConnection extends JPanel {
         formPanel.add(tipoPuerto1);
         Equipment e1 = (Equipment) eq1ComboBox.getSelectedItem();
         assert e1 != null;
-        port1ComboBox = new JComboBox<>( e1.getPortsNotInUse().toArray(new Port[0]));
+        port1ComboBox = new JComboBox<>(e1.getPortsNotInUse().toArray(new Port[0]));
         StylusUI.aplicarEstiloComboBox(port1ComboBox);
         formPanel.add(port1ComboBox);
 
         eq1ComboBox.addActionListener((e -> {
             Equipment selected1 = (Equipment) eq1ComboBox.getSelectedItem();
-            if (selected1 != null){
+            if (selected1 != null) {
                 port1ComboBox.setModel(new DefaultComboBoxModel<>(selected1.getPortsNotInUse().toArray(new Port[0])));
             }
         }));
@@ -59,13 +59,13 @@ public class EditConnection extends JPanel {
         formPanel.add(tipoPuerto2);
         Equipment e2 = (Equipment) eq1ComboBox.getSelectedItem();
         assert e2 != null;
-        port2ComboBox = new JComboBox<>( e2.getPortsNotInUse().toArray(new Port[0]));
+        port2ComboBox = new JComboBox<>(e2.getPortsNotInUse().toArray(new Port[0]));
         StylusUI.aplicarEstiloComboBox(port2ComboBox);
         formPanel.add(port2ComboBox);
 
         eq2ComboBox.addActionListener((e -> {
             Equipment selected2 = (Equipment) eq2ComboBox.getSelectedItem();
-            if (selected2 != null){
+            if (selected2 != null) {
                 port2ComboBox.setModel(new DefaultComboBoxModel<>(selected2.getPortsNotInUse().toArray(new Port[0])));
             }
         }));
@@ -81,7 +81,7 @@ public class EditConnection extends JPanel {
         add(formPanel, BorderLayout.CENTER);
 
         JButton createButton = new JButton("Agregar/Cambiar Conexion");
-        StylusUI.aplicarEstiloBoton(createButton,true);
+        StylusUI.aplicarEstiloBoton(createButton, true);
         add(createButton, BorderLayout.SOUTH);
 
         createButton.addActionListener(e -> {
@@ -92,7 +92,7 @@ public class EditConnection extends JPanel {
             try {
                 assert port2 != null;
                 assert port1 != null;
-                web.addConnection(port1,port2,wire);
+                web.addConnection(port1, port2, wire);
 
                 JOptionPane.showMessageDialog(this, "Red creada con éxito");
                 web.getCoordinator().updateTablas();

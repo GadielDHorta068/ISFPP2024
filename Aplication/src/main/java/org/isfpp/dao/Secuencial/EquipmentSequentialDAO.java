@@ -79,6 +79,7 @@ public class EquipmentSequentialDAO implements EquipmentDAO{
     }
 
     private void writeToFile(Hashtable<String,Equipment> equipmentMap, String fileName) {
+        System.out.println(fileName);
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, false))) {
             HashMap<PortType, Integer> portMap;
             for (Equipment equipment: equipmentMap.values()) {
@@ -115,7 +116,7 @@ public class EquipmentSequentialDAO implements EquipmentDAO{
     @Override
     public void insert(Equipment equipment) {
         map.put(equipment.getCode(),equipment);
-        writeToFile(map,fileName);
+        //writeToFile(map,fileName);
         update = true;
     }
 

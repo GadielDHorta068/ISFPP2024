@@ -1,11 +1,9 @@
 package org.isfpp.main;
 
-import com.github.kwhat.jnativehook.GlobalScreen;
-import com.github.kwhat.jnativehook.NativeHookException;
-import com.github.kwhat.jnativehook.mouse.NativeMouseEvent;
 import com.github.kwhat.jnativehook.mouse.NativeMouseInputListener;
 import org.isfpp.controller.Coordinator;
 import org.isfpp.datos.Cargar;
+import org.isfpp.datos.CargarParametros;
 import org.isfpp.interfaz.panelesCreadores.MainMenu;
 import org.isfpp.interfaz.stylusUI.StylusUI;
 import org.isfpp.logica.Utils;
@@ -13,16 +11,13 @@ import org.isfpp.modelo.Web;
 
 import java.io.IOException;
 
-public class App implements NativeMouseInputListener{
-public class App {
-    // l�gica
+public class App implements NativeMouseInputListener {
+
     private Web web = null;
     private Utils utils;
 
-    // vista
     private MainMenu mainMenu;
 
-    // controlador
     private Coordinator coordinator;
 
     public static void main(String[] args) throws IOException {
@@ -34,11 +29,11 @@ public class App {
 
     }
 
-    private void inicio(){
+    private void inicio() {
         web = Web.getWeb();
         coordinator = new Coordinator();
-        utils=new Utils();
-        mainMenu= new MainMenu();
+        utils = new Utils();
+        mainMenu = new MainMenu();
         /* Se establecen las relaciones entre clases */
         web.setCoordinator(coordinator);
         utils.setCoordinator(coordinator);
@@ -52,11 +47,12 @@ public class App {
         coordinator.LoadData(coordinator.getWeb());
     }
 
-    private void luanch(){
+    private void luanch() {
         mainMenu.components(coordinator.getWeb());
 
     }
 
-    private void minitest(){
+    private void minitest() {
     }
 }
+

@@ -17,7 +17,7 @@ public class DesplegableComponent<T> {
     private boolean isExpanded = false;
     private JPanel panel;
     private JButton toggleButton;
-    private  JTable table;
+    private JTable table;
     private List<T> dataList;
     private Coordinator coordinator;
     private Web web;
@@ -107,14 +107,14 @@ public class DesplegableComponent<T> {
         this.coordinator = coordinator;
     }
 
-    public void IniciarTabla(String titulo, List<T> dataList, PanelDerecho panelDerecho){
+    public void IniciarTabla(String titulo, List<T> dataList, PanelDerecho panelDerecho) {
         this.web = this.coordinator.getWeb();
         this.dataList = dataList;
 
         panel = new JPanel();
         panel.setLayout(new BorderLayout());
 
-        toggleButton = new JButton("▶ "+titulo);
+        toggleButton = new JButton("▶ " + titulo);
         StylusUI.aplicarEstiloBoton(toggleButton, false);
         toggleButton.setHorizontalAlignment(SwingConstants.LEFT);
         //toggleButton.addActionListener(e -> toggle());
@@ -135,7 +135,7 @@ public class DesplegableComponent<T> {
                     data[i][2] = location;
                 }
                 case Connection connection -> {
-                    data[i][0] = String.format("%s - %s - %s - %s", connection.getPort1().getEquipment().getCode(),connection.getPort1().getPortType().getCode(), connection.getPort2().getPortType().getCode(), connection.getPort2().getEquipment().getCode());
+                    data[i][0] = String.format("%s - %s - %s - %s", connection.getPort1().getEquipment().getCode(), connection.getPort1().getPortType().getCode(), connection.getPort2().getPortType().getCode(), connection.getPort2().getEquipment().getCode());
                     data[i][1] = connection.getWire().getDescription();
                     data[i][2] = item;
                 }
@@ -180,12 +180,9 @@ public class DesplegableComponent<T> {
                     T selectedItem = (T) table.getValueAt(selectedRow, 2);
                     coordinator.setSelectedItem(selectedItem);
                     switch (selectedItem) {
-                        case Equipment selectedEquipment ->
-                                panelDerecho.updateProperties(selectedEquipment);
-                        case Location selectedLocation ->
-                                panelDerecho.updateProperties(selectedLocation);
-                        case Connection selectedConnection ->
-                                panelDerecho.updateProperties(selectedConnection);
+                        case Equipment selectedEquipment -> panelDerecho.updateProperties(selectedEquipment);
+                        case Location selectedLocation -> panelDerecho.updateProperties(selectedLocation);
+                        case Connection selectedConnection -> panelDerecho.updateProperties(selectedConnection);
                         case null, default ->
                             // Fallback para cualquier otro tipo de objeto
                                 panelDerecho.updateProperties(selectedItem.toString(), "Descripción no disponible");

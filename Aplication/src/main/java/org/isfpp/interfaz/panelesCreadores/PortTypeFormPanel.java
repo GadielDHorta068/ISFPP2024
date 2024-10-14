@@ -1,4 +1,5 @@
 package org.isfpp.interfaz.panelesCreadores;
+
 import org.isfpp.interfaz.stylusUI.StylusUI;
 import org.isfpp.modelo.Web;
 
@@ -14,7 +15,7 @@ public class PortTypeFormPanel extends JPanel {
     public PortTypeFormPanel(Web web) {
         JFrame frame = new JFrame("Agregar tipo de Puerto");
         frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        frame.setSize(400 , 200);
+        frame.setSize(400, 200);
         setLayout(new BorderLayout());
 
         JPanel formPanel = new JPanel(new GridLayout(3, 2, 10, 20));
@@ -44,7 +45,7 @@ public class PortTypeFormPanel extends JPanel {
         add(formPanel, BorderLayout.CENTER);
 
         JButton createButton = new JButton("Crear tipo de puerto");
-        StylusUI.aplicarEstiloBoton(createButton,true);
+        StylusUI.aplicarEstiloBoton(createButton, true);
         add(createButton, BorderLayout.SOUTH);
 
         createButton.addActionListener(e -> {

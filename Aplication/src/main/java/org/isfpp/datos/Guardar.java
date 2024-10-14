@@ -7,8 +7,18 @@ import java.util.HashMap;
 import java.util.Properties;
 import java.util.StringJoiner;
 
+/**
+ * Clase para guardar datos en archivos.
+ */
 public class Guardar {
 
+    /**
+     * Método para guardar todos los datos de la red en archivos.
+     *
+     * @param red       Objeto Web que contiene los datos de la red.
+     * @param directory Directorio donde se guardarán los archivos.
+     * @throws IOException Si ocurre un error de E/S.
+     */
     public void saveAll(Web red, String directory) throws IOException {
         Properties properties = new Properties();
         try (InputStream input = Cargar.class.getClassLoader().getResourceAsStream("config.properties")) {
@@ -34,12 +44,17 @@ public class Guardar {
         saveEquipmentTypes(equipmentTypeFile, red);
     }
 
-    // Guardar datos de los equipos
+    /**
+     * Método para guardar datos de los equipos.
+     *
+     * @param fileName Nombre del archivo donde se guardarán los datos de los equipos.
+     * @param red      Objeto Web que contiene los datos de la red.
+     */
     public void saveEquipments(String fileName, Web red) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
             for (Equipment equipment : red.getHardware().values()) {
                 //SW02;Switch 2;HP Aruba;1930 48G 4SFP/SFP+;SW;SS;1G,48,SFP+,4;166.82.100.100;true;
-               // SW02;Switch 2;HP Aruba;1930 48G 4SFP/SFP+;SW;SS;1G,96;SFP+,4;166.82.100.100,166.82.1.14,166.82.100.103;true
+                // SW02;Switch 2;HP Aruba;1930 48G 4SFP/SFP+;SW;SS;1G,96;SFP+,4;166.82.100.100,166.82.1.14,166.82.100.103;true
                 StringBuilder data = new StringBuilder(equipment.getCode() + ";" +
                         equipment.getDescription() + ";" +
                         equipment.getMake() + ";" +
@@ -70,7 +85,12 @@ public class Guardar {
         }
     }
 
-    // Guardar conexiones
+    /**
+     * Método para guardar datos de las conexiones.
+     *
+     * @param fileName Nombre del archivo donde se guardarán los datos de las conexiones.
+     * @param red      Objeto Web que contiene los datos de la red.
+     */
     public void saveConnections(String fileName, Web red) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
             for (Connection connection : red.getConnections()) {
@@ -88,12 +108,15 @@ public class Guardar {
         }
     }
 
-    // Guardar tipos de cable
+    /**
+     * Método para guardar datos de los tipos de cables.
+     *
+     * @param fileName Nombre del archivo donde se guardarán los datos de los tipos de cables.
+     * @param red      Objeto Web que contiene los datos de la red.
+     */
     public void saveWireTypes(String fileName, Web red) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
             for (WireType wireType : red.getWireTypes().values()) {
-                //C5;UTP Cat. 5;100;
-                //C5;UTP Cat. 5;100;
                 String data = wireType.getCode() + ";" +
                         wireType.getDescription() + ";" +
                         wireType.getSpeed() + ";";
@@ -105,7 +128,12 @@ public class Guardar {
         }
     }
 
-    // Guardar tipos de equipos
+    /**
+     * Método para guardar datos de los tipos de equipos.
+     *
+     * @param fileName Nombre del archivo donde se guardarán los datos de los tipos de equipos.
+     * @param red      Objeto Web que contiene los datos de la red.
+     */
     public void saveEquipmentTypes(String fileName, Web red) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
             for (EquipmentType equipmentType : red.getEquipmentTypes().values()) {
@@ -119,7 +147,12 @@ public class Guardar {
         }
     }
 
-    // Guardar tipos de puertos
+    /**
+     * Método para guardar datos de los tipos de puertos.
+     *
+     * @param fileName Nombre del archivo donde se guardarán los datos de los tipos de puertos.
+     * @param red      Objeto Web que contiene los datos de la red.
+     */
     public void savePortTypes(String fileName, Web red) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
             for (PortType portType : red.getPortTypes().values()) {
@@ -136,7 +169,12 @@ public class Guardar {
         }
     }
 
-    // Guardar ubicaciones
+    /**
+     * Método para guardar datos de las ubicaciones.
+     *
+     * @param fileName Nombre del archivo donde se guardarán los datos de las ubicaciones.
+     * @param red      Objeto Web que contiene los datos de la red.
+     */
     public void saveLocations(String fileName, Web red) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
             for (Location location : red.getLocations().values()) {

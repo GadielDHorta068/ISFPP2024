@@ -16,18 +16,19 @@ public class Traceroute {
     private JTextArea textArea;
     private Coordinator coordinator;
     private GraphPath<Equipment, DefaultWeightedEdge> direcciones;
-   private JTextField textE1;
+    private JTextField textE1;
     private JTextField textE2;
 
     public Traceroute() {
 
     }
-    public void trace (){
+
+    public void trace() {
         frame = new JFrame("TraceRouter");
         frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         frame.setSize(400, 300);
-        textE1= new JTextField("codigo equipo 1");
-        textE2= new JTextField("codigo equipo 2");
+        textE1 = new JTextField("codigo equipo 1");
+        textE2 = new JTextField("codigo equipo 2");
         StylusUI.aplicarEstiloCampoTexto(textE1);
         StylusUI.aplicarEstiloCampoTexto(textE2);
         textArea = new JTextArea();
@@ -37,9 +38,9 @@ public class Traceroute {
         okButton.addActionListener(e -> {
             try {
                 textArea.setText("");
-                Equipment e1=coordinator.getHardware().get(textE1.getText().toUpperCase());
-                Equipment e2=coordinator.getHardware().get(textE2.getText().toUpperCase());
-                direcciones = coordinator.traceroute(e1,e2);
+                Equipment e1 = coordinator.getHardware().get(textE1.getText().toUpperCase());
+                Equipment e2 = coordinator.getHardware().get(textE2.getText().toUpperCase());
+                direcciones = coordinator.traceroute(e1, e2);
                 updateTextArea();
             } catch (Exception exception) {
                 textE1.setText("");
@@ -53,14 +54,14 @@ public class Traceroute {
         textE1.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
-                if (textE1.getText().equals("codigo equipo 1")){
+                if (textE1.getText().equals("codigo equipo 1")) {
                     textE1.setText("");
                 }
             }
 
             @Override
             public void focusLost(FocusEvent e) {
-                if(textE1.getText().isEmpty()){
+                if (textE1.getText().isEmpty()) {
                     textE1.setText("codigo equipo 1");
                 }
             }
@@ -69,14 +70,14 @@ public class Traceroute {
         textE2.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
-                if (textE2.getText().equals("codigo equipo 2")){
+                if (textE2.getText().equals("codigo equipo 2")) {
                     textE2.setText("");
                 }
             }
 
             @Override
             public void focusLost(FocusEvent e) {
-                if(textE2.getText().isEmpty()){
+                if (textE2.getText().isEmpty()) {
                     textE2.setText("codigo equipo 2");
                 }
             }
@@ -97,11 +98,12 @@ public class Traceroute {
         frame.requestFocus();
 
     }
-    private void updateTextArea () {
+
+    private void updateTextArea() {
         textE1.setText("");
         textE2.setText("");
 
-        for(Equipment e:direcciones.getVertexList()){
+        for (Equipment e : direcciones.getVertexList()) {
             textArea.append(e.getCode() + "\n");
         }
 

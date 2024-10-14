@@ -32,7 +32,7 @@ public class GUI {
         frame.add(panelDerecho.crearPanelDerecho(), BorderLayout.EAST);
 
         frame.setSize(800, 600);
-        panelIzquierdo.setPreferredSize(new Dimension(frame.getWidth()- 262, 400));
+        panelIzquierdo.setPreferredSize(new Dimension(frame.getWidth() - 262, 400));
         frame.setVisible(true);
     }
 }
