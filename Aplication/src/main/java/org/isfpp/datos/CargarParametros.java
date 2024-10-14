@@ -13,6 +13,7 @@ public class CargarParametros {
     private static String portTypeFile;
     private static String locationFile;
 
+
     public static void parametros() throws IOException {
         Properties prop = new Properties();
         InputStream Imput = new FileInputStream("config.properties");

@@ -167,6 +167,7 @@ public class Utils {
         return graph;
     }
 
+
     public void setGraph(Graph<Equipment, Connection> graph) {
         Utils.graph = graph;
     }
@@ -185,7 +186,9 @@ public class Utils {
         return visitedNodes;
     }
 
-    // metodo incorrecto, cuando se hace ping se entrega una ip, no se puede mandar una pc por internet(?
+    /**
+     *
+     */
     public boolean ping(Equipment e1) {
         if (!graph.containsVertex(e1))
             throw new NotFoundException("equipo no se encuentra");
