@@ -2,6 +2,7 @@ package org.isfpp.main;
 
 import org.isfpp.controller.Coordinator;
 import org.isfpp.datos.Cargar;
+import org.isfpp.datos.ResourceExtractor;
 import org.isfpp.interfaz.panelesCreadores.MainMenu;
 import org.isfpp.logica.Utils;
 import org.isfpp.modelo.Web;
@@ -30,6 +31,7 @@ public class App {
         Coordinator coordinator= new Coordinator();
         Utils utils=new Utils();
         MainMenu mainMenu= new MainMenu();
+
         /* Se establecen las relaciones entre clases */
         web.setCoordinator(coordinator);
         utils.setCoordinator(coordinator);
