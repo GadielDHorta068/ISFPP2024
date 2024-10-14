@@ -164,7 +164,6 @@ public class Cargar {
         Equipment equipment1, equipment2;
         PortType portType1, portType2;
 
-        // Mensaje de depuración
         System.out.println("Cargando conexiones desde el archivo: " + fileName);
 
         InputStream inputStream = Cargar.class.getClassLoader().getResourceAsStream(fileName);

@@ -8,6 +8,7 @@ import org.isfpp.modelo.Web;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Objects;
 
 public class EquipmentFormPanel extends JPanel {
     private final JTextField codeField;
@@ -104,6 +105,10 @@ public class EquipmentFormPanel extends JPanel {
             PortType portType = (PortType) portTypeCombo.getSelectedItem();
             boolean status = statusCheckBox.isSelected();
 
+            if (Objects.equals(code, "")) {
+                JOptionPane.showMessageDialog(this, "EL codigo no debe estar vacio", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
 
             if (portType == null) {
                 JOptionPane.showMessageDialog(this, "Debe seleccionar al menos un tipo de puerto", "Error", JOptionPane.ERROR_MESSAGE);

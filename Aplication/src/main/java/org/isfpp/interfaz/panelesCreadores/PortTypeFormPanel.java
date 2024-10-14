@@ -4,6 +4,7 @@ import org.isfpp.modelo.Web;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Objects;
 
 public class PortTypeFormPanel extends JPanel {
     private final JTextField codeField;
@@ -50,6 +51,12 @@ public class PortTypeFormPanel extends JPanel {
             String code = codeField.getText();
             String description = descriptionField.getText();
             int portSpeed = Integer.parseInt(speedField.getText());
+
+            if (Objects.equals(code, "")) {
+                JOptionPane.showMessageDialog(this, "El codigo no debe estar vacio", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
             try {
                 web.addPort(code, description, portSpeed);
                 JOptionPane.showMessageDialog(this, "Tipo de puerto creado con éxito");

@@ -242,7 +242,7 @@ public class StylusUI {
     /**
      * Reproduce el sonido al presionar un boton
      */
-    private static void reproducirSonido() {
+    public static void reproducirSonido() {
         try {
             URL sonidoURL = StylusUI.class.getResource(StylusUI.NAME_BUTTON_SOUND);
             if (sonidoURL != null) {

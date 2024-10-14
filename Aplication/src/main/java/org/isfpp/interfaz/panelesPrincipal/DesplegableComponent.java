@@ -79,16 +79,29 @@ public class DesplegableComponent<T> {
             }
         }
 
-        DefaultTableModel model = new DefaultTableModel(data, new String[]{"Nombre", "Descripción", "Objeto"});
+        // Aquí vuelves a crear el modelo, pero asegúrate de que siga siendo no editable
+        DefaultTableModel model = new DefaultTableModel(data, new String[]{"Nombre", "Descripción", "Objeto"}) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
 
+        // Asignar el nuevo modelo a la tabla
         table.setModel(model);
 
+        // Esconder la columna de "Objeto" nuevamente
         table.getColumnModel().getColumn(2).setMinWidth(0);
         table.getColumnModel().getColumn(2).setMaxWidth(0);
         table.getColumnModel().getColumn(2).setWidth(0);
 
+        // Deshabilitar editores de celdas para evitar la edición
+        table.setDefaultEditor(Object.class, null);
+
+        // Forzar repintado de la tabla
         table.repaint();
     }
+
 
     public void setCoordinator(Coordinator coordinator) {
         this.coordinator = coordinator;
