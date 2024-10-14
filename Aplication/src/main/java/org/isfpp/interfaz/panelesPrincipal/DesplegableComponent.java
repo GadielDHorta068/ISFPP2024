@@ -17,9 +17,8 @@ public class DesplegableComponent<T> {
     private boolean isExpanded = false;
     private JPanel panel;
     private JButton toggleButton;
-    private  JTable table;
+    private JTable table;
     private List<T> dataList;
-    private static Object o;
     private Coordinator coordinator;
     private Web web;
 
@@ -31,7 +30,7 @@ public class DesplegableComponent<T> {
         isExpanded = !isExpanded;
         table.setVisible(isExpanded);
         table.getTableHeader().setVisible(isExpanded);
-        toggleButton.setText(isExpanded ? STR."▼ \{toggleButton.getText().substring(2)}" : "▶ " + toggleButton.getText().substring(2));
+        toggleButton.setText(isExpanded ? "▼ " + toggleButton.getText().substring(2) : "▶" + toggleButton.getText().substring(2));
         panel.revalidate();
         panel.repaint();
     }
@@ -40,26 +39,10 @@ public class DesplegableComponent<T> {
         return panel;
     }
 
-    public void removeSelectedItem() {
-        int selectedRow = table.getSelectedRow();
-        if (selectedRow != -1) {
-            T selectedItem = dataList.get(selectedRow);
-            dataList.remove(selectedRow);
-            if (selectedItem instanceof Equipment equipment) {
-                web.getHardware().remove(equipment.getCode());
-            } else if (selectedItem instanceof Location location) {
-                web.getLocations().remove(location.getCode());
-            } else if (selectedItem instanceof Connection connection) {
-                web.getConnections().remove(connection);
-            }
-            updateTable();
-        }
-    }
 
     public void updateTable() {
         // Inicializa dataList basado en el tipo del primer elemento
         Object e = dataList.isEmpty() ? null : dataList.get(0);
-
         if (e instanceof Equipment) {
             dataList = (List<T>) new ArrayList<>(web.getHardware().values());
         } else if (e instanceof Location) {
@@ -68,41 +51,55 @@ public class DesplegableComponent<T> {
             dataList = (List<T>) new ArrayList<>(web.getConnections());
         }
 
-        // Ahora inicializa el array `data` con el tamaño adecuado de dataList
         Object[][] data = new Object[dataList.size()][3];
 
-        // Rellena los datos de la tabla
         for (int i = 0; i < dataList.size(); i++) {
             T item = dataList.get(i);
-            if (item instanceof Equipment equipment) {
-                data[i][0] = equipment.getCode();
-                data[i][1] = equipment.getDescription();
-                data[i][2] = equipment;
-            } else if (item instanceof Location location) {
-                data[i][0] = location.getCode();
-                data[i][1] = location.getDescription();
-                data[i][2] = location;
-            } else if (item instanceof Connection connection) {
-                data[i][0] = String.format("%s - %s", connection.getPort1().getPortType().getCode(), connection.getPort2().getPortType().getCode());
-                data[i][1] = connection.getWire().getDescription();
-                data[i][2] = connection;
-            } else {
-                data[i][0] = item.toString();
-                data[i][1] = "";
-                data[i][2] = item;
+            switch (item) {
+                case Equipment equipment -> {
+                    data[i][0] = equipment.getCode();
+                    data[i][1] = equipment.getDescription();
+                    data[i][2] = equipment;
+                }
+                case Location location -> {
+                    data[i][0] = location.getCode();
+                    data[i][1] = location.getDescription();
+                    data[i][2] = location;
+                }
+                case Connection connection -> {
+                    data[i][0] = String.format("%s - %s - %s - %s", connection.getPort1().getEquipment().getCode(), connection.getPort1().getPortType().getCode(), connection.getPort2().getPortType().getCode(), connection.getPort2().getEquipment().getCode());
+                    data[i][1] = connection.getWire().getDescription();
+                    data[i][2] = connection;
+                }
+                case null, default -> {
+                    data[i][0] = item.toString();
+                    data[i][1] = "";
+                    data[i][2] = item;
+                }
             }
         }
 
-        // Actualiza el modelo de la tabla
-        DefaultTableModel model = new DefaultTableModel(data, new String[]{"Nombre", "Descripción", "Objeto"});
+        // Aquí vuelves a crear el modelo, pero asegúrate de que siga siendo no editable
+        DefaultTableModel model = new DefaultTableModel(data, new String[]{"Nombre", "Descripción", "Objeto"}) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+
+        // Asignar el nuevo modelo a la tabla
         table.setModel(model);
 
-        // Oculta la columna de objetos
+        // Esconder la columna de "Objeto" nuevamente
         table.getColumnModel().getColumn(2).setMinWidth(0);
         table.getColumnModel().getColumn(2).setMaxWidth(0);
         table.getColumnModel().getColumn(2).setWidth(0);
 
-        table.repaint();  // Redibuja la tabla
+        // Deshabilitar editores de celdas para evitar la edición
+        table.setDefaultEditor(Object.class, null);
+
+        // Forzar repintado de la tabla
+        table.repaint();
     }
 
 
@@ -110,14 +107,14 @@ public class DesplegableComponent<T> {
         this.coordinator = coordinator;
     }
 
-    public void IniciarTabla(String titulo, List<T> dataList, PanelDerecho panelDerecho){
+    public void IniciarTabla(String titulo, List<T> dataList, PanelDerecho panelDerecho) {
         this.web = this.coordinator.getWeb();
         this.dataList = dataList;
 
         panel = new JPanel();
         panel.setLayout(new BorderLayout());
 
-        toggleButton = new JButton(STR."▶ \{titulo}");
+        toggleButton = new JButton("▶ " + titulo);
         StylusUI.aplicarEstiloBoton(toggleButton, false);
         toggleButton.setHorizontalAlignment(SwingConstants.LEFT);
         //toggleButton.addActionListener(e -> toggle());
@@ -138,7 +135,7 @@ public class DesplegableComponent<T> {
                     data[i][2] = location;
                 }
                 case Connection connection -> {
-                    data[i][0] = STR."\{((Connection) item).getPort1().getPortType().getCode()} - \{((Connection) item).getPort2().getPortType().getCode()}";
+                    data[i][0] = String.format("%s - %s - %s - %s", connection.getPort1().getEquipment().getCode(), connection.getPort1().getPortType().getCode(), connection.getPort2().getPortType().getCode(), connection.getPort2().getEquipment().getCode());
                     data[i][1] = connection.getWire().getDescription();
                     data[i][2] = item;
                 }
@@ -183,12 +180,9 @@ public class DesplegableComponent<T> {
                     T selectedItem = (T) table.getValueAt(selectedRow, 2);
                     coordinator.setSelectedItem(selectedItem);
                     switch (selectedItem) {
-                        case Equipment selectedEquipment ->
-                                panelDerecho.updateProperties(selectedEquipment.toString().replace("-", "\n"), selectedEquipment.getEquipmentType().getCode());
-                        case Location selectedLocation ->
-                                panelDerecho.updateProperties(selectedLocation.toString().replace("-", "\n"), "LOC");
-                        case Connection selectedConnection ->
-                                panelDerecho.updateProperties(String.format("%s", selectedConnection.toString()), selectedConnection.getWire().getCode());
+                        case Equipment selectedEquipment -> panelDerecho.updateProperties(selectedEquipment);
+                        case Location selectedLocation -> panelDerecho.updateProperties(selectedLocation);
+                        case Connection selectedConnection -> panelDerecho.updateProperties(selectedConnection);
                         case null, default ->
                             // Fallback para cualquier otro tipo de objeto
                                 panelDerecho.updateProperties(selectedItem.toString(), "Descripción no disponible");
@@ -197,5 +191,4 @@ public class DesplegableComponent<T> {
             }
         });
     }
-
 }

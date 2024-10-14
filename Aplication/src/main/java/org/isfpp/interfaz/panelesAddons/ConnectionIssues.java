@@ -1,4 +1,4 @@
-package org.isfpp.interfaz;
+package org.isfpp.interfaz.panelesAddons;
 
 import org.isfpp.controller.Coordinator;
 import org.isfpp.interfaz.stylusUI.StylusUI;
@@ -14,27 +14,26 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-
-public class IPFrame {
+public class ConnectionIssues {
     private JFrame frame;
     private JTextArea textArea;
     private JButton scanButton;
-    private List<String> direcciones;
+    private List<Equipment> direcciones;
     private Coordinator coordinator;
 
 
-    public IPFrame() {
+    public ConnectionIssues() {
     }
 
     public void scanIp() {
         direcciones = new ArrayList<>();
-        frame = new JFrame("IP Scanner");
+        frame = new JFrame("Alcanze del equipo");
         frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         frame.setSize(400, 300);
         JTextField ipInicial = new JTextField("IP a escanear");
         String defecto = getIPSeleccionada();
         System.out.println(defecto);
-        if (!Objects.equals(defecto, "0")){
+        if (!Objects.equals(defecto, "0")) {
             ipInicial.setText(defecto);
         }
 
@@ -43,14 +42,14 @@ public class IPFrame {
         ipInicial.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
-                if (ipInicial.getText().equals("IP a escanear")){
+                if (ipInicial.getText().equals("IP a escanear")) {
                     ipInicial.setText("");
                 }
             }
 
             @Override
             public void focusLost(FocusEvent e) {
-                if(ipInicial.getText().isEmpty()){
+                if (ipInicial.getText().isEmpty()) {
                     ipInicial.setText("IP a escanear");
                 }
             }
@@ -59,13 +58,15 @@ public class IPFrame {
         textArea = new JTextArea();
         textArea.setEditable(false);
         JScrollPane scrollPane = new JScrollPane(textArea);
-        scanButton = new JButton("Scan IPs");
+        scanButton = new JButton("Conexiones");
         scanButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 direcciones.clear();
                 try {
-                    direcciones = coordinator.scanIP(ipInicial.getText());
+                    textArea.setText("");
+                    String equipo = ipInicial.getText().toUpperCase();
+                    direcciones = coordinator.detectConnectivityIssues(coordinator.getHardware().get(equipo));
                     updateTextArea();
                 } catch (Exception exception) {
                     textArea.setText("");
@@ -86,26 +87,29 @@ public class IPFrame {
         frame.requestFocus();
     }
 
-        private void updateTextArea () {
+    private void updateTextArea() {
         textArea.setText("");
-        for (String direccion : direcciones) {
-            textArea.append(direccion + "\n");
+        if (direcciones.size() == 1) {
+            textArea.append("no esta conectado a ningun equipo");
+        } else {
+            for (Equipment direccion : direcciones) {
+                textArea.append(direccion.getCode() + "\n");
+            }
         }
     }
 
     public void setCoordinator(Coordinator coordinator) {
         this.coordinator = coordinator;
     }
-    private String getIPSeleccionada(){
-        if(coordinator.getSelectedItem() != null){
-            if(coordinator.getSelectedItem() instanceof Equipment eq){
-                String ip = eq.getIpAdresses().getFirst();
-                String[] partes = ip.split("\\.") ;
-                partes[2] = "0";
-                partes[3] = "0";
-                return String.join(".", partes);
+
+    private String getIPSeleccionada() {
+        if (coordinator.getSelectedItem() != null) {
+            if (coordinator.getSelectedItem() instanceof Equipment eq) {
+
+                return eq.getCode();
             }
         }
         return "0";
     }
 }
+

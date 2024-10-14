@@ -1,4 +1,5 @@
 package org.isfpp.interfaz.panelesEditadores;
+
 import org.isfpp.interfaz.stylusUI.StylusUI;
 import org.isfpp.modelo.PortType;
 import org.isfpp.modelo.Web;
@@ -14,7 +15,7 @@ public class EditPortTypeFormPanel extends JPanel {
     public EditPortTypeFormPanel(Web web, String codeOriginal) {
         JFrame frame = new JFrame("Modificar tipo de Puerto");
         frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        frame.setSize(400 , 200);
+        frame.setSize(400, 200);
         setLayout(new BorderLayout());
         PortType port = web.getPortTypes().get(codeOriginal);
 
@@ -45,10 +46,10 @@ public class EditPortTypeFormPanel extends JPanel {
         add(formPanel, BorderLayout.CENTER);
 
         JButton createButton = new JButton("Modificar tipo de puerto");
-        StylusUI.aplicarEstiloBoton(createButton,true);
+        StylusUI.aplicarEstiloBoton(createButton, true);
         add(createButton, BorderLayout.SOUTH);
 
-        createButton.addActionListener(_ -> {
+        createButton.addActionListener(e -> {
             String code = codeField.getText();
             String description = descriptionField.getText();
             int portSpeed = Integer.parseInt(speedField.getText());
@@ -61,7 +62,7 @@ public class EditPortTypeFormPanel extends JPanel {
                 web.getCoordinator().updateTablas();
                 frame.setVisible(false);
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this, STR."Error al modificar: \{ex.getMessage()}");
+                JOptionPane.showMessageDialog(this, "Error al modificar: " + ex.getMessage());
             }
         });
         frame.add(this);

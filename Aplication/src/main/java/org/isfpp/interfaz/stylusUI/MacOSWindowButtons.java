@@ -144,7 +144,8 @@ public class MacOSWindowButtons extends JPanel {
 
     /**
      * Crear un bot�n circular con texto dentro (como '�', '?' o '?')
-     * @param color Color del bot�n
+     *
+     * @param color  Color del bot�n
      * @param symbol S�mbolo a mostrar dentro del bot�n
      * @return Bot�n suavizado con s�mbolo
      */

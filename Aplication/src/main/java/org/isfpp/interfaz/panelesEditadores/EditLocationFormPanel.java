@@ -1,4 +1,5 @@
 package org.isfpp.interfaz.panelesEditadores;
+
 import org.isfpp.interfaz.stylusUI.StylusUI;
 import org.isfpp.modelo.Location;
 import org.isfpp.modelo.Web;
@@ -14,7 +15,7 @@ public class EditLocationFormPanel extends JPanel {
 
         JFrame frame = new JFrame("Agregar Ubicación");
         frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        frame.setSize(400 , 150);
+        frame.setSize(400, 150);
 
         setLayout(new BorderLayout());
 
@@ -38,10 +39,10 @@ public class EditLocationFormPanel extends JPanel {
         add(formPanel, BorderLayout.CENTER);
 
         JButton createButton = new JButton("modificar Ubicacion");
-        StylusUI.aplicarEstiloBoton(createButton,true);
+        StylusUI.aplicarEstiloBoton(createButton, true);
         add(createButton, BorderLayout.SOUTH);
 
-        createButton.addActionListener(_ -> {
+        createButton.addActionListener(e -> {
             String code = codeField.getText();
             String description = descriptionField.getText();
 
@@ -52,7 +53,7 @@ public class EditLocationFormPanel extends JPanel {
                 web.getCoordinator().updateTablas();
                 frame.setVisible(false);
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this, STR."Error modificar: \{ex.getMessage()}");
+                JOptionPane.showMessageDialog(this, "Error modificar: " + ex.getMessage());
             }
         });
 

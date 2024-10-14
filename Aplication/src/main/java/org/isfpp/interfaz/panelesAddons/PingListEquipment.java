@@ -1,4 +1,4 @@
-package org.isfpp.interfaz;
+package org.isfpp.interfaz.panelesAddons;
 
 import org.isfpp.controller.Coordinator;
 import org.isfpp.interfaz.stylusUI.StylusUI;
@@ -10,31 +10,33 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class PingListEquipment {
-    private JFrame frame;
     private JTextArea textArea;
     private Coordinator coordinator;
     private HashMap<Equipment, Boolean> direcciones;
+
     public PingListEquipment() {
 
     }
-    public void ping (){
+
+    public void ping() {
         direcciones = new HashMap<>();
-        frame = new JFrame("TraceRouter");
+        JFrame frame = new JFrame("Equipos Activos");
         frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         frame.setSize(400, 300);
         textArea = new JTextArea();
         textArea.setEditable(false);
+        textArea.setFont(textArea.getFont().deriveFont(Font.PLAIN, 20));
         JScrollPane scrollPane = new JScrollPane(textArea);
-        direcciones=coordinator.ping();
+        direcciones = coordinator.ping();
         updateTextArea();
-        JPanel northPanel = new JPanel();
-        frame.getContentPane().add(scrollPane, BorderLayout.CENTER);// Añadir el panel con los dos JTextField
+        frame.getContentPane().add(scrollPane, BorderLayout.CENTER);
         StylusUI.aplicarEstiloScrollPane(scrollPane);
         StylusUI.styleTextArea(textArea);
         frame.setVisible(true);
 
     }
-    private void updateTextArea () {
+
+    private void updateTextArea() {
         for (Map.Entry<Equipment, Boolean> entry : direcciones.entrySet()) {
             textArea.append(entry.getKey().getCode() + " : " + entry.getValue() + "\n");
         }

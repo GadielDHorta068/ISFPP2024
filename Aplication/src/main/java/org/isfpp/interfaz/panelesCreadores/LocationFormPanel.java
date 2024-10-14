@@ -4,6 +4,7 @@ import org.isfpp.modelo.Web;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
 
 public class LocationFormPanel extends JPanel {
     private final JTextField codeField;
@@ -13,7 +14,7 @@ public class LocationFormPanel extends JPanel {
 
         JFrame frame = new JFrame("Agregar Ubicación");
         frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        frame.setSize(400 , 150);
+        frame.setSize(400, 150);
 
         setLayout(new BorderLayout());
 
@@ -36,10 +37,10 @@ public class LocationFormPanel extends JPanel {
         add(formPanel, BorderLayout.CENTER);
 
         JButton createButton = new JButton("Crear Ubicacion");
-        StylusUI.aplicarEstiloBoton(createButton,true);
+        StylusUI.aplicarEstiloBoton(createButton, true);
         add(createButton, BorderLayout.SOUTH);
 
-        createButton.addActionListener(_ -> {
+        createButton.addActionListener(e -> {
             String code = codeField.getText();
             String description = descriptionField.getText();
 
@@ -48,7 +49,7 @@ public class LocationFormPanel extends JPanel {
                 JOptionPane.showMessageDialog(this, "Ubicacion creado con éxito");
                 frame.setVisible(false);
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this, STR."Error al crear equipo: \{ex.getMessage()}");
+                JOptionPane.showMessageDialog(this, "Error al crear ubicacion: " + ex.getMessage());
             }
         });
 

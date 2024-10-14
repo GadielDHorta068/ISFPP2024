@@ -8,6 +8,7 @@ import org.isfpp.modelo.Equipment;
 import org.isfpp.modelo.PortType;
 import org.isfpp.modelo.Web;
 import org.jgrapht.Graph;
+import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleGraph;
@@ -15,15 +16,10 @@ import org.jgrapht.graph.SimpleWeightedGraph;
 import org.jgrapht.traverse.BreadthFirstIterator;
 
 import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.IntStream;
 
 public class Utils {
-
-
     private static Graph<Equipment, Connection> graph;
-    private Coordinator coordinator;
 
     public Utils() {
     }
@@ -87,7 +83,7 @@ public class Utils {
      * <p>
      * Este método toma dos objetos {@code Equipment} y verifica si son válidos y están activos.
      * Luego, construye un grafo temporal con los equipos activos y sus conexiones.
-     * Utiliza el algoritmo de Dijkstra para calcular y devolver la lista de aristas que forman
+     * Usa el algoritmo de Dijkstra para calcular y devolver la lista de aristas que forman
      * el camino más corto entre los dos equipos especificados.
      *
      * @param e1 El primer equipo de origen para el que se desea encontrar el camino.
@@ -98,29 +94,33 @@ public class Utils {
      * @throws IllegalArgumentException Si {@code e1} o {@code e2} son {@code null}, si son iguales,
      *                                  o si alguno de los equipos no está activo.
      */
-    public List<DefaultWeightedEdge> traceroute(Equipment e1, Equipment e2) throws IllegalArgumentException {
+    public GraphPath<Equipment, DefaultWeightedEdge> traceroute(Equipment e1, Equipment e2) throws IllegalArgumentException {
 
         if (e1 == null || e2 == null) {
-            throw new IllegalArgumentException("Equipo invalido");
+            throw new IllegalArgumentException("Equipo inválido");
         }
         if (e1.equals(e2)) {
             throw new IllegalArgumentException("Equipo duplicado");
         }
 
         if (!e1.isStatus() || !e2.isStatus()) {
-            throw new IllegalArgumentException("Uno de los equipos no está activo \n" + e1.getCode() + e1.isStatus() + "\n" + e2.getCode() + e2.isStatus());// Devolver null si alguno de los equipos no está activo
+            throw new IllegalArgumentException(String.format(
+                    "Uno de los equipos no está activo %s %s %s %s",
+                    e1.getCode(),
+                    e1.isStatus(),
+                    e2.getCode(),
+                    e2.isStatus()
+            ));
+
         }
 
         // Crear un grafo temporal que contendrá solo los equipos activos
-        List<Connection> connectionList = new ArrayList<>();
         SimpleWeightedGraph<Equipment, DefaultWeightedEdge> graphTemp = new SimpleWeightedGraph<>(DefaultWeightedEdge.class);
-        HashMap<String, Equipment> equipmentMap = new HashMap<>();
+
         // Insertar vértices (equipos) activos en el grafo temporal
         for (Equipment e : graph.vertexSet()) {
-            if (e.isStatus()) {
+            if (e.isStatus())
                 graphTemp.addVertex(e);
-                equipmentMap.put(e.getCode(), e);
-            }
         }
 
         // Insertar aristas con conexiones activas
@@ -128,21 +128,25 @@ public class Utils {
             Equipment source = graph.getEdgeSource(edge);
             Equipment target = graph.getEdgeTarget(edge);
 
-            if (equipmentMap.containsKey(source.getCode()) && equipmentMap.containsKey(target.getCode())) {
+            if (graphTemp.containsVertex(source) && graphTemp.containsVertex(target) && !graphTemp.containsEdge(source, target)) {
                 // Calcular la velocidad mínima entre los puertos de los equipos y la velocidad del cable
-                int edgeValue = Math.min(edge.getPort1().getPortType().getSpeed(),edge.getPort2().getPortType().getSpeed());
-                edgeValue = Math.min(edgeValue,edge.getWire().getSpeed());
+                int edgeValue = getMinSpeed(convertSetToList(source.getAllPortsTypes().keySet()), convertSetToList(target.getAllPortsTypes().keySet()), edge.getWire().getSpeed());
                 DefaultWeightedEdge newEdge = graphTemp.addEdge(source, target);
                 // Asignar el peso correspondiente a la arista
                 graphTemp.setEdgeWeight(newEdge, edgeValue);
             }
         }
-        // Aplicar el algoritmo de Dijkstra para encontrar el camino más corto entre dos equipos
-        DijkstraShortestPath<Equipment, DefaultWeightedEdge> dijkstraAlg = new DijkstraShortestPath<>(graphTemp);
 
-        // Encontrar el camino más corto desde Router1 a PC1
-        return dijkstraAlg.getPath(e1, e2).getEdgeList();
+        // Encontrar el camino más corto desde e1 a e2
+        GraphPath<Equipment, DefaultWeightedEdge> path = DijkstraShortestPath.findPathBetween(graphTemp, e1, e2);
+        if (path == null) {
+            throw new IllegalArgumentException("No existe un camino entre los equipos.");
+        }
+
+        // Devolver el camino completo
+        return path;
     }
+
 
     /**
      * Calcula la velocidad mínima de conexión entre dos equipos considerando
@@ -162,7 +166,6 @@ public class Utils {
      * más baja de los puertos y la velocidad del cable.
      */
     private static int getMinSpeed(List<PortType> ports1, List<PortType> ports2, int wireSpeed) {
-        // Encuentra el puerto más lento de ambos equipos
         ArrayList<Integer> port1Speed = new ArrayList<>();
         ArrayList<Integer> port2Speed = new ArrayList<>();
 
@@ -182,17 +185,36 @@ public class Utils {
         return Math.min(speedBetweenEquipments, wireSpeed);
     }
 
+    /**
+     * Obtiene el grafo de equipos y conexiones.
+     *
+     * @return El grafo de equipos y conexiones.
+     */
     public Graph<Equipment, Connection> getGraph() {
         return graph;
     }
 
+    /**
+     * Establece el grafo de equipos y conexiones.
+     *
+     * @param graph El grafo de equipos y conexiones.
+     */
     public void setGraph(Graph<Equipment, Connection> graph) {
         Utils.graph = graph;
     }
 
+    /**
+     * Detecta problemas de conectividad a partir de un nodo de inicio.
+     *
+     * @param startNode El nodo de inicio.
+     * @return Una lista de equipos visitados.
+     * @throws NotFoundException Si el nodo de inicio no se encuentra en el grafo.
+     */
     public List<Equipment> detectConnectivityIssues(Equipment startNode) {
+        if (!graph.containsVertex(startNode))
+            throw new NotFoundException("equipo no se encuentra");
         List<Equipment> visitedNodes = new ArrayList<>();
-        BreadthFirstIterator<Equipment, Connection> bfsIterator = new BreadthFirstIterator<>(this.graph, startNode);
+        BreadthFirstIterator<Equipment, Connection> bfsIterator = new BreadthFirstIterator<>(graph, startNode);
 
         while (bfsIterator.hasNext()) {
             visitedNodes.add(bfsIterator.next());
@@ -201,14 +223,25 @@ public class Utils {
         return visitedNodes;
     }
 
-    // metodo incorrecto, cuando se hace ping se entrega una ip, no se puede mandar una pc por internet(?
+    /**
+     * Realiza una prueba de conectividad (ping) a un equipo.
+     *
+     * @param e1 El equipo al que se quiere hacer ping.
+     * @return {@code true} si el equipo está activo, {@code false} en caso contrario.
+     * @throws NotFoundException Si el equipo no se encuentra en el grafo.
+     */
     public boolean ping(Equipment e1) {
         if (!graph.containsVertex(e1))
             throw new NotFoundException("equipo no se encuentra");
         return e1.isStatus();
     }
 
-
+    /**
+     * Realiza una prueba de conectividad (ping) a una dirección IP.
+     *
+     * @param ip La dirección IP a la que se quiere hacer ping.
+     * @return {@code true} si la dirección IP se encuentra en el grafo, {@code false} en caso contrario.
+     */
     public static boolean ping(String ip) {
         if (graph != null) {
             for (Equipment equipo : graph.vertexSet()) {
@@ -222,15 +255,26 @@ public class Utils {
         return false;
     }
 
+    /**
+     * Realiza una prueba de conectividad (ping) a todos los equipos en el grafo.
+     *
+     * @return Un mapa que contiene cada equipo y su estado de conectividad.
+     */
     public HashMap<Equipment, Boolean> ping() {
         HashMap<Equipment, Boolean> mapStatus = new HashMap<>();
         for (Equipment p : graph.iterables().vertices()) {
             mapStatus.put(p, p.isStatus());
         }
         return mapStatus;
-
     }
 
+    /**
+     * Verifica si una dirección IP es válida.
+     *
+     * @param ip La dirección IP a verificar.
+     * @return {@code true} si la dirección IP es válida, {@code false} en caso contrario.
+     * @throws NumberFormatException Si algún segmento de la dirección IP no es un número válido.
+     */
     private boolean checkIp(String ip) {
         String[] parts = ip.split("\\.");
         if (parts.length != 4) return false;
@@ -248,37 +292,117 @@ public class Utils {
         return true;
     }
 
-
+    /**
+     * Establece el coordinador.
+     *
+     * @param coordinator El coordinador.
+     */
     public void setCoordinator(Coordinator coordinator) {
-        this.coordinator = coordinator;
     }
 
+    /**
+     * Convierte un conjunto de tipos de puertos a una lista.
+     *
+     * @param set El conjunto de tipos de puertos.
+     * @return Una lista de tipos de puertos.
+     */
     public static List<PortType> convertSetToList(Set<PortType> set) {
         return new ArrayList<>(set);
     }
 
     //Charlar este metodo con el profe
-        public List<String> scanIP(String ip) {
+
+    /**
+     * Escanea direcciones IP a partir de una IP base.
+     *
+     * @param ip La IP base.
+     * @return Una lista de direcciones IP válidas.
+     */
+    public List<String> scanIP(String ip) {
         String[] parts = ip.split("\\.");
         List<String> ipList = new ArrayList<>();
         int start = Integer.parseInt(parts[3]);
         int startThirdSegment = Integer.parseInt(parts[2]);
 
-        IntStream.range(startThirdSegment, 256).forEach(j -> {
-            IntStream.range(start, 256).forEach(i -> {
-                String nuevaIP = STR."\{parts[0]}.\{parts[1]}.\{j}.\{i}";
-                System.out.println(nuevaIP);
-                if (Utils.ping(nuevaIP)) {
-                    System.out.println("encontro");
-                    ipList.add(nuevaIP);
-                }
-            });
-        });
+        IntStream.range(startThirdSegment, 256).forEach(j -> IntStream.range(start, 256).forEach(i -> {
+            String nuevaIP = parts[0] + parts[1] + j + i;
+            System.out.println(nuevaIP);
+            if (Utils.ping(nuevaIP)) {
+                System.out.println("encontro");
+                ipList.add(nuevaIP);
+            }
+        }));
 
         return ipList; // Devolver la lista de IPs válidas
     }
+
+    /**
+     * Genera una dirección MAC aleatoria.
+     *
+     * @return La dirección MAC generada.
+     */
+    public static String generarMAC() {
+        Random random = new Random();
+        byte[] macAddr = new byte[6];
+        random.nextBytes(macAddr);
+
+        StringBuilder macAddress = new StringBuilder(18);
+        for (byte b : macAddr) {
+            if (!macAddress.isEmpty()) {
+                macAddress.append(":");
+            }
+            macAddress.append(String.format("%02x", b));
+        }
+        return macAddress.toString().toUpperCase();
+    }
+
+    /**
+     * Verifica si un equipo tiene todos los puertos ocupados.
+     *
+     * @param equipo El equipo a verificar.
+     * @throws NotFoundException Si todos los puertos del equipo están ocupados.
+     */
+    public static void verificarPuertosOcupados(Equipment equipo) {
+        if (equipo.getIpAdresses().size() == equipo.getPorts().size()) {
+            throw new NotFoundException("El equipo " + equipo.getCode() + " tiene todos los puertos ocupados.");
+        }
+    }
+
+    /**
+     * Verifica si un equipo es de red.
+     *
+     * @param equipo El equipo a verificar.
+     * @return {@code true} si el equipo es de red, {@code false} en caso contrario.
+     */
+    public static boolean esEquipoRed(Equipment equipo) {
+        String code = equipo.getEquipmentType().getCode();
+        return code.equals("SW") || code.equals("RT") || code.equals("AP");
+    }
+
+    /**
+     * Genera una nueva dirección IP para un equipo.
+     *
+     * @param equipo El equipo para el que se quiere generar la IP.
+     * @param web    El objeto {@code Web} que contiene la información de la red.
+     * @return La nueva dirección IP generada.
+     */
+    public static String generarNuevaIP(Equipment equipo, Web web) {
+        String[] parts = equipo.getIpAdresses().getFirst().split("\\.");
+        String nuevaIP = "";
+        int pool = Integer.parseInt(parts[3]);
+
+        boolean t = true;
+        while (t) {
+            t = false;
+            pool += 1;
+            nuevaIP = String.format("%s.%s.%s.%d", parts[0], parts[1], parts[2], pool);
+            for (Equipment eq : web.getHardware().values()) {
+                if (eq.getIpAdresses().contains(nuevaIP)) {
+                    t = true;
+                    break;
+                }
+            }
+        }
+        return nuevaIP;
+    }
 }
-
-
-
-

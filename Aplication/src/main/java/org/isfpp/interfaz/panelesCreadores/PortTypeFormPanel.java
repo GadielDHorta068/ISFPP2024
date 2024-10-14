@@ -4,6 +4,7 @@ import org.isfpp.modelo.Web;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Objects;
 
 public class PortTypeFormPanel extends JPanel {
     private final JTextField codeField;
@@ -13,7 +14,7 @@ public class PortTypeFormPanel extends JPanel {
     public PortTypeFormPanel(Web web) {
         JFrame frame = new JFrame("Agregar tipo de Puerto");
         frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        frame.setSize(400 , 200);
+        frame.setSize(400, 200);
         setLayout(new BorderLayout());
 
         JPanel formPanel = new JPanel(new GridLayout(3, 2, 10, 20));
@@ -43,19 +44,25 @@ public class PortTypeFormPanel extends JPanel {
         add(formPanel, BorderLayout.CENTER);
 
         JButton createButton = new JButton("Crear tipo de puerto");
-        StylusUI.aplicarEstiloBoton(createButton,true);
+        StylusUI.aplicarEstiloBoton(createButton, true);
         add(createButton, BorderLayout.SOUTH);
 
-        createButton.addActionListener(_ -> {
+        createButton.addActionListener(e -> {
             String code = codeField.getText();
             String description = descriptionField.getText();
             int portSpeed = Integer.parseInt(speedField.getText());
+
+            if (Objects.equals(code, "")) {
+                JOptionPane.showMessageDialog(this, "El codigo no debe estar vacio", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
             try {
                 web.addPort(code, description, portSpeed);
                 JOptionPane.showMessageDialog(this, "Tipo de puerto creado con éxito");
                 frame.setVisible(false);
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this, STR."Error al crear equipo: \{ex.getMessage()}");
+                JOptionPane.showMessageDialog(this, "Error al crear puerto: " + ex.getMessage());
             }
         });
         frame.add(this);

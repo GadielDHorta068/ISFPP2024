@@ -23,7 +23,8 @@ public class MainMenu {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(new BorderLayout());
     }
-    public void components(Web web){
+
+    public void components(Web web) {
         StylusUI.inicializar(false);
         PanelDerecho panelDerecho = new PanelDerecho();
 
@@ -48,15 +49,19 @@ public class MainMenu {
         StylusUI.aplicarEstiloPanel(panelIzquierdo);
         panelIzquierdo.setLayout(new BoxLayout(panelIzquierdo, BoxLayout.Y_AXIS));
         panelIzquierdo.add(desplegableNodos.getPanel());
-       panelIzquierdo.add(desplegableConexiones.getPanel());
+        panelIzquierdo.add(desplegableConexiones.getPanel());
         panelIzquierdo.add(desplegableUbicaciones.getPanel());
         frame.setJMenuBar(barraMenu.crearBarraMenu());
         frame.add(panelIzquierdo, BorderLayout.WEST);
         frame.add(panelDerecho.crearPanelDerecho(), BorderLayout.EAST);
 
         frame.setSize(800, 600);
-        panelIzquierdo.setPreferredSize(new Dimension(frame.getWidth()- 262, 400));
+        panelIzquierdo.setPreferredSize(new Dimension(frame.getWidth() - 262, 400));
         frame.setVisible(true);
+        frame.setResizable(false);
     }
-    public void SetCoordinator(Coordinator coordinator){this.coordinator=coordinator;}
+
+    public void SetCoordinator(Coordinator coordinator) {
+        this.coordinator = coordinator;
+    }
 }

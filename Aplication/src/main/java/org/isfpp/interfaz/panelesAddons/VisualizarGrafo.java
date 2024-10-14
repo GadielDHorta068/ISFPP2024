@@ -1,4 +1,4 @@
-package org.isfpp.interfaz;
+package org.isfpp.interfaz.panelesAddons;
 
 import com.mxgraph.layout.mxCompactTreeLayout;
 import com.mxgraph.swing.mxGraphComponent;
@@ -43,7 +43,7 @@ public class VisualizarGrafo extends JFrame {
         mxGraph mxGraph = new mxGraph();
 
         mxGraph.setCellsEditable(false);
-       mxGraph.setCellsResizable(false);
+        mxGraph.setCellsResizable(false);
         mxGraph.setCellsBendable(false);
         mxGraph.setCellsSelectable(false);
 
@@ -108,13 +108,13 @@ public class VisualizarGrafo extends JFrame {
     private String getVertexStyle(mxGraph mxGraph, Equipment equipment) {
         // Configurar estilos de vértices con imágenes basadas en el archivo de propiedades
         String equipmentType = equipment.getEquipmentType().getCode();
-        String imagePath = properties.getProperty(STR."icon.\{equipmentType}");
+        String imagePath = properties.getProperty("icon." + equipmentType);
 
         Map<String, Object> style = new Hashtable<>();
 
         if (imagePath != null) {
             style.put("shape", "image");
-            style.put("image", getClass().getClassLoader().getResource(imagePath).toString()); // Asegurarse de que la ruta es correcta y accesible
+            style.put("image", Objects.requireNonNull(getClass().getClassLoader().getResource(imagePath)).toString()); // Asegurarse de que la ruta es correcta y accesible
         } else {
             style.put("shape", "ellipse");
             style.put("fillColor", "#C3D9FF");
@@ -123,10 +123,9 @@ public class VisualizarGrafo extends JFrame {
         }
 
 
-
         style.put("fontSize", 16);
         style.put("fontColor", "#000000");
-        String styleName = STR."\{equipmentType}_STYLE";
+        String styleName = equipmentType + "_STYLE";
         mxGraph.getStylesheet().putCellStyle(styleName, style);
         return styleName;
     }

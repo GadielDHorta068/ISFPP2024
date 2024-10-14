@@ -7,18 +7,14 @@ import javax.swing.*;
 import java.awt.*;
 
 public class EditEquipmentFormPanel extends JPanel {
-    private JTextField codeField;
-    private JTextField descriptionField;
-    private JTextField marcaField;
-    private JTextField modeloField;
-    private JComboBox<EquipmentType> equipmentTypeCombo;
-    private JComboBox<Location> locationCombo;
-    private JComboBox<PortType> portTypeCombo;
-    private JCheckBox statusCheckBox;
-    private JTextField ipField;
-    private JButton addIpButton;
-    private DefaultListModel<String> ipListModel;
-    private JList<String> ipList;
+    private final JTextField codeField;
+    private final JTextField descriptionField;
+    private final JTextField marcaField;
+    private final JTextField modeloField;
+    private final JComboBox<EquipmentType> equipmentTypeCombo;
+    private final JComboBox<Location> locationCombo;
+    private final JComboBox<PortType> portTypeCombo;
+    private final JCheckBox statusCheckBox;
 
     public EditEquipmentFormPanel(Web web, String codeOriginal) {
         JFrame frame = new JFrame("Edicion de Equipo");
@@ -93,7 +89,7 @@ public class EditEquipmentFormPanel extends JPanel {
         add(formPanel, BorderLayout.CENTER);
 
         JButton createButton = new JButton("Editar Equipo");
-        StylusUI.aplicarEstiloBoton(createButton,true);
+        StylusUI.aplicarEstiloBoton(createButton, true);
         add(createButton, BorderLayout.SOUTH);
 
         createButton.addActionListener(e -> {

@@ -1,5 +1,6 @@
 package org.isfpp.interfaz.panelesCreadores;
 
+import org.isfpp.datos.Cargar;
 import org.isfpp.interfaz.stylusUI.StylusUI;
 import org.isfpp.modelo.EquipmentType;
 import org.isfpp.modelo.Location;
@@ -8,20 +9,17 @@ import org.isfpp.modelo.Web;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Objects;
 
 public class EquipmentFormPanel extends JPanel {
-    private JTextField codeField;
-    private JTextField descriptionField;
-    private JTextField marcaField;
-    private JTextField modeloField;
-    private JComboBox<EquipmentType> equipmentTypeCombo;
-    private JComboBox<Location> locationCombo;
-    private JComboBox<PortType> portTypeCombo;
-    private JCheckBox statusCheckBox;
-    private JTextField ipField;
-    private JButton addIpButton;
-    private DefaultListModel<String> ipListModel;
-    private JList<String> ipList;
+    private final JTextField codeField;
+    private final JTextField descriptionField;
+    private final JTextField marcaField;
+    private final JTextField modeloField;
+    private final JComboBox<EquipmentType> equipmentTypeCombo;
+    private final JComboBox<Location> locationCombo;
+    private final JComboBox<PortType> portTypeCombo;
+    private final JCheckBox statusCheckBox;
 
     public EquipmentFormPanel(Web web) {
         JFrame frame = new JFrame("Formulario de Equipo");
@@ -88,14 +86,14 @@ public class EquipmentFormPanel extends JPanel {
         StylusUI.aplicarEstiloEtiqueta(estado);
         formPanel.add(estado);
         statusCheckBox = new JCheckBox();
-        StylusUI.aplicarEstiloCheckBox(statusCheckBox);
+        //StylusUI.aplicarEstiloCheckBox(statusCheckBox);
         formPanel.add(statusCheckBox);
 
 
         add(formPanel, BorderLayout.CENTER);
 
         JButton createButton = new JButton("Crear Equipo");
-        StylusUI.aplicarEstiloBoton(createButton,true);
+        StylusUI.aplicarEstiloBoton(createButton, true);
         add(createButton, BorderLayout.SOUTH);
 
         createButton.addActionListener(e -> {
@@ -108,6 +106,10 @@ public class EquipmentFormPanel extends JPanel {
             PortType portType = (PortType) portTypeCombo.getSelectedItem();
             boolean status = statusCheckBox.isSelected();
 
+            if (Objects.equals(code, "")) {
+                JOptionPane.showMessageDialog(this, "EL codigo no debe estar vacio", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
 
             if (portType == null) {
                 JOptionPane.showMessageDialog(this, "Debe seleccionar al menos un tipo de puerto", "Error", JOptionPane.ERROR_MESSAGE);
