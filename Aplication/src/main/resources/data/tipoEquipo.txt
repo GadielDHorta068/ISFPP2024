@@ -1,5 +1,5 @@
 AP;Access Point;
-CAM;Cámara IP;
+CAM;C?mara IP;
 COM;Computadora;
 IMP;Impresora de Red;
 RJ;Reloj Acceso Personal;

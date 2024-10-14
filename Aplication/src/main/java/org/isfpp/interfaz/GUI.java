@@ -1,19 +1,13 @@
 package org.isfpp.interfaz;
 
-import org.isfpp.datos.Cargar;
 import org.isfpp.interfaz.panelesPrincipal.BarraMenu;
-import org.isfpp.interfaz.panelesPrincipal.DesplegableComponent;
 import org.isfpp.interfaz.panelesPrincipal.PanelDerecho;
 import org.isfpp.interfaz.stylusUI.StylusUI;
-import org.isfpp.modelo.Connection;
-import org.isfpp.modelo.Equipment;
-import org.isfpp.modelo.Location;
 import org.isfpp.modelo.Web;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
-import java.util.ArrayList;
 
 public class GUI {
     public static void main(String[] args) throws IOException {
@@ -24,7 +18,7 @@ public class GUI {
 
         PanelDerecho panelDerecho = new PanelDerecho();
 
-        Web web = Cargar.cargarRedDesdePropiedades("config.properties");
+        Web web = Web.getWeb();
 
    //     DesplegableComponent<Equipment> desplegableNodos = new DesplegableComponent<>();
       //  desplegableNodos.IniciarTabla("Equipos", new ArrayList<>(web.getHardware().values()), panelDerecho, coordinator);

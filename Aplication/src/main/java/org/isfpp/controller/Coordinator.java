@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Coordinator{
-    private Web web;
+    private  Web web;
     private Utils utils;
     private MainMenu mainMenu;
     private Object selectedItem;

@@ -1,16 +1,13 @@
 package org.isfpp.test;
 
-import org.isfpp.datos.Cargar;
 import org.isfpp.modelo.*;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.SimpleGraph;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.isfpp.logica.Utils;
 
 
-import java.io.IOException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -72,7 +69,7 @@ public class UtilsTest {
         connection1 = w1.addConnection(equipment1.checkPort(p300),equipment2.checkPort(p300),w10000);  // Activa
         connection2 = w1.addConnection(equipment2.checkPort(p1000),equipment3.checkPort(p1000), w10);  // Entre equipo activo e inactivo
 
-        connection3 = w1.addConnection(equipment1.checkPort(p300),equipment4.checkPort(p300),w10000);  // Activa
+        connection3 = w1.addConnection(equipment1.checkPort(p10000),equipment4.checkPort(p10000),w10000);  // Activa
         connection4 = w1.addConnection(equipment4.checkPort(p10000),equipment3.checkPort(p10000), w10000);  // Entre equipo activo e inactivo
 
         u1=new Utils();
