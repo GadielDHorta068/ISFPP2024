@@ -13,6 +13,10 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Clase que representa un componente desplegable genérico para mostrar datos en una tabla.
+ * @param <T> El tipo de los elementos que se mostrarán en la tabla.
+ */
 public class DesplegableComponent<T> {
     private boolean isExpanded = false;
     private JPanel panel;
@@ -22,10 +26,15 @@ public class DesplegableComponent<T> {
     private Coordinator coordinator;
     private Web web;
 
-
+    /**
+     * Constructor de la clase DesplegableComponent.
+     */
     public DesplegableComponent() {
     }
 
+    /**
+     * Método para alternar la visibilidad de la tabla.
+     */
     private void toggle() {
         isExpanded = !isExpanded;
         table.setVisible(isExpanded);
@@ -35,11 +44,17 @@ public class DesplegableComponent<T> {
         panel.repaint();
     }
 
+    /**
+     * Método para obtener el panel principal del componente.
+     * @return El panel principal.
+     */
     public JPanel getPanel() {
         return panel;
     }
 
-
+    /**
+     * Método para actualizar los datos de la tabla.
+     */
     public void updateTable() {
         // Inicializa dataList basado en el tipo del primer elemento
         Object e = dataList.isEmpty() ? null : dataList.get(0);
@@ -102,11 +117,20 @@ public class DesplegableComponent<T> {
         table.repaint();
     }
 
-
+    /**
+     * Método para establecer el coordinador del componente.
+     * @param coordinator El objeto coordinador.
+     */
     public void setCoordinator(Coordinator coordinator) {
         this.coordinator = coordinator;
     }
 
+    /**
+     * Método para inicializar la tabla con datos.
+     * @param titulo El título del componente desplegable.
+     * @param dataList La lista de datos a mostrar en la tabla.
+     * @param panelDerecho El panel derecho donde se mostrarán propiedades adicionales.
+     */
     public void IniciarTabla(String titulo, List<T> dataList, PanelDerecho panelDerecho) {
         this.web = this.coordinator.getWeb();
         this.dataList = dataList;
@@ -180,9 +204,12 @@ public class DesplegableComponent<T> {
                     T selectedItem = (T) table.getValueAt(selectedRow, 2);
                     coordinator.setSelectedItem(selectedItem);
                     switch (selectedItem) {
-                        case Equipment selectedEquipment -> panelDerecho.updateProperties(selectedEquipment);
-                        case Location selectedLocation -> panelDerecho.updateProperties(selectedLocation);
-                        case Connection selectedConnection -> panelDerecho.updateProperties(selectedConnection);
+                        case Equipment selectedEquipment ->
+                                panelDerecho.updateProperties(selectedEquipment);
+                        case Location selectedLocation ->
+                                panelDerecho.updateProperties(selectedLocation);
+                        case Connection selectedConnection ->
+                                panelDerecho.updateProperties(selectedConnection);
                         case null, default ->
                             // Fallback para cualquier otro tipo de objeto
                                 panelDerecho.updateProperties(selectedItem.toString(), "Descripción no disponible");
