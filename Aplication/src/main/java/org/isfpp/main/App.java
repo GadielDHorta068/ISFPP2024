@@ -14,21 +14,31 @@ import org.isfpp.modelo.Web;
 import java.io.IOException;
 
 public class App implements NativeMouseInputListener{
+public class App {
+    // l�gica
+    private Web web = null;
+    private Utils utils;
 
-    public static void main(String[] args) {
-        Web web;
-        try {
-            web = Cargar.cargarRedDesdePropiedades("config.properties");
-            GlobalScreen.registerNativeHook();
-        } catch (IOException | NativeHookException e) {
-            throw new RuntimeException(e);
-        }
+    // vista
+    private MainMenu mainMenu;
 
+    // controlador
+    private Coordinator coordinator;
 
-        GlobalScreen.addNativeMouseListener(new App());
-        Coordinator coordinator= new Coordinator();
-        Utils utils=new Utils();
-        MainMenu mainMenu= new MainMenu();
+    public static void main(String[] args) throws IOException {
+        App app = new App();
+        CargarParametros.parametros();
+        app.inicio();
+        app.luanch();
+        app.minitest();
+
+    }
+
+    private void inicio(){
+        web = Web.getWeb();
+        coordinator = new Coordinator();
+        utils=new Utils();
+        mainMenu= new MainMenu();
         /* Se establecen las relaciones entre clases */
         web.setCoordinator(coordinator);
         utils.setCoordinator(coordinator);
@@ -40,7 +50,13 @@ public class App implements NativeMouseInputListener{
         coordinator.setUtils(utils);
         coordinator.setMainMenu(mainMenu);
         coordinator.LoadData(coordinator.getWeb());
+    }
+
+    private void luanch(){
         mainMenu.components(coordinator.getWeb());
 
+    }
+
+    private void minitest(){
     }
 }

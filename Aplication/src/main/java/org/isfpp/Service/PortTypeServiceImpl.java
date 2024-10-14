@@ -4,6 +4,7 @@ import org.isfpp.dao.PortTypeDAO;
 import org.isfpp.dao.Secuencial.PortTypeSequentialDAO;
 import org.isfpp.modelo.PortType;
 
+import java.util.Hashtable;
 import java.util.List;
 
 public class PortTypeServiceImpl implements PortTypeService{
@@ -28,7 +29,7 @@ public class PortTypeServiceImpl implements PortTypeService{
     }
 
     @Override
-    public List<PortType> searchAll() {
+    public Hashtable<String, PortType> searchAll() {
         return portTypeDAO.searchAll();
     }
 }

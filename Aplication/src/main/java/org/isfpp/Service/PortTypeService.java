@@ -2,6 +2,7 @@ package org.isfpp.Service;
 
 import org.isfpp.modelo.PortType;
 
+import java.util.Hashtable;
 import java.util.List;
 
 public interface PortTypeService {
@@ -12,6 +13,6 @@ public interface PortTypeService {
 
     void erase(PortType portType);
 
-    List<PortType> searchAll();
+    Hashtable<String,PortType> searchAll();
 }
 

@@ -4,18 +4,19 @@ import org.isfpp.dao.EquipmentDAO;
 import org.isfpp.dao.EquipmentTypeDAO;
 import org.isfpp.dao.LocationDAO;
 import org.isfpp.dao.PortTypeDAO;
+import org.isfpp.datos.Cargar;
+import org.isfpp.datos.CargarParametros;
 import org.isfpp.modelo.Equipment;
 import org.isfpp.modelo.EquipmentType;
 import org.isfpp.modelo.Location;
 import org.isfpp.modelo.PortType;
 
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.*;
 import java.util.*;
 
 public class EquipmentSequentialDAO implements EquipmentDAO{
-    private HashMap<String, Equipment> map;
-    private String name;
+    private Hashtable<String, Equipment> map;
+    private String fileName;
     private boolean update;
     private Hashtable<String, PortType> portTypes;
     private Hashtable<String,EquipmentType> equipmentTypes;
@@ -25,19 +26,22 @@ public class EquipmentSequentialDAO implements EquipmentDAO{
         equipmentTypes = readEquipmentTypes();
         locations = readLocations();
         portTypes = readPortTypes();
-        ResourceBundle rb = ResourceBundle.getBundle("secuencial");
-        name = rb.getString("Equipments");
+        fileName = CargarParametros.getequipementFile();
         update = true;
     }
 
-    private HashMap<String, Equipment> readFromFile(String fileName) {
-        HashMap<String, Equipment> map = new HashMap<>();
+    private Hashtable<String, Equipment> readFromFile(String fileName) {
+        Hashtable<String, Equipment> map = new Hashtable<>();
         Scanner inFile = null;
 
         try {
-            inFile = new Scanner(new File(fileName));
+            InputStream inputStream = Cargar.class.getClassLoader().getResourceAsStream(fileName);
+            if (inputStream == null) {
+                throw new FileNotFoundException("Archivo no encontrado: " + fileName);
+            }
+            inFile = new Scanner(inputStream);
             inFile.useDelimiter("\\s*;\\s*");
-            String[] minireader, minireader2;
+            String[] minireader;
             while (inFile.hasNext()) {
                 Equipment equipment = new Equipment();
                 equipment.setCode(inFile.next());
@@ -51,9 +55,9 @@ public class EquipmentSequentialDAO implements EquipmentDAO{
                     for (int cap = 0;cap < Integer.parseInt(minireader[i + 1]);cap++)
                         equipment.addPort(portTypes.get(minireader[i]));
 
-                minireader2 = inFile.next().split(",");
-                for (int i = 0; i< minireader2.length;i++)
-                   equipment.addIp(minireader2[i]);
+                minireader = inFile.next().split(",");
+                for (int i = 0; i < minireader.length;i++)
+                   equipment.addIp(minireader[i]);
 
                 equipment.setStatus(inFile.nextBoolean());
                 map.put(equipment.getCode(),equipment);
@@ -74,46 +78,44 @@ public class EquipmentSequentialDAO implements EquipmentDAO{
         return map;
     }
 
-    private void writeToFile(HashMap<String,Equipment> equipmentMap, String fileName) {
-        Formatter outFile = null;
-        try {
-            outFile = new Formatter(fileName);
+    private void writeToFile(Hashtable<String,Equipment> equipmentMap, String fileName) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, false))) {
             HashMap<PortType, Integer> portMap;
             for (Equipment equipment: equipmentMap.values()) {
                 portMap = equipment.getAllPortsTypes();
-                outFile.format("%s;%s;%s;%s;%s;%s;", equipment.getCode(),
-                                equipment.getDescription(),equipment.getMake(),equipment.getModel(),
-                                equipment.getEquipmentType().getCode(),equipment.getLocation().getCode());
+                writer.write(String.format("%s;%s;%s;%s;%s;%s;",equipment.getCode(),
+                        equipment.getDescription(),equipment.getMake(),equipment.getModel(),
+                        equipment.getEquipmentType().getCode(),equipment.getLocation().getCode()));
 
                 for (PortType portType: portMap.keySet())
-                    outFile.format("%s,%s",portType.getCode(),portMap.get(portType));
-                outFile.format(";");
+                    writer.write(String.format("%s,%s",portType.getCode(),portMap.get(portType)));
+                writer.write(";");
 
                 for (int i = 1; i<equipment.getIpAdresses().size();i++)
-                    if (!(i ==equipment.getIpAdresses().size()))
-                        outFile.format("%s,",equipment.getIpAdresses().get(i));
+                    if (!(i == equipment.getIpAdresses().size()))
+                        writer.write(String.format("%s,",equipment.getIpAdresses().get(i)));
                     else
-                        outFile.format("%s;",equipment.getIpAdresses().get(i));
+                        writer.write(String.format("%s;",equipment.getIpAdresses().get(i)));
 
                 if (equipment.isStatus())
-                    outFile.format("true;\n");
+                    writer.write(String.format("true;"));
                 else
-                    outFile.format("false;\n");
+                    writer.write(String.format("false;"));
+
+                writer.newLine();  // Escribir salto de línea después de cada línea
             }
-        } catch (FileNotFoundException fileNotFoundException) {
-            System.err.println("Error creating file.");
+            System.out.println("Archivo reescrito exitosamente.");
+        }catch (IOException e) {
+            e.printStackTrace();  // Manejo de excepciones
         } catch (FormatterClosedException formatterClosedException) {
             System.err.println("Error writing to file.");
-        } finally {
-            if (outFile != null)
-                outFile.close();
         }
     }
 
     @Override
     public void insert(Equipment equipment) {
         map.put(equipment.getCode(),equipment);
-        writeToFile(map,name);
+        writeToFile(map,fileName);
         update = true;
     }
 
@@ -126,42 +128,30 @@ public class EquipmentSequentialDAO implements EquipmentDAO{
     @Override
     public void erase(Equipment equipment) {
         map.remove(equipment.getCode());
-        writeToFile(map, name);
+        writeToFile(map, fileName);
         update = true;
     }
 
     @Override
-    public List searchAll() {
+    public Hashtable<String,Equipment> searchAll() {
         if (update) {
-            map = readFromFile(name);
+            map = readFromFile(fileName);
             update = false;
         }
-        return new ArrayList<>(map.values());
+        return map;
     }
 
     private Hashtable<String, EquipmentType> readEquipmentTypes() {
-        Hashtable<String, EquipmentType> equipmentTypes = new Hashtable<String, EquipmentType>();
         EquipmentTypeDAO equipmentTypeDAO = new EquipmentTypeSequentialDAO();
-        List<EquipmentType> typeList = equipmentTypeDAO.searchAll();
-        for (EquipmentType type: typeList)
-            equipmentTypes.put(type.getCode(), type);
-        return equipmentTypes;
+       return equipmentTypeDAO.searchAll();
     }
     private Hashtable<String,Location> readLocations(){
-        Hashtable<String,Location> locations = new Hashtable<>();
         LocationDAO locationDAO = new LocationSequentialDAO();
-        List<Location> locationList = locationDAO.searchAll();
-        for (Location location: locationList)
-            locations.put(location.getCode(),location);
-        return locations;
+        return  locationDAO.searchAll();
     }
 
     private Hashtable<String, PortType> readPortTypes() {
-        Hashtable<String,PortType> portTypes = new Hashtable<>();
         PortTypeDAO portTypeDAO = new PortTypeSequentialDAO();
-        List<PortType> portTypeList = portTypeDAO.searchAll();
-        for (PortType portType: portTypeList)
-            portTypes.put(portType.getCode(),portType);
-        return portTypes;
+        return portTypeDAO.searchAll();
     }
 }

@@ -2,6 +2,7 @@ package org.isfpp.Service;
 
 import org.isfpp.modelo.EquipmentType;
 
+import java.util.Hashtable;
 import java.util.List;
 
 public interface EquipmentTypeService{
@@ -11,5 +12,5 @@ public interface EquipmentTypeService{
 
     void erase(EquipmentType equipmentType);
 
-    List<EquipmentType> searchAll();
+    Hashtable<String,EquipmentType> searchAll();
 }

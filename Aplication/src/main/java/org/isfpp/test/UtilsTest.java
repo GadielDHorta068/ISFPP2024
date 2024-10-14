@@ -3,6 +3,7 @@ package org.isfpp.test;
 import org.isfpp.datos.Cargar;
 import org.isfpp.modelo.*;
 import org.jgrapht.Graph;
+import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleGraph;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,22 +16,27 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class UtilsTest {
+    private Web w1;
     private Graph<Equipment, Connection> graph;
     private Equipment equipment1;
     private Equipment equipment2;
     private Equipment equipment3;
+    private Equipment equipment4;
+
     private Connection connection1;
     private Connection connection2;
+    private Connection connection3;
+    private Connection connection4;
     Utils u1;
 
     @BeforeEach
     public void setUp() {
-        Web w1=new Web("testWeb");
+        w1=new Web("testWeb");
 
         // Creación de objetos PortType
-        PortType portType1 =  w1.addPort("P1", "Ethernet Port", 1000); // 1 Gbps
-        PortType portType2 = w1.addPort("P2", "Fiber Optic Port", 10000); // 10 Gbps
-        PortType portType3 = w1.addPort("P3", "Wi-Fi Port", 300); // 300 Mbps
+        PortType p1000 =  w1.addPort("MIDp", "Ethernet Port", 1000); // 1 Gbps
+        PortType p10000 = w1.addPort("HIGHp", "Fiber Optic Port", 10000); // 10 Gbps
+        PortType p300 = w1.addPort("LOWp", "Wi-Fi Port", 300); // 300 Mbps
         // Crear un nuevo tipo de equipo
         EquipmentType equipmentType1 = w1.addEquipmentType("ET1", "Router");
         EquipmentType equipmentType2 = w1.addEquipmentType("ET2", "Switch");
@@ -44,116 +50,89 @@ public class UtilsTest {
         Location location3 = w1.addLocation("3","Auditorio");
 
 
-        Equipment equipment1 = w1.addEquipment("001", "Router Principal", "Cisco", "RV340", portType1, 5,
+        equipment1 = w1.addEquipment("001", "Router Principal", "Cisco", "RV340", p300, 5,
                 equipmentType1, location1, true);
+        equipment1.addPort(p10000);
 
-
-
-
-        Equipment equipment2 = w1.addEquipment("002", "PC de Reuniones", "HP", "Pavilion", portType2, 10,
+        equipment2 = w1.addEquipment("002", "PC de Reuniones", "HP", "Pavilion", p300, 10,
                 equipmentType2, location2, true);
+        equipment2.addPort(p1000);
 
+        equipment3 = w1.addEquipment("003", "Proyector de Presentaciones", "Epson", "PowerLite", p10000, 2,
+                equipmentType3, location3, true);
+        equipment3.addPort(p1000);
 
+        equipment4 = w1.addEquipment("003", "Proyector de Presentaciones", "Epson", "PowerLite", p10000, 2,
+                equipmentType3, location3, true);
 
+        WireType w10000 = w1.addWire("HIGHw", "Cable de fibra óptica", 10000); // Velocidad en Mbps
+        WireType w10 = w1.addWire("MIDw", "Cable de cobre oxidado", 10); // Velocidad en Mbps
 
+        // Crear conexiones
+        connection1 = w1.addConnection(equipment1.checkPort(p300),equipment2.checkPort(p300),w10000);  // Activa
+        connection2 = w1.addConnection(equipment2.checkPort(p1000),equipment3.checkPort(p1000), w10);  // Entre equipo activo e inactivo
 
-        Equipment equipment3 = w1.addEquipment("003", "Proyector de Presentaciones", "Epson", "PowerLite", portType3, 2,
-                equipmentType3, location3, false);
-        WireType wireType1 = w1.addWire("WT1", "Cable de fibra óptica", 10000); // Velocidad en Mbps
-        WireType wireType2 = w1.addWire("WT2", "Cable de cobre", 1000); // Velocidad en Mbps
+        connection3 = w1.addConnection(equipment1.checkPort(p300),equipment4.checkPort(p300),w10000);  // Activa
+        connection4 = w1.addConnection(equipment4.checkPort(p10000),equipment3.checkPort(p10000), w10000);  // Entre equipo activo e inactivo
 
-
-//        // Crear conexiones
-//        connection1 = w1.addConnection(equipment2,equipment1, wireType1);  // Activa
-//        connection2 = w1.addConnection(equipment3,equipment2, wireType2);  // Entre equipo activo e inactivo
-//        u1=new Utils(w1);
+        u1=new Utils();
+        u1.LoadData(w1);
 
 
 
 
     }
     @Test
-    public void testDetectConnectivityIssues_AllActive() {
-        // Activar todos los equipos para esta prueba
-        // Ahora todos los equipos están activos
+    void testTraceroute_ThrowsException_ForSameEquipment() {
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> {u1.traceroute(equipment1, equipment1);});  // Testeando con equipos iguales
 
-        // Verificar que se puede acceder a todos los nodes
-        List<Equipment> reachable = u1.detectConnectivityIssues(equipment1);
-        for(Equipment e:reachable){
-            System.out.println(e);
-        }
-        assertEquals(3, reachable.size());
-        assertTrue(reachable.contains(equipment1));
-        assertTrue(reachable.contains(equipment2));
-        assertTrue(reachable.contains(equipment3));
+        assertEquals("Equipo duplicado", exception.getMessage());
     }
 
     @Test
-    public void testDetectConnectivityIssues_ConnectionIssue() {
-        // Dejar equipment3 inactivo (caso por defecto)
-        equipment3.setStatus(false);
+    void testTraceroute_ThrowsException_ForInactiveEquipment() {
+        equipment1.setStatus(false); //simula que el primer equipo esta inactivo
 
-        // Verificar que solo se puede acceder a equipment1 y equipment2
-        List<Equipment> reachable = u1.detectConnectivityIssues(equipment1);
-        for(Equipment e:reachable){
-            System.out.println(e);
-        }
-        assertEquals(2, reachable.size());
-        assertTrue(reachable.contains(equipment1));
-        assertTrue(reachable.contains(equipment2));
-        assertTrue(reachable.contains(equipment3));
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> {u1.traceroute(equipment1, equipment2);});  // Testeando con un equipo inactivo
+
+        assertTrue(exception.getMessage().contains("Uno de los equipos no está activo"));
     }
 
     @Test
-    public void testDetectConnectivityIssues_SingleNode() {
-        // Verificar que desde un solo equipo activo se pueda acceder solo a él mismo
-        List<Equipment> reachable = u1.detectConnectivityIssues(equipment1);
-        assertTrue(reachable.contains(equipment1));
-        assertEquals(2, reachable.size()); // Porque también equipment2 está accesible
+    void testTracerouteFindsShortestPath() {
+        int minSpeed;
+        List<DefaultWeightedEdge> connectionList = u1.traceroute(equipment1,equipment3);
+        assertEquals(connectionList.size(),2);
+        //velocidad minima de la conexion
+        minSpeed = Math.min(connection3.getPort1().getPortType().getSpeed(),connection3.getPort2().getPortType().getSpeed());
+        minSpeed = Math.min(minSpeed, connection3.getWire().getSpeed());
+        assertEquals(connectionList.get(1), minSpeed);
+        //velocidad minima de la conexion
+        minSpeed = Math.min(connection3.getPort1().getPortType().getSpeed(),connection3.getPort2().getPortType().getSpeed());
+        minSpeed = Math.min(minSpeed, connection3.getWire().getSpeed());
+        assertEquals(connectionList.get(2),minSpeed);
+
+        equipment4.setStatus(false);
+        connectionList = u1.traceroute(equipment1,equipment3);
+        assertEquals(connectionList.size(),2);
+
+        minSpeed = Math.min(connection1.getPort1().getPortType().getSpeed(),connection1.getPort2().getPortType().getSpeed());
+        minSpeed = Math.min(minSpeed, connection1.getWire().getSpeed());
+        assertEquals(connectionList.get(1),minSpeed);
+
+        minSpeed = Math.min(connection2.getPort1().getPortType().getSpeed(),connection2.getPort2().getPortType().getSpeed());
+        minSpeed = Math.min(minSpeed, connection2.getWire().getSpeed());
+        assertEquals(connectionList.get(2),minSpeed);
     }
 
-    // Correctly parses a valid IP address into segments
     @Test
-    public void test_parse_valid_ip() {
-        Utils utils = new Utils();
-        List<String> result = utils.scanIP("166.82.1.1");
-        assertNotNull(result);
-    }
-
-    // Generates a list of IPs starting from the given IP
-    @Test
-    public void test_generate_ip_list() throws IOException {
-        Utils utils = new Utils();
-        utils.LoadData(Cargar.cargarRedDesdePropiedades("config.properties"));
-        List<String> result = utils.scanIP("166.82.1.1");
-        assertTrue(!result.isEmpty());
-    }
-
-    // Successfully pings and adds reachable IPs to the list
-    @Test
-    public void test_ping_reachable_ips() throws IOException {
-        Utils utils = new Utils();
-        utils.LoadData(Cargar.cargarRedDesdePropiedades("config.properties"));
-        List<String> result = utils.scanIP("166.82.1.1");
-        assertTrue(result.contains("166.82.1.10"));
-    }
-
-    // Handles a full range of IPs from the starting point
-    @Test
-    public void test_full_range_of_ips() throws IOException {
-        Utils utils = new Utils();
-        utils.LoadData(Cargar.cargarRedDesdePropiedades("config.properties"));
-        List<String> result = utils.scanIP("166.82.0.0");
-        assertTrue(!result.isEmpty());
-    }
-
-    // Handles IP addresses with segments at the boundary (e.g., 0 or 255)
-    @Test
-    public void test_boundary_ip_segments() throws IOException {
-        Utils utils = new Utils();
-        utils.LoadData(Cargar.cargarRedDesdePropiedades("config.properties"));
-        List<String> result = utils.scanIP("166.82.255.255");
-        assertNotNull(result);
+    void testTraceroute_NotFoundPath() {
+        equipment4.setStatus(false);
+        equipment2.setStatus(false);
+        List<DefaultWeightedEdge> connectionList = u1.traceroute(equipment1,equipment3);
+        assertNull(connectionList);
     }
 }
 

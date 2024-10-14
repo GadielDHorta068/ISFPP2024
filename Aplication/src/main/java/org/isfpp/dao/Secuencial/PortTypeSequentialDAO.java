@@ -2,35 +2,39 @@ package org.isfpp.dao.Secuencial;
 
 
 import org.isfpp.dao.PortTypeDAO;
+import org.isfpp.datos.Cargar;
+import org.isfpp.datos.CargarParametros;
 import org.isfpp.modelo.PortType;
 
-import java.io.FileNotFoundException;
+import java.io.*;
 import java.util.*;
-import java.io.File;
 
 public class PortTypeSequentialDAO implements PortTypeDAO {
-    private HashMap<String, PortType> map;
-    private String name;
+    private Hashtable<String, PortType> map;
+    private String fileName;
     private boolean update;
 
     public PortTypeSequentialDAO() {
-        ResourceBundle rb = ResourceBundle.getBundle("secuencial");
-        name = rb.getString("PortType");
+        fileName = CargarParametros.getportTypeFile();
         update = true;
     }
 
-    private HashMap<String, PortType> readFromFile(String fileName) {
-        HashMap<String, PortType> map = new HashMap<>();
+    private Hashtable<String, PortType> readFromFile(String fileName) {
+        Hashtable<String, PortType> map = new Hashtable<>();
         Scanner inFile = null;
 
         try {
-            inFile = new Scanner(new File(fileName));
+            InputStream inputStream = Cargar.class.getClassLoader().getResourceAsStream(fileName);
+            if (inputStream == null) {
+                throw new FileNotFoundException("Archivo no encontrado: " + fileName);
+            }
+            inFile = new Scanner(inputStream);
             inFile.useDelimiter("\\s*;\\s*");
             while (inFile.hasNext()) {
                 PortType portType = new PortType();
                 portType.setCode(inFile.next());
                 portType.setDescription(inFile.next());
-                portType.setCode(inFile.next());
+                portType.setSpeed(inFile.nextInt());
                 map.put(portType.getCode(),portType);
             }
         } catch (FileNotFoundException fileNotFoundException) {
@@ -49,27 +53,20 @@ public class PortTypeSequentialDAO implements PortTypeDAO {
         return map;
     }
 
-    private void writeToFile(HashMap<String,PortType> portTypeMap, String fileName) {
-        Formatter outFile = null;
-        try {
-            outFile = new Formatter(fileName);
+    private void writeToFile(Hashtable<String,PortType> portTypeMap, String fileName) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, false))) {
             for (PortType portType: portTypeMap.values()) {
-                outFile.format("%s;%s;%s;\n", portType.getCode(), portType.getDescription(), portType.getSpeed());
+                writer.write(String.format("%s;%s;%s;\n", portType.getCode(), portType.getDescription(), portType.getSpeed()));
             }
-        } catch (FileNotFoundException fileNotFoundException) {
-            System.err.println("Error creating file.");
-        } catch (FormatterClosedException formatterClosedException) {
-            System.err.println("Error writing to file.");
-        } finally {
-            if (outFile != null)
-                outFile.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
     @Override
     public void insert(PortType type) {
         map.put(type.getCode(),type);
-        writeToFile(map, name);
+        writeToFile(map, fileName);
         update = true;
     }
 
@@ -82,16 +79,16 @@ public class PortTypeSequentialDAO implements PortTypeDAO {
     @Override
     public void erase(PortType portType) {
         map.remove(portType.getCode());
-        writeToFile(map,name);
+        writeToFile(map,fileName);
         update = true;
     }
 
     @Override
-    public List searchAll() {
+    public Hashtable<String,PortType> searchAll() {
         if (update) {
-            map = readFromFile(name);
+            map = readFromFile(fileName);
             update = false;
         }
-        return new ArrayList<>(map.values());
+        return map;
     }
 }

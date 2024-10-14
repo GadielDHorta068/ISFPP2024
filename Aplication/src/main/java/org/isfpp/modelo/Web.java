@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+
+import org.isfpp.Service.*;
 import org.isfpp.controller.Coordinator;
 import org.isfpp.exceptions.AlreadyExistException;
 import org.isfpp.exceptions.NotFoundException;
@@ -14,15 +16,44 @@ import javax.swing.*;
 import static org.isfpp.logica.Utils.*;
 
 public class Web {
-	private HashMap<String, Equipment> hardware;
-	private ArrayList<Connection> connections;
-	private HashMap<String, Location> locations;
+	private static  Web web = null;
+
 	private String nombre;
-	private final HashMap<Object, EquipmentType> EquipmentTypes;
+	private HashMap<String, Equipment> hardware;
+	private EquipmentService equipmentService;
+	private ArrayList<Connection> connections;
+	private ConnectionService connectionService;
+	private HashMap<String, Location> locations;
+	private LocationService locationService;
+	private final HashMap<Object, EquipmentType> equipmentTypes;
+	private EquipmentTypeService equipmentTypeService;
 	private final HashMap<String,WireType>wireTypes;
+	private WireTypeService wireTypeService;
 	private final HashMap<String,PortType>portTypes;
 	private Coordinator coordinator;
 
+	public Web() {
+		super();
+		setNombre("RedLocal");
+		this.wireTypes				= new HashMap<>();
+		this.wireTypeService 		= new WireTypeServiceImpl();
+		wireTypes.putAll(wireTypeService.searchAll());
+		this.portTypes				= new HashMap<>();
+		this.portTypeService 		= new PortTypeServiceImpl();
+		portTypes.putAll(portTypeService.searchAll());
+		this.equipmentTypes			= new HashMap<>();
+		this.equipmentTypeService 	= new EquipmentTypeServiceImpl();
+		equipmentTypes.putAll(equipmentTypeService.searchAll());
+		this.locations 				= new HashMap<>();
+		this.locationService 		= new LocationServiceImpl();
+		locations.putAll(locationService.searchAll());
+		this.hardware     			= new HashMap<>();
+		this.equipmentService 		= new EquipmentServiceImpl();
+		hardware.putAll(equipmentService.searchAll());
+		this.connections 			= new ArrayList<>();
+		this.connectionService 		= new ConnectionServiceImpl();
+		connections.addAll(connectionService.searchAll());
+	}
 
 	public Web(String nombre) {
 		super();
@@ -34,6 +65,70 @@ public class Web {
 		this.portTypes= new HashMap<>();
 		this.EquipmentTypes= new HashMap<>();
 		coordinator = new Coordinator();
+	}
+
+	public static Web getWeb() {
+		if (web ==  null)
+			web = new Web();
+		return web;
+	}
+	//Name
+	public String getNombre() {
+		return nombre;
+	}
+
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
+
+	//Equipment
+	public Equipment addEquipment(String code, String description, String marca, String model, PortType portType,int cantidad,
+								  EquipmentType equipmentType, Location location,Boolean status)  {
+		if (hardware.containsKey(code))
+			throw new AlreadyExistException("el equipo ya se encuentra");
+		if(!portTypes.containsKey(portType.getCode()))
+			throw new NotFoundException("El puerto no se encuentra en la lista");
+		if(!equipmentTypes.containsKey(equipmentType.getCode()))
+			throw new NotFoundException("El tipo de equipo no se encuentra en la lista");
+		Equipment e = new Equipment(code, description, marca, model, portType,cantidad, equipmentType, location,status);
+		hardware.put(code, e);
+		equipmentService.insert(e);
+		coordinator.updateTablas();
+		return e;
+	}
+
+	public void eraseEquipment(Equipment e) {
+		if (!hardware.containsKey(e.getCode())) {
+			throw new NotFoundException("equipo invalido");
+		}
+
+		Iterator<Connection> iterator = connections.iterator();
+		while (iterator.hasNext()) {
+			Connection c = iterator.next();
+			// Eliminar la conexión del equipo si coincide con alguno de los puertos
+			if (c.getPort1().getEquipment().equals(e) || c.getPort2().getEquipment().equals(e)) {
+				iterator.remove(); // Elimina la conexión del Iterator para evitar ConcurrentModificationException
+				if (connections.contains(c)) {
+					eraseConnection(c); // Solo llama a eraseConnection si la conexión aún está en la lista
+				}
+			}
+		}
+
+		hardware.remove(e.getCode(), e);  // Eliminar el equipo del hardware
+		equipmentService.erase(e);
+		coordinator.updateTablas();
+	}
+
+	public void updateEquipment(Equipment equipment) {
+		if (!hardware.containsKey(equipment.getCode()))
+			throw new NotFoundException("equipo invalido");
+		hardware.replace(equipment.getCode(), equipment);
+		equipmentService.update(equipment);
+		coordinator.updateTablas();
+	}
+
+	public Equipment searchEquipment(Equipment equipment) {
+		return hardware.get(equipment.getCode());
 	}
 
 	public HashMap<String, Equipment> getHardware() {
@@ -52,22 +147,53 @@ public class Web {
 		this.connections = connections;
 	}
 
-	public HashMap<String, Location> getLocations() {
-		return locations;
-	}
+    public Connection addConnection(Port port1, Port port2, WireType wire) {
+        // Verificar si los equipos existen en el hardware
+        if (!hardware.containsKey(port1.getEquipment().getCode()))
+            throw new NotFoundException("El equipo " + port1.getEquipment().getCode() + " no se encuentra.");
+        if (!hardware.containsKey(port2.getEquipment().getCode()))
+            throw new NotFoundException("El equipo " + port2.getEquipment().getCode() + " no se encuentra.");
 
-	public void setLocations(HashMap<String, Location> locations) {
-		this.locations = locations;
-	}
+        Connection connection = new Connection(port2,port1, wire);
 
-	public String getNombre() {
-		return nombre;
-	}
+        if (connections.contains(connection))
+            throw new AlreadyExistException("La conexión entre " + port1.getEquipment().getCode() + " y " + port2.getEquipment().getCode() + " ya existe.");
 
-	public void setNombre(String nombre) {
-		this.nombre = nombre;
-	}
+        // Agregar la conexión a la lista de conexiones
+        connections.add(connection);
+        connectionService.insert(connection);
+        coordinator.updateTablas();
+        return connection;
+    }
 
+    public void eraseConnection(Connection connection) {
+        // Verificar si la conexión existe
+        if (!connections.contains(connection))
+            throw new NotFoundException("La conexión no se encuentra.");
+
+        // Eliminar la conexión de la lista
+        connection.getPort1().setInUse(false);
+        connection.getPort2().setInUse(false);
+        connections.remove(connection);
+        connectionService.erase(connection);
+        coordinator.updateTablas();
+    }
+
+    public void updateConnection(Connection connection){
+        if (!connections.contains(connection))
+            throw new NotFoundException("Conexion no entrada");
+
+        int index = connections.indexOf(connection);
+        connections.set(index,connection);
+        connectionService.update(connection);
+        coordinator.updateTablas();
+    }
+
+    public Connection searchConnection(Connection connection){
+        return connections.get(connections.indexOf(connection));
+    }
+
+	//Location
 	public Location addLocation(String code, String description) {
 		if (locations.containsKey(code)){
 			JOptionPane.showMessageDialog(null,"La localizacion ya se encuentra", "Error de duplicacion", JOptionPane.INFORMATION_MESSAGE);
@@ -76,27 +202,23 @@ public class Web {
 		}
 		Location l = new Location(code, description);
 		locations.put(code, l);
+		locationService.insert(l);
 		coordinator.updateTablas();
 		return l;
 	}
 
 	public void eraseLocation(Location l) {
-		if (!locations.containsKey(l.getCode())){
+		if (!locations.containsKey(l.getCode()))
 			JOptionPane.showMessageDialog(null,"Error de locacion", "Error de dependencia", JOptionPane.INFORMATION_MESSAGE);
-			return;
-		}
-
 		List<String> codes = new ArrayList<>();
 		for (Equipment e : hardware.values()) {
 			if (e.getLocation().equals(l))
 				codes.add(e.getCode());
 		}
-		if (!codes.isEmpty()){
+		if (!codes.isEmpty())
 			JOptionPane.showMessageDialog(null,"Hay equipos que dependen de la ubicacion", "Error de dependencia", JOptionPane.INFORMATION_MESSAGE);
-			return;
-		}
-
 		locations.remove(l.getCode(), l);
+		locationService.erase(l);
 		coordinator.updateTablas();
 	}
 
@@ -106,13 +228,34 @@ public class Web {
 		PortType p=new PortType(code,description,speed);
 		portTypes.put(code,p);
 		coordinator.updateTablas();
-		return p;
 	}
+    public void updateLocation(Location l){
+        if (!locations.containsKey(l.getCode()))
+            throw new NotFoundException("la ubicacion no se pudo encontrar");
+
+        locations.replace(l.getCode(),l);
+        locationService.update(l);
+        coordinator.updateTablas();
+    }
+	public Location searchLocation(Location location){
+		return locations.get(location.getCode());
+	}
+
+	public HashMap<String, Location> getLocations() {
+		return locations;
+	}
+
+	public void setLocations(HashMap<String, Location> locations) {
+		this.locations = locations;
+	}
+
+	//WireType
 	public WireType addWire(String code,String description,int speed){
 		if(wireTypes.containsKey(code))
 			throw new AlreadyExistException("el tipo de cable ya existe");
 		WireType w=new WireType(code,description,speed);
 		wireTypes.put(code,w);
+		wireTypeService.insert(w);
 		coordinator.updateTablas();
 		return w;
 	}
@@ -170,12 +313,41 @@ public class Web {
 				codes.add(connection.getPort1().getEquipment().getCode() + " <-> " + connection.getPort2().getEquipment().getCode());
 			}
 		}
-
 		if (!codes.isEmpty())
 			throw new IllegalStateException("las siguientes conexiones tienen ese tipo de cable" + codes);
 		wireTypes.remove(w.getCode(),w);
+		wireTypeService.erase(w);
 		coordinator.updateTablas();
 	}
+
+	public void updateWire(WireType wireType){
+		if (wireTypes.containsKey(wireType.getCode()))
+			throw new NotFoundException("Tipo de cable no encontrado");
+
+		wireTypes.replace(wireType.getCode(),wireType);
+		wireTypeService.update(wireType);
+		coordinator.updateTablas();
+	}
+
+	public WireType searchWire (WireType wireType){
+		return wireTypes.get(wireType.getCode());
+	}
+
+	public HashMap<String, WireType> getWireTypes() {
+		return wireTypes;
+	}
+
+	//PortType
+	public PortType addPort(String code,String description,int speed){
+		if(portTypes.containsKey(code))
+			throw new AlreadyExistException("el tipo de puerto ya se encuentra");
+		PortType p=new PortType(code,description,speed);
+		portTypes.put(code,p);
+		portTypeService.insert(p);
+		coordinator.updateTablas();
+		return p;
+	}
+
 	public void erasePort(PortType portType){
 		if(!portTypes.containsKey(portType.getCode()))
 			throw new NotFoundException("El puerto no se encuentra");
@@ -207,6 +379,9 @@ public class Web {
 		verificarPuertosOcupados(eq2);
 
 		Connection connection = new Connection(port2, port1, wire);
+	public void updatePort(PortType portType){
+		if (portTypes.containsKey(portType.getCode()))
+			throw new NotFoundException("Tipo de puerto no encontrado");
 
 		if (connections.contains(connection)) {
 			throw new AlreadyExistException("La conexión entre " + eq1.getCode() + " y " + eq2.getCode() + " ya existe.");
@@ -229,8 +404,8 @@ public class Web {
 		return EquipmentTypes;
 	}
 
-	public HashMap<String, WireType> getWireTypes() {
-		return wireTypes;
+	public PortType searchPortType(PortType portType){
+		return portTypes.get(portType.getCode());
 	}
 
 	public HashMap<String, PortType> getPortTypes() {

@@ -1,7 +1,6 @@
 package org.isfpp.Service;
 
 import org.isfpp.dao.ConnectionDAO;
-import org.isfpp.dao.GenericDAO;
 import org.isfpp.dao.Secuencial.ConnectionSequentialDAO;
 import org.isfpp.modelo.Connection;
 
