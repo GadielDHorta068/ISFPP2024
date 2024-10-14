@@ -5,6 +5,7 @@ import com.mxgraph.swing.mxGraphComponent;
 import com.mxgraph.util.mxConstants;
 import com.mxgraph.view.mxGraph;
 import com.mxgraph.view.mxStylesheet;
+import org.isfpp.controller.Coordinator;
 import org.isfpp.interfaz.stylusUI.StylusUI;
 import org.isfpp.modelo.Connection;
 import org.isfpp.modelo.Equipment;
@@ -12,34 +13,22 @@ import org.jgrapht.Graph;
 import org.jgrapht.graph.SimpleGraph;
 
 import javax.swing.*;
+import java.awt.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 
 public class VisualizarGrafo extends JFrame {
     private Properties properties;
+    private Coordinator coordinator;
 
-    public VisualizarGrafo(HashMap<String, Equipment> hardware, ArrayList<Connection> connections) {
-        Graph<Equipment, Connection> graph = new SimpleGraph<>(Connection.class); // Usar SimpleGraph para grafo no dirigido
+    public VisualizarGrafo() throws HeadlessException {
+    }
 
-        for (Equipment valor : hardware.values()) {
-            graph.addVertex(valor);
-        }
-        for (Connection c : connections) {
-            Equipment sourceNode = c.getPort1().getEquipment();
-            Equipment targetNode = c.getPort2().getEquipment();
-
-            if (sourceNode.equals(targetNode)) {
-                throw new IllegalArgumentException("Son el mismo equipo");
-            }
-            if (!graph.containsEdge(sourceNode, targetNode)) {
-                graph.addEdge(sourceNode, targetNode, c);
-            }
-        }
+    public void Visualizar() {
+        Graph<Equipment, Connection> graph = coordinator.getGraph(); // Usar SimpleGraph para grafo no dirigido
 
         cargarProperties();
-
-
         mxGraph mxGraph = new mxGraph();
 
         mxGraph.setCellsEditable(false);
@@ -128,5 +117,9 @@ public class VisualizarGrafo extends JFrame {
         String styleName = equipmentType + "_STYLE";
         mxGraph.getStylesheet().putCellStyle(styleName, style);
         return styleName;
+    }
+
+    public void setCoordinator(Coordinator coordinator) {
+        this.coordinator = coordinator;
     }
 }
