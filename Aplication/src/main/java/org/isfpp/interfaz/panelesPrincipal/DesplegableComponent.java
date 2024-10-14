@@ -19,7 +19,6 @@ public class DesplegableComponent<T> {
     private JButton toggleButton;
     private  JTable table;
     private List<T> dataList;
-    private static Object o;
     private Coordinator coordinator;
     private Web web;
 
@@ -40,21 +39,6 @@ public class DesplegableComponent<T> {
         return panel;
     }
 
-    public void removeSelectedItem() {
-        int selectedRow = table.getSelectedRow();
-        if (selectedRow != -1) {
-            T selectedItem = dataList.get(selectedRow);
-            dataList.remove(selectedRow);
-            if (selectedItem instanceof Equipment equipment) {
-                web.getHardware().remove(equipment.getCode());
-            } else if (selectedItem instanceof Location location) {
-                web.getLocations().remove(location.getCode());
-            } else if (selectedItem instanceof Connection connection) {
-                web.getConnections().remove(connection);
-            }
-            updateTable();
-        }
-    }
 
     public void updateTable() {
         // Inicializa dataList basado en el tipo del primer elemento
@@ -71,22 +55,27 @@ public class DesplegableComponent<T> {
 
         for (int i = 0; i < dataList.size(); i++) {
             T item = dataList.get(i);
-            if (item instanceof Equipment equipment) {
-                data[i][0] = equipment.getCode();
-                data[i][1] = equipment.getDescription();
-                data[i][2] = equipment;
-            } else if (item instanceof Location location) {
-                data[i][0] = location.getCode();
-                data[i][1] = location.getDescription();
-                data[i][2] = location;
-            } else if (item instanceof Connection connection) {
-                data[i][0] = String.format("%s - %s - %s - %s", connection.getPort1().getEquipment().getCode(),connection.getPort1().getPortType().getCode(), connection.getPort2().getPortType().getCode(), connection.getPort2().getEquipment().getCode());
-                data[i][1] = connection.getWire().getDescription();
-                data[i][2] = connection;
-            } else {
-                data[i][0] = item.toString();
-                data[i][1] = "";
-                data[i][2] = item;
+            switch (item) {
+                case Equipment equipment -> {
+                    data[i][0] = equipment.getCode();
+                    data[i][1] = equipment.getDescription();
+                    data[i][2] = equipment;
+                }
+                case Location location -> {
+                    data[i][0] = location.getCode();
+                    data[i][1] = location.getDescription();
+                    data[i][2] = location;
+                }
+                case Connection connection -> {
+                    data[i][0] = String.format("%s - %s - %s - %s", connection.getPort1().getEquipment().getCode(), connection.getPort1().getPortType().getCode(), connection.getPort2().getPortType().getCode(), connection.getPort2().getEquipment().getCode());
+                    data[i][1] = connection.getWire().getDescription();
+                    data[i][2] = connection;
+                }
+                case null, default -> {
+                    data[i][0] = item.toString();
+                    data[i][1] = "";
+                    data[i][2] = item;
+                }
             }
         }
 
@@ -192,9 +181,4 @@ public class DesplegableComponent<T> {
             }
         });
     }
-
-    public boolean isCellEditable(int row, int column) {
-        return false;
-    }
-
 }

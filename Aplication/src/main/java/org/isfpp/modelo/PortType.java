@@ -35,10 +35,9 @@ public class PortType {
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
-		if (!(obj instanceof PortType))
+		if (!(obj instanceof PortType other))
 			return false;
-		PortType other = (PortType) obj;
-		return Objects.equals(code, other.code);
+        return Objects.equals(code, other.code);
 	}
 
 	@Override

@@ -8,7 +8,6 @@ import java.util.List;
 import org.isfpp.controller.Coordinator;
 import org.isfpp.exceptions.AlreadyExistException;
 import org.isfpp.exceptions.NotFoundException;
-import org.isfpp.logica.Utils;
 
 import javax.swing.*;
 
@@ -214,14 +213,10 @@ public class Web {
 		}
 
 		// Determinar si es necesario generar una nueva IP
-		String nuevaIP = "";
-		if (esEquipoRed(eq1) || (esEquipoRed(eq1) && esEquipoRed(eq2))) {
-			nuevaIP = generarNuevaIP(eq1, this);
-		} else {
-			nuevaIP = generarNuevaIP(eq1, this);
-		}
+		String nuevaIP = generarNuevaIP(eq1, this);
 
-		// Agregar la conexión a la lista de conexiones
+
+        // Agregar la conexión a la lista de conexiones
 		connections.add(connection);
 		eq2.addIp(nuevaIP);
 		coordinator.updateTablas();

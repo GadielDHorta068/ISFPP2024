@@ -8,7 +8,7 @@ public class Port {
     private Boolean inUse;
     private PortType portType;
     private Equipment equipment;
-    private String MACAdress;
+    private final String MACAdress;
 
     public Port(PortType portType, Equipment equipment) {
         super();

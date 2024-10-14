@@ -29,10 +29,9 @@ public class EquipmentType {
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
-		if (!(obj instanceof EquipmentType))
+		if (!(obj instanceof EquipmentType other))
 			return false;
-		EquipmentType other = (EquipmentType) obj;
-		return Objects.equals(code, other.code);
+        return Objects.equals(code, other.code);
 	}
 
 	 @Override

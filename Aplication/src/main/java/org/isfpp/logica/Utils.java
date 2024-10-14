@@ -147,7 +147,6 @@ public class Utils {
      * más baja de los puertos y la velocidad del cable.
      */
     private static int getMinSpeed(List<PortType> ports1, List<PortType> ports2, int wireSpeed) {
-        // Encuentra el puerto más lento de ambos equipos
         ArrayList<Integer> port1Speed = new ArrayList<>();
         ArrayList<Integer> port2Speed = new ArrayList<>();
 
@@ -180,7 +179,7 @@ public class Utils {
         if (!graph.containsVertex(startNode))
             throw new NotFoundException("equipo no se encuentra");
         List<Equipment> visitedNodes = new ArrayList<>();
-        BreadthFirstIterator<Equipment, Connection> bfsIterator = new BreadthFirstIterator<>(this.graph, startNode);
+        BreadthFirstIterator<Equipment, Connection> bfsIterator = new BreadthFirstIterator<>(graph, startNode);
 
         while (bfsIterator.hasNext()) {
             visitedNodes.add(bfsIterator.next());
@@ -252,16 +251,14 @@ public class Utils {
         int start = Integer.parseInt(parts[3]);
         int startThirdSegment = Integer.parseInt(parts[2]);
 
-        IntStream.range(startThirdSegment, 256).forEach(j -> {
-            IntStream.range(start, 256).forEach(i -> {
-                String nuevaIP = parts[0] +parts[1] + j +i;
-                System.out.println(nuevaIP);
-                if (Utils.ping(nuevaIP)) {
-                    System.out.println("encontro");
-                    ipList.add(nuevaIP);
-                }
-            });
-        });
+        IntStream.range(startThirdSegment, 256).forEach(j -> IntStream.range(start, 256).forEach(i -> {
+            String nuevaIP = parts[0] +parts[1] + j +i;
+            System.out.println(nuevaIP);
+            if (Utils.ping(nuevaIP)) {
+                System.out.println("encontro");
+                ipList.add(nuevaIP);
+            }
+        }));
 
         return ipList; // Devolver la lista de IPs válidas
     }

@@ -8,13 +8,11 @@ import org.isfpp.modelo.Location;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
 
 public class PanelDerecho {
     private JTextArea propiedades;
     private JLabel logo ;
-    private  JPanel panel = new JPanel() {
+    private final JPanel panel = new JPanel() {
         @Override
         public Dimension getPreferredSize() {
             return new Dimension(250, getHeight());
@@ -54,9 +52,9 @@ public class PanelDerecho {
     }
 
 
-    private ImageIcon resizeImage(ImageIcon imageIcon, int width, int height) {
+    private ImageIcon resizeImage(ImageIcon imageIcon) {
         Image image = imageIcon.getImage();
-        Image resizedImage = image.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+        Image resizedImage = image.getScaledInstance(100, 100, Image.SCALE_SMOOTH);
         return new ImageIcon(resizedImage);
     }
 
@@ -64,7 +62,7 @@ public class PanelDerecho {
         // Logo en la parte superior
         ImageIcon logoIcon = IconUtil.getIcon(iconName);
         assert logoIcon != null;
-        logoIcon = resizeImage(logoIcon, 100, 100);
+        logoIcon = resizeImage(logoIcon);
 
         if (logo == null) {
             logo = new JLabel(logoIcon);

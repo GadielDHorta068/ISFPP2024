@@ -6,8 +6,6 @@ import org.isfpp.modelo.Equipment;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.util.ArrayList;
@@ -18,7 +16,6 @@ import java.util.Objects;
 public class IPFrame {
     private JFrame frame;
     private JTextArea textArea;
-    private JButton scanButton;
     private List<String> direcciones;
     private Coordinator coordinator;
 
@@ -59,19 +56,16 @@ public class IPFrame {
         textArea = new JTextArea();
         textArea.setEditable(false);
         JScrollPane scrollPane = new JScrollPane(textArea);
-        scanButton = new JButton("Scan IPs");
-        scanButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                direcciones.clear();
-                try {
-                    direcciones = coordinator.scanIP(ipInicial.getText());
-                    updateTextArea();
-                } catch (Exception exception) {
-                    textArea.setText("");
-                    ipInicial.setText("");
-                    JOptionPane.showMessageDialog(frame, exception.getMessage());
-                }
+        JButton scanButton = new JButton("Scan IPs");
+        scanButton.addActionListener(e -> {
+            direcciones.clear();
+            try {
+                direcciones = coordinator.scanIP(ipInicial.getText());
+                updateTextArea();
+            } catch (Exception exception) {
+                textArea.setText("");
+                ipInicial.setText("");
+                JOptionPane.showMessageDialog(frame, exception.getMessage());
             }
         });
 

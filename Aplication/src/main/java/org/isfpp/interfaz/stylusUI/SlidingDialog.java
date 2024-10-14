@@ -32,12 +32,7 @@ public class SlidingDialog extends JDialog {
 
         JButton btnAceptar = new JButton("Aceptar");
         StylusUI.aplicarEstiloBoton(btnAceptar, true);
-        btnAceptar.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                slideOut();
-            }
-        });
+        btnAceptar.addActionListener(e -> slideOut());
 
         buttonPanel.add(btnAceptar);
         panel.add(buttonPanel, BorderLayout.SOUTH);
@@ -53,13 +48,13 @@ public class SlidingDialog extends JDialog {
 
         // Crear un temporizador para animar el deslizamiento
         Timer timer = new Timer(10, new ActionListener() {
-            private final int totalSteps = ANIMATION_DURATION / 10;
             private int step = 0;
             private final int targetY = parentFrame.getY() + (parentFrame.getHeight() - getHeight()) / 2;
             private final int startY = parentFrame.getY() + parentFrame.getHeight();
 
             @Override
             public void actionPerformed(ActionEvent e) {
+                int totalSteps = ANIMATION_DURATION / 10;
                 int yPosition = startY + (step * (targetY - startY)) / totalSteps;
                 setLocation(getX(), yPosition);
 
@@ -79,13 +74,13 @@ public class SlidingDialog extends JDialog {
     private void slideOut() {
         // Crear un temporizador para animar el deslizamiento hacia abajo
         Timer timer = new Timer(10, new ActionListener() {
-            private final int totalSteps = ANIMATION_DURATION / 10;
             private int step = 0;
             private final int startY = getY();
             private final int endY = getOwner().getY() + getOwner().getHeight();
 
             @Override
             public void actionPerformed(ActionEvent e) {
+                int totalSteps = ANIMATION_DURATION / 10;
                 int yPosition = startY + (step * (endY - startY)) / totalSteps;
                 setLocation(getX(), yPosition);
 

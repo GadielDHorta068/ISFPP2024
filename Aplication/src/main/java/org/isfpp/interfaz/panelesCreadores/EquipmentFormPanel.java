@@ -18,10 +18,6 @@ public class EquipmentFormPanel extends JPanel {
     private final JComboBox<Location> locationCombo;
     private final JComboBox<PortType> portTypeCombo;
     private final JCheckBox statusCheckBox;
-    private JTextField ipField;
-    private JButton addIpButton;
-    private DefaultListModel<String> ipListModel;
-    private JList<String> ipList;
 
     public EquipmentFormPanel(Web web) {
         JFrame frame = new JFrame("Formulario de Equipo");

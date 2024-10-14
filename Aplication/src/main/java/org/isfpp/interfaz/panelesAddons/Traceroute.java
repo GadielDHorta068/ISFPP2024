@@ -3,18 +3,13 @@ package org.isfpp.interfaz.panelesAddons;
 import org.isfpp.controller.Coordinator;
 import org.isfpp.interfaz.stylusUI.StylusUI;
 import org.isfpp.modelo.Equipment;
-import org.jgrapht.GraphIterables;
 import org.jgrapht.GraphPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Traceroute {
     private JFrame frame;
@@ -39,22 +34,19 @@ public class Traceroute {
         textArea.setEditable(false);
         JScrollPane scrollPane = new JScrollPane(textArea);
         JButton okButton = new JButton("Tracerouter");
-        okButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    textArea.setText("");
-                    Equipment e1=coordinator.getHardware().get(textE1.getText().toUpperCase());
-                    Equipment e2=coordinator.getHardware().get(textE2.getText().toUpperCase());
-                    direcciones = coordinator.traceroute(e1,e2);
-                    updateTextArea();
-                } catch (Exception exception) {
-                    textE1.setText("");
-                    textE2.setText("");
-                    textArea.setText("");
-                    JOptionPane.showMessageDialog(frame, exception.getMessage());
+        okButton.addActionListener(e -> {
+            try {
+                textArea.setText("");
+                Equipment e1=coordinator.getHardware().get(textE1.getText().toUpperCase());
+                Equipment e2=coordinator.getHardware().get(textE2.getText().toUpperCase());
+                direcciones = coordinator.traceroute(e1,e2);
+                updateTextArea();
+            } catch (Exception exception) {
+                textE1.setText("");
+                textE2.setText("");
+                textArea.setText("");
+                JOptionPane.showMessageDialog(frame, exception.getMessage());
 
-                }
             }
         });
 

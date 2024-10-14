@@ -1,11 +1,9 @@
 package org.isfpp.interfaz.panelesCreadores;
-import org.isfpp.datos.Cargar;
 import org.isfpp.interfaz.stylusUI.StylusUI;
 import org.isfpp.modelo.Web;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.IOException;
 
 public class PortTypeFormPanel extends JPanel {
     private final JTextField codeField;

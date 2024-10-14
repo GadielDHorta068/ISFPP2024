@@ -35,10 +35,9 @@ public class WireType {
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
-		if (!(obj instanceof WireType))
+		if (!(obj instanceof WireType other))
 			return false;
-		WireType other = (WireType) obj;
-		return Objects.equals(code, other.code);
+        return Objects.equals(code, other.code);
 	}
 
 	@Override

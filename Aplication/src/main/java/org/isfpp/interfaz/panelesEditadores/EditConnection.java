@@ -5,19 +5,13 @@ import org.isfpp.modelo.*;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class EditConnection extends JPanel {
-    private JComboBox<Equipment> eq1ComboBox;
-    private JComboBox<Equipment> eq2ComboBox;
-    private JComboBox<Port> port1ComboBox;
-    private JComboBox<Port> port2ComboBox;
-    private JComboBox<WireType> wireComboBox;
-    private JButton saveButton;
-    private Connection connection;
+    private final JComboBox<Equipment> eq1ComboBox;
+    private final JComboBox<Equipment> eq2ComboBox;
+    private final JComboBox<Port> port1ComboBox;
+    private final JComboBox<Port> port2ComboBox;
+    private final JComboBox<WireType> wireComboBox;
 
 
     public EditConnection(Web web, Connection c) {
@@ -46,13 +40,10 @@ public class EditConnection extends JPanel {
         StylusUI.aplicarEstiloComboBox(port1ComboBox);
         formPanel.add(port1ComboBox);
 
-        eq1ComboBox.addActionListener((new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Equipment selected1 = (Equipment) eq1ComboBox.getSelectedItem();
-                if (selected1 != null){
-                    port1ComboBox.setModel(new DefaultComboBoxModel<>(selected1.getPortsNotInUse().toArray(new Port[0])));
-                }
+        eq1ComboBox.addActionListener((e -> {
+            Equipment selected1 = (Equipment) eq1ComboBox.getSelectedItem();
+            if (selected1 != null){
+                port1ComboBox.setModel(new DefaultComboBoxModel<>(selected1.getPortsNotInUse().toArray(new Port[0])));
             }
         }));
 
@@ -72,13 +63,10 @@ public class EditConnection extends JPanel {
         StylusUI.aplicarEstiloComboBox(port2ComboBox);
         formPanel.add(port2ComboBox);
 
-        eq2ComboBox.addActionListener((new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Equipment selected2 = (Equipment) eq2ComboBox.getSelectedItem();
-                if (selected2 != null){
-                    port2ComboBox.setModel(new DefaultComboBoxModel<>(selected2.getPortsNotInUse().toArray(new Port[0])));
-                }
+        eq2ComboBox.addActionListener((e -> {
+            Equipment selected2 = (Equipment) eq2ComboBox.getSelectedItem();
+            if (selected2 != null){
+                port2ComboBox.setModel(new DefaultComboBoxModel<>(selected2.getPortsNotInUse().toArray(new Port[0])));
             }
         }));
 

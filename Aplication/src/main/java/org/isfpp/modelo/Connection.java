@@ -56,14 +56,11 @@ public class Connection {
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
-		if (!(obj instanceof Connection))
+		if (!(obj instanceof Connection other))
 			return false;
-		Connection other = (Connection) obj;
-		if ((port1.equals(other.port1) && port2.equals(other.port2))
-		|| (port1.equals(other.port2) && port2.equals(port1)))
-			return true;
-		return false;
-	}
+        return (port1.equals(other.port1) && port2.equals(other.port2))
+                || (port1.equals(other.port2) && port2.equals(port1));
+    }
 
 	@Override
 	public String toString() {

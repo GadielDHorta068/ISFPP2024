@@ -19,8 +19,6 @@ import org.isfpp.interfaz.panelesAddons.Traceroute;
 import org.isfpp.modelo.*;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 
@@ -45,53 +43,47 @@ public class BarraMenu {
         JMenuItem salirItem = new JMenuItem("Salir");
         StylusUI.styleMenuItem(salirItem);
 
-        cargarItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
+        cargarItem.addActionListener(e -> {
 
-                System.out.println("Cargar seleccionado");
-                JFileChooser fileChooser = new JFileChooser();
-                fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-                int result = fileChooser.showSaveDialog(null);
+            System.out.println("Cargar seleccionado");
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            int result = fileChooser.showSaveDialog(null);
 
-                if (result == JFileChooser.APPROVE_OPTION) {
-                    String directory = fileChooser.getSelectedFile().getAbsolutePath();
-                    System.out.println("Cargar seleccionado: " + directory);
+            if (result == JFileChooser.APPROVE_OPTION) {
+                String directory = fileChooser.getSelectedFile().getAbsolutePath();
+                System.out.println("Cargar seleccionado: " + directory);
 
-                    try {
-                        Cargar cargar = new Cargar();
-                        coordinator.setWeb(cargar.cargarRedDesdeDirectorio(directory));
-                        coordinator.updateTablas();
-                    } catch (IOException ex) {
-                        ex.printStackTrace();
-                    }
+                try {
+                    Cargar cargar = new Cargar();
+                    coordinator.setWeb(cargar.cargarRedDesdeDirectorio(directory));
+                    coordinator.updateTablas();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
                 }
             }
         });
 
-        guardarItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JFileChooser fileChooser = new JFileChooser();
-                fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-                int result = fileChooser.showSaveDialog(null);
+        guardarItem.addActionListener(e -> {
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            int result = fileChooser.showSaveDialog(null);
 
-                if (result == JFileChooser.APPROVE_OPTION) {
-                    String directory = fileChooser.getSelectedFile().getAbsolutePath();
-                    System.out.println("Guardar seleccionado: " + directory);
-                    File selectedDirectory = fileChooser.getSelectedFile().getAbsoluteFile();
-                    File dataDir = new File(selectedDirectory, "data");
-                    if (!dataDir.exists()) {
-                        dataDir.mkdirs();  // Crea la subcarpeta 'data' si no existe
-                    }
-                    System.out.println("Carpeta 'data' creada en: " + dataDir.getAbsolutePath());
+            if (result == JFileChooser.APPROVE_OPTION) {
+                String directory = fileChooser.getSelectedFile().getAbsolutePath();
+                System.out.println("Guardar seleccionado: " + directory);
+                File selectedDirectory = fileChooser.getSelectedFile().getAbsoluteFile();
+                File dataDir = new File(selectedDirectory, "data");
+                if (!dataDir.exists()) {
+                    dataDir.mkdirs();  // Crea la subcarpeta 'data' si no existe
+                }
+                System.out.println("Carpeta 'data' creada en: " + dataDir.getAbsolutePath());
 
-                    try {
-                        Guardar guardar = new Guardar();
-                        guardar.saveAll(web, directory);
-                    } catch (IOException ex) {
-                        ex.printStackTrace();
-                    }
+                try {
+                    Guardar guardar = new Guardar();
+                    guardar.saveAll(web, directory);
+                } catch (IOException ex) {
+                    ex.printStackTrace();
                 }
             }
         });
@@ -135,7 +127,7 @@ public class BarraMenu {
             Object editar = coordinator.getSelectedItem();
             if(editar instanceof Equipment eq){
                 eq.setStatus(!eq.isStatus());
-                JOptionPane op = new JOptionPane(eq.getCode() + "estado activo cambiado a " + eq.isStatus());
+              //  JOptionPane op = new JOptionPane(eq.getCode() + "estado activo cambiado a " + eq.isStatus());
                 coordinator.updateTablas();
             }
         });
@@ -155,41 +147,18 @@ public class BarraMenu {
             }
         });
 
-        agregarConItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new EditConnection(web, null);
-            }
-        });
+        agregarConItem.addActionListener(e -> new EditConnection(web, null));
 
-        agregarUbicacionItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new LocationFormPanel(web);
-                coordinator.updateTablas();
-            }
+        agregarUbicacionItem.addActionListener(e -> {
+            new LocationFormPanel(web);
+            coordinator.updateTablas();
         });
-        agregarEquipoItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new EquipmentFormPanel(web);
-            }
-        });
+        agregarEquipoItem.addActionListener(e -> new EquipmentFormPanel(web));
 
 
-        agregarPuertoItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new PortTypeFormPanel(web);
-            }
-        });
+        agregarPuertoItem.addActionListener(e -> new PortTypeFormPanel(web));
 
-        agregarUbicacionItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new LocationFormPanel(web);
-            }
-        });
+        agregarUbicacionItem.addActionListener(e -> new LocationFormPanel(web));
 
         verGrafo.addActionListener(e -> new VisualizarGrafo(web.getHardware(), web.getConnections()));
 
@@ -232,41 +201,29 @@ public class BarraMenu {
 
         herramientasMenu.add(verGrafo);
         herramientasMenu.add(traceRouter);
-        ipList.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                PingListEquipment pingListEquipment = new PingListEquipment();
-                pingListEquipment.setCoordinator(coordinator);
-                pingListEquipment.ping();
-            }
+        ipList.addActionListener(e -> {
+            PingListEquipment pingListEquipment = new PingListEquipment();
+            pingListEquipment.setCoordinator(coordinator);
+            pingListEquipment.ping();
         });
 
 
-        traceRouter.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Traceroute traceroute = new Traceroute();
-                traceroute.setCoordinator(coordinator);
-                traceroute.trace();
-            }
+        traceRouter.addActionListener(e -> {
+            Traceroute traceroute = new Traceroute();
+            traceroute.setCoordinator(coordinator);
+            traceroute.trace();
         });
-        connectionIssues.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                ConnectionIssues connection = new ConnectionIssues();
-                connection.setCoordinator(coordinator);
-                connection.scanIp();
-            }
+        connectionIssues.addActionListener(e -> {
+            ConnectionIssues connection = new ConnectionIssues();
+            connection.setCoordinator(coordinator);
+            connection.scanIp();
         });
 
 
-        ipScan.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                IPFrame ipFrame = new IPFrame();
-                ipFrame.setCoordinator(coordinator);
-                ipFrame.scanIp();
-            }
+        ipScan.addActionListener(e -> {
+            IPFrame ipFrame = new IPFrame();
+            ipFrame.setCoordinator(coordinator);
+            ipFrame.scanIp();
         });
 
         menuBar.add(editarMenu);

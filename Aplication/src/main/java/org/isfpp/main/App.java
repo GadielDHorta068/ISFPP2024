@@ -4,8 +4,6 @@ import org.isfpp.controller.Coordinator;
 import org.isfpp.datos.Cargar;
 import org.isfpp.interfaz.panelesCreadores.MainMenu;
 import org.isfpp.logica.Utils;
-import org.isfpp.modelo.Connection;
-import org.isfpp.modelo.Equipment;
 import org.isfpp.modelo.Web;
 
 import java.io.IOException;

@@ -27,7 +27,6 @@ public class PingListEquipment {
         JScrollPane scrollPane = new JScrollPane(textArea);
         direcciones=coordinator.ping();
         updateTextArea();
-        JPanel northPanel = new JPanel();
         frame.getContentPane().add(scrollPane, BorderLayout.CENTER);
         StylusUI.aplicarEstiloScrollPane(scrollPane);
         StylusUI.styleTextArea(textArea);
