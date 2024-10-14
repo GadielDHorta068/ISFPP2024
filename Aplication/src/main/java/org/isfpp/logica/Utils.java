@@ -18,10 +18,7 @@ import java.util.*;
 import java.util.stream.IntStream;
 
 public class Utils {
-
-
     private static Graph<Equipment, Connection> graph;
-    private Coordinator coordinator;
 
     public Utils() {
     }
@@ -237,7 +234,6 @@ public class Utils {
 
 
     public void setCoordinator(Coordinator coordinator) {
-        this.coordinator = coordinator;
     }
 
     public static List<PortType> convertSetToList(Set<PortType> set) {

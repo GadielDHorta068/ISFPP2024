@@ -10,18 +10,8 @@ import java.io.IOException;
 
 public class App {
 
-    // l�gica
-    private Web web;
-    private Utils utils;
-
-    // vista
-
-    private MainMenu mainMenu;
-    // controlador
-    private Coordinator coordinator;
-
     public static void main(String[] args)  {
-        Web web=null;
+        Web web;
         try {
             web = Cargar.cargarRedDesdePropiedades("config.properties");
         } catch (IOException e) {

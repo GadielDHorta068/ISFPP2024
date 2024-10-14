@@ -8,14 +8,14 @@ public class Port {
     private Boolean inUse;
     private PortType portType;
     private Equipment equipment;
-    private final String MACAdress;
+    private final String MACAddress;
 
     public Port(PortType portType, Equipment equipment) {
         super();
         setInUse(false);
         setPortType(portType);
         setEquipment(equipment);
-        MACAdress = Utils.generarMAC();
+        MACAddress = Utils.generarMAC();
     }
 
     public PortType getPortType() {
@@ -60,7 +60,7 @@ public class Port {
         return portType.toString();
     }
 
-    public String getMACAdress(){
-        return MACAdress;
+    public String getMACAddress(){
+        return MACAddress;
     }
 }

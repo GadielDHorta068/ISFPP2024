@@ -47,7 +47,7 @@ public class PanelDerecho {
             propiedades.setText("Codigo: " + lo.getCode() + "\n" + "Descripcion: " + lo.getDescription());
         } else if (e instanceof Connection con) {
             setIcon(con.getWire().getCode());
-            propiedades.setText("Equipo origen: "+ con.getPort1().getEquipment().getCode()+"\n"+ "Puerto: "+con.getPort1().getPortType().getCode() + "\n" +"MAC: " + con.getPort1().getMACAdress() +"\n"+"\n"+"Equipo Destino: " +con.getPort2().getEquipment().getCode() +"\n"+"Puerto: "+con.getPort2().getPortType().getCode()+ "\n" + "MAC: " + con.getPort2().getMACAdress());
+            propiedades.setText("Equipo origen: "+ con.getPort1().getEquipment().getCode()+"\n"+ "Puerto: "+con.getPort1().getPortType().getCode() + "\n" +"MAC: " + con.getPort1().getMACAddress() +"\n"+"\n"+"Equipo Destino: " +con.getPort2().getEquipment().getCode() +"\n"+"Puerto: "+con.getPort2().getPortType().getCode()+ "\n" + "MAC: " + con.getPort2().getMACAddress());
         }
     }
 
