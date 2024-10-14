@@ -1,6 +1,7 @@
 package org.isfpp.interfaz.panelesAddons;
 
 import com.mxgraph.layout.mxCompactTreeLayout;
+import com.mxgraph.layout.mxOrganicLayout;
 import com.mxgraph.swing.mxGraphComponent;
 import com.mxgraph.util.mxConstants;
 import com.mxgraph.view.mxGraph;
@@ -26,11 +27,11 @@ public class VisualizarGrafo extends JFrame {
     }
 
     public void Visualizar() {
-        Graph<Equipment, Connection> graph = coordinator.getGraph(); // Usar SimpleGraph para grafo no dirigido
+        Graph<Equipment, Connection> graph = coordinator.getGraph();
 
         cargarProperties();
         mxGraph mxGraph = new mxGraph();
-
+        mxGraph.setConnectableEdges(false);
         mxGraph.setCellsEditable(false);
         mxGraph.setCellsResizable(false);
         mxGraph.setCellsBendable(false);
@@ -48,15 +49,12 @@ public class VisualizarGrafo extends JFrame {
 
         try {
             HashMap<Equipment, Object> vertexMap = new HashMap<>();
-
-            // Agregar los vértices de JGraphT al grafo de JGraphX
             for (Equipment vertex : graph.vertexSet()) {
                 String vertexStyle = getVertexStyle(mxGraph, vertex);
                 Object v = mxGraph.insertVertex(parent, null, vertex.getCode(), 100, 100, 80, 80, vertexStyle);
                 vertexMap.put(vertex, v);
             }
 
-            // Agregar las aristas (conexiones) de JGraphT al grafo de JGraphX
             for (Connection edge : graph.edgeSet()) {
                 Equipment source = graph.getEdgeSource(edge);
                 Equipment target = graph.getEdgeTarget(edge);
@@ -70,9 +68,8 @@ public class VisualizarGrafo extends JFrame {
         graphComponent.getViewport().setBackground(StylusUI.COLOR_PRIMARIO);
         getContentPane().add(graphComponent);
 
-        // Aplicar un layout circular al grafo
-        mxCompactTreeLayout layout = new mxCompactTreeLayout(mxGraph);
-        layout.setHorizontal(true);
+        // Aplicar un layout orgánico al grafo
+        mxOrganicLayout layout = new mxOrganicLayout(mxGraph);
         layout.execute(mxGraph.getDefaultParent());
 
         setTitle("Visualización del Grafo");
