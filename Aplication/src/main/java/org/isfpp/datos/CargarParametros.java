@@ -16,11 +16,14 @@ public class CargarParametros {
 
     public static void parametros() throws IOException {
         Properties prop = new Properties();
-        try (InputStream input = Cargar.class.getClassLoader().getResourceAsStream("config.properties")) {
+        try  {
+            InputStream input = new FileInputStream("Aplication/src/main/resources/config.properties");
             if (input == null) {
                 throw new FileNotFoundException("Archivo de propiedades no encontrado: " + "config.properties");
-            }
+            }// load a properties file
             prop.load(input);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
         equipementFile = prop.getProperty("rs.equipment");
         connectionFile = prop.getProperty("rs.connection");

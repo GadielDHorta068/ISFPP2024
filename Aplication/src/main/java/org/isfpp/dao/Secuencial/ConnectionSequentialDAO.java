@@ -1,11 +1,10 @@
 package org.isfpp.dao.Secuencial;
 
+import org.isfpp.controller.Coordinator;
 import org.isfpp.dao.ConnectionDAO;
 import org.isfpp.dao.EquipmentDAO;
 import org.isfpp.dao.PortTypeDAO;
 import org.isfpp.dao.WireTypeDAO;
-import org.isfpp.datos.Cargar;
-import org.isfpp.datos.CargarParametros;
 import org.isfpp.modelo.Connection;
 import org.isfpp.modelo.Equipment;
 import org.isfpp.modelo.PortType;
@@ -15,6 +14,7 @@ import java.io.*;
 import java.util.*;
 
 public class ConnectionSequentialDAO implements ConnectionDAO {
+    Coordinator coordinator = new Coordinator();
     private List<Connection> list;
     private String fileName;
     private boolean update;
@@ -26,7 +26,8 @@ public class ConnectionSequentialDAO implements ConnectionDAO {
         equipments = readEquipments();
         portTypes = readPortTypes();
         wireTypes = readWireTypes();
-        fileName = CargarParametros.getconnectionFile();
+        ResourceBundle rb = ResourceBundle.getBundle("config");
+        fileName = rb.getString("rs.connection");
         update = true;
     }
 
@@ -35,12 +36,7 @@ public class ConnectionSequentialDAO implements ConnectionDAO {
         Scanner inFile = null;
 
         try {
-            System.out.println(fileName);
-            InputStream inputStream = Cargar.class.getClassLoader().getResourceAsStream(fileName);
-            if (inputStream == null) {
-                throw new FileNotFoundException("Archivo no encontrado: " + fileName);
-            }
-            inFile = new Scanner(inputStream);
+            inFile = new Scanner(new File(fileName));
             inFile.useDelimiter("\\s*;\\s*");
             while (inFile.hasNext()) {
                 Connection connection = new Connection();
@@ -49,18 +45,28 @@ public class ConnectionSequentialDAO implements ConnectionDAO {
                 connection.setWire(wireTypes.get(inFile.next()));
                 map.add(connection);
             }
-        } catch (FileNotFoundException fileNotFoundException) {
-            System.err.println("Error opening file.");
-            fileNotFoundException.printStackTrace();
         } catch (NoSuchElementException noSuchElementException) {
             System.err.println("Error in file record structure");
             noSuchElementException.printStackTrace();
         } catch (IllegalStateException illegalStateException) {
             System.err.println("Error reading from file.");
             illegalStateException.printStackTrace();
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
         } finally {
             if (inFile != null)
                 inFile.close();
+        }
+
+        try{
+            File file = new File("equipos1.txt");
+            file.setReadable(true);
+            file.setWritable(true);
+            if (file.isFile())
+                System.out.println("archivo creado: "+file.getPath());
+        } catch (Exception e) {
+            System.err.println("Error opening file.");
+            throw new RuntimeException("dada");
         }
         return map;
     }

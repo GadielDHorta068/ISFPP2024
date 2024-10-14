@@ -92,6 +92,7 @@ public class Web {
 		Equipment e = new Equipment(code, description, marca, model, portType,cantidad, equipmentType, location,status);
 		hardware.put(code, e);
 		equipmentService.insert(e);
+		coordinator.addVertex(e);
 		coordinator.updateTablas();
 		return e;
 	}
@@ -115,6 +116,7 @@ public class Web {
 
 		hardware.remove(e.getCode(), e);  // Eliminar el equipo del hardware
 		equipmentService.erase(e);
+		coordinator.eraseVertex(e);
 		coordinator.updateTablas();
 	}
 
@@ -154,6 +156,7 @@ public class Web {
 		// Agregar la conexión a la lista de conexiones
 		connections.add(connection);
 		connectionService.insert(connection);
+		coordinator.addEdge(connection);
 		coordinator.updateTablas();
 		return connection;
 	}
@@ -168,6 +171,7 @@ public class Web {
 		connection.getPort2().setInUse(false);
 		connections.remove(connection);
 		connectionService.erase(connection);
+		coordinator.eraseEdge(connection);
 		coordinator.updateTablas();
 	}
 

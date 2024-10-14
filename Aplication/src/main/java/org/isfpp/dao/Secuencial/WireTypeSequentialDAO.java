@@ -1,9 +1,7 @@
 package org.isfpp.dao.Secuencial;
 
 import org.isfpp.dao.WireTypeDAO;
-import org.isfpp.datos.Cargar;
 import org.isfpp.datos.CargarParametros;
-import org.isfpp.modelo.EquipmentType;
 import org.isfpp.modelo.WireType;
 
 import java.io.*;
@@ -13,9 +11,10 @@ public class WireTypeSequentialDAO implements WireTypeDAO {
     private Hashtable<String, WireType> map;
     private String fileName;
     private boolean update;
-
+//Aplication/src/main/resources/config.properties
     public WireTypeSequentialDAO() {
-        fileName = CargarParametros.getWireTypeFile();
+        ResourceBundle rb = ResourceBundle.getBundle("config");
+        fileName = rb.getString("rs.wireType");
         update = true;
     }
 
@@ -24,12 +23,9 @@ public class WireTypeSequentialDAO implements WireTypeDAO {
         Scanner inFile = null;
 
         try {
-            InputStream inputStream = Cargar.class.getClassLoader().getResourceAsStream(fileName);
-            if (inputStream == null) {
-                throw new FileNotFoundException("Archivo no encontrado: " + fileName);
-            }
-            inFile = new Scanner(inputStream);
+            inFile = new Scanner(new File(fileName));
             inFile.useDelimiter("\\s*;\\s*");
+
             while (inFile.hasNext()) {
                 WireType wireType = new WireType();
                 wireType.setCode(inFile.next());
@@ -38,15 +34,14 @@ public class WireTypeSequentialDAO implements WireTypeDAO {
 
                 map.put(wireType.getCode(),wireType);
             }
-        } catch (FileNotFoundException fileNotFoundException) {
-            System.err.println("Error opening file.");
-            fileNotFoundException.printStackTrace();
         } catch (NoSuchElementException noSuchElementException) {
             System.err.println("Error in file record structure");
             noSuchElementException.printStackTrace();
         } catch (IllegalStateException illegalStateException) {
             System.err.println("Error reading from file.");
             illegalStateException.printStackTrace();
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
         } finally {
             if (inFile != null)
                 inFile.close();

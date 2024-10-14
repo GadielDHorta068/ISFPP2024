@@ -160,7 +160,7 @@ public class Equipment {
     public HashMap<PortType, Integer> getAllPortsTypes() {
         HashMap<PortType, Integer> portTypes = new HashMap<>();
         for (Port port : getPorts())
-            if (portTypes.containsKey(port.getPortType()))
+            if (!portTypes.containsKey(port.getPortType()))
                 portTypes.put(port.getPortType(), countPort(port.getPortType()));
 
         return portTypes;

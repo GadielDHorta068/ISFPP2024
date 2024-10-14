@@ -2,7 +2,6 @@ package org.isfpp.dao.Secuencial;
 
 
 import org.isfpp.dao.PortTypeDAO;
-import org.isfpp.datos.Cargar;
 import org.isfpp.datos.CargarParametros;
 import org.isfpp.modelo.PortType;
 
@@ -15,7 +14,8 @@ public class PortTypeSequentialDAO implements PortTypeDAO {
     private boolean update;
 
     public PortTypeSequentialDAO() {
-        fileName = CargarParametros.getportTypeFile();
+        ResourceBundle rb = ResourceBundle.getBundle("config");
+        fileName = rb.getString("rs.portType");
         update = true;
     }
 
@@ -24,11 +24,7 @@ public class PortTypeSequentialDAO implements PortTypeDAO {
         Scanner inFile = null;
 
         try {
-            InputStream inputStream = Cargar.class.getClassLoader().getResourceAsStream(fileName);
-            if (inputStream == null) {
-                throw new FileNotFoundException("Archivo no encontrado: " + fileName);
-            }
-            inFile = new Scanner(inputStream);
+            inFile = new Scanner(new File(fileName));
             inFile.useDelimiter("\\s*;\\s*");
             while (inFile.hasNext()) {
                 PortType portType = new PortType();
@@ -37,15 +33,14 @@ public class PortTypeSequentialDAO implements PortTypeDAO {
                 portType.setSpeed(inFile.nextInt());
                 map.put(portType.getCode(),portType);
             }
-        } catch (FileNotFoundException fileNotFoundException) {
-            System.err.println("Error opening file.");
-            fileNotFoundException.printStackTrace();
         } catch (NoSuchElementException noSuchElementException) {
             System.err.println("Error in file record structure");
             noSuchElementException.printStackTrace();
         } catch (IllegalStateException illegalStateException) {
             System.err.println("Error reading from file.");
             illegalStateException.printStackTrace();
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
         } finally {
             if (inFile != null)
                 inFile.close();
