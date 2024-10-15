@@ -61,6 +61,7 @@ public class EquipmentSequentialDAO implements EquipmentDAO{
 
                 equipment.setStatus(inFile.nextBoolean());
                 map.put(equipment.getCode(),equipment);
+                System.out.println("Equipo escrito");
             }
         } catch (FileNotFoundException fileNotFoundException) {
             System.err.println("Error opening file.");

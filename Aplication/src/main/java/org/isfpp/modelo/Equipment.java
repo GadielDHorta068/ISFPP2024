@@ -17,7 +17,10 @@ public class Equipment {
 	private Location location;
 	private boolean status;
 
-    public Equipment(){}
+    public Equipment(){
+        this.ipAdresses = new ArrayList<>();
+        this.ports = new ArrayList<>();
+    }
 
     /**
      * Constructor de la clase Equipment.
