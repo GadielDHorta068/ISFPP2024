@@ -19,6 +19,7 @@ import java.util.stream.IntStream;
 
 public class Utils {
     private static Graph<Equipment, Connection> graph;
+    private Coordinator coordinator;
 
     public Utils() {
     }
@@ -75,7 +76,7 @@ public class Utils {
     public GraphPath<Equipment, DefaultWeightedEdge> traceroute(Equipment e1, Equipment e2) throws IllegalArgumentException {
 
         if (e1 == null || e2 == null) {
-            throw new IllegalArgumentException("Equipo inválido");
+            throw new IllegalArgumentException("Equipo invalido");
         }
         if (e1.equals(e2)) {
             throw new IllegalArgumentException("Equipo duplicado");
@@ -97,8 +98,10 @@ public class Utils {
 
         // Insertar vértices (equipos) activos en el grafo temporal
         for (Equipment e : graph.vertexSet()) {
-            if (e.isStatus())
+            if (e.isStatus()) {
                 graphTemp.addVertex(e);
+                equipmentMap.put(e.getCode(), e);
+            }
         }
 
         // Insertar aristas con conexiones activas
@@ -188,7 +191,7 @@ public class Utils {
 
     /**
      * Verifica si un equipo está en el grafo y si está activo.
-     * 
+     *
      * @param e1 El equipo que se desea verificar.
      * @return {@code true} si el equipo está activo, {@code false} en caso contrario.
      * @throws NotFoundException Si el equipo no se encuentra en el grafo.
@@ -201,7 +204,7 @@ public class Utils {
 
     /**
      * Verifica si una dirección IP está en el grafo.
-     * 
+     *
      * @param ip La dirección IP que se desea verificar.
      * @return {@code true} si la IP está presente en alguno de los equipos, {@code false} en caso contrario.
      */
@@ -220,7 +223,7 @@ public class Utils {
 
     /**
      * Verifica el estado de todos los equipos en el grafo.
-     * 
+     *
      * @return Un mapa que relaciona cada equipo con su estado de actividad.
      */
     public HashMap<Equipment, Boolean> ping() {
@@ -234,7 +237,7 @@ public class Utils {
 
     /**
      * Verifica si una IP es válida.
-     * 
+     *
      * @param ip La IP que se desea verificar.
      * @return {@code true} si la IP es válida, {@code false} en caso contrario.
      * @throws NumberFormatException Si un segmento de la IP no es un número válido.
@@ -256,7 +259,9 @@ public class Utils {
         return true;
     }
 
+
     public void setCoordinator(Coordinator coordinator) {
+        this.coordinator = coordinator;
     }
 
     public static List<PortType> convertSetToList(Set<PortType> set) {
@@ -265,7 +270,7 @@ public class Utils {
 
     /**
      * Escanea un rango de IPs comenzando desde la IP dada.
-     * 
+     *
      * @param ip La IP inicial para comenzar el escaneo.
      * @return Una lista de IPs válidas encontradas.
      */
@@ -277,7 +282,7 @@ public class Utils {
 
         IntStream.range(startThirdSegment, 256).forEach(j -> IntStream.range(start, 256).forEach(i -> {
             String nuevaIP = parts[0] +parts[1] + j +i;
-            System.out.println(nuevaIP);
+        //    System.out.println(nuevaIP);
             if (Utils.ping(nuevaIP)) {
                 System.out.println("encontro");
                 ipList.add(nuevaIP);
@@ -289,7 +294,7 @@ public class Utils {
 
     /**
      * Genera una dirección MAC aleatoria.
-     * 
+     *
      * @return Una dirección MAC generada aleatoriamente.
      */
     public static String generarMAC() {
@@ -309,7 +314,7 @@ public class Utils {
 
     /**
      * Verifica si todos los puertos de un equipo están ocupados.
-     * 
+     *
      * @param equipo El equipo que se desea verificar.
      * @throws NotFoundException Si el equipo tiene todos sus puertos ocupados.
      */
@@ -321,7 +326,7 @@ public class Utils {
 
     /**
      * Verifica si el equipo es un dispositivo de red.
-     * 
+     *
      * @param equipo El equipo que se desea verificar.
      * @return {@code true} si el equipo es un dispositivo de red, {@code false} en caso contrario.
      */
@@ -332,7 +337,7 @@ public class Utils {
 
     /**
      * Genera una nueva dirección IP para un equipo dentro de una red.
-     * 
+     *
      * @param equipo El equipo para el cual se desea generar la IP.
      * @param web    La red en la que se encuentra el equipo.
      * @return Una nueva IP generada para el equipo.
