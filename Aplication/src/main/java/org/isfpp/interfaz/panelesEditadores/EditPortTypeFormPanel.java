@@ -57,9 +57,8 @@ public class EditPortTypeFormPanel extends JPanel {
                 port.setCode(code);
                 port.setDescription(description);
                 port.setSpeed(portSpeed);
-
+                web.updatePortType(codeOriginal,port);
                 JOptionPane.showMessageDialog(this, "Tipo de puerto modificar con éxito");
-                web.getCoordinator().updateTablas();
                 frame.setVisible(false);
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, "Error al modificar: " + ex.getMessage());

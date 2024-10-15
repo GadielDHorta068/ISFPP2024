@@ -59,8 +59,7 @@ public class BarraMenu {
             String directory = fileChooser.getSelectedFile().getAbsolutePath();
             try {
                 Cargar cargar = new Cargar();
-                coordinator.setWeb(cargar.cargarRedDesdeDirectorio(directory));
-                coordinator.updateTablas();
+                coordinator.updateTablas(cargar.cargarRedDesdeDirectorio(directory));
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
@@ -73,6 +72,9 @@ public class BarraMenu {
         if (fileChooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
             String directory = fileChooser.getSelectedFile().getAbsolutePath();
             File dataDir = new File(fileChooser.getSelectedFile(), "data");
+            if (!dataDir.exists()) {
+                dataDir.mkdirs(); // Crea la subcarpeta 'data' si no existe
+            }
             try {
                 Guardar guardar = new Guardar();
                 guardar.saveAll(web, directory);
@@ -100,13 +102,12 @@ public class BarraMenu {
         Object seleccionado = coordinator.getSelectedItem();
         if (seleccionado != null) {
             switch (seleccionado) {
-                case Equipment equipment -> web.eraseEquipment(equipment);
-                case Location location -> web.eraseLocation(location);
-                case PortType puerto -> web.erasePort(puerto);
-                case Connection connection -> web.eraseConnection(connection);
+                case Equipment equipment -> coordinator.eraseEquipment(equipment);
+                case Location location -> coordinator.eraseLocation(location);
+                case PortType puerto -> coordinator.erasePort(puerto);
+                case Connection connection -> coordinator.eraseConnection(connection);
                 default -> System.out.println("Clase no detectada: " + seleccionado.getClass());
             }
-            coordinator.updateTablas();
         }
     }
 
@@ -126,9 +127,9 @@ public class BarraMenu {
     private JMenu crearAyudaMenu() {
         JMenu ayudaMenu = new JMenu("Ayuda");
         StylusUI.styleMenu(ayudaMenu);
-
-        ayudaMenu.add(crearMenuItem("Como Usar", e -> abrirManual()));
-        ayudaMenu.add(crearMenuItem("Acerca de", e -> acercaDe()));
+        
+        ayudaMenu.add(crearMenuItem("Como Usar" , e -> abrirManual()));
+        ayudaMenu.add(crearMenuItem("Acerca de" , e -> acercaDe()));
         return ayudaMenu;
     }
 
@@ -184,6 +185,7 @@ public class BarraMenu {
     }
 
 
+
     private JMenu crearHerramientasMenu() {
         JMenu herramientasMenu = new JMenu("Herramientas");
         StylusUI.styleMenu(herramientasMenu);
@@ -191,18 +193,16 @@ public class BarraMenu {
         herramientasMenu.add(crearMenuItem("Ping en rango", e -> iniciarPing()));
         herramientasMenu.add(crearMenuItem("Equipos Activos", e -> iniciarPingEquipos()));
         herramientasMenu.add(crearMenuItem("Conexiones", e -> iniciarConnectionIssues()));
-        herramientasMenu.add(crearMenuItem("On/Off Equipo", e -> cambiarEstado()));
-        herramientasMenu.add(crearMenuItem("Visualizar Grafo", e -> new VisualizarGrafo(web.getHardware(), web.getConnections())));
+        herramientasMenu.add(crearMenuItem("Visualizar Grafo", e ->   iniciarVerGrafo()));
         herramientasMenu.add(crearMenuItem("Traceroute", e -> iniciarTraceroute()));
 
         return herramientasMenu;
     }
 
-    private void cambiarEstado() {
-        if (coordinator.getSelectedItem() instanceof Equipment eq) {
-            eq.setStatus(!eq.isStatus());
-            coordinator.updateTablas();
-        }
+    private void iniciarVerGrafo() {
+        VisualizarGrafo visualizarGrafo=new VisualizarGrafo();
+        visualizarGrafo.setCoordinator(coordinator);
+        visualizarGrafo.Visualizar();
     }
 
     private void iniciarPing() {

@@ -11,6 +11,7 @@ public class EditEquipmentFormPanel extends JPanel {
     private final JTextField descriptionField;
     private final JTextField marcaField;
     private final JTextField modeloField;
+    private final JTextField capacidadField;
     private final JComboBox<EquipmentType> equipmentTypeCombo;
     private final JComboBox<Location> locationCombo;
     private final JComboBox<PortType> portTypeCombo;
@@ -77,7 +78,13 @@ public class EditEquipmentFormPanel extends JPanel {
         portTypeCombo = new JComboBox<>(web.getPortTypes().values().toArray(new PortType[0]));
         StylusUI.aplicarEstiloComboBox(portTypeCombo);
         formPanel.add(portTypeCombo);
-
+        JLabel capacidad = new JLabel("Capacidad puerto");
+        StylusUI.aplicarEstiloEtiqueta(capacidad);
+        formPanel.add(capacidad);
+        capacidadField = new JTextField(eq.getCode());
+        StylusUI.aplicarEstiloCampoTexto(capacidadField);
+        formPanel.add(capacidadField);
+        
         JLabel estado = new JLabel("Estado (Activo)");
         StylusUI.aplicarEstiloEtiqueta(estado);
         formPanel.add(estado);
@@ -103,16 +110,10 @@ public class EditEquipmentFormPanel extends JPanel {
             boolean status = statusCheckBox.isSelected();
 
             try {
-                eq.setCode(code);
-                eq.setDescription(description);
-                eq.setMake(marca);
-                eq.setModel(modelo);
-                eq.setEquipmentType(equipmentType);
-                eq.setLocation(location);
-                eq.setStatus(status);
+                web.updateEquipment(codeOriginal,new Equipment(code,description,marca,modelo,portType,Integer.parseInt(capacidadField.getText()),equipmentType,location,status));
 
                 JOptionPane.showMessageDialog(this, "Equipo modificado con éxito");
-                web.getCoordinator().updateTablas();
+                web.getCoordinator().updateTablas(web);
                 frame.setVisible(false);
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, "Error al mod equipo: " + ex.getMessage());

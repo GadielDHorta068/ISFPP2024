@@ -1,10 +1,7 @@
 
 package org.isfpp.modelo;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 
 import org.isfpp.Service.*;
@@ -93,7 +90,7 @@ public class Web {
 		Equipment e = new Equipment(code, description, marca, model, portType,cantidad, equipmentType, location,status);
 		hardware.put(code, e);
 		equipmentService.insert(e);
-		coordinator.updateTablas();
+		coordinator.updateTablas(this);
 		return e;
 	}
 
@@ -101,7 +98,6 @@ public class Web {
 		if (!hardware.containsKey(e.getCode())) {
 			throw new NotFoundException("equipo invalido");
 		}
-
 		Iterator<Connection> iterator = connections.iterator();
 		while (iterator.hasNext()) {
 			Connection c = iterator.next();
@@ -116,16 +112,9 @@ public class Web {
 
 		hardware.remove(e.getCode(), e);  // Eliminar el equipo del hardware
 		equipmentService.erase(e);
-		coordinator.updateTablas();
+		coordinator.updateTablas(this);
 	}
 
-	public void updateEquipment(Equipment equipment) {
-		if (!hardware.containsKey(equipment.getCode()))
-			throw new NotFoundException("equipo invalido");
-		hardware.replace(equipment.getCode(), equipment);
-		equipmentService.update(equipment);
-		coordinator.updateTablas();
-	}
 
 	public Equipment searchEquipment(Equipment equipment) {
 		return hardware.get(equipment.getCode());
@@ -155,7 +144,7 @@ public class Web {
 		// Agregar la conexión a la lista de conexiones
 		connections.add(connection);
 		connectionService.insert(connection);
-		coordinator.updateTablas();
+		coordinator.updateTablas(this);
 		return connection;
 	}
 
@@ -169,18 +158,9 @@ public class Web {
 		connection.getPort2().setInUse(false);
 		connections.remove(connection);
 		connectionService.erase(connection);
-		coordinator.updateTablas();
+		coordinator.updateTablas(this);
 	}
 
-	public void updateConnection(Connection connection){
-		if (!connections.contains(connection))
-			throw new NotFoundException("Conexion no entrada");
-
-		int index = connections.indexOf(connection);
-		connections.set(index,connection);
-		connectionService.update(connection);
-		coordinator.updateTablas();
-	}
 
 	public Connection searchConnection(Connection connection){
 		return connections.get(connections.indexOf(connection));
@@ -204,7 +184,7 @@ public class Web {
 		Location l = new Location(code, description);
 		locations.put(code, l);
 		locationService.insert(l);
-		coordinator.updateTablas();
+		coordinator.updateTablas(this);
 		return l;
 	}
 
@@ -220,17 +200,9 @@ public class Web {
 			JOptionPane.showMessageDialog(null,"Hay equipos que dependen de la ubicacion", "Error de dependencia", JOptionPane.INFORMATION_MESSAGE);
 		locations.remove(l.getCode(), l);
 		locationService.erase(l);
-		coordinator.updateTablas();
+		coordinator.updateTablas(this);
 	}
 
-	public void updateLocation(Location l){
-		if (!locations.containsKey(l.getCode()))
-			throw new NotFoundException("la ubicacion no se pudo encontrar");
-
-		locations.replace(l.getCode(),l);
-		locationService.update(l);
-		coordinator.updateTablas();
-	}
 
 	public Location searchLocation(Location location){
 		return locations.get(location.getCode());
@@ -251,7 +223,7 @@ public class Web {
 		WireType w=new WireType(code,description,speed);
 		wireTypes.put(code,w);
 		wireTypeService.insert(w);
-		coordinator.updateTablas();
+		coordinator.updateTablas(this);
 		return w;
 	}
 
@@ -267,7 +239,7 @@ public class Web {
 			throw new IllegalStateException("las siguientes conexiones tienen ese tipo de cable" + codes);
 		wireTypes.remove(w.getCode(),w);
 		wireTypeService.erase(w);
-		coordinator.updateTablas();
+		coordinator.updateTablas(this);
 	}
 
 	public void updateWire(WireType wireType){
@@ -276,7 +248,7 @@ public class Web {
 
 		wireTypes.replace(wireType.getCode(),wireType);
 		wireTypeService.update(wireType);
-		coordinator.updateTablas();
+		coordinator.updateTablas(this);
 	}
 
 	public WireType searchWire (WireType wireType){
@@ -294,7 +266,7 @@ public class Web {
 		PortType p=new PortType(code,description,speed);
 		portTypes.put(code,p);
 		portTypeService.insert(p);
-		coordinator.updateTablas();
+		coordinator.updateTablas(this);
 		return p;
 	}
 
@@ -310,7 +282,7 @@ public class Web {
 			throw new IllegalStateException("Hay equipos que usan ese tipo de puertos: " + codes);
 		portTypes.remove(portType.getCode(),portType);
 		portTypeService.erase(portType);
-		coordinator.updateTablas();
+		coordinator.updateTablas(this);
 	}
 
 	public void updatePort(PortType portType){
@@ -319,7 +291,7 @@ public class Web {
 
 		portTypes.replace(portType.getCode(),portType);
 		portTypeService.update(portType);
-		coordinator.updateTablas();
+		coordinator.updateTablas(this);
 	}
 
 	public PortType searchPortType(PortType portType){
@@ -337,7 +309,7 @@ public class Web {
 		EquipmentType e=new EquipmentType(code,description);
 		equipmentTypes.put(code,e);
 		equipmentTypeService.insert(e);
-		coordinator.updateTablas();
+		coordinator.updateTablas(this);
 		return e;
 	}
 
@@ -354,17 +326,9 @@ public class Web {
 
 		equipmentTypes.remove(equipmentType.getCode(),equipmentType);
 		equipmentTypeService.erase(equipmentType);
-		coordinator.updateTablas();
+		coordinator.updateTablas(this);
 	}
 
-	public void updateEquipmentType(EquipmentType equipmentType){
-		if (equipmentTypes.containsKey(equipmentType.getCode()))
-			throw new NotFoundException("No se pudo encontrar el tipo de equipo");
-
-		equipmentTypes.replace(equipmentType.getCode(),equipmentType);
-		equipmentTypeService.update(equipmentType);
-		coordinator.updateTablas();
-	}
 
 	public EquipmentType searchEquipmentType(EquipmentType equipmentType){
 		return equipmentTypes.get(equipmentType);
@@ -395,6 +359,85 @@ public class Web {
 				", portTypes=" + portTypes +
 				'}';
 	}
+
+	public void updatePortType(String originalCode,PortType updatedPort) {
+		// Verificar si el código ya existe en el mapa
+		if (!portTypes.containsKey(updatedPort.getCode()) && !Objects.equals(updatedPort.getCode(), originalCode)) {
+			throw new NotFoundException("El tipo de puerto con código " + originalCode + " ya existe.");
+		}
+		if(Objects.equals(updatedPort.getCode(), originalCode)){
+			portTypeService.update(updatedPort);
+		}
+		else {
+			portTypeService.erase(portTypes.get(originalCode));
+			portTypeService.insert(updatedPort);
+			portTypes.remove(originalCode);
+		}
+
+		portTypes.put(updatedPort.getCode(), updatedPort);
+
+		coordinator.updateTablas(this);
+	}
+	public void updateEquipmentType(String originalCode,EquipmentType updateEquipmentType){
+		if (equipmentTypes.containsKey(updateEquipmentType.getCode()) && !Objects.equals(originalCode,updateEquipmentType.getCode()))
+			throw new NotFoundException("No se pudo encontrar el tipo de equipo");
+		if(Objects.equals(updateEquipmentType.getCode(), originalCode)){
+			equipmentTypeService.update(updateEquipmentType);
+		}
+		else {
+			equipmentTypeService.erase(equipmentTypes.get(originalCode));
+			equipmentTypeService.insert(updateEquipmentType);
+			equipmentTypes.remove(originalCode);
+		}
+		equipmentTypes.put(updateEquipmentType.getCode(),updateEquipmentType);
+		coordinator.updateTablas(this);
+	}
+	public void updateConnection(Connection originalConnection,Connection updateConnection){
+		if (connections.contains(updateConnection) && !originalConnection.equals(updateConnection))
+			throw new NotFoundException("ya existe esa conexion");
+		if(originalConnection.equals(updateConnection)){
+			connectionService.update(updateConnection);
+		}
+		else {
+			connectionService.erase(originalConnection);
+			connectionService.insert(updateConnection);
+		}
+		connections.remove(originalConnection);
+		connections.add(updateConnection);
+		coordinator.updateTablas(this);
+
+
+
+	}
+	public void updateEquipment(String codeOriginal, Equipment updateEquipment) {
+		if (!hardware.containsKey(updateEquipment.getCode())&& !codeOriginal.equals(updateEquipment.getCode()))
+			throw new NotFoundException("Ese codigo ya existe");
+		if(codeOriginal.equals(updateEquipment.getCode())){
+			equipmentService.update(updateEquipment);
+		}
+		else {
+			equipmentService.erase(hardware.get(codeOriginal));
+			equipmentService.insert(updateEquipment);
+			hardware.remove(codeOriginal);
+		}
+		hardware.replace(updateEquipment.getCode(),updateEquipment);
+		coordinator.updateTablas(this);
+	}
+	public void updateLocation(String codeOriginal, Location updateLocation){
+		if (!locations.containsKey(updateLocation.getCode()) && !codeOriginal.equals(updateLocation.getCode()))
+			throw new NotFoundException("localizacion ya extiste");
+		if(codeOriginal.equals(updateLocation.getCode())){
+			locationService.update(updateLocation);
+		}
+		else {
+			locationService.erase(locations.get(codeOriginal));
+			locationService.insert(updateLocation);
+			locations.remove(codeOriginal);
+		}
+		locations.put(updateLocation.getCode(),updateLocation);
+		coordinator.updateTablas(this);
+	}
+
 
 
 }

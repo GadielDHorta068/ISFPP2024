@@ -118,7 +118,6 @@ public class EquipmentFormPanel extends JPanel {
             try {
                 web.addEquipment(code, description, marca, modelo, portType, 1, equipmentType, location, status);
                 JOptionPane.showMessageDialog(this, "Equipo creado con éxito");
-                web.getCoordinator().updateTablas();
                 frame.setVisible(false);
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, "Error al crear equipo: " + ex.getMessage());

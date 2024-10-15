@@ -19,6 +19,7 @@ import java.util.stream.IntStream;
 
 public class Utils {
     private static Graph<Equipment, Connection> graph;
+    private Coordinator coordinator;
 
     public Utils() {
     }
@@ -52,6 +53,9 @@ public class Utils {
             if (!graph.containsEdge(sourceNode, targetNode))
                 graph.addEdge(sourceNode, targetNode, c);
         }
+        coordinator.setGraph(graph);
+        coordinator.setWeb(web);
+        System.out.println("Actualizado");
 
 
     }
@@ -256,7 +260,7 @@ public class Utils {
         return true;
     }
 
-    public void setCoordinator(Coordinator coordinator) {
+    public void setCoordinator(Coordinator coordinator) {this.coordinator=coordinator;
     }
 
     public static List<PortType> convertSetToList(Set<PortType> set) {

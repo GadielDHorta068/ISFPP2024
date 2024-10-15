@@ -25,9 +25,8 @@ public class VisualizarGrafo extends JFrame {
 
     public VisualizarGrafo() throws HeadlessException {
     }
-
     public void Visualizar() {
-        Graph<Equipment, Connection> graph = coordinator.getGraph();
+        Graph<Equipment, Connection> graph = coordinator.getGraph(); // Usar SimpleGraph para grafo no dirigido
 
         cargarProperties();
         mxGraph mxGraph = new mxGraph();
@@ -49,12 +48,15 @@ public class VisualizarGrafo extends JFrame {
 
         try {
             HashMap<Equipment, Object> vertexMap = new HashMap<>();
+
+            // Agregar los vértices de JGraphT al grafo de JGraphX
             for (Equipment vertex : graph.vertexSet()) {
                 String vertexStyle = getVertexStyle(mxGraph, vertex);
                 Object v = mxGraph.insertVertex(parent, null, vertex.getCode(), 100, 100, 80, 80, vertexStyle);
                 vertexMap.put(vertex, v);
             }
 
+            // Agregar las aristas (conexiones) de JGraphT al grafo de JGraphX
             for (Connection edge : graph.edgeSet()) {
                 Equipment source = graph.getEdgeSource(edge);
                 Equipment target = graph.getEdgeTarget(edge);
@@ -64,13 +66,16 @@ public class VisualizarGrafo extends JFrame {
             mxGraph.getModel().endUpdate();
         }
 
+
         mxGraphComponent graphComponent = new mxGraphComponent(mxGraph);
         graphComponent.getViewport().setBackground(StylusUI.COLOR_PRIMARIO);
         getContentPane().add(graphComponent);
 
-        // Aplicar un layout orgánico al grafo
+        // Aplicar un layout orgánico al grafo (evita que se superpongan los nodos)
         mxOrganicLayout layout = new mxOrganicLayout(mxGraph);
         layout.execute(mxGraph.getDefaultParent());
+
+
 
         setTitle("Visualización del Grafo");
         setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);

@@ -378,12 +378,14 @@ public class Coordinator {
     /**
      * Actualiza las tablas de la interfaz.
      */
-    public void updateTablas() {
+
+    public void updateTablas(Web w1) {
+        this.LoadData(w1);
         for (DesplegableComponent tabla : tablas) {
             tabla.updateTable();
-            LoadData(web);
         }
     }
+
 
     /**
      * Agrega un componente desplegable a las tablas.

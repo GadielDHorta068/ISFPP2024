@@ -43,14 +43,9 @@ public class EditLocationFormPanel extends JPanel {
         add(createButton, BorderLayout.SOUTH);
 
         createButton.addActionListener(e -> {
-            String code = codeField.getText();
-            String description = descriptionField.getText();
-
             try {
-                loc.setCode(code);
-                loc.setDescription(description);
+                web.updateLocation(codeOriginial,new Location(codeField.getText(),descriptionField.getText()));
                 JOptionPane.showMessageDialog(this, "Ubicacion modificado con éxito");
-                web.getCoordinator().updateTablas();
                 frame.setVisible(false);
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, "Error modificar: " + ex.getMessage());
