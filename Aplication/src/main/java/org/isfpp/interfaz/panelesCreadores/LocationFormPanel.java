@@ -50,7 +50,7 @@ public class LocationFormPanel extends JPanel {
                 JOptionPane.showMessageDialog(this, "Ubicacion creado con éxito");
                 frame.setVisible(false);
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this, STR."Error al crear equipo: \{ex.getMessage()}");
+                JOptionPane.showMessageDialog(this, "Error al crear equipo: "+ex.getMessage());
             }
         });
 

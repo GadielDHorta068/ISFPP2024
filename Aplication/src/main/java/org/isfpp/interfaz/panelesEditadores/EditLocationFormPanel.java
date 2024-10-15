@@ -52,7 +52,7 @@ public class EditLocationFormPanel extends JPanel {
                 web.getCoordinator().updateTablas();
                 frame.setVisible(false);
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this, STR."Error modificar: \{ex.getMessage()}");
+                JOptionPane.showMessageDialog(this, "Error modificar: "+ex.getMessage());
             }
         });
 

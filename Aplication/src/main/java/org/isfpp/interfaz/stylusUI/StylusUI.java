@@ -17,7 +17,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 
-import static java.lang.StringTemplate.STR;
 
 public class StylusUI {
     // Colores oscuros inspirados en Material UI, IOS , Ubuntu
@@ -255,10 +254,10 @@ public class StylusUI {
                 clip.open(audioInputStream);
                 clip.start();
             } else {
-                System.err.println(STR."Archivo de sonido no encontrado: \{StylusUI.NAME_BUTTON_SOUND}");
+                System.err.println("Archivo de sonido no encontrado: " +StylusUI.NAME_BUTTON_SOUND);
             }
         } catch (Exception e) {
-            System.err.println(STR."Error al reproducir el sonido: \{e.getMessage()}");
+            System.err.println("Error al reproducir el sonido: "+e.getMessage());
         }
     }
 
@@ -469,13 +468,13 @@ public class StylusUI {
      */
     private static void configurarRickrolleo(){
         Thread.setDefaultUncaughtExceptionHandler((thread, throwable) -> {
-            System.err.println(STR."Se ha producido una excepci�n no manejada: \{throwable.getMessage()}");
+            System.err.println("Se ha producido una excepci�n no manejada: "+throwable.getMessage());
             try {
                 if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
                     Desktop.getDesktop().browse(new URI("https://www.youtube.com/watch?v=dQw4w9WgXcQ"));
                 }
             } catch (IOException | URISyntaxException e) {
-                System.err.println(STR."Error al intentar abrir el enlace: \{e.getMessage()}");
+                System.err.println("Error al intentar abrir el enlace: "+e.getMessage());
             }
         });
     }

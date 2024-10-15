@@ -31,7 +31,7 @@ public class DesplegableComponent<T> {
         isExpanded = !isExpanded;
         table.setVisible(isExpanded);
         table.getTableHeader().setVisible(isExpanded);
-        toggleButton.setText(isExpanded ? STR."▼ \{toggleButton.getText().substring(2)}" : "▶ " + toggleButton.getText().substring(2));
+        toggleButton.setText(isExpanded ? ("▼ " + toggleButton.getText().substring(2)) : "▶ " + toggleButton.getText().substring(2));
         panel.revalidate();
         panel.repaint();
     }
@@ -117,7 +117,7 @@ public class DesplegableComponent<T> {
         panel = new JPanel();
         panel.setLayout(new BorderLayout());
 
-        toggleButton = new JButton(STR."▶ \{titulo}");
+        toggleButton = new JButton("▶ " +titulo);
         StylusUI.aplicarEstiloBoton(toggleButton, false);
         toggleButton.setHorizontalAlignment(SwingConstants.LEFT);
         //toggleButton.addActionListener(e -> toggle());
@@ -138,7 +138,7 @@ public class DesplegableComponent<T> {
                     data[i][2] = location;
                 }
                 case Connection connection -> {
-                    data[i][0] = STR."\{((Connection) item).getPort1().getPortType().getCode()} - \{((Connection) item).getPort2().getPortType().getCode()}";
+                    data[i][0] = ((Connection) item).getPort1().getPortType().getCode()+ "-" + ((Connection) item).getPort2().getPortType().getCode();
                     data[i][1] = connection.getWire().getDescription();
                     data[i][2] = item;
                 }

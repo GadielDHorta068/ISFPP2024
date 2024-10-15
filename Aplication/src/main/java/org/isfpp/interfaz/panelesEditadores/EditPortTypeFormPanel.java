@@ -61,7 +61,7 @@ public class EditPortTypeFormPanel extends JPanel {
                 web.getCoordinator().updateTablas();
                 frame.setVisible(false);
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this, STR."Error al modificar: \{ex.getMessage()}");
+                JOptionPane.showMessageDialog(this, "Error al modificar: " +ex.getMessage());
             }
         });
         frame.add(this);

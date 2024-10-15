@@ -244,7 +244,7 @@ public class Utils {
 
         IntStream.range(startThirdSegment, 256).forEach(j -> {
             IntStream.range(start, 256).forEach(i -> {
-                String nuevaIP = STR."\{parts[0]}.\{parts[1]}.\{j}.\{i}";
+                String nuevaIP = parts[0]+parts[1]+j+i;
                 System.out.println(nuevaIP);
                 if (Utils.ping(nuevaIP)) {
                     System.out.println("encontro");

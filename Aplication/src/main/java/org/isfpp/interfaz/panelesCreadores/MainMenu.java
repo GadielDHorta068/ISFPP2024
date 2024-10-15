@@ -1,6 +1,7 @@
 package org.isfpp.interfaz.panelesCreadores;
 
 import org.isfpp.controller.Coordinator;
+import org.isfpp.datos.ResourceExtractor;
 import org.isfpp.interfaz.panelesPrincipal.BarraMenu;
 import org.isfpp.interfaz.panelesPrincipal.DesplegableComponent;
 import org.isfpp.interfaz.panelesPrincipal.PanelDerecho;
@@ -25,6 +26,7 @@ public class MainMenu {
     }
     public void components(Web web){
         StylusUI.inicializar(false);
+        ResourceExtractor.extractResourcesToExecutionDir();
         PanelDerecho panelDerecho = new PanelDerecho();
 
         DesplegableComponent<Equipment> desplegableNodos = new DesplegableComponent<>();

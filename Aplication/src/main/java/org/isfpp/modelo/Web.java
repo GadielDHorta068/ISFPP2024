@@ -260,7 +260,7 @@ public class Web {
 		List<String> codes = new ArrayList<>();
 		for (Connection connection : connections) {
 			if(connection.getWire().equals(w))
-				codes.add(STR."\{connection.getPort1().getEquipment().getCode()}<->\{connection.getPort2().getEquipment().getCode()}");
+				codes.add(connection.getPort1().getEquipment().getCode() + "<->" +connection.getPort2().getEquipment().getCode());
 		}
 		if (!codes.isEmpty())
 			throw new IllegalStateException("las siguientes conexiones tienen ese tipo de cable" + codes);
