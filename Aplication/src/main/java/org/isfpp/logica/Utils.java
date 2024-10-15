@@ -261,6 +261,7 @@ public class Utils {
     }
 
     public void setCoordinator(Coordinator coordinator) {
+        this.coordinator = coordinator;
     }
 
     public static List<PortType> convertSetToList(Set<PortType> set) {
