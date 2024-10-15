@@ -1,9 +1,10 @@
 package org.isfpp.datos;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
+import com.sun.tools.javac.Main;
+import org.isfpp.logica.ObtenerRuta;
+import org.isfpp.logica.RutaUtil;
+
+import java.io.*;
 import java.util.Properties;
 
 /**
@@ -16,6 +17,7 @@ public class CargarParametros {
     private static String equipementTypeFile;
     private static String portTypeFile;
     private static String locationFile;
+    private static String directorio;
 
     /**
      * Método para cargar los parámetros de configuración.
@@ -30,13 +32,14 @@ public class CargarParametros {
             }
             prop.load(input);
         }
-        equipementFile = prop.getProperty("rs.equipment");
-        System.out.println(convertToAbsolutePath(equipementFile));
-        connectionFile = prop.getProperty("rs.connection");
-        wireTypeFile = prop.getProperty("rs.wireType");
-        equipementTypeFile = prop.getProperty("rs.equipmentType");
-        portTypeFile = prop.getProperty("rs.portType");
-        locationFile = prop.getProperty("rs.location");
+        directorio = ObtenerRuta.obtenerRutaBase();
+
+        equipementFile = RutaUtil.corregirRuta(directorio,prop.getProperty("rs.equipment"));
+        connectionFile = RutaUtil.corregirRuta(directorio,prop.getProperty("rs.connection"));
+        wireTypeFile = RutaUtil.corregirRuta(directorio,prop.getProperty("rs.wireType"));
+        equipementTypeFile = RutaUtil.corregirRuta(directorio,prop.getProperty("rs.equipmentType"));
+        portTypeFile = RutaUtil.corregirRuta(directorio,prop.getProperty("rs.portType"));
+        locationFile = RutaUtil.corregirRuta(directorio,prop.getProperty("rs.location"));
     }
 
     /**

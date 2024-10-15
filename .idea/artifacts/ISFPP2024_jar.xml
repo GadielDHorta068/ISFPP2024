@@ -8,6 +8,8 @@
       <element id="module-output" name="Aplication" />
       <element id="module-source" name="Aplication" />
       <element id="library" level="application" name="jgraphx (2)" />
+      <element id="dir-copy" path="$PROJECT_DIR$" />
+      <element id="library" level="project" name="jgraphx" />
     </root>
   </artifact>
 </component>

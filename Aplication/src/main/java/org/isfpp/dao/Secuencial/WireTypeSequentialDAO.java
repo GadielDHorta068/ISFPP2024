@@ -1,9 +1,7 @@
 package org.isfpp.dao.Secuencial;
 
 import org.isfpp.dao.WireTypeDAO;
-import org.isfpp.datos.Cargar;
 import org.isfpp.datos.CargarParametros;
-import org.isfpp.modelo.EquipmentType;
 import org.isfpp.modelo.WireType;
 
 import java.io.*;
@@ -24,11 +22,8 @@ public class WireTypeSequentialDAO implements WireTypeDAO {
         Scanner inFile = null;
 
         try {
-            InputStream inputStream = Cargar.class.getClassLoader().getResourceAsStream(fileName);
-            if (inputStream == null) {
-                throw new FileNotFoundException("Archivo no encontrado: " + fileName);
-            }
-            inFile = new Scanner(inputStream);
+            File file = new File(fileName); // Cargar el archivo directamente
+            inFile = new Scanner(file);
             inFile.useDelimiter("\\s*;\\s*");
             while (inFile.hasNext()) {
                 WireType wireType = new WireType();
@@ -36,7 +31,7 @@ public class WireTypeSequentialDAO implements WireTypeDAO {
                 wireType.setDescription(inFile.next());
                 wireType.setSpeed(inFile.nextInt());
 
-                map.put(wireType.getCode(),wireType);
+                map.put(wireType.getCode(), wireType);
             }
         } catch (FileNotFoundException fileNotFoundException) {
             System.err.println("Error opening file.");
@@ -48,32 +43,33 @@ public class WireTypeSequentialDAO implements WireTypeDAO {
             System.err.println("Error reading from file.");
             illegalStateException.printStackTrace();
         } finally {
-            if (inFile != null)
+            if (inFile != null) {
                 inFile.close();
+            }
         }
         return map;
     }
 
-    private void writeToFile(Hashtable<String,WireType> wireTypeMap, String fileName) {
+    private void writeToFile(Hashtable<String, WireType> wireTypeMap, String fileName) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, false))) {
-            for (WireType wireType: wireTypeMap.values()) {
+            for (WireType wireType : wireTypeMap.values()) {
                 writer.write(String.format("%s;%s;%s;\n", wireType.getCode(), wireType.getDescription(), wireType.getSpeed()));
             }
-            } catch (IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
     @Override
     public void insert(WireType wireType) {
-        map.put(wireType.getCode(),wireType);
-        writeToFile(map,fileName);
+        map.put(wireType.getCode(), wireType);
+        writeToFile(map, fileName);
         update = true;
     }
 
     @Override
     public void update(WireType wireType) {
-        map.replace(wireType.getCode(),wireType);
+        map.replace(wireType.getCode(), wireType);
         update = true;
     }
 
@@ -85,7 +81,7 @@ public class WireTypeSequentialDAO implements WireTypeDAO {
     }
 
     @Override
-    public Hashtable<String,WireType> searchAll() {
+    public Hashtable<String, WireType> searchAll() {
         if (update) {
             map = readFromFile(fileName);
             update = false;

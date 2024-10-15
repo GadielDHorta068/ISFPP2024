@@ -4,7 +4,6 @@ import org.isfpp.dao.ConnectionDAO;
 import org.isfpp.dao.EquipmentDAO;
 import org.isfpp.dao.PortTypeDAO;
 import org.isfpp.dao.WireTypeDAO;
-import org.isfpp.datos.Cargar;
 import org.isfpp.datos.CargarParametros;
 import org.isfpp.modelo.Connection;
 import org.isfpp.modelo.Equipment;
@@ -26,28 +25,24 @@ public class ConnectionSequentialDAO implements ConnectionDAO {
         equipments = readEquipments();
         portTypes = readPortTypes();
         wireTypes = readWireTypes();
-        fileName = CargarParametros.getconnectionFile();
+        fileName = CargarParametros.getconnectionFile(); // Ruta del archivo
         update = true;
     }
 
     private List<Connection> readFromFile(String fileName) {
-        List<Connection> map = new ArrayList<>();
+        List<Connection> connections = new ArrayList<>();
         Scanner inFile = null;
 
         try {
-            System.out.println(fileName);
-            InputStream inputStream = Cargar.class.getClassLoader().getResourceAsStream(fileName);
-            if (inputStream == null) {
-                throw new FileNotFoundException("Archivo no encontrado: " + fileName);
-            }
-            inFile = new Scanner(inputStream);
+            File file = new File(fileName); // Carga el archivo directamente
+            inFile = new Scanner(file);
             inFile.useDelimiter("\\s*;\\s*");
             while (inFile.hasNext()) {
                 Connection connection = new Connection();
                 connection.setPort1(equipments.get(inFile.next()).checkPort(portTypes.get(inFile.next())));
                 connection.setPort2(equipments.get(inFile.next()).checkPort(portTypes.get(inFile.next())));
                 connection.setWire(wireTypes.get(inFile.next()));
-                map.add(connection);
+                connections.add(connection);
             }
         } catch (FileNotFoundException fileNotFoundException) {
             System.err.println("Error opening file.");
@@ -59,49 +54,47 @@ public class ConnectionSequentialDAO implements ConnectionDAO {
             System.err.println("Error reading from file.");
             illegalStateException.printStackTrace();
         } finally {
-            if (inFile != null)
+            if (inFile != null) {
                 inFile.close();
+            }
         }
-        return map;
+        return connections;
     }
 
     private void writeToFile(List<Connection> connectionList, String fileName) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, false))) {
-            for (Connection connection: connectionList) {
-                writer.write(String.format("%s;%s;%s;%s;%s;\n", connection.getPort1().getEquipment().getCode(), connection.getPort1().getPortType().getCode(),
-                        connection.getPort2().getEquipment().getCode(), connection.getPort2().getPortType().getCode(),
+            for (Connection connection : connectionList) {
+                writer.write(String.format("%s;%s;%s;%s;%s;\n",
+                        connection.getPort1().getEquipment().getCode(),
+                        connection.getPort1().getPortType().getCode(),
+                        connection.getPort2().getEquipment().getCode(),
+                        connection.getPort2().getPortType().getCode(),
                         connection.getWire().getCode()));
-
-                writer.newLine();  // Escribir salto de línea después de cada línea
             }
-        }catch (FileNotFoundException fileNotFoundException) {
-            System.err.println("Error creating file Connection.");
-        } catch (FormatterClosedException formatterClosedException) {
+        } catch (IOException e) {
             System.err.println("Error writing to file of Connection.");
-        } catch (IOException ioException) {
-            System.err.println("Error in File of Connection");
+            e.printStackTrace();
         }
     }
+
     private void appendToFile(Connection connection, String fileName) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true))) {
-                writer.write(String.format("%s;%s;%s;%s;%s;\n", connection.getPort1().getEquipment().getCode(), connection.getPort1().getPortType().getCode(),
-                        connection.getPort2().getEquipment().getCode(), connection.getPort2().getPortType().getCode(),
-                        connection.getWire().getCode()));
-
-                writer.newLine();  // Escribir salto de línea después de cada línea
-
-        }catch (FileNotFoundException fileNotFoundException) {
-            System.err.println("Error creating file Connection.");
-        } catch (FormatterClosedException formatterClosedException) {
-            System.err.println("Error writing to file of Connection.");
-        } catch (IOException ioException) {
-            System.err.println("Error in File of Connection");
+            writer.write(String.format("%s;%s;%s;%s;%s;\n",
+                    connection.getPort1().getEquipment().getCode(),
+                    connection.getPort1().getPortType().getCode(),
+                    connection.getPort2().getEquipment().getCode(),
+                    connection.getPort2().getPortType().getCode(),
+                    connection.getWire().getCode()));
+        } catch (IOException e) {
+            System.err.println("Error appending to file of Connection.");
+            e.printStackTrace();
         }
     }
+
     @Override
     public void insert(Connection connection) {
         list.add(connection);
-        appendToFile(connection,fileName);
+        appendToFile(connection, fileName);
         update = true;
     }
 
@@ -130,15 +123,16 @@ public class ConnectionSequentialDAO implements ConnectionDAO {
     }
 
     private Hashtable<String, Equipment> readEquipments() {
-        EquipmentDAO EquipmentDAO = new EquipmentSequentialDAO();
-        return EquipmentDAO.searchAll();
+        EquipmentDAO equipmentDAO = new EquipmentSequentialDAO();
+        return equipmentDAO.searchAll();
     }
 
     private Hashtable<String, PortType> readPortTypes() {
         PortTypeDAO portTypeDAO = new PortTypeSequentialDAO();
         return portTypeDAO.searchAll();
     }
-    private Hashtable<String, WireType> readWireTypes(){
+
+    private Hashtable<String, WireType> readWireTypes() {
         WireTypeDAO wireTypeDAO = new WireTypeSequentialDAO();
         return wireTypeDAO.searchAll();
     }

@@ -1,5 +1,6 @@
 package org.isfpp.main;
 
+import com.sun.tools.javac.Main;
 import org.isfpp.controller.Coordinator;
 import org.isfpp.datos.CargarParametros;
 import org.isfpp.datos.ResourceExtractor;
@@ -7,6 +8,7 @@ import org.isfpp.interfaz.panelesCreadores.MainMenu;
 import org.isfpp.logica.Utils;
 import org.isfpp.modelo.Web;
 
+import java.io.File;
 import java.io.IOException;
 
 public class App {
@@ -22,6 +24,9 @@ public class App {
 
     public static void main(String[] args) throws IOException {
         ResourceExtractor.extractResourcesToExecutionDir();
+        String directorio = new File(App.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getParent();
+        System.out.println("Ruta absoluta: " + directorio);
+
         App app = new App();
         CargarParametros.parametros();
         app.inicio();

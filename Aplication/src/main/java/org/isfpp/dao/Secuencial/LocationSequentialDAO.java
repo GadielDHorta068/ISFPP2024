@@ -1,11 +1,8 @@
 package org.isfpp.dao.Secuencial;
 
 import org.isfpp.dao.LocationDAO;
-import org.isfpp.datos.Cargar;
 import org.isfpp.datos.CargarParametros;
-import org.isfpp.modelo.EquipmentType;
 import org.isfpp.modelo.Location;
-import org.isfpp.modelo.PortType;
 
 import java.io.*;
 import java.util.*;
@@ -16,7 +13,7 @@ public class LocationSequentialDAO implements LocationDAO {
     private boolean update;
 
     public LocationSequentialDAO() {
-        fileName = CargarParametros.getlocationFile();
+        fileName = CargarParametros.getlocationFile(); // Obtiene la ruta del archivo
         update = true;
     }
 
@@ -25,18 +22,14 @@ public class LocationSequentialDAO implements LocationDAO {
         Scanner inFile = null;
 
         try {
-            InputStream inputStream = Cargar.class.getClassLoader().getResourceAsStream(fileName);
-            if (inputStream == null) {
-                throw new FileNotFoundException("Archivo no encontrado: " + fileName);
-            }
-            inFile = new Scanner(inputStream);
+            File file = new File(fileName); // Carga el archivo directamente
+            inFile = new Scanner(file);
             inFile.useDelimiter("\\s*;\\s*");
-            String[] minireader, minireader2;
             while (inFile.hasNext()) {
                 Location location = new Location();
                 location.setCode(inFile.next());
                 location.setDescription(inFile.next());
-                map.put(location.getCode(),location);
+                map.put(location.getCode(), location);
             }
         } catch (FileNotFoundException fileNotFoundException) {
             System.err.println("Error opening file.");
@@ -48,16 +41,17 @@ public class LocationSequentialDAO implements LocationDAO {
             System.err.println("Error reading from file.");
             illegalStateException.printStackTrace();
         } finally {
-            if (inFile != null)
+            if (inFile != null) {
                 inFile.close();
+            }
         }
         return map;
     }
 
-    private void writeToFile(Hashtable<String,Location> locationMap, String fileName) {
+    private void writeToFile(Hashtable<String, Location> locationMap, String fileName) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, false))) {
-            for (Location location: locationMap.values()) {
-             writer.write(String.format("%s;%s;\n", location.getCode(),location.getDescription()));
+            for (Location location : locationMap.values()) {
+                writer.write(String.format("%s;%s;\n", location.getCode(), location.getDescription()));
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -66,14 +60,14 @@ public class LocationSequentialDAO implements LocationDAO {
 
     @Override
     public void insert(Location location) {
-        map.put(location.getCode(),location);
-        writeToFile(map,fileName);
+        map.put(location.getCode(), location);
+        writeToFile(map, fileName);
         update = true;
     }
 
     @Override
     public void update(Location location) {
-        map.replace(location.getCode(),location);
+        map.replace(location.getCode(), location);
         update = true;
     }
 
@@ -85,7 +79,7 @@ public class LocationSequentialDAO implements LocationDAO {
     }
 
     @Override
-    public Hashtable<String,Location> searchAll() {
+    public Hashtable<String, Location> searchAll() {
         if (update) {
             map = readFromFile(fileName);
             update = false;
