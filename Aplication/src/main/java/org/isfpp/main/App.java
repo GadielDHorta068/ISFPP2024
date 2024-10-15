@@ -2,6 +2,7 @@ package org.isfpp.main;
 
 import org.isfpp.controller.Coordinator;
 import org.isfpp.datos.CargarParametros;
+import org.isfpp.datos.ResourceExtractor;
 import org.isfpp.interfaz.panelesCreadores.MainMenu;
 import org.isfpp.logica.Utils;
 import org.isfpp.modelo.Web;
@@ -20,6 +21,7 @@ public class App {
     private Coordinator coordinator;
 
     public static void main(String[] args) throws IOException {
+        ResourceExtractor.extractResourcesToExecutionDir();
         App app = new App();
         CargarParametros.parametros();
         app.inicio();

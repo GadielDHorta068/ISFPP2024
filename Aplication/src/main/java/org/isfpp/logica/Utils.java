@@ -76,7 +76,7 @@ public class Utils {
     public GraphPath<Equipment, DefaultWeightedEdge> traceroute(Equipment e1, Equipment e2) throws IllegalArgumentException {
 
         if (e1 == null || e2 == null) {
-            throw new IllegalArgumentException("Equipo invalido");
+            throw new IllegalArgumentException("Equipo inválido");
         }
         if (e1.equals(e2)) {
             throw new IllegalArgumentException("Equipo duplicado");
@@ -98,10 +98,8 @@ public class Utils {
 
         // Insertar vértices (equipos) activos en el grafo temporal
         for (Equipment e : graph.vertexSet()) {
-            if (e.isStatus()) {
+            if (e.isStatus())
                 graphTemp.addVertex(e);
-                equipmentMap.put(e.getCode(), e);
-            }
         }
 
         // Insertar aristas con conexiones activas

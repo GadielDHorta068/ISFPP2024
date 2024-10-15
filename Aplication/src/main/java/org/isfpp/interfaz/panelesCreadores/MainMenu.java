@@ -27,7 +27,7 @@ public class MainMenu {
 
     public void components(Web web) {
         StylusUI.inicializar(false);
-        ResourceExtractor.extractResourcesToExecutionDir();
+
         PanelDerecho panelDerecho = new PanelDerecho();
 
         DesplegableComponent<Equipment> desplegableNodos = new DesplegableComponent<>();
