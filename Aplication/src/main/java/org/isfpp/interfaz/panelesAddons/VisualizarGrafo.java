@@ -1,10 +1,12 @@
 package org.isfpp.interfaz.panelesAddons;
 
 import com.mxgraph.layout.mxCompactTreeLayout;
+import com.mxgraph.layout.mxOrganicLayout;
 import com.mxgraph.swing.mxGraphComponent;
 import com.mxgraph.util.mxConstants;
 import com.mxgraph.view.mxGraph;
 import com.mxgraph.view.mxStylesheet;
+import org.isfpp.controller.Coordinator;
 import org.isfpp.interfaz.stylusUI.StylusUI;
 import org.isfpp.modelo.Connection;
 import org.isfpp.modelo.Equipment;
@@ -12,36 +14,23 @@ import org.jgrapht.Graph;
 import org.jgrapht.graph.SimpleGraph;
 
 import javax.swing.*;
+import java.awt.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 
 public class VisualizarGrafo extends JFrame {
     private Properties properties;
+    private Coordinator coordinator;
 
-    public VisualizarGrafo(HashMap<String, Equipment> hardware, ArrayList<Connection> connections) {
-        Graph<Equipment, Connection> graph = new SimpleGraph<>(Connection.class); // Usar SimpleGraph para grafo no dirigido
-
-        for (Equipment valor : hardware.values()) {
-            graph.addVertex(valor);
-        }
-        for (Connection c : connections) {
-            Equipment sourceNode = c.getPort1().getEquipment();
-            Equipment targetNode = c.getPort2().getEquipment();
-
-            if (sourceNode.equals(targetNode)) {
-                throw new IllegalArgumentException("Son el mismo equipo");
-            }
-            if (!graph.containsEdge(sourceNode, targetNode)) {
-                graph.addEdge(sourceNode, targetNode, c);
-            }
-        }
+    public VisualizarGrafo() throws HeadlessException {
+    }
+    public void Visualizar() {
+        Graph<Equipment, Connection> graph = coordinator.getGraph(); // Usar SimpleGraph para grafo no dirigido
 
         cargarProperties();
-
-
         mxGraph mxGraph = new mxGraph();
-
+        mxGraph.setConnectableEdges(false);
         mxGraph.setCellsEditable(false);
         mxGraph.setCellsResizable(false);
         mxGraph.setCellsBendable(false);
@@ -77,14 +66,16 @@ public class VisualizarGrafo extends JFrame {
             mxGraph.getModel().endUpdate();
         }
 
+
         mxGraphComponent graphComponent = new mxGraphComponent(mxGraph);
         graphComponent.getViewport().setBackground(StylusUI.COLOR_PRIMARIO);
         getContentPane().add(graphComponent);
 
-        // Aplicar un layout circular al grafo
-        mxCompactTreeLayout layout = new mxCompactTreeLayout(mxGraph);
-        layout.setHorizontal(true);
+        // Aplicar un layout orgánico al grafo (evita que se superpongan los nodos)
+        mxOrganicLayout layout = new mxOrganicLayout(mxGraph);
         layout.execute(mxGraph.getDefaultParent());
+
+
 
         setTitle("Visualización del Grafo");
         setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
@@ -128,5 +119,9 @@ public class VisualizarGrafo extends JFrame {
         String styleName = equipmentType + "_STYLE";
         mxGraph.getStylesheet().putCellStyle(styleName, style);
         return styleName;
+    }
+
+    public void setCoordinator(Coordinator coordinator) {
+        this.coordinator = coordinator;
     }
 }
