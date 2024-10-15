@@ -9,27 +9,27 @@ import java.util.Scanner;
 
 public class Cargar {
 
-    /**
-     * Carga una red a partir de varios archivos de configuración.
-     *
-     * @param name              Nombre de la red.
-     * @param equipmentFile     Archivo de equipos.
-     * @param connectionFile    Archivo de conexiones.
-     * @param locationFile      Archivo de ubicaciones.
-     * @param portTypeFile      Archivo de tipos de puertos.
-     * @param wireTypeFile      Archivo de tipos de cables.
-     * @param equipmentTypeFile Archivo de tipos de equipos.
-     * @return Objeto Web que representa la red.
-     * @throws FileNotFoundException Si alguno de los archivos no se encuentra.
-     */
-    public static Web cargarRed(String name, String equipmentFile, String connectionFile, String locationFile,
-                                String portTypeFile, String wireTypeFile, String equipmentTypeFile) throws FileNotFoundException {
+   /**
+    * Carga la red desde los archivos especificados.
+    *
+    * @param name el nombre de la red
+    * @param equipmentFile archivo de equipo
+    * @param connectionFile archivo de conexiones
+    * @param locationFile archivo de ubicaciones
+    * @param portTypeFile archivo de tipos de puerto
+    * @param wireTypeFile archivo de tipos de cable
+    * @param equipmentTypeFile archivo de tipos de equipo
+    * @return la red cargada  
+    * @throws FileNotFoundException si algún archivo no se encuentra
+    */
+   public static Web cargarRed(String name, String equipmentFile, String connectionFile, String locationFile,
+                               String portTypeFile, String wireTypeFile, String equipmentTypeFile) throws FileNotFoundException {
         Web red = new Web(name);
 
         loadEquipmentType(red, equipmentTypeFile);
-        loadPortTypes(red, portTypeFile);
-        loadLocations(red, locationFile);
-        loadEquipments(red, equipmentFile);
+       loadPortTypes(red, portTypeFile);
+       loadLocations(red, locationFile);
+       loadEquipments(red, equipmentFile);
         loadWireType(red, wireTypeFile);
         loadConnections(red, connectionFile);
 
@@ -37,11 +37,11 @@ public class Cargar {
     }
 
     /**
-     * Carga los equipos en la red a partir de un archivo.
+     * Carga los equipos desde un archivo. 
      *
-     * @param red      Objeto Web que representa la red.
-     * @param filePath Ruta del archivo de equipos.
-     * @throws FileNotFoundException Si el archivo no se encuentra.
+     * @param red la red a la cual agregar los equipos.
+     * @param filePath la ruta del archivo.
+     * @throws FileNotFoundException si el archivo no se encuentra.
      */
     public static void loadEquipments(Web red, String filePath) throws FileNotFoundException {
         InputStream inputStream;
@@ -68,6 +68,12 @@ public class Cargar {
         }
     }
 
+    /**
+     * Procesa los equipos leídos desde un Scanner y los agrega a la red.
+     *
+     * @param read el Scanner desde el cual leer los equipos.
+     * @param red la red a la cual agregar los equipos.
+     */
     private static void processEquipments(Scanner read, Web red) {
         Equipment newEquipment;
         String code, description, marca, model;
@@ -141,11 +147,11 @@ public class Cargar {
     }
 
     /**
-     * Carga los tipos de puertos en la red a partir de un archivo.
+     * Carga los tipos de puerto desde un archivo.
      *
-     * @param red      Objeto Web que representa la red.
-     * @param filePath Ruta del archivo de tipos de puertos.
-     * @throws FileNotFoundException Si el archivo no se encuentra.
+     * @param red la red a la cual agregar los tipos de puerto.
+     * @param filePath la ruta del archivo.
+     * @throws FileNotFoundException si el archivo no se encuentra.
      */
     public static void loadPortTypes(Web red, String filePath) throws FileNotFoundException {
         File file = new File(filePath);
@@ -182,11 +188,11 @@ public class Cargar {
     }
 
     /**
-     * Carga las conexiones en la red a partir de un archivo.
+     * Carga las conexiones desde un archivo.
      *
-     * @param red      Objeto Web que representa la red.
-     * @param fileName Nombre del archivo de conexiones.
-     * @throws FileNotFoundException Si el archivo no se encuentra.
+     * @param red la red a la cual agregar las conexiones.
+     * @param fileName la ruta del archivo.
+     * @throws FileNotFoundException si el archivo no se encuentra.
      */
     public static void loadConnections(Web red, String fileName) throws FileNotFoundException {
         WireType wireType;
@@ -223,11 +229,11 @@ public class Cargar {
     }
 
     /**
-     * Carga los tipos de cables en la red a partir de un archivo.
+     * Carga los tipos de cable desde un archivo.
      *
-     * @param red      Objeto Web que representa la red.
-     * @param filePath Ruta del archivo de tipos de cables.
-     * @throws FileNotFoundException Si el archivo no se encuentra.
+     * @param red la red a la cual agregar los tipos de cable.
+     * @param filePath la ruta del archivo.
+     * @throws FileNotFoundException si el archivo no se encuentra.
      */
     public static void loadWireType(Web red, String filePath) throws FileNotFoundException {
         String code, description;
@@ -271,11 +277,11 @@ public class Cargar {
     }
 
     /**
-     * Carga los tipos de equipos en la red a partir de un archivo.
+     * Carga los tipos de equipo desde un archivo.
      *
-     * @param red      Objeto Web que representa la red.
-     * @param filePath Ruta del archivo de tipos de equipos.
-     * @throws FileNotFoundException Si el archivo no se encuentra.
+     * @param red la red a la cual agregar los tipos de equipo.
+     * @param filePath la ruta del archivo.
+     * @throws FileNotFoundException si el archivo no se encuentra.
      */
     public static void loadEquipmentType(Web red, String filePath) throws FileNotFoundException {
         String code, description;
@@ -316,11 +322,11 @@ public class Cargar {
     }
 
     /**
-     * Carga las ubicaciones en la red a partir de un archivo.
+     * Carga las ubicaciones desde un archivo.
      *
-     * @param red      Objeto Web que representa la red.
-     * @param filePath Ruta del archivo de ubicaciones.
-     * @throws FileNotFoundException Si el archivo no se encuentra.
+     * @param red la red a la cual agregar las ubicaciones.
+     * @param filePath la ruta del archivo.
+     * @throws FileNotFoundException si el archivo no se encuentra.
      */
     public static void loadLocations(Web red, String filePath) throws FileNotFoundException {
         String code, description;
@@ -361,21 +367,20 @@ public class Cargar {
     }
 
     /**
-     * Método para cargar la red desde un archivo de propiedades.
-     * Debe ser llamado de la siguiente forma:
-     * <blockquote><pre>
-     * Web web = Cargar.cargarRedDesdePropiedades(config.properties)
-     * </pre></blockquote>
-     *
-     * @param propertiesFile Archivo de propiedades.
-     * @return Objeto Web que representa la red.
-     * @throws IOException Si no se encuentra el archivo de propiedades.
+     * Metodo para cargar la red desde el archivo properties
+     * El mismo debe ser llamado como el siguiente ejemplo
+     *  <blockquote><pre>
+     *      Web web = Cargar.cargarRedDesdePropiedades(config.properties)
+     *  </pre></blockquote>
+     * @param propertiesFile archivo de propiedades
+     * @return  Web a ser devuelta
+     * @throws IOException No se encuentra el archivo properties
      */
     public static Web cargarRedDesdePropiedades(String propertiesFile) throws IOException {
         Properties properties = new Properties();
         try (InputStream input = Cargar.class.getClassLoader().getResourceAsStream(propertiesFile)) {
             if (input == null) {
-                throw new FileNotFoundException("Archivo de propiedades no encontrado: " + propertiesFile);
+                throw new FileNotFoundException("Archivo de propiedades no encontrado: "+propertiesFile);
             }
             properties.load(input);
         }
@@ -391,12 +396,11 @@ public class Cargar {
         return cargarRed(name, equipmentFile, connectionFile, locationFile, portTypeFile, wireTypeFile, equipmentTypeFile);
     }
 
-    /**
-     * Carga la red desde un directorio específico.
-     *
-     * @param directoryPath Ruta del directorio.
-     * @return Objeto Web que representa la red.
-     * @throws IOException Si no se encuentra la carpeta 'data' o algún archivo.
+     /**
+     * Metodo para cargar la red desde el directorio especificado.
+     * @param directoryPath Ruta del directorio que contiene la carpeta 'data'
+     * @return Web la red cargada desde el directorio
+     * @throws IOException si no se encuentra la carpeta 'data' o algún archivo necesario
      */
     public Web cargarRedDesdeDirectorio(String directoryPath) throws IOException {
         File dataDir = new File(directoryPath, "data");
@@ -415,4 +419,5 @@ public class Cargar {
 
         return cargarRed(name, equipmentFile, connectionFile, locationFile, portTypeFile, wireTypeFile, equipmentTypeFile);
     }
+
 }

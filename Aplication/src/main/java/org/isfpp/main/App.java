@@ -1,39 +1,38 @@
 package org.isfpp.main;
 
-import com.github.kwhat.jnativehook.mouse.NativeMouseInputListener;
 import org.isfpp.controller.Coordinator;
-import org.isfpp.datos.Cargar;
 import org.isfpp.datos.CargarParametros;
 import org.isfpp.interfaz.panelesCreadores.MainMenu;
-import org.isfpp.interfaz.stylusUI.StylusUI;
 import org.isfpp.logica.Utils;
 import org.isfpp.modelo.Web;
 
 import java.io.IOException;
 
-public class App implements NativeMouseInputListener {
-
+public class App {
+    // l�gica
     private Web web = null;
     private Utils utils;
 
+    // vista
     private MainMenu mainMenu;
 
+    // controlador
     private Coordinator coordinator;
 
     public static void main(String[] args) throws IOException {
         App app = new App();
         CargarParametros.parametros();
         app.inicio();
-        app.luanch();
+        app.launch();
         app.minitest();
 
     }
 
-    private void inicio() {
-        web = Web.getWeb();
+    private void inicio(){
+        web =new Web();
         coordinator = new Coordinator();
-        utils = new Utils();
-        mainMenu = new MainMenu();
+        utils=new Utils();
+        mainMenu= new MainMenu();
         /* Se establecen las relaciones entre clases */
         web.setCoordinator(coordinator);
         utils.setCoordinator(coordinator);
@@ -47,12 +46,10 @@ public class App implements NativeMouseInputListener {
         coordinator.LoadData(coordinator.getWeb());
     }
 
-    private void luanch() {
+    private void launch(){
         mainMenu.components(coordinator.getWeb());
-
     }
 
-    private void minitest() {
+    private void minitest(){
     }
 }
-

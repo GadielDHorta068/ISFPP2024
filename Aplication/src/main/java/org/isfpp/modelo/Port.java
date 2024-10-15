@@ -5,7 +5,7 @@ import org.isfpp.logica.Utils;
 import java.util.Objects;
 
 /**
- * La clase {@code Port} representa un puerto en un equipo.
+ * Clase que representa un Puerto.
  */
 public class Port {
     private Boolean inUse;
@@ -14,10 +14,10 @@ public class Port {
     private final String MACAddress;
 
     /**
-     * Constructor para crear una instancia de {@code Port}.
-     *
-     * @param portType  Tipo de puerto
-     * @param equipment Equipo asociado al puerto
+     * Constructor para la clase Port.
+     * 
+     * @param portType Tipo de puerto.
+     * @param equipment Equipo asociado al puerto.
      */
     public Port(PortType portType, Equipment equipment) {
         super();
@@ -30,7 +30,7 @@ public class Port {
     /**
      * Obtiene el tipo de puerto.
      *
-     * @return el tipo de puerto
+     * @return portType Tipo de puerto.
      */
     public PortType getPortType() {
         return portType;
@@ -39,7 +39,7 @@ public class Port {
     /**
      * Establece el tipo de puerto.
      *
-     * @param portType el nuevo tipo de puerto
+     * @param portType Tipo de puerto.
      */
     public void setPortType(PortType portType) {
         this.portType = portType;
@@ -48,7 +48,7 @@ public class Port {
     /**
      * Obtiene el equipo asociado al puerto.
      *
-     * @return el equipo asociado
+     * @return equipment Equipo asociado al puerto.
      */
     public Equipment getEquipment() {
         return equipment;
@@ -57,7 +57,7 @@ public class Port {
     /**
      * Establece el equipo asociado al puerto.
      *
-     * @param equipment el nuevo equipo asociado
+     * @param equipment Equipo a asociar.
      */
     public void setEquipment(Equipment equipment) {
         this.equipment = equipment;
@@ -66,18 +66,18 @@ public class Port {
     /**
      * Verifica si el puerto está en uso.
      *
-     * @return {@code true} si el puerto está en uso, {@code false} en caso contrario
+     * @return inUse true si está en uso, false de lo contrario.
      */
-    public Boolean isInUse() {
+    public Boolean isInUse(){
         return inUse;
     }
 
     /**
      * Establece el estado de uso del puerto.
      *
-     * @param is {@code true} si el puerto está en uso, {@code false} en caso contrario
+     * @param is Estado de uso del puerto.
      */
-    public void setInUse(Boolean is) {
+    public void setInUse(Boolean is){
         this.inUse = is;
     }
 
@@ -100,11 +100,11 @@ public class Port {
     }
 
     /**
-     * Obtiene la dirección MAC del puerto.
+     * Obtiene la dirección MAC asociada al puerto.
      *
-     * @return la dirección MAC
+     * @return MACAddress Dirección MAC.
      */
-    public String getMACAddress() {
+    public String getMACAddress(){
         return MACAddress;
     }
 }
