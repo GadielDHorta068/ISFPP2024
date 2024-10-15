@@ -91,6 +91,7 @@ public class Web {
 		hardware.put(code, e);
 		equipmentService.insert(e);
 		coordinator.updateTablas(this);
+		System.out.println("aca");
 		return e;
 	}
 
@@ -424,7 +425,7 @@ public class Web {
 		coordinator.updateTablas(this);
 	}
 	public void updateLocation(String codeOriginal, Location updateLocation){
-		if (!locations.containsKey(updateLocation.getCode()) && !codeOriginal.equals(updateLocation.getCode()))
+		if (locations.containsKey(updateLocation.getCode()) && !codeOriginal.equals(updateLocation.getCode()))
 			throw new NotFoundException("localizacion ya extiste");
 		if(codeOriginal.equals(updateLocation.getCode())){
 			locationService.update(updateLocation);

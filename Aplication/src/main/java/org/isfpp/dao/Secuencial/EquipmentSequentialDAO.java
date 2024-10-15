@@ -107,13 +107,14 @@ public class EquipmentSequentialDAO implements EquipmentDAO {
     @Override
     public void insert(Equipment equipment) {
         map.put(equipment.getCode(), equipment);
-        //writeToFile(map, fileName); // Descomenta esta línea si deseas guardar automáticamente al insertar
+        writeToFile(map, fileName); // Descomenta esta línea si deseas guardar automáticamente al insertar
         update = true;
     }
 
     @Override
     public void update(Equipment equipment) {
         map.replace(equipment.getCode(), equipment);
+        writeToFile(map, fileName);
         update = true;
     }
 
