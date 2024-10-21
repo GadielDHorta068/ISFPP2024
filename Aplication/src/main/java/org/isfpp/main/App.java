@@ -1,17 +1,13 @@
 package org.isfpp.main;
 
-import com.github.kwhat.jnativehook.mouse.NativeMouseInputListener;
 import org.isfpp.controller.Coordinator;
-import org.isfpp.datos.Cargar;
-import org.isfpp.datos.CargarParametros;
 import org.isfpp.interfaz.panelesCreadores.MainMenu;
-import org.isfpp.interfaz.stylusUI.StylusUI;
 import org.isfpp.logica.Utils;
 import org.isfpp.modelo.Web;
 
 import java.io.IOException;
 
-public class App implements NativeMouseInputListener {
+public class App {
 
     private Web web = null;
     private Utils utils;
@@ -22,7 +18,6 @@ public class App implements NativeMouseInputListener {
 
     public static void main(String[] args) throws IOException {
         App app = new App();
-        CargarParametros.parametros();
         app.inicio();
         app.luanch();
         app.minitest();

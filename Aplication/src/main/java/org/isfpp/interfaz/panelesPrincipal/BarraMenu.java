@@ -1,8 +1,6 @@
 package org.isfpp.interfaz.panelesPrincipal;
 
 import org.isfpp.controller.Coordinator;
-import org.isfpp.datos.Cargar;
-import org.isfpp.datos.Guardar;
 import org.isfpp.interfaz.panelesAddons.*;
 import org.isfpp.interfaz.panelesCreadores.*;
 import org.isfpp.interfaz.panelesEditadores.*;
@@ -17,8 +15,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
-import java.net.URL;
-import java.util.Objects;
 
 
 public class BarraMenu {
@@ -57,28 +53,34 @@ public class BarraMenu {
         fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         if (fileChooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
             String directory = fileChooser.getSelectedFile().getAbsolutePath();
-            try {
-                Cargar cargar = new Cargar();
-                coordinator.setWeb(cargar.cargarRedDesdeDirectorio(directory));
-                coordinator.updateTablas();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
+            coordinator.searchAllOf(directory);
+            coordinator.updateTablas();
         }
     }
+    private void updateWeb(String directory){
+        File dataDir = new File(directory, "data");
 
+        new File(dataDir, "equipo.txt").getAbsolutePath();
+
+
+
+    }
     private void accionGuardar(ActionEvent actionEvent) {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         if (fileChooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
             String directory = fileChooser.getSelectedFile().getAbsolutePath();
             File dataDir = new File(fileChooser.getSelectedFile(), "data");
-            try {
-                Guardar guardar = new Guardar();
-                guardar.saveAll(web, directory);
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
+
+            coordinator.insertAllInto(directory);
+            //try {//rehacer el guardado de datos en esta parte
+                //          foofoffoGuardado
+              //  coordinator
+              //  guardar = new FAF();
+              //  guardar.saveAll(web, directory);
+           // } catch (IOException ex) {
+             //   ex.printStackTrace();
+           // }
         }
     }
 

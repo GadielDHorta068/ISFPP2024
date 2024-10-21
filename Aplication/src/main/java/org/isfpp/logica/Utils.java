@@ -105,7 +105,7 @@ public class Utils {
 
         if (!e1.isStatus() || !e2.isStatus()) {
             throw new IllegalArgumentException(String.format(
-                    "Uno de los equipos no está activo %s %s %s %s",
+                    "Uno de los equipos no está activo %s, estatus: %s; %s, estatus: %s",
                     e1.getCode(),
                     e1.isStatus(),
                     e2.getCode(),
