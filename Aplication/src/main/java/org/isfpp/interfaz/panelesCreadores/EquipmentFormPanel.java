@@ -1,6 +1,5 @@
 package org.isfpp.interfaz.panelesCreadores;
 
-import org.isfpp.datos.Cargar;
 import org.isfpp.interfaz.stylusUI.StylusUI;
 import org.isfpp.modelo.EquipmentType;
 import org.isfpp.modelo.Location;

@@ -4,12 +4,7 @@ import org.isfpp.dao.EquipmentDAO;
 import org.isfpp.dao.EquipmentTypeDAO;
 import org.isfpp.dao.LocationDAO;
 import org.isfpp.dao.PortTypeDAO;
-import org.isfpp.datos.Cargar;
-import org.isfpp.datos.CargarParametros;
-import org.isfpp.modelo.Equipment;
-import org.isfpp.modelo.EquipmentType;
-import org.isfpp.modelo.Location;
-import org.isfpp.modelo.PortType;
+import org.isfpp.modelo.*;
 
 import java.io.*;
 import java.util.*;
@@ -26,7 +21,8 @@ public class EquipmentSequentialDAO implements EquipmentDAO{
         equipmentTypes = readEquipmentTypes();
         locations = readLocations();
         portTypes = readPortTypes();
-        fileName = CargarParametros.getequipementFile();
+        ResourceBundle rb = ResourceBundle.getBundle("config");
+        fileName = rb.getString("rs.connection");
         update = true;
     }
 
@@ -35,33 +31,52 @@ public class EquipmentSequentialDAO implements EquipmentDAO{
         Scanner inFile = null;
 
         try {
-            InputStream inputStream = Cargar.class.getClassLoader().getResourceAsStream(fileName);
-            if (inputStream == null) {
-                throw new FileNotFoundException("Archivo no encontrado: " + fileName);
-            }
-            inFile = new Scanner(inputStream);
-            inFile.useDelimiter("\\s*;\\s*");
+            inFile = new Scanner(new File(fileName));
             String[] minireader;
-            while (inFile.hasNext()) {
+            while (inFile.hasNext()) while (inFile.hasNext()) {
+                String line = inFile.nextLine(); // Leer toda la línea para inspección
+                System.out.println("Línea leída: " + line);
+                String[] fields = line.split(";");
+
+                if (fields.length < 9) {  // Asegúrate de que haya suficientes campos en la línea
+                    System.err.println("Error: La línea no tiene suficientes campos.");
+                    continue;
+                }
+
                 Equipment equipment = new Equipment();
-                equipment.setCode(inFile.next());
-                equipment.setDescription(inFile.next());
-                equipment.setMake(inFile.next());
-                equipment.setModel(inFile.next());
-                equipment.setEquipmentType(equipmentTypes.get(inFile.next()));
-                equipment.setLocation(locations.get(inFile.next()));
-                minireader = inFile.next().split(",");
-                for (int i = 0; i < minireader.length; i += 2)
-                    for (int cap = 0;cap < Integer.parseInt(minireader[i + 1]);cap++)
-                        equipment.addPort(portTypes.get(minireader[i]));
+                equipment.setCode(fields[0]);
+                equipment.setDescription(fields[1]);
+                equipment.setMake(fields[2]);
+                equipment.setModel(fields[3]);
+                equipment.setEquipmentType(equipmentTypes.get(fields[4]));
+                equipment.setLocation(locations.get(fields[5]));
 
-                minireader = inFile.next().split(",");
-                for (int i = 0; i < minireader.length;i++)
-                   equipment.addIp(minireader[i]);
+                // Ahora trata el campo problemático
+                String portInfo = fields[6];  // "1G,4,SFP+,1"
+                System.out.println("Información de puertos: " + portInfo);
+                minireader = portInfo.split(",");
 
-                equipment.setStatus(inFile.nextBoolean());
-                map.put(equipment.getCode(),equipment);
+                for (int i = 0; i < minireader.length; i += 2) {
+                    String portType = minireader[i];  // Ejemplo: "1G"
+                    int portCount = Integer.parseInt(minireader[i + 1]);  // Ejemplo: 4
+                    System.out.println("Tipo de puerto: " + portType + ", Cantidad: " + portCount);
+
+                    for (int cap = 0; cap < portCount; cap++) {
+                        equipment.addPort(portTypes.get(portType));
+                    }
+                }
+
+                // Procesar las direcciones IP
+                String[] ips = fields[7].split(",");
+                for (String ip : ips) {
+                    equipment.addIp(ip);
+                }
+
+                equipment.setStatus(Boolean.parseBoolean(fields[8]));
+
+                map.put(equipment.getCode(), equipment);
             }
+
         } catch (FileNotFoundException fileNotFoundException) {
             System.err.println("Error opening file.");
             fileNotFoundException.printStackTrace();
@@ -79,7 +94,7 @@ public class EquipmentSequentialDAO implements EquipmentDAO{
     }
 
     private void writeToFile(Hashtable<String,Equipment> equipmentMap, String fileName) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, false))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(System.getProperty("user.dir") + File.separator + fileName, false))) {
             HashMap<PortType, Integer> portMap;
             for (Equipment equipment: equipmentMap.values()) {
                 portMap = equipment.getAllPortsTypes();
@@ -133,12 +148,92 @@ public class EquipmentSequentialDAO implements EquipmentDAO{
     }
 
     @Override
+    public void insertAllIn(String directory) {
+        boolean check = true;
+        // Validación: el directorio no debe ser nulo ni vacío
+        if (directory == null || directory.trim().isEmpty()) {
+            System.err.println("El directorio proporcionado es nulo o está vacío.");
+            check = false;
+        }
+
+        // Validación: Verificar si el directorio existe y es un directorio válido
+        File dir = new File(directory);
+        if (!dir.exists() || !dir.isDirectory()) {
+            System.err.println("El directorio no existe o no es válido: " + dir.getAbsolutePath());
+            check = false;
+        }
+
+        // Crear la ruta completa al archivo
+        File file = new File(directory, fileName);
+
+        // Validación: Verificar si el archivo existe y es un archivo regular
+        if (!file.exists()) {
+            System.err.println("El archivo no existe: " + file.getAbsolutePath());
+            check = false;
+        }
+
+        if (!file.isFile()) {
+            System.err.println("La ruta no es un archivo válido: " + file.getAbsolutePath());
+            check = false;
+        }
+
+        // Validación: Verificar si el archivo es legible
+        if (!file.canRead()) {
+            System.err.println("El archivo no tiene permisos de lectura: " + file.getAbsolutePath());
+            check = false;
+        }
+
+        if (check)
+            writeToFile(map, file.getAbsolutePath());
+    }
+    @Override
     public Hashtable<String,Equipment> searchAll() {
         if (update) {
             map = readFromFile(fileName);
             update = false;
         }
         return map;
+    }
+
+    @Override
+    public Hashtable<String, Equipment> searchAllIn(String directory) {
+            // Validación: el directorio no debe ser nulo ni vacío
+            if (directory == null || directory.trim().isEmpty()) {
+                System.err.println("El directorio proporcionado es nulo o está vacío.");
+                return new Hashtable<>();
+            }
+
+            // Validación: Verificar si el directorio existe y es un directorio válido
+            File dir = new File(directory);
+            if (!dir.exists() || !dir.isDirectory()) {
+                System.err.println("El directorio no existe o no es válido: " + dir.getAbsolutePath());
+                return new Hashtable<>();
+
+            }
+        // Crear la ruta completa al archivo
+            File file = new File(directory, fileName);
+
+            // Validación: Verificar si el archivo existe y es un archivo regular
+            if (!file.exists()) {
+                System.err.println("El archivo no existe: " + file.getAbsolutePath());
+                return new Hashtable<>();
+            }
+
+            if (!file.isFile()) {
+                System.err.println("La ruta no es un archivo válido: " + file.getAbsolutePath());
+                return new Hashtable<>();
+            }
+
+            // Validación: Verificar si el archivo es legible
+            if (!file.canRead()) {
+                System.err.println("El archivo no tiene permisos de lectura: " + file.getAbsolutePath());
+                return new Hashtable<>();
+            }
+        Hashtable<String,Equipment> equipmentHashtable =  readFromFile(file.getAbsolutePath());
+        // Intentar leer el archivo y manejar posibles excepciones
+        // Leer el archivo y devolver la lista de conexiones
+        update = false;
+        return equipmentHashtable; // Retornar la lista de conexiones leídas
     }
 
     private Hashtable<String, EquipmentType> readEquipmentTypes() {

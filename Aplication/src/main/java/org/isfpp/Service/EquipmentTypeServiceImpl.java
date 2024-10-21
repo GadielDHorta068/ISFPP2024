@@ -1,42 +1,47 @@
 package org.isfpp.Service;
 
+import org.isfpp.connection.Factory;
 import org.isfpp.dao.EquipmentTypeDAO;
 import org.isfpp.modelo.EquipmentType;
-import org.isfpp.dao.Secuencial.EquipmentTypeSequentialDAO;
 
 import java.util.Hashtable;
-import java.util.List;
 
 public class EquipmentTypeServiceImpl implements EquipmentTypeService {
-    private EquipmentTypeDAO EquipmentTypeDAO;
+    private EquipmentTypeDAO equipmentTypeDAO;
 
     public EquipmentTypeServiceImpl() {
-        EquipmentTypeDAO = new EquipmentTypeSequentialDAO();
+        equipmentTypeDAO = (EquipmentTypeDAO) Factory.getInstancia("EQUIPMENTTYPE");
     }
 
 
     public void insert(EquipmentType equipmentType) {
-        EquipmentTypeDAO.insert(equipmentType);
+        equipmentTypeDAO.insert(equipmentType);
     }
 
 
     public void update(EquipmentType equipmentType) {
-        EquipmentTypeDAO.update(equipmentType);
+        equipmentTypeDAO.update(equipmentType);
 
     }
 
     public void erase(EquipmentType equipmentType) {
-        EquipmentTypeDAO.erase(equipmentType);
+        equipmentTypeDAO.erase(equipmentType);
 
     }
 
     @Override
-    public Hashtable<String,EquipmentType> searchAll() {
-        return EquipmentTypeDAO.searchAll();
+    public void insertAllIn(String directory) {
+        equipmentTypeDAO.insertAllIn(directory);
     }
 
+    @Override
+    public Hashtable<String,EquipmentType> searchAll() {
+        return equipmentTypeDAO.searchAll();
+    }
 
-
-
+    @Override
+    public Hashtable<String, EquipmentType> searchAllIn(String directory) {
+        return equipmentTypeDAO.searchAllIn(directory);
+    }
 
 }

@@ -1,16 +1,15 @@
 package org.isfpp.Service;
 
+import org.isfpp.connection.Factory;
 import org.isfpp.dao.PortTypeDAO;
-import org.isfpp.dao.Secuencial.PortTypeSequentialDAO;
 import org.isfpp.modelo.PortType;
 
 import java.util.Hashtable;
-import java.util.List;
 
 public class PortTypeServiceImpl implements PortTypeService{
     private PortTypeDAO portTypeDAO;
     public PortTypeServiceImpl() {
-        portTypeDAO = new PortTypeSequentialDAO();
+        portTypeDAO = (PortTypeDAO) Factory.getInstancia("PORTTYPE");
     }
 
     @Override
@@ -29,7 +28,18 @@ public class PortTypeServiceImpl implements PortTypeService{
     }
 
     @Override
+    public void insertAllIn(String directory) {
+        portTypeDAO.insertAllIn(directory);
+    }
+
+    @Override
     public Hashtable<String, PortType> searchAll() {
         return portTypeDAO.searchAll();
     }
+
+    @Override
+    public Hashtable<String, PortType> searchAllIn(String directory) {
+        return searchAllIn(directory);
+    }
+
 }

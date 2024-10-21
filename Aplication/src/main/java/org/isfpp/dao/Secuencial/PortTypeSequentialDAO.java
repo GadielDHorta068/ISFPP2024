@@ -2,7 +2,6 @@ package org.isfpp.dao.Secuencial;
 
 
 import org.isfpp.dao.PortTypeDAO;
-import org.isfpp.datos.CargarParametros;
 import org.isfpp.modelo.PortType;
 
 import java.io.*;
@@ -79,6 +78,46 @@ public class PortTypeSequentialDAO implements PortTypeDAO {
     }
 
     @Override
+    public void insertAllIn(String directory) {
+        boolean check = true;
+        // Validación: el directorio no debe ser nulo ni vacío
+        if (directory == null || directory.trim().isEmpty()) {
+            System.err.println("El directorio proporcionado es nulo o está vacío.");
+            check = false;
+        }
+
+        // Validación: Verificar si el directorio existe y es un directorio válido
+        File dir = new File(directory);
+        if (!dir.exists() || !dir.isDirectory()) {
+            System.err.println("El directorio no existe o no es válido: " + dir.getAbsolutePath());
+            check = false;
+        }
+
+        // Crear la ruta completa al archivo
+        File file = new File(directory, fileName);
+
+        // Validación: Verificar si el archivo existe y es un archivo regular
+        if (!file.exists()) {
+            System.err.println("El archivo no existe: " + file.getAbsolutePath());
+            check = false;
+        }
+
+        if (!file.isFile()) {
+            System.err.println("La ruta no es un archivo válido: " + file.getAbsolutePath());
+            check = false;
+        }
+
+        // Validación: Verificar si el archivo es legible
+        if (!file.canRead()) {
+            System.err.println("El archivo no tiene permisos de lectura: " + file.getAbsolutePath());
+            check = false;
+        }
+
+        if (check)
+            writeToFile(map, file.getAbsolutePath());
+    }
+
+    @Override
     public Hashtable<String,PortType> searchAll() {
         if (update) {
             map = readFromFile(fileName);
@@ -86,4 +125,48 @@ public class PortTypeSequentialDAO implements PortTypeDAO {
         }
         return map;
     }
+
+
+    @Override
+    public Hashtable<String, PortType> searchAllIn(String directory) {
+        // Validación: el directorio no debe ser nulo ni vacío
+        if (directory == null || directory.trim().isEmpty()) {
+            System.err.println("El directorio proporcionado es nulo o está vacío.");
+            return new Hashtable<>();
+        }
+
+        // Validación: Verificar si el directorio existe y es un directorio válido
+        File dir = new File(directory);
+        if (!dir.exists() || !dir.isDirectory()) {
+            System.err.println("El directorio no existe o no es válido: " + dir.getAbsolutePath());
+            return new Hashtable<>();
+
+        }
+        // Crear la ruta completa al archivo
+        File file = new File(directory, fileName);
+
+        // Validación: Verificar si el archivo existe y es un archivo regular
+        if (!file.exists()) {
+            System.err.println("El archivo no existe: " + file.getAbsolutePath());
+            return new Hashtable<>();
+        }
+
+        if (!file.isFile()) {
+            System.err.println("La ruta no es un archivo válido: " + file.getAbsolutePath());
+            return new Hashtable<>();
+        }
+
+        // Validación: Verificar si el archivo es legible
+        if (!file.canRead()) {
+            System.err.println("El archivo no tiene permisos de lectura: " + file.getAbsolutePath());
+            return new Hashtable<>();
+        }
+        Hashtable<String,PortType> equipmentHashtable =  readFromFile(file.getAbsolutePath());
+        // Intentar leer el archivo y manejar posibles excepciones
+        // Leer el archivo y devolver la lista de conexiones
+
+        update = false;
+        return equipmentHashtable; // Retornar la lista de conexiones leídas
+    }
+
 }

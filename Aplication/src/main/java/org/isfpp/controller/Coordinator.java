@@ -8,6 +8,8 @@ import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -393,5 +395,94 @@ public class Coordinator {
     public void addTabla(DesplegableComponent d) {
         tablas.add(d);
     }
-}
 
+    public void saveALlData(String fileDirectory) throws FileNotFoundException {
+        File dataDir = new File(fileDirectory, "data");
+        if (!dataDir.exists()) {
+            throw new FileNotFoundException("La carpeta 'data' no fue encontrada en: " + dataDir.getAbsolutePath());
+        }
+
+        insertAllInto(fileDirectory);
+        //return cargarRed(name, equipmentFile, connectionFile, locationFile, portTypeFile, wireTypeFile, equipmentTypeFile);
+    }
+
+    public void LoadALlData(String fileDirectory) throws FileNotFoundException {
+        File dataDir = new File(fileDirectory, "data");
+        if (!dataDir.exists()) {
+            throw new FileNotFoundException("La carpeta 'data' no fue encontrada en: " + dataDir.getAbsolutePath());
+        }
+
+        searchAllOf(fileDirectory);
+        //return cargarRed(name, equipmentFile, connectionFile, locationFile, portTypeFile, wireTypeFile, equipmentTypeFile);
+    }
+
+
+
+    //metodos searchAllOf de Web, (lectura)
+    public void searchAllLocarionOf(String directory){
+        web.addAllLocationOf(directory);
+    }
+
+    public void searchAllWireTypeOf(String directory){
+        web.addAllWiretypeOf(directory);
+    }
+
+    public void searchAllEquipmentType(String directory){
+        web.addAllEquipmentTypeOf(directory);
+    }
+
+    public void searchAllPortType(String directory){
+        web.addAllPortTypeOf(directory);
+    }
+
+    public void searchAllEquipmentOf(String diretory){
+        web.addAllEquipmentOf(diretory);
+    }
+
+    public void searchAllConnectionOf(String directory){
+        web.addAllConnectionOf(directory);
+    }
+
+    public void searchAllOf(String directory){
+        web.addAllLocationOf(directory);
+        web.addAllWiretypeOf(directory);
+        web.addAllEquipmentTypeOf(directory);
+        web.addAllPortTypeOf(directory);
+        web.addAllEquipmentOf(directory);
+        web.addAllConnectionOf(directory);
+    }
+
+    //metodos insertALl de Web, (escritor)
+    public void insertAllEquipmentInto(String directory){
+        web.insertAllWireTypeInto(directory);
+    }
+
+    public void insertAllConnectionInto(String directory){
+        web.insertAllConnectionInto(directory);
+    }
+
+    public void insertAllLocationInto(String directory){
+        web.insertAllLocationInto(directory);
+    }
+
+    public void insertAllPortTypeInto(String directory){
+        web.insertAllPortTypeInto(directory);
+    }
+
+    public void insertAllWireTypeInto(String directory){
+        web.insertAllPortTypeInto(directory);
+    }
+
+    public void insertAllEquipmentTypeInto(String directory){
+        web.insertAllEquipmentTypeInto(directory);
+    }
+
+    public void insertAllInto(String directory){
+        insertAllConnectionInto(directory);
+        insertAllEquipmentInto(directory);
+        insertAllEquipmentTypeInto(directory);
+        insertAllLocationInto(directory);
+        insertAllPortTypeInto(directory);
+        insertAllWireTypeInto(directory);
+    }
+}

@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
-
 import org.isfpp.Service.*;
 import org.isfpp.controller.Coordinator;
 import org.isfpp.exceptions.AlreadyExistException;
@@ -38,7 +37,7 @@ public class Web {
      * Esta clase representa una red de equipos y conexiones.
      * Proporciona servicios para añadir, eliminar y actualizar equipos y conexiones en la red.
      */
-    public Web() {
+    private Web() {
         super();
         setNombre("RedLocal");
         this.wireTypes = new HashMap<>();
@@ -61,23 +60,11 @@ public class Web {
         connections.addAll(connectionService.searchAll());
     }
 
-    public Web(String nombre) {
-        super();
-        this.nombre = nombre;
-        this.hardware = new HashMap<>();
-        this.connections = new ArrayList<>();
-        this.locations = new HashMap<>();
-        this.wireTypes = new HashMap<>();
-        this.portTypes = new HashMap<>();
-        this.equipmentTypes = new HashMap<>();
-        coordinator = new Coordinator();
-    }
-
-    /**
-     * Devuelve una instancia única de la clase Web.
-     *
-     * @return instancia de la clase Web
-     */
+        /**
+         * Devuelve una instancia única de la clase Web.
+         *
+         * @return instancia de la clase Web
+         */
     public static Web getWeb() {
         if (web == null)
             web = new Web();
@@ -101,6 +88,7 @@ public class Web {
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
+
 
     /**
      * Agrega un nuevo equipo a la red.
@@ -131,6 +119,25 @@ public class Web {
         equipmentService.insert(e);
         coordinator.updateTablas();
         return e;
+    }
+
+    /**
+     * Agrega un nuevo equipo a la red.
+     *
+     * @param equipment Equipo que se agrega a la red
+     *
+     *
+     * @throws AlreadyExistException si el equipo ya existe en la red
+     * @throws NotFoundException     si el tipo de puerto o equipo no se encuentra
+     */
+    public void addEquipment(Equipment equipment){
+        if (hardware.containsKey(equipment.getCode()))
+            throw new AlreadyExistException("el equipo ya se encuentra");
+        if (!equipmentTypes.containsKey(equipment.getEquipmentType().getCode()))
+            throw new NotFoundException("El tipo de equipo no se encuentra en la lista");
+        hardware.put(equipment.getCode(), equipment);
+        equipmentService.insert(equipment);
+        coordinator.updateTablas();
     }
 
     /**
@@ -204,6 +211,28 @@ public class Web {
     }
 
     /**
+     * Agrega todos los equipos desde un archivo
+     *
+     * @param directory Directorio en donde se busca el archivo con los equipos
+     */
+    public void addAllEquipmentOf(String directory){
+        for (Equipment equipment: equipmentService.searchAllIn(directory).values()){
+            if (hardware.containsKey(equipment.getCode()))
+                updateEquipment(equipment);
+            else
+                addEquipment(equipment);
+        }
+    }
+
+    /**
+     * guarda todos los equipos dentro de la red en el directorio dado
+     * @param directory
+     */
+    public void insertAllEquipmentIn(String directory){
+        equipmentService.searchAllIn(directory);
+    }
+
+    /**
      * Agrega una nueva conexión a la red.
      *
      * @param port1 el primer puerto de la conexión
@@ -246,6 +275,39 @@ public class Web {
     }
 
     /**
+     * Agrega una nueva conexión a la red.
+     *
+     * @param connection Conexion que se quiere agregar a la red
+     * @return la conexión agregada
+     * @throws NotFoundException     si algún equipo no se encuentra
+     * @throws AlreadyExistException si la conexión ya existe
+     */
+    public void addConnection(Connection connection) {
+        Equipment eq1 = connection.getPort1().getEquipment();
+        Equipment eq2 = connection.getPort2().getEquipment();
+
+        // Verificar si los equipos existen en el hardware
+        if (!hardware.containsKey(eq1.getCode()))
+            throw new NotFoundException("El equipo " + eq1.getCode() + " no se encuentra.");
+        if (!hardware.containsKey(eq2.getCode()))
+            throw new NotFoundException("El equipo " + eq2.getCode() + " no se encuentra.");
+
+        verificarPuertosOcupados(eq1);
+        verificarPuertosOcupados(eq2);
+        if (connections.contains(connection))
+            throw new AlreadyExistException("La conexión entre " + eq1.getCode() + " y " + eq2.getCode() + " ya existe.");
+
+        // Determinar si es necesario generar una nueva IP
+        String nuevaIP = generarNuevaIP(eq1, this);
+
+        // Agregar la conexión a la lista de conexiones
+        connections.add(connection);
+        eq2.addIp(nuevaIP);
+        connectionService.insert(connection);
+        coordinator.updateTablas();
+    }
+
+    /**
      * Elimina una conexión de la red.
      *
      * @param connection la conexión a eliminar
@@ -261,7 +323,6 @@ public class Web {
 		connection.getPort2().setInUse(false);
 		connections.remove(connection);
 		connectionService.erase(connection);
-		coordinator.eraseEdge(connection);
 		coordinator.updateTablas();
 	}
 
@@ -311,6 +372,20 @@ public class Web {
     }
 
     /**
+     * Agrega todas las conexiones que se encientran en el directorio dado
+     *  y actualiza las conexiones ya existentes dentro de la red
+     *
+     * @param directory directorio en donde se buscan las conexiones
+     */
+    public void addAllConnectionOf(String directory){
+        for (Connection connection: connectionService.searchAllIn(directory))
+            if (connections.contains(connection))
+                updateConnection(connection);
+            else
+                addConnection(connection);
+    }
+
+    /**
      * Agrega una nueva localización a la red.
      *
      * @param code        el código de la localización
@@ -329,6 +404,24 @@ public class Web {
         locationService.insert(l);
         coordinator.updateTablas();
         return l;
+    }
+
+    /**
+     * Agrega una nueva localización a la red.
+     *
+     * @param location Ubicacion que se quiere agregar a la red
+     * @return la localización agregada
+     * @throws AlreadyExistException si la localización ya existe
+     */
+    public void addLocation(Location location) {
+        if (locations.containsKey(location.getCode())) {
+            JOptionPane.showMessageDialog(null, "La localizacion ya se encuentra", "Error de duplicacion", JOptionPane.INFORMATION_MESSAGE);
+            throw new AlreadyExistException("la localizacion ya se encuentra");
+        }
+
+        locations.put(location.getCode(), location);
+        locationService.insert(location);
+        coordinator.updateTablas();
     }
 
     /**
@@ -377,6 +470,20 @@ public class Web {
     }
 
     /**
+     * Agrega todas las ubicaciones que se encuentran en el directorio dado
+     *  y actualiza las ubicaciones ya existentes dentro de la red
+     *
+     * @param directory directorio en donde se buscan las ubicaciones
+     */
+    public  void  addAllLocationOf(String directory){
+        for (Location location: locationService.searchAllIn(directory).values())
+            if (locations.containsKey(location.getCode()))
+                updateLocation(location);
+            else
+                addLocation(location);
+    }
+
+    /**
      * Obtiene el conjunto de localizaciones en la red.
      *
      * @return el conjunto de localizaciones
@@ -414,6 +521,22 @@ public class Web {
     }
 
     /**
+     * Agrega un nuevo tipo de cable a la red.
+     *
+     * @param wireType Tipo de cable que se quiere agragar a la red
+     * @return el tipo de cable agregado
+     * @throws AlreadyExistException si el tipo de cable ya existe
+     */
+    public void addWire(WireType wireType) {
+        if (wireTypes.containsKey(wireType.getCode()))
+            throw new AlreadyExistException("el tipo de cable ya existe");
+
+        wireTypes.put(wireType.getCode(), wireType);
+        wireTypeService.insert(wireType);
+        coordinator.updateTablas();
+    }
+
+    /**
      * Elimina un tipo de cable de la red.
      *
      * @param w el tipo de cable a eliminar
@@ -433,7 +556,6 @@ public class Web {
         wireTypeService.erase(w);
         coordinator.updateTablas();
     }
-
 
     /**
      * Actualiza un tipo de cable en la red.
@@ -461,6 +583,20 @@ public class Web {
     }
 
     /**
+     * Agrega todos los tipos de cable que se encuentran en el directorio dado
+     *  y actualiza los tipos de cable ya existentes dentro de la red
+     *
+     * @param directory directorio en donde se buscan los tipos de cable
+     */
+    public  void  addAllWiretypeOf(String directory){
+        for (WireType wireType: wireTypeService.searchAllIn(directory).values())
+            if (locations.containsKey(wireType.getCode()))
+                updateWire(wireType);
+            else
+                addWire(wireType);
+    }
+
+    /**
      * Obtiene el conjunto de tipos de cable en la red.
      *
      * @return el conjunto de tipos de cable
@@ -468,7 +604,6 @@ public class Web {
     public HashMap<String, WireType> getWireTypes() {
         return wireTypes;
     }
-
 
     /**
      * Agrega un nuevo tipo de puerto a la red.
@@ -489,6 +624,21 @@ public class Web {
         return p;
     }
 
+    /**
+     * Agrega un nuevo tipo de puerto a la red.
+     *
+     * @param portType Tipo de puerto que se quiere agragar a la red
+     *
+     * @throws AlreadyExistException si el tipo de puerto ya existe
+     */
+    public void addPort(PortType portType) {
+        if (portTypes.containsKey(portType.getCode()))
+            throw new AlreadyExistException("el tipo de puerto ya se encuentra");
+
+        portTypes.put(portType.getCode(), portType);
+        portTypeService.insert(portType);
+        coordinator.updateTablas();
+    }
 
     /**
      * Elimina un tipo de puerto de la red.
@@ -530,14 +680,38 @@ public class Web {
         coordinator.updateTablas();
     }
 
+    /**
+     * Busca sie existe el tipo de puerto buscado dentro de la red
+     *
+     * @param portType El tipo de puerto que se quiere buscar
+     * @return Retorna el tipo de puerto que se busca, si este se encuentra dentro de la red, en cualquier otro
+     * caso se retorna null.
+     */
     public PortType searchPortType(PortType portType) {
         return portTypes.get(portType.getCode());
     }
 
+    /**
+     * Agrega todos los tipos de puerto que se encuentran en el directorio dado
+     *  y actualiza los tipos de puerto ya existentes dentro de la red
+     *
+     * @param directory directorio en donde se buscan los tipos de puerto
+     */
+    public  void  addAllPortTypeOf(String directory){
+        for (PortType portType: portTypeService.searchAllIn(directory).values())
+            if (locations.containsKey(portType.getCode()))
+                updatePort(portType);
+            else
+                addPort(portType);
+    }
+
+    /**
+     * Busca todos los tipos de puertos que reconoce la red.
+     * @return retorna un mapa, donde la clave es el código del tipo de puerto y su valor es el tipo de puerto mismo
+     */
     public HashMap<String, PortType> getPortTypes() {
         return portTypes;
     }
-
 
     /**
      * Agrega un nuevo equipo a la red.
@@ -555,6 +729,22 @@ public class Web {
         equipmentTypeService.insert(e);
         coordinator.updateTablas();
         return e;
+    }
+
+    /**
+     * Agrega un nuevo equipo a la red.
+     *
+     * @param equipmentType Tipo de equipo que se quiere agregar a la red
+     * @return el tipo de equipo agregado
+     * @throws AlreadyExistException si el tipo de equipo ya existe
+     */
+    public void addEquipmentType(EquipmentType equipmentType) {
+        if (equipmentTypes.containsKey(equipmentType.getCode()))
+            throw new AlreadyExistException("el tipo de equipo ya existe");
+
+        equipmentTypes.put(equipmentType.getCode(), equipmentType);
+        equipmentTypeService.insert(equipmentType);
+        coordinator.updateTablas();
     }
 
     /**
@@ -605,6 +795,21 @@ public class Web {
         return equipmentTypes.get(equipmentType.getCode());
     }
 
+
+    /**
+     * Agrega todos los tipos de puerto que se encuentran en el directorio dado
+     *  y actualiza los tipos de puerto ya existentes dentro de la red
+     *
+     * @param directory directorio en donde se buscan los tipos de puerto
+     */
+    public  void  addAllEquipmentTypeOf(String directory){
+        for (EquipmentType equipmentType: equipmentTypeService.searchAllIn(directory).values())
+            if (locations.containsKey(equipmentType.getCode()))
+                updateEquipmentType(equipmentType);
+            else
+                addEquipmentType(equipmentType);
+    }
+
     /**
      * Obtiene el conjunto de tipos de equipos en la red.
      *
@@ -649,5 +854,21 @@ public class Web {
                 ", wireTypes=" + wireTypes +
                 ", portTypes=" + portTypes +
                 '}';
+    }
+
+    public void insertAllConnectionInto(String directory){
+        connectionService.searchAllIn(directory);
+    }
+    public void insertAllLocationInto(String directory){
+        locationService.searchAllIn(directory);
+    }
+    public void insertAllPortTypeInto(String directory){
+        portTypeService.insertAllIn(directory);
+    }
+    public void insertAllWireTypeInto(String directory){
+        wireTypeService.insertAllIn(directory);
+    }
+    public void insertAllEquipmentTypeInto(String directory){
+        equipmentTypeService.insertAllIn(directory);
     }
 }
