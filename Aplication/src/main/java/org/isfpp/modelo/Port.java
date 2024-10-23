@@ -1,6 +1,6 @@
 package org.isfpp.modelo;
 
-import org.isfpp.logica.Utils;
+import org.isfpp.logica.CalculoGraph;
 
 import java.util.Objects;
 
@@ -24,7 +24,7 @@ public class Port {
         setInUse(false);
         setPortType(portType);
         setEquipment(equipment);
-        MACAddress = Utils.generarMAC();
+        MACAddress = CalculoGraph.generarMAC();
     }
 
     /**

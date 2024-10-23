@@ -4,7 +4,7 @@ import org.isfpp.datos.Cargar;
 import org.isfpp.interfaz.panelesPrincipal.BarraMenu;
 import org.isfpp.interfaz.panelesPrincipal.PanelDerecho;
 import org.isfpp.interfaz.stylusUI.StylusUI;
-import org.isfpp.modelo.Web;
+import org.isfpp.modelo.LAN;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,9 +19,9 @@ public class GUI {
 
         PanelDerecho panelDerecho = new PanelDerecho();
 
-        Web web = Cargar.cargarRedDesdePropiedades("config.properties");
+        LAN LAN = Cargar.cargarRedDesdePropiedades("config.properties");
 
-        BarraMenu barraMenu = new BarraMenu(web);
+        BarraMenu barraMenu = new BarraMenu(LAN);
         JPanel panelIzquierdo = new JPanel();
         StylusUI.aplicarEstiloPanel(panelIzquierdo);
         panelIzquierdo.setLayout(new BoxLayout(panelIzquierdo, BoxLayout.Y_AXIS));

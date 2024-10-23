@@ -19,7 +19,7 @@ public class Guardar {
      * @param directory Directorio donde se guardarán los archivos.
      * @throws IOException Si ocurre un error de E/S.
      */
-    public void saveAll(Web red, String directory) throws IOException {
+    public void saveAll(LAN red, String directory) throws IOException {
         Properties properties = new Properties();
         try (InputStream input = Cargar.class.getClassLoader().getResourceAsStream("config.properties")) {
             if (input == null) {
@@ -50,7 +50,7 @@ public class Guardar {
      * @param fileName Nombre del archivo donde se guardarán los datos de los equipos.
      * @param red      Objeto Web que contiene los datos de la red.
      */
-    public void saveEquipments(String fileName, Web red) {
+    public void saveEquipments(String fileName, LAN red) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
             for (Equipment equipment : red.getHardware().values()) {
                 //SW02;Switch 2;HP Aruba;1930 48G 4SFP/SFP+;SW;SS;1G,48,SFP+,4;166.82.100.100;true;
@@ -91,7 +91,7 @@ public class Guardar {
      * @param fileName Nombre del archivo donde se guardarán los datos de las conexiones.
      * @param red      Objeto Web que contiene los datos de la red.
      */
-    public void saveConnections(String fileName, Web red) {
+    public void saveConnections(String fileName, LAN red) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
             for (Connection connection : red.getConnections()) {
                 //SW01;100M;SW02;1G;C5E;
@@ -114,7 +114,7 @@ public class Guardar {
      * @param fileName Nombre del archivo donde se guardarán los datos de los tipos de cables.
      * @param red      Objeto Web que contiene los datos de la red.
      */
-    public void saveWireTypes(String fileName, Web red) {
+    public void saveWireTypes(String fileName, LAN red) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
             for (WireType wireType : red.getWireTypes().values()) {
                 String data = wireType.getCode() + ";" +
@@ -134,7 +134,7 @@ public class Guardar {
      * @param fileName Nombre del archivo donde se guardarán los datos de los tipos de equipos.
      * @param red      Objeto Web que contiene los datos de la red.
      */
-    public void saveEquipmentTypes(String fileName, Web red) {
+    public void saveEquipmentTypes(String fileName, LAN red) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
             for (EquipmentType equipmentType : red.getEquipmentTypes().values()) {
                 String data = equipmentType.getCode() + ";" +
@@ -153,7 +153,7 @@ public class Guardar {
      * @param fileName Nombre del archivo donde se guardarán los datos de los tipos de puertos.
      * @param red      Objeto Web que contiene los datos de la red.
      */
-    public void savePortTypes(String fileName, Web red) {
+    public void savePortTypes(String fileName, LAN red) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
             for (PortType portType : red.getPortTypes().values()) {
                 //SFP;4 Gbps Fibra;40;
@@ -175,7 +175,7 @@ public class Guardar {
      * @param fileName Nombre del archivo donde se guardarán los datos de las ubicaciones.
      * @param red      Objeto Web que contiene los datos de la red.
      */
-    public void saveLocations(String fileName, Web red) {
+    public void saveLocations(String fileName, LAN red) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
             for (Location location : red.getLocations().values()) {
                 String data = location.getCode() + ";" +
