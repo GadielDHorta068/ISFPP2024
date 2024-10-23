@@ -1,6 +1,6 @@
 package org.isfpp.interfaz.panelesCreadores;
 import org.isfpp.interfaz.stylusUI.StylusUI;
-import org.isfpp.modelo.Web;
+import org.isfpp.modelo.LAN;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,7 +10,7 @@ public class LocationFormPanel extends JPanel {
     private final JTextField codeField;
     private final JTextField descriptionField;
 
-    public LocationFormPanel(Web web) {
+    public LocationFormPanel(LAN LAN) {
 
         JFrame frame = new JFrame("Agregar Ubicación");
         frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -45,7 +45,7 @@ public class LocationFormPanel extends JPanel {
             String description = descriptionField.getText();
 
             try {
-                web.addLocation(code, description);
+                LAN.addLocation(code, description);
                 JOptionPane.showMessageDialog(this, "Ubicacion creado con éxito");
                 frame.setVisible(false);
             } catch (Exception ex) {

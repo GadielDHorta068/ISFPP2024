@@ -2,14 +2,12 @@ package org.isfpp.controller;
 
 import org.isfpp.interfaz.panelesCreadores.MainMenu;
 import org.isfpp.interfaz.panelesPrincipal.DesplegableComponent;
-import org.isfpp.logica.Utils;
+import org.isfpp.logica.CalculoGraph;
 import org.isfpp.modelo.*;
 import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,8 +16,8 @@ import java.util.List;
  * La clase Coordinator es responsable de gestionar diversas funcionalidades relacionadas con la web y sus componentes.
  */
 public class Coordinator {
-    private Web web;
-    private Utils utils;
+    private LAN LAN;
+    private CalculoGraph calculoGraph;
     private MainMenu mainMenu;
     private Object selectedItem;
     private final List<DesplegableComponent> tablas = new ArrayList<>();
@@ -28,8 +26,8 @@ public class Coordinator {
      * Constructor por defecto de la clase Coordinator.
      */
     public Coordinator() {
-        this.web = null;
-        this.utils = null;
+        this.LAN = null;
+        this.calculoGraph = null;
         this.mainMenu = null;
         this.selectedItem = null;
     }
@@ -39,17 +37,17 @@ public class Coordinator {
      *
      * @return el objeto Utils.
      */
-    public Utils getUtils() {
-        return utils;
+    public CalculoGraph getUtils() {
+        return calculoGraph;
     }
 
     /**
      * Establece el objeto Utils.
      *
-     * @param utils el objeto Utils a establecer.
+     * @param calculoGraph el objeto Utils a establecer.
      */
-    public void setUtils(Utils utils) {
-        this.utils = utils;
+    public void setUtils(CalculoGraph calculoGraph) {
+        this.calculoGraph = calculoGraph;
     }
 
     /**
@@ -57,17 +55,17 @@ public class Coordinator {
      *
      * @return el objeto Web.
      */
-    public Web getWeb() {
-        return web;
+    public LAN getWeb() {
+        return LAN;
     }
 
     /**
      * Establece el objeto Web.
      *
-     * @param web el objeto Web a establecer.
+     * @param LAN el objeto Web a establecer.
      */
-    public void setWeb(Web web) {
-        this.web = web;
+    public void setWeb(LAN LAN) {
+        this.LAN = LAN;
     }
 
     /**
@@ -76,7 +74,7 @@ public class Coordinator {
      * @return un HashMap con el hardware de la red.
      */
     public HashMap<String, Equipment> getHardware() {
-        return web.getHardware();
+        return LAN.getHardware();
     }
 
     /**
@@ -85,7 +83,7 @@ public class Coordinator {
      * @param hardware un HashMap con el hardware a establecer.
      */
     public void setHardware(HashMap<String, Equipment> hardware) {
-        web.setHardware(hardware);
+        LAN.setHardware(hardware);
     }
 
     /**
@@ -94,7 +92,7 @@ public class Coordinator {
      * @return un ArrayList con las conexiones de la red.
      */
     public ArrayList<Connection> getConnections() {
-        return web.getConnections();
+        return LAN.getConnections();
     }
 
     /**
@@ -103,7 +101,7 @@ public class Coordinator {
      * @param conections un ArrayList con las conexiones a establecer.
      */
     public void setConnections(ArrayList<Connection> conections) {
-        this.web.setConnections(conections);
+        this.LAN.setConnections(conections);
     }
 
     /**
@@ -112,7 +110,7 @@ public class Coordinator {
      * @return un HashMap con las ubicaciones de la red.
      */
     public HashMap<String, Location> getLocations() {
-        return web.getLocations();
+        return LAN.getLocations();
     }
 
     /**
@@ -121,7 +119,7 @@ public class Coordinator {
      * @param locations un HashMap con las ubicaciones a establecer.
      */
     public void setLocations(HashMap<String, Location> locations) {
-        this.web.setLocations(locations);
+        this.LAN.setLocations(locations);
     }
 
     /**
@@ -130,7 +128,7 @@ public class Coordinator {
      * @return el nombre de la red.
      */
     public String getNombre() {
-        return web.getNombre();
+        return LAN.getNombre();
     }
 
     /**
@@ -139,7 +137,7 @@ public class Coordinator {
      * @param nombre el nombre a establecer.
      */
     public void setNombre(String nombre) {
-        web.setNombre(nombre);
+        LAN.setNombre(nombre);
     }
 
     /**
@@ -150,7 +148,7 @@ public class Coordinator {
      * @return la ubicación agregada.
      */
     public Location addLocation(String code, String description) {
-        return web.addLocation(code, description);
+        return LAN.addLocation(code, description);
     }
 
     /**
@@ -159,7 +157,7 @@ public class Coordinator {
      * @param l la ubicación a eliminar.
      */
     public void eraseLocation(Location l) {
-        web.eraseLocation(l);
+        LAN.eraseLocation(l);
     }
 
     /**
@@ -171,7 +169,7 @@ public class Coordinator {
      * @return el puerto agregado.
      */
     public PortType addPort(String code, String description, int speed) {
-        return web.addPort(code, description, speed);
+        return LAN.addPort(code, description, speed);
     }
 
     /**
@@ -183,7 +181,7 @@ public class Coordinator {
      * @return el cable agregado.
      */
     public WireType addWire(String code, String description, int speed) {
-        return web.addWire(code, description, speed);
+        return LAN.addWire(code, description, speed);
     }
 
     /**
@@ -194,7 +192,7 @@ public class Coordinator {
      * @return el tipo de equipo agregado.
      */
     public EquipmentType addEquipmentType(String code, String description) {
-        return web.addEquipmentType(code, description);
+        return LAN.addEquipmentType(code, description);
     }
 
     /**
@@ -213,7 +211,7 @@ public class Coordinator {
      */
     public Equipment addEquipment(String code, String description, String marca, String model, PortType portType, int cantidad,
                                   EquipmentType equipmentType, Location location, Boolean status) {
-        return web.addEquipment(code, description, marca, model, portType, cantidad, equipmentType, location, status);
+        return LAN.addEquipment(code, description, marca, model, portType, cantidad, equipmentType, location, status);
     }
 
     /**
@@ -222,7 +220,7 @@ public class Coordinator {
      * @param e el equipo a eliminar.
      */
     public void eraseEquipment(Equipment e) {
-        web.eraseEquipment(e);
+        LAN.eraseEquipment(e);
     }
 
     /**
@@ -231,7 +229,7 @@ public class Coordinator {
      * @param w el cable a eliminar.
      */
     public void eraseWire(WireType w) {
-        web.eraseWire(w);
+        LAN.eraseWire(w);
     }
 
     /**
@@ -240,7 +238,7 @@ public class Coordinator {
      * @param portType el puerto a eliminar.
      */
     public void erasePort(PortType portType) {
-        web.erasePort(portType);
+        LAN.erasePort(portType);
     }
 
     /**
@@ -252,7 +250,7 @@ public class Coordinator {
      * @return la conexión agregada.
      */
     public Connection addConnection(Port port1, Port port2, WireType wire) {
-        return web.addConnection(port1, port2, wire);
+        return LAN.addConnection(port1, port2, wire);
     }
 
     /**
@@ -261,7 +259,7 @@ public class Coordinator {
      * @param connection la conexión a eliminar.
      */
     public void eraseConnection(Connection connection) {
-        web.eraseConnection(connection);
+        LAN.eraseConnection(connection);
     }
 
     /**
@@ -270,7 +268,7 @@ public class Coordinator {
      * @return un HashMap con los resultados del ping.
      */
     public HashMap<Equipment, Boolean> ping() {
-        return utils.ping();
+        return calculoGraph.ping();
     }
 
     /**
@@ -280,7 +278,7 @@ public class Coordinator {
      * @return el resultado del ping.
      */
     public boolean ping(Equipment e1) {
-        return utils.ping(e1);
+        return calculoGraph.ping(e1);
     }
 
     /**
@@ -290,7 +288,7 @@ public class Coordinator {
      * @return una lista de equipos con problemas de conectividad.
      */
     public List<Equipment> detectConnectivityIssues(Equipment startNode) {
-        return utils.detectConnectivityIssues(startNode);
+        return calculoGraph.detectConnectivityIssues(startNode);
     }
 
     /**
@@ -301,7 +299,7 @@ public class Coordinator {
      * @return el camino del traceroute.
      */
     public GraphPath<Equipment, DefaultWeightedEdge> traceroute(Equipment e1, Equipment e2) {
-        return utils.traceroute(e1, e2);
+        return calculoGraph.traceroute(e1, e2);
     }
 
     /**
@@ -310,7 +308,7 @@ public class Coordinator {
      * @return el grafo de la red.
      */
     public Graph<Equipment, Connection> getGraph() {
-        return utils.getGraph();
+        return calculoGraph.getGraph();
     }
 
     /**
@@ -319,7 +317,7 @@ public class Coordinator {
      * @param graph el grafo a establecer.
      */
     public void setGraph(Graph<Equipment, Connection> graph) {
-        this.utils.setGraph(graph);
+        this.calculoGraph.setGraph(graph);
     }
 
     /**
@@ -347,16 +345,16 @@ public class Coordinator {
      * @return una lista de resultados del escaneo.
      */
     public List<String> scanIP(String ip) {
-        return utils.scanIP(ip);
+        return calculoGraph.scanIP(ip);
     }
 
     /**
      * Carga los datos de la web.
      *
-     * @param web la web cuyos datos se van a cargar.
+     * @param LAN la web cuyos datos se van a cargar.
      */
-    public void LoadData(Web web) {
-        this.utils.LoadData(web);
+    public void LoadData(LAN LAN) {
+        this.calculoGraph.LoadData(LAN);
     }
 
     /**
@@ -380,12 +378,14 @@ public class Coordinator {
     /**
      * Actualiza las tablas de la interfaz.
      */
-    public void updateTablas() {
+
+    public void updateTablas(LAN w1) {
+        this.LoadData(w1);
         for (DesplegableComponent tabla : tablas) {
             tabla.updateTable();
-            LoadData(web);
         }
     }
+
 
     /**
      * Agrega un componente desplegable a las tablas.

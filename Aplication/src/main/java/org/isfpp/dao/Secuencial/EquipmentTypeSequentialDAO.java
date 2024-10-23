@@ -1,21 +1,21 @@
 package org.isfpp.dao.Secuencial;
 
 import org.isfpp.dao.EquipmentTypeDAO;
-import org.isfpp.modelo.Equipment;
 import org.isfpp.modelo.EquipmentType;
 
 import java.io.*;
-import java.util.*;
+import java.util.Hashtable;
+import java.util.NoSuchElementException;
+import java.util.Scanner;
 
 public class EquipmentTypeSequentialDAO implements EquipmentTypeDAO {
-    private static String fileName;
     private Hashtable<String, EquipmentType> map;
+    private String fileName;
     private boolean update;
 
     public EquipmentTypeSequentialDAO() {
         ResourceBundle rb = ResourceBundle.getBundle("config");
         fileName = rb.getString("rs.equipmentType");
-        System.out.println("la"+ fileName);
         update = true;
     }
 
@@ -23,26 +23,30 @@ public class EquipmentTypeSequentialDAO implements EquipmentTypeDAO {
         Hashtable<String, EquipmentType> map = new Hashtable<>();
         Scanner inFile = null;
 
-        System.out.println(fileName);
         try {
-            inFile = new Scanner(new File(fileName));
+            // Usar FileInputStream para cargar el archivo desde el sistema de archivos
+            File file = new File(fileName);
+            if (!file.exists()) {
+                throw new FileNotFoundException("Archivo no encontrado: " + fileName);
+            }
+            inFile = new Scanner(new FileInputStream(file));
             inFile.useDelimiter("\\s*;\\s*");
-            String[] minireader, minireader2;
+
             while (inFile.hasNext()) {
                 EquipmentType equipmentType = new EquipmentType();
                 equipmentType.setCode(inFile.next());
                 equipmentType.setDescription(inFile.next());
 
-                map.put(equipmentType.getCode(),equipmentType);
+                map.put(equipmentType.getCode(), equipmentType);
             }
         } catch (FileNotFoundException fileNotFoundException) {
-            System.err.println("Error opening file.");
+            System.err.println("Error abriendo el archivo: " + fileName);
             fileNotFoundException.printStackTrace();
         } catch (NoSuchElementException noSuchElementException) {
-            System.err.println("Error in file record structure");
+            System.err.println("Error en la estructura del archivo.");
             noSuchElementException.printStackTrace();
         } catch (IllegalStateException illegalStateException) {
-            System.err.println("Error reading from file.");
+            System.err.println("Error leyendo el archivo.");
             illegalStateException.printStackTrace();
         } finally {
             if (inFile != null)
@@ -51,29 +55,29 @@ public class EquipmentTypeSequentialDAO implements EquipmentTypeDAO {
         return map;
     }
 
-    private void writeToFile(Hashtable<String,EquipmentType> equipmentTypeMap, String fileName) {
+    private void writeToFile(Hashtable<String, EquipmentType> equipmentTypeMap, String fileName) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, false))) {
-            for (EquipmentType equipmentType: equipmentTypeMap.values()) {
-                writer.write(String.format("%s;%s;", equipmentType.getCode(),equipmentType.getDescription()));
+            for (EquipmentType equipmentType : equipmentTypeMap.values()) {
+                writer.write(String.format("%s;%s;", equipmentType.getCode(), equipmentType.getDescription()));
                 writer.newLine();
             }
         } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (FormatterClosedException formatterClosedException) {
-            System.err.println("Error writing to file.");
+            System.err.println("Error escribiendo en el archivo: " + fileName);
+            e.printStackTrace();
         }
     }
 
     @Override
     public void insert(EquipmentType equipmentType) {
-        map.put(equipmentType.getCode(),equipmentType);
-        writeToFile(map,fileName);
+        map.put(equipmentType.getCode(), equipmentType);
+        writeToFile(map, fileName);
         update = true;
     }
 
     @Override
     public void update(EquipmentType equipmentType) {
-        map.replace(equipmentType.getCode(),equipmentType);
+        map.replace(equipmentType.getCode(), equipmentType);
+        writeToFile(map, fileName);
         update = true;
     }
 
@@ -125,9 +129,9 @@ public class EquipmentTypeSequentialDAO implements EquipmentTypeDAO {
     }
 
     @Override
-    public Hashtable<String,EquipmentType> searchAll() {
+    public Hashtable<String, EquipmentType> searchAll() {
         if (update) {
-            map = readFromFile("data" + File.separator + "tipoEquipo.txt");
+            map = readFromFile(fileName);
             update = false;
         }
         return map;

@@ -9,6 +9,10 @@ import org.isfpp.modelo.Location;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * PanelDerecho: Esta clase representa un panel en la interfaz de usuario que muestra propiedades
+ * y un icono relacionado con un objeto seleccionado.
+ */
 public class PanelDerecho {
     private JTextArea propiedades;
     private JLabel logo;
@@ -19,11 +23,15 @@ public class PanelDerecho {
         }
     };
 
+    /**
+     * crearPanelDerecho: Crea y aplica el estilo al panel derecho.
+     * @return un JPanel estilizado.
+     */
     public JPanel crearPanelDerecho() {
         StylusUI.aplicarEstiloPanel(panel);
         panel.setLayout(new BorderLayout());
 
-        //Set inicial; cambiar esto a un signo de pregunta y que al seleccionar un tipo x usar setIcon
+        // Set inicial; cambiar esto a un signo de pregunta y que al seleccionar un tipo x usar setIcon
         setIcon("help");
         propiedades = new JTextArea("Seleccione un objeto para ver sus propiedades");
         StylusUI.styleTextArea(propiedades);
@@ -32,12 +40,21 @@ public class PanelDerecho {
         return panel;
     }
 
+    /**
+     * updateProperties: Actualiza las propiedades mostradas y el icono del panel.
+     * @param text El texto a mostrar.
+     * @param equipmentType El tipo de equipamiento para el cual se mostrará el icono.
+     */
     public void updateProperties(String text, String equipmentType) {
         propiedades.setText(text);
         System.out.println(equipmentType);
         setIcon(equipmentType);
     }
 
+    /**
+     * updateProperties: Actualiza las propiedades basadas en el objeto proporcionado.
+     * @param e El objeto cuya información se presentará.
+     */
     public void updateProperties(Object e) {
         if (e instanceof Equipment eq) {
             propiedades.setText(eq.toString());
@@ -51,13 +68,21 @@ public class PanelDerecho {
         }
     }
 
-
+    /**
+     * resizeImage: Redimensiona una imagen al tamaño especificado.
+     * @param imageIcon El icono de imagen a redimensionar.
+     * @return Un nuevo ImageIcon redimensionado.
+     */
     private ImageIcon resizeImage(ImageIcon imageIcon) {
         Image image = imageIcon.getImage();
         Image resizedImage = image.getScaledInstance(100, 100, Image.SCALE_SMOOTH);
         return new ImageIcon(resizedImage);
     }
 
+    /**
+     * setIcon: Establece el icono en la parte superior del panel.
+     * @param iconName El nombre del icono a establecer.
+     */
     public void setIcon(String iconName) {
         // Logo en la parte superior
         ImageIcon logoIcon = IconUtil.getIcon(iconName);

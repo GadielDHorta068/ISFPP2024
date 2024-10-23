@@ -15,14 +15,16 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.net.URL;
+import java.util.Objects;
 
 
 public class BarraMenu {
-    private final Web web;
+    private final LAN LAN;
     private Coordinator coordinator;
 
-    public BarraMenu(Web web) {
-        this.web = web;
+    public BarraMenu(LAN LAN) {
+        this.LAN = LAN;
     }
 
     public JMenuBar crearBarraMenu() {
@@ -57,14 +59,7 @@ public class BarraMenu {
             coordinator.updateTablas();
         }
     }
-    private void updateWeb(String directory){
-        File dataDir = new File(directory, "data");
 
-        new File(dataDir, "equipo.txt").getAbsolutePath();
-
-
-
-    }
     private void accionGuardar(ActionEvent actionEvent) {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
@@ -73,14 +68,7 @@ public class BarraMenu {
             File dataDir = new File(fileChooser.getSelectedFile(), "data");
 
             coordinator.insertAllInto(directory);
-            //try {//rehacer el guardado de datos en esta parte
-                //          foofoffoGuardado
-              //  coordinator
-              //  guardar = new FAF();
-              //  guardar.saveAll(web, directory);
-           // } catch (IOException ex) {
-             //   ex.printStackTrace();
-           // }
+
         }
     }
 
@@ -88,10 +76,10 @@ public class BarraMenu {
         JMenu editarMenu = new JMenu("Editar");
         StylusUI.styleMenu(editarMenu);
 
-        editarMenu.add(crearMenuItem("Agregar Equipo", e -> new EquipmentFormPanel(web)));
-        editarMenu.add(crearMenuItem("Agregar tipo Puerto", e -> new PortTypeFormPanel(web)));
-        editarMenu.add(crearMenuItem("Agregar Ubicacion", e -> new LocationFormPanel(web)));
-        editarMenu.add(crearMenuItem("Agregar Conexion", e -> new EditConnection(web, null)));
+        editarMenu.add(crearMenuItem("Agregar Equipo", e -> new EquipmentFormPanel(LAN)));
+        editarMenu.add(crearMenuItem("Agregar tipo Puerto", e -> new PortTypeFormPanel(LAN)));
+        editarMenu.add(crearMenuItem("Agregar Ubicacion", e -> new LocationFormPanel(LAN)));
+        editarMenu.add(crearMenuItem("Agregar Conexion", e -> new EditConnection(LAN, null)));
         editarMenu.add(crearMenuItem("Eliminar", this::accionEliminar));
         editarMenu.add(crearMenuItem("Editar", this::accionEditar));
 
@@ -102,10 +90,10 @@ public class BarraMenu {
         Object seleccionado = coordinator.getSelectedItem();
         if (seleccionado != null) {
             switch (seleccionado) {
-                case Equipment equipment -> web.eraseEquipment(equipment);
-                case Location location -> web.eraseLocation(location);
-                case PortType puerto -> web.erasePort(puerto);
-                case Connection connection -> web.eraseConnection(connection);
+                case Equipment equipment -> coordinator.eraseEquipment(equipment);
+                case Location location -> coordinator.eraseLocation(location);
+                case PortType puerto -> coordinator.erasePort(puerto);
+                case Connection connection -> coordinator.eraseConnection(connection);
                 default -> System.out.println("Clase no detectada: " + seleccionado.getClass());
             }
             coordinator.updateTablas();
@@ -116,10 +104,10 @@ public class BarraMenu {
         Object seleccionado = coordinator.getSelectedItem();
         if (seleccionado != null) {
             switch (seleccionado) {
-                case Equipment equipment -> new EditEquipmentFormPanel(web, equipment.getCode());
-                case Location location -> new EditLocationFormPanel(web, location.getCode());
-                case PortType puerto -> new EditPortTypeFormPanel(web, puerto.getCode());
-                case Connection connection -> new EditConnection(web, connection);
+                case Equipment equipment -> new EditEquipmentFormPanel(LAN, equipment.getCode());
+                case Location location -> new EditLocationFormPanel(LAN, location.getCode());
+                case PortType puerto -> new EditPortTypeFormPanel(LAN, puerto.getCode());
+                case Connection connection -> new EditConnection(LAN, connection);
                 default -> System.out.println("Clase no detectada: " + seleccionado.getClass());
             }
         }
@@ -129,8 +117,8 @@ public class BarraMenu {
         JMenu ayudaMenu = new JMenu("Ayuda");
         StylusUI.styleMenu(ayudaMenu);
 
-        ayudaMenu.add(crearMenuItem("Como Usar", e -> abrirManual()));
-        ayudaMenu.add(crearMenuItem("Acerca de", e -> acercaDe()));
+        ayudaMenu.add(crearMenuItem("Como Usar" , e -> abrirManual()));
+        ayudaMenu.add(crearMenuItem("Acerca de" , e -> acercaDe()));
         return ayudaMenu;
     }
 
@@ -193,18 +181,16 @@ public class BarraMenu {
         herramientasMenu.add(crearMenuItem("Ping en rango", e -> iniciarPing()));
         herramientasMenu.add(crearMenuItem("Equipos Activos", e -> iniciarPingEquipos()));
         herramientasMenu.add(crearMenuItem("Conexiones", e -> iniciarConnectionIssues()));
-        herramientasMenu.add(crearMenuItem("On/Off Equipo", e -> cambiarEstado()));
-        herramientasMenu.add(crearMenuItem("Visualizar Grafo", e -> new VisualizarGrafo(web.getHardware(), web.getConnections())));
+        herramientasMenu.add(crearMenuItem("Visualizar Grafo", e ->   iniciarVerGrafo()));
         herramientasMenu.add(crearMenuItem("Traceroute", e -> iniciarTraceroute()));
 
         return herramientasMenu;
     }
 
-    private void cambiarEstado() {
-        if (coordinator.getSelectedItem() instanceof Equipment eq) {
-            eq.setStatus(!eq.isStatus());
-            coordinator.updateTablas();
-        }
+    private void iniciarVerGrafo() {
+        VisualizarGrafo visualizarGrafo=new VisualizarGrafo();
+        visualizarGrafo.setCoordinator(coordinator);
+        visualizarGrafo.Visualizar();
     }
 
     private void iniciarPing() {

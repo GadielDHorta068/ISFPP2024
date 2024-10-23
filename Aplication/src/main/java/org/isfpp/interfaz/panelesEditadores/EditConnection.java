@@ -14,7 +14,7 @@ public class EditConnection extends JPanel {
     private final JComboBox<WireType> wireComboBox;
 
 
-    public EditConnection(Web web, Connection c) {
+    public EditConnection(LAN LAN, Connection c) {
         JFrame frame = new JFrame("Edicion de Conexion");
         frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         frame.setSize(800, 600);
@@ -27,7 +27,7 @@ public class EditConnection extends JPanel {
         JLabel equipo1 = new JLabel("Equipo origen");
         StylusUI.aplicarEstiloEtiqueta(equipo1);
         formPanel.add(equipo1);
-        eq1ComboBox = new JComboBox<>(web.getHardware().values().toArray(new Equipment[0]));
+        eq1ComboBox = new JComboBox<>(LAN.getHardware().values().toArray(new Equipment[0]));
         StylusUI.aplicarEstiloComboBox(eq1ComboBox);
         formPanel.add(eq1ComboBox);
 
@@ -50,7 +50,7 @@ public class EditConnection extends JPanel {
         JLabel equipo2 = new JLabel("Equipo destino");
         StylusUI.aplicarEstiloEtiqueta(equipo2);
         formPanel.add(equipo2);
-        eq2ComboBox = new JComboBox<>(web.getHardware().values().toArray(new Equipment[1]));
+        eq2ComboBox = new JComboBox<>(LAN.getHardware().values().toArray(new Equipment[1]));
         StylusUI.aplicarEstiloComboBox(eq2ComboBox);
         formPanel.add(eq2ComboBox);
 
@@ -73,7 +73,7 @@ public class EditConnection extends JPanel {
         JLabel wireType = new JLabel("Tipo de Cable");
         StylusUI.aplicarEstiloEtiqueta(wireType);
         formPanel.add(wireType);
-        wireComboBox = new JComboBox<>(web.getWireTypes().values().toArray(new WireType[0]));
+        wireComboBox = new JComboBox<>(LAN.getWireTypes().values().toArray(new WireType[0]));
         StylusUI.aplicarEstiloComboBox(wireComboBox);
         formPanel.add(wireComboBox);
 
@@ -92,10 +92,9 @@ public class EditConnection extends JPanel {
             try {
                 assert port2 != null;
                 assert port1 != null;
-                web.addConnection(port1, port2, wire);
 
+                LAN.updateConnection(c,new Connection(port1, port2, wire));
                 JOptionPane.showMessageDialog(this, "Red creada con éxito");
-                web.getCoordinator().updateTablas();
                 frame.setVisible(false);
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, "Error al crear equipo: " + ex.getMessage());

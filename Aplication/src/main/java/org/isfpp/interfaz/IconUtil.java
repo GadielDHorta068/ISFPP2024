@@ -9,6 +9,9 @@ import java.util.Properties;
 public class IconUtil {
     private static final Properties prop = new Properties();
 
+    /*
+     * Bloque estático para cargar el archivo de propiedades
+     */
     static {
         try (InputStream input = IconUtil.class.getClassLoader().getResourceAsStream("config.properties")) {
             if (input != null) {
@@ -21,6 +24,12 @@ public class IconUtil {
         }
     }
 
+    /**
+     * Obtiene un icono basado en el nombre del icono especificado en el archivo de propiedades.
+     *
+     * @param iconName el nombre del icono
+     * @return el icono cargado como ImageIcon, o null si no se encuentra el icono
+     */
     public static ImageIcon getIcon(String iconName) {
         String iconFileName = prop.getProperty("icon." + iconName);
         if (iconFileName != null) {
@@ -43,6 +52,12 @@ public class IconUtil {
             return null;
         }
     }
+
+    /**
+     * Método principal para probar la carga de iconos.
+     *
+     * @param args argumentos de la línea de comandos
+     */
     public static void main(String[] args) {
         ImageIcon icon = IconUtil.getIcon("pc");
         if (icon != null) {
