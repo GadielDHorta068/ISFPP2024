@@ -17,16 +17,14 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
-import java.net.URL;
-import java.util.Objects;
 
 
 public class BarraMenu {
-    private final Web web;
+    private final LAN LAN;
     private Coordinator coordinator;
 
-    public BarraMenu(Web web) {
-        this.web = web;
+    public BarraMenu(LAN LAN) {
+        this.LAN = LAN;
     }
 
     public JMenuBar crearBarraMenu() {
@@ -77,7 +75,7 @@ public class BarraMenu {
             }
             try {
                 Guardar guardar = new Guardar();
-                guardar.saveAll(web, directory);
+                guardar.saveAll(LAN, directory);
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
@@ -88,10 +86,10 @@ public class BarraMenu {
         JMenu editarMenu = new JMenu("Editar");
         StylusUI.styleMenu(editarMenu);
 
-        editarMenu.add(crearMenuItem("Agregar Equipo", e -> new EquipmentFormPanel(web)));
-        editarMenu.add(crearMenuItem("Agregar tipo Puerto", e -> new PortTypeFormPanel(web)));
-        editarMenu.add(crearMenuItem("Agregar Ubicacion", e -> new LocationFormPanel(web)));
-        editarMenu.add(crearMenuItem("Agregar Conexion", e -> new EditConnection(web, null)));
+        editarMenu.add(crearMenuItem("Agregar Equipo", e -> new EquipmentFormPanel(LAN)));
+        editarMenu.add(crearMenuItem("Agregar tipo Puerto", e -> new PortTypeFormPanel(LAN)));
+        editarMenu.add(crearMenuItem("Agregar Ubicacion", e -> new LocationFormPanel(LAN)));
+        editarMenu.add(crearMenuItem("Agregar Conexion", e -> new EditConnection(LAN, null)));
         editarMenu.add(crearMenuItem("Eliminar", this::accionEliminar));
         editarMenu.add(crearMenuItem("Editar", this::accionEditar));
 
@@ -115,10 +113,10 @@ public class BarraMenu {
         Object seleccionado = coordinator.getSelectedItem();
         if (seleccionado != null) {
             switch (seleccionado) {
-                case Equipment equipment -> new EditEquipmentFormPanel(web, equipment.getCode());
-                case Location location -> new EditLocationFormPanel(web, location.getCode());
-                case PortType puerto -> new EditPortTypeFormPanel(web, puerto.getCode());
-                case Connection connection -> new EditConnection(web, connection);
+                case Equipment equipment -> new EditEquipmentFormPanel(LAN, equipment.getCode());
+                case Location location -> new EditLocationFormPanel(LAN, location.getCode());
+                case PortType puerto -> new EditPortTypeFormPanel(LAN, puerto.getCode());
+                case Connection connection -> new EditConnection(LAN, connection);
                 default -> System.out.println("Clase no detectada: " + seleccionado.getClass());
             }
         }

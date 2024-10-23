@@ -22,9 +22,9 @@ public class Cargar {
     * @return la red cargada  
     * @throws FileNotFoundException si algún archivo no se encuentra
     */
-   public static Web cargarRed(String name, String equipmentFile, String connectionFile, String locationFile,
+   public static LAN cargarRed(String name, String equipmentFile, String connectionFile, String locationFile,
                                String portTypeFile, String wireTypeFile, String equipmentTypeFile) throws FileNotFoundException {
-        Web red = new Web(name);
+        LAN red = new LAN(name);
 
         loadEquipmentType(red, equipmentTypeFile);
        loadPortTypes(red, portTypeFile);
@@ -43,7 +43,7 @@ public class Cargar {
      * @param filePath la ruta del archivo.
      * @throws FileNotFoundException si el archivo no se encuentra.
      */
-    public static void loadEquipments(Web red, String filePath) throws FileNotFoundException {
+    public static void loadEquipments(LAN red, String filePath) throws FileNotFoundException {
         InputStream inputStream;
 
         // Verificar si es un archivo local
@@ -74,7 +74,7 @@ public class Cargar {
      * @param read el Scanner desde el cual leer los equipos.
      * @param red la red a la cual agregar los equipos.
      */
-    private static void processEquipments(Scanner read, Web red) {
+    private static void processEquipments(Scanner read, LAN red) {
         Equipment newEquipment;
         String code, description, marca, model;
         String[] portsArray, ipsArray;
@@ -153,7 +153,7 @@ public class Cargar {
      * @param filePath la ruta del archivo.
      * @throws FileNotFoundException si el archivo no se encuentra.
      */
-    public static void loadPortTypes(Web red, String filePath) throws FileNotFoundException {
+    public static void loadPortTypes(LAN red, String filePath) throws FileNotFoundException {
         File file = new File(filePath);
 
         // Verificar si es un archivo local
@@ -194,7 +194,7 @@ public class Cargar {
      * @param fileName la ruta del archivo.
      * @throws FileNotFoundException si el archivo no se encuentra.
      */
-    public static void loadConnections(Web red, String fileName) throws FileNotFoundException {
+    public static void loadConnections(LAN red, String fileName) throws FileNotFoundException {
         WireType wireType;
         Equipment equipment1, equipment2;
         PortType portType1, portType2;
@@ -235,7 +235,7 @@ public class Cargar {
      * @param filePath la ruta del archivo.
      * @throws FileNotFoundException si el archivo no se encuentra.
      */
-    public static void loadWireType(Web red, String filePath) throws FileNotFoundException {
+    public static void loadWireType(LAN red, String filePath) throws FileNotFoundException {
         String code, description;
         int speed;
 
@@ -283,7 +283,7 @@ public class Cargar {
      * @param filePath la ruta del archivo.
      * @throws FileNotFoundException si el archivo no se encuentra.
      */
-    public static void loadEquipmentType(Web red, String filePath) throws FileNotFoundException {
+    public static void loadEquipmentType(LAN red, String filePath) throws FileNotFoundException {
         String code, description;
 
         File file = new File(filePath);
@@ -328,7 +328,7 @@ public class Cargar {
      * @param filePath la ruta del archivo.
      * @throws FileNotFoundException si el archivo no se encuentra.
      */
-    public static void loadLocations(Web red, String filePath) throws FileNotFoundException {
+    public static void loadLocations(LAN red, String filePath) throws FileNotFoundException {
         String code, description;
 
         File file = new File(filePath);
@@ -376,7 +376,7 @@ public class Cargar {
      * @return  Web a ser devuelta
      * @throws IOException No se encuentra el archivo properties
      */
-    public static Web cargarRedDesdePropiedades(String propertiesFile) throws IOException {
+    public static LAN cargarRedDesdePropiedades(String propertiesFile) throws IOException {
         Properties properties = new Properties();
         try (InputStream input = Cargar.class.getClassLoader().getResourceAsStream(propertiesFile)) {
             if (input == null) {
@@ -402,7 +402,7 @@ public class Cargar {
      * @return Web la red cargada desde el directorio
      * @throws IOException si no se encuentra la carpeta 'data' o algún archivo necesario
      */
-    public Web cargarRedDesdeDirectorio(String directoryPath) throws IOException {
+    public LAN cargarRedDesdeDirectorio(String directoryPath) throws IOException {
         File dataDir = new File(directoryPath, "data");
         if (!dataDir.exists()) {
             throw new FileNotFoundException("La carpeta 'data' no fue encontrada en: " + dataDir.getAbsolutePath());

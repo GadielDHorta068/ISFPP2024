@@ -5,7 +5,7 @@ import org.isfpp.exceptions.NotFoundException;
 import org.isfpp.modelo.Connection;
 import org.isfpp.modelo.Equipment;
 import org.isfpp.modelo.PortType;
-import org.isfpp.modelo.Web;
+import org.isfpp.modelo.LAN;
 import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
@@ -17,11 +17,11 @@ import org.jgrapht.traverse.BreadthFirstIterator;
 import java.util.*;
 import java.util.stream.IntStream;
 
-public class Utils {
+public class CalculoGraph {
     private static Graph<Equipment, Connection> graph;
     private Coordinator coordinator;
 
-    public Utils() {
+    public CalculoGraph() {
     }
 
     /**
@@ -31,13 +31,13 @@ public class Utils {
      * y construye un grafo no dirigido. Cada equipo se agrega como un vértice en el grafo y cada conexión se agrega
      * como una arista entre los equipos correspondientes.
      *
-     * @param web El objeto {@code Web} que contiene la información de hardware y conexiones.
+     * @param LAN El objeto {@code Web} que contiene la información de hardware y conexiones.
      * @throws IllegalArgumentException Si se intenta agregar una conexión entre el mismo equipo o si hay una
      *                                  conexión duplicada en el grafo.
      */
-    public void LoadData(Web web) {
-        HashMap<String, Equipment> hardware = web.getHardware();
-        ArrayList<Connection> connections = web.getConnections();
+    public void LoadData(LAN LAN) {
+        HashMap<String, Equipment> hardware = LAN.getHardware();
+        ArrayList<Connection> connections = LAN.getConnections();
         // Crear un grafo no dirigido
         graph = new SimpleGraph<>(Connection.class);
         for (Equipment valor : hardware.values()) {
@@ -54,7 +54,7 @@ public class Utils {
                 graph.addEdge(sourceNode, targetNode, c);
         }
         coordinator.setGraph(graph);
-        coordinator.setWeb(web);
+        coordinator.setWeb(LAN);
         System.out.println("Actualizado");
 
 
@@ -173,7 +173,7 @@ public class Utils {
 
 
     public void setGraph(Graph<Equipment, Connection> graph) {
-        Utils.graph = graph;
+        CalculoGraph.graph = graph;
     }
 
 
@@ -260,7 +260,8 @@ public class Utils {
         return true;
     }
 
-    public void setCoordinator(Coordinator coordinator) {this.coordinator=coordinator;
+    public void setCoordinator(Coordinator coordinator) {
+        this.coordinator = coordinator;
     }
 
     public static List<PortType> convertSetToList(Set<PortType> set) {
@@ -282,7 +283,7 @@ public class Utils {
         IntStream.range(startThirdSegment, 256).forEach(j -> IntStream.range(start, 256).forEach(i -> {
             String nuevaIP = parts[0] +parts[1] + j +i;
             System.out.println(nuevaIP);
-            if (Utils.ping(nuevaIP)) {
+            if (CalculoGraph.ping(nuevaIP)) {
                 System.out.println("encontro");
                 ipList.add(nuevaIP);
             }
@@ -338,10 +339,10 @@ public class Utils {
      * Genera una nueva dirección IP para un equipo dentro de una red.
      * 
      * @param equipo El equipo para el cual se desea generar la IP.
-     * @param web    La red en la que se encuentra el equipo.
+     * @param LAN    La red en la que se encuentra el equipo.
      * @return Una nueva IP generada para el equipo.
      */
-    public static String generarNuevaIP(Equipment equipo, Web web) {
+    public static String generarNuevaIP(Equipment equipo, LAN LAN) {
         String[] parts = equipo.getIpAdresses().getFirst().split("\\.");
         String nuevaIP = "";
         int pool = Integer.parseInt(parts[3]);
@@ -351,7 +352,7 @@ public class Utils {
             t = false;
             pool += 1;
             nuevaIP = String.format("%s.%s.%s.%d", parts[0], parts[1], parts[2], pool);
-            for (Equipment eq :  web.getHardware().values()) {
+            for (Equipment eq :  LAN.getHardware().values()) {
                 if (eq.getIpAdresses().contains(nuevaIP)) {
                     t = true;
                     break;

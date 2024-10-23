@@ -11,8 +11,8 @@ import org.isfpp.exceptions.NotFoundException;
 
 import javax.swing.*;
 
-public class Web {
-	private static  Web web = null;
+public class LAN {
+	private static LAN LAN = null;
 
 	private String nombre;
 	private HashMap<String, Equipment> hardware;
@@ -29,7 +29,7 @@ public class Web {
 	private PortTypeService portTypeService;
 	private Coordinator coordinator;
 
-	public Web() {
+	public LAN() {
 		super();
 		setNombre("RedLocal");
 		this.wireTypes				= new HashMap<>();
@@ -52,7 +52,7 @@ public class Web {
 		connections.addAll(connectionService.searchAll());
 	}
 
-	public Web(String nombre) {
+	public LAN(String nombre) {
 		super();
 		this.nombre = nombre;
 		this.hardware = new HashMap<>();
@@ -64,10 +64,10 @@ public class Web {
 		coordinator = new Coordinator();
 	}
 
-	public static Web getWeb() {
-		if (web ==  null)
-			web = new Web();
-		return web;
+	public static LAN getWeb() {
+		if (LAN ==  null)
+			LAN = new LAN();
+		return LAN;
 	}
 	//Name
 	public String getNombre() {
@@ -91,6 +91,7 @@ public class Web {
 		hardware.put(code, e);
 		equipmentService.insert(e);
 		coordinator.updateTablas(this);
+		System.out.println("aca");
 		return e;
 	}
 
@@ -410,8 +411,9 @@ public class Web {
 
 	}
 	public void updateEquipment(String codeOriginal, Equipment updateEquipment) {
-		if (!hardware.containsKey(updateEquipment.getCode())&& !codeOriginal.equals(updateEquipment.getCode()))
+		if (!hardware.containsKey(updateEquipment.getCode()) && !codeOriginal.equals(updateEquipment.getCode()))
 			throw new NotFoundException("Ese codigo ya existe");
+
 		if(codeOriginal.equals(updateEquipment.getCode())){
 			equipmentService.update(updateEquipment);
 		}
@@ -424,7 +426,7 @@ public class Web {
 		coordinator.updateTablas(this);
 	}
 	public void updateLocation(String codeOriginal, Location updateLocation){
-		if (!locations.containsKey(updateLocation.getCode()) && !codeOriginal.equals(updateLocation.getCode()))
+		if (locations.containsKey(updateLocation.getCode()) && !codeOriginal.equals(updateLocation.getCode()))
 			throw new NotFoundException("localizacion ya extiste");
 		if(codeOriginal.equals(updateLocation.getCode())){
 			locationService.update(updateLocation);

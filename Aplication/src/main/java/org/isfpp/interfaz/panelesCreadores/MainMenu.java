@@ -1,7 +1,6 @@
 package org.isfpp.interfaz.panelesCreadores;
 
 import org.isfpp.controller.Coordinator;
-import org.isfpp.datos.ResourceExtractor;
 import org.isfpp.interfaz.panelesPrincipal.BarraMenu;
 import org.isfpp.interfaz.panelesPrincipal.DesplegableComponent;
 import org.isfpp.interfaz.panelesPrincipal.PanelDerecho;
@@ -9,7 +8,7 @@ import org.isfpp.interfaz.stylusUI.StylusUI;
 import org.isfpp.modelo.Connection;
 import org.isfpp.modelo.Equipment;
 import org.isfpp.modelo.Location;
-import org.isfpp.modelo.Web;
+import org.isfpp.modelo.LAN;
 
 import javax.swing.*;
 import java.awt.*;
@@ -25,27 +24,27 @@ public class MainMenu {
         frame.setLayout(new BorderLayout());
     }
 
-    public void components(Web web) {
+    public void components(LAN LAN) {
         StylusUI.inicializar(false);
-        ResourceExtractor.extractResourcesToExecutionDir();
+
         PanelDerecho panelDerecho = new PanelDerecho();
 
         DesplegableComponent<Equipment> desplegableNodos = new DesplegableComponent<>();
         coordinator.addTabla(desplegableNodos);
         desplegableNodos.setCoordinator(coordinator);
-        desplegableNodos.IniciarTabla("Equipos", new ArrayList<>(web.getHardware().values()), panelDerecho);
+        desplegableNodos.IniciarTabla("Equipos", new ArrayList<>(LAN.getHardware().values()), panelDerecho);
 
         DesplegableComponent<Location> desplegableUbicaciones = new DesplegableComponent<>();
         coordinator.addTabla(desplegableUbicaciones);
         desplegableUbicaciones.setCoordinator(coordinator);
-        desplegableUbicaciones.IniciarTabla("Ubicaciones", new ArrayList<>(web.getLocations().values()), panelDerecho);
+        desplegableUbicaciones.IniciarTabla("Ubicaciones", new ArrayList<>(LAN.getLocations().values()), panelDerecho);
 
         DesplegableComponent<Connection> desplegableConexiones = new DesplegableComponent<>();
         coordinator.addTabla(desplegableConexiones);
         desplegableConexiones.setCoordinator(coordinator);
-        desplegableConexiones.IniciarTabla("Conexiones", web.getConnections(), panelDerecho);
+        desplegableConexiones.IniciarTabla("Conexiones", LAN.getConnections(), panelDerecho);
 
-        BarraMenu barraMenu = new BarraMenu(web);
+        BarraMenu barraMenu = new BarraMenu(LAN);
         barraMenu.setCoordinador(coordinator);
         JPanel panelIzquierdo = new JPanel();
         StylusUI.aplicarEstiloPanel(panelIzquierdo);

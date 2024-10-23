@@ -2,7 +2,7 @@ package org.isfpp.interfaz.panelesEditadores;
 
 import org.isfpp.interfaz.stylusUI.StylusUI;
 import org.isfpp.modelo.Location;
-import org.isfpp.modelo.Web;
+import org.isfpp.modelo.LAN;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,7 +11,7 @@ public class EditLocationFormPanel extends JPanel {
     private final JTextField codeField;
     private final JTextField descriptionField;
 
-    public EditLocationFormPanel(Web web, String codeOriginial) {
+    public EditLocationFormPanel(LAN LAN, String codeOriginial) {
 
         JFrame frame = new JFrame("Agregar Ubicación");
         frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -19,7 +19,7 @@ public class EditLocationFormPanel extends JPanel {
 
         setLayout(new BorderLayout());
 
-        Location loc = web.getLocations().get(codeOriginial);
+        Location loc = LAN.getLocations().get(codeOriginial);
         JPanel formPanel = new JPanel(new GridLayout(2, 2, 10, 20));
         StylusUI.aplicarEstiloPanel(formPanel);
 
@@ -44,7 +44,7 @@ public class EditLocationFormPanel extends JPanel {
 
         createButton.addActionListener(e -> {
             try {
-                web.updateLocation(codeOriginial,new Location(codeField.getText(),descriptionField.getText()));
+                LAN.updateLocation(codeOriginial,new Location(codeField.getText(),descriptionField.getText()));
                 JOptionPane.showMessageDialog(this, "Ubicacion modificado con éxito");
                 frame.setVisible(false);
             } catch (Exception ex) {

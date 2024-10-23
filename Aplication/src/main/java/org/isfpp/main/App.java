@@ -2,16 +2,18 @@ package org.isfpp.main;
 
 import org.isfpp.controller.Coordinator;
 import org.isfpp.datos.CargarParametros;
+import org.isfpp.datos.ResourceExtractor;
 import org.isfpp.interfaz.panelesCreadores.MainMenu;
-import org.isfpp.logica.Utils;
-import org.isfpp.modelo.Web;
+import org.isfpp.logica.CalculoGraph;
+import org.isfpp.modelo.LAN;
 
+import java.io.File;
 import java.io.IOException;
 
 public class App {
     // l�gica
-    private Web web = null;
-    private Utils utils;
+    private LAN LAN = null;
+    private CalculoGraph calculoGraph;
 
     // vista
     private MainMenu mainMenu;
@@ -20,6 +22,10 @@ public class App {
     private Coordinator coordinator;
 
     public static void main(String[] args) throws IOException {
+        ResourceExtractor.extractResourcesToExecutionDir();
+        String directorio = new File(App.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getParent();
+        System.out.println("Ruta absoluta: " + directorio);
+
         App app = new App();
         CargarParametros.parametros();
         app.inicio();
@@ -29,19 +35,19 @@ public class App {
     }
 
     private void inicio(){
-        web =new Web();
+        LAN =new LAN();
         coordinator = new Coordinator();
-        utils=new Utils();
+        calculoGraph =new CalculoGraph();
         mainMenu= new MainMenu();
         /* Se establecen las relaciones entre clases */
-        web.setCoordinator(coordinator);
-        utils.setCoordinator(coordinator);
+        LAN.setCoordinator(coordinator);
+        calculoGraph.setCoordinator(coordinator);
         mainMenu.SetCoordinator(coordinator);
 
 
         /* Se establecen relaciones con la clase coordinador */
-        coordinator.setWeb(web);
-        coordinator.setUtils(utils);
+        coordinator.setWeb(LAN);
+        coordinator.setUtils(calculoGraph);
         coordinator.setMainMenu(mainMenu);
         coordinator.LoadData(coordinator.getWeb());
     }
