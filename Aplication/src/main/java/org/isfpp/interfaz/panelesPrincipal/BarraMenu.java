@@ -113,9 +113,9 @@ public class BarraMenu {
             editConnection.run(null);
         }));
 
-        editarMenu.add(crearMenuItem(rb.getString("Eliminar"), this::accionEliminar));
+        editarMenu.add(crearMenuItem(rb.getString("eliminar"), this::accionEliminar));
 
-        editarMenu.add(crearMenuItem(rb.getString("Editar"), this::accionEditar));
+        editarMenu.add(crearMenuItem(rb.getString("editar"), this::accionEditar));
 
 
         return editarMenu;
@@ -129,7 +129,7 @@ public class BarraMenu {
                 case Location location -> coordinator.eraseLocation(location);
                 case PortType puerto -> coordinator.erasePort(puerto);
                 case Connection connection -> coordinator.eraseConnection(connection);
-                default -> System.out.println(rb.getString("Clase no detectada: ") + seleccionado.getClass());
+                default -> System.out.println(rb.getString("clase_no_detectada: ") + seleccionado.getClass());
             }
         }
     }
@@ -158,17 +158,17 @@ public class BarraMenu {
                     connectionPanel.setCoordinator(coordinator);
                     connectionPanel.run(connection);
                 }
-                default -> System.out.println(rb.getString("Clase no detectada: ") + seleccionado.getClass());
+                default -> System.out.println(rb.getString("clase_no_detectada: ") + seleccionado.getClass());
             }
         }
     }
 
     private JMenu crearAyudaMenu() {
-        JMenu ayudaMenu = new JMenu(rb.getString("Ayuda"));
+        JMenu ayudaMenu = new JMenu(rb.getString("ayuda"));
         StylusUI.styleMenu(ayudaMenu);
         
-        ayudaMenu.add(crearMenuItem(rb.getString("Como Usar") , e -> abrirManual()));
-        ayudaMenu.add(crearMenuItem(rb.getString("Acerca de") , e -> acercaDe()));
+        ayudaMenu.add(crearMenuItem(rb.getString("como_usar") , e -> abrirManual()));
+        ayudaMenu.add(crearMenuItem(rb.getString("acerca_de") , e -> acercaDe()));
         return ayudaMenu;
     }
 
@@ -226,14 +226,14 @@ public class BarraMenu {
 
 
     private JMenu crearHerramientasMenu() {
-        JMenu herramientasMenu = new JMenu(rb.getString("Herramientas"));
+        JMenu herramientasMenu = new JMenu(rb.getString("herramientas"));
         StylusUI.styleMenu(herramientasMenu);
 
-        herramientasMenu.add(crearMenuItem(rb.getString("Ping en rango"), e -> iniciarPing()));
-        herramientasMenu.add(crearMenuItem(rb.getString("Equipos Activos"), e -> iniciarPingEquipos()));
-        herramientasMenu.add(crearMenuItem(rb.getString("Conexiones"), e -> iniciarConnectionIssues()));
-        herramientasMenu.add(crearMenuItem(rb.getString("Visualizar Grafo"), e ->   iniciarVerGrafo()));
-        herramientasMenu.add(crearMenuItem(rb.getString("Traceroute"), e -> iniciarTraceroute()));
+        herramientasMenu.add(crearMenuItem(rb.getString("ping_rango"), e -> iniciarPing()));
+        herramientasMenu.add(crearMenuItem(rb.getString("equipos_activos"), e -> iniciarPingEquipos()));
+        herramientasMenu.add(crearMenuItem(rb.getString("conexiones"), e -> iniciarConnectionIssues()));
+        herramientasMenu.add(crearMenuItem(rb.getString("ver_grafo"), e ->   iniciarVerGrafo()));
+        herramientasMenu.add(crearMenuItem(rb.getString("traceroute"), e -> iniciarTraceroute()));
 
         return herramientasMenu;
     }
