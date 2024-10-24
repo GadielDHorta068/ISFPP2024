@@ -1,21 +1,28 @@
 package org.isfpp.interfaz.panelesEditadores;
 
+import org.isfpp.controller.Coordinator;
 import org.isfpp.interfaz.stylusUI.StylusUI;
 import org.isfpp.modelo.*;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ResourceBundle;
 
 public class EditConnection extends JPanel {
-    private final JComboBox<Equipment> eq1ComboBox;
-    private final JComboBox<Equipment> eq2ComboBox;
-    private final JComboBox<Port> port1ComboBox;
-    private final JComboBox<Port> port2ComboBox;
-    private final JComboBox<WireType> wireComboBox;
+    private JComboBox<Equipment> eq1ComboBox;
+    private JComboBox<Equipment> eq2ComboBox;
+    private JComboBox<Port> port1ComboBox;
+    private JComboBox<Port> port2ComboBox;
+    private JComboBox<WireType> wireComboBox;
+    private ResourceBundle rb;
+    private Coordinator coordinator;
 
+    public EditConnection() {
+    }
 
-    public EditConnection(LAN LAN, Connection c) {
-        JFrame frame = new JFrame("Edicion de Conexion");
+    public void run(Connection c) {
+        rb= coordinator.getResourceBundle();
+        JFrame frame = new JFrame(rb.getString("edicion_conexion"));
         frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         frame.setSize(800, 600);
 
@@ -24,14 +31,14 @@ public class EditConnection extends JPanel {
         JPanel formPanel = new JPanel(new GridLayout(11, 2, 10, 10));
         StylusUI.aplicarEstiloPanel(formPanel);
 
-        JLabel equipo1 = new JLabel("Equipo origen");
+        JLabel equipo1 = new JLabel(rb.getString("equipo_origen"));
         StylusUI.aplicarEstiloEtiqueta(equipo1);
         formPanel.add(equipo1);
-        eq1ComboBox = new JComboBox<>(LAN.getHardware().values().toArray(new Equipment[0]));
+        eq1ComboBox = new JComboBox<>(coordinator.getHardware().values().toArray(new Equipment[0]));
         StylusUI.aplicarEstiloComboBox(eq1ComboBox);
         formPanel.add(eq1ComboBox);
 
-        JLabel tipoPuerto1 = new JLabel("Puerto origen");
+        JLabel tipoPuerto1 = new JLabel(rb.getString("Puerto origen"));
         StylusUI.aplicarEstiloEtiqueta(tipoPuerto1);
         formPanel.add(tipoPuerto1);
         Equipment e1 = (Equipment) eq1ComboBox.getSelectedItem();
@@ -47,14 +54,14 @@ public class EditConnection extends JPanel {
             }
         }));
 
-        JLabel equipo2 = new JLabel("Equipo destino");
+        JLabel equipo2 = new JLabel(rb.getString("Equipo destino"));
         StylusUI.aplicarEstiloEtiqueta(equipo2);
         formPanel.add(equipo2);
-        eq2ComboBox = new JComboBox<>(LAN.getHardware().values().toArray(new Equipment[1]));
+        eq2ComboBox = new JComboBox<>(coordinator.getHardware().values().toArray(new Equipment[1]));
         StylusUI.aplicarEstiloComboBox(eq2ComboBox);
         formPanel.add(eq2ComboBox);
 
-        JLabel tipoPuerto2 = new JLabel("Puerto destino");
+        JLabel tipoPuerto2 = new JLabel(rb.getString("Puerto destino"));
         StylusUI.aplicarEstiloEtiqueta(tipoPuerto2);
         formPanel.add(tipoPuerto2);
         Equipment e2 = (Equipment) eq1ComboBox.getSelectedItem();
@@ -70,17 +77,17 @@ public class EditConnection extends JPanel {
             }
         }));
 
-        JLabel wireType = new JLabel("Tipo de Cable");
+        JLabel wireType = new JLabel(rb.getString("Tipo de Cable"));
         StylusUI.aplicarEstiloEtiqueta(wireType);
         formPanel.add(wireType);
-        wireComboBox = new JComboBox<>(LAN.getWireTypes().values().toArray(new WireType[0]));
+        wireComboBox = new JComboBox<>(coordinator.getWireTypes().values().toArray(new WireType[0]));
         StylusUI.aplicarEstiloComboBox(wireComboBox);
         formPanel.add(wireComboBox);
 
 
         add(formPanel, BorderLayout.CENTER);
 
-        JButton createButton = new JButton("Agregar/Cambiar Conexion");
+        JButton createButton = new JButton(rb.getString("Agregar/Cambiar Conexion"));
         StylusUI.aplicarEstiloBoton(createButton, true);
         add(createButton, BorderLayout.SOUTH);
 
@@ -93,11 +100,11 @@ public class EditConnection extends JPanel {
                 assert port2 != null;
                 assert port1 != null;
 
-                LAN.updateConnection(c,new Connection(port1, port2, wire));
-                JOptionPane.showMessageDialog(this, "Red creada con éxito");
+                coordinator.updateConnection(c,new Connection(port1, port2, wire));
+                JOptionPane.showMessageDialog(this, rb.getString("Red creada con éxito"));
                 frame.setVisible(false);
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this, "Error al crear equipo: " + ex.getMessage());
+                JOptionPane.showMessageDialog(this,rb.getString( "Error al crear equipo: ") + ex.getMessage());
             }
 
         });
@@ -105,5 +112,11 @@ public class EditConnection extends JPanel {
         frame.add(this);
         frame.setVisible(true);
 
+    }
+    public void setCoordinador(Coordinator coordinator) {
+        this.coordinator = coordinator;
+    }
+
+    public void setCoordinator(Coordinator coordinator) {this.coordinator=coordinator;
     }
 }

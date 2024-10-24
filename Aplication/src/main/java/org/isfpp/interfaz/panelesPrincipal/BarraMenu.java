@@ -17,11 +17,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.util.ResourceBundle;
 
 
 public class BarraMenu {
     private final LAN LAN;
     private Coordinator coordinator;
+    private ResourceBundle rb;
 
     public BarraMenu(LAN LAN) {
         this.LAN = LAN;
@@ -40,12 +42,13 @@ public class BarraMenu {
     }
 
     private JMenu crearArchivoMenu() {
-        JMenu archivoMenu = new JMenu("Archivo");
+        this.rb=coordinator.getResourceBundle();
+        JMenu archivoMenu = new JMenu(rb.getString("archivo"));
         StylusUI.styleMenu(archivoMenu);
 
-        archivoMenu.add(crearMenuItem("Cargar", this::accionCargar));
-        archivoMenu.add(crearMenuItem("Guardar", this::accionGuardar));
-        archivoMenu.add(crearMenuItem("Salir", e -> System.exit(0)));
+        archivoMenu.add(crearMenuItem(rb.getString("cargar"), this::accionCargar));
+        archivoMenu.add(crearMenuItem(rb.getString("guardar"), this::accionGuardar));
+        archivoMenu.add(crearMenuItem(rb.getString("salir"), e -> System.exit(0)));
 
         return archivoMenu;
     }
@@ -83,15 +86,37 @@ public class BarraMenu {
     }
 
     private JMenu crearEditarMenu() {
-        JMenu editarMenu = new JMenu("Editar");
+        JMenu editarMenu = new JMenu(rb.getString("editar"));
         StylusUI.styleMenu(editarMenu);
 
-        editarMenu.add(crearMenuItem("Agregar Equipo", e -> new EquipmentFormPanel(LAN)));
-        editarMenu.add(crearMenuItem("Agregar tipo Puerto", e -> new PortTypeFormPanel(LAN)));
-        editarMenu.add(crearMenuItem("Agregar Ubicacion", e -> new LocationFormPanel(LAN)));
-        editarMenu.add(crearMenuItem("Agregar Conexion", e -> new EditConnection(LAN, null)));
-        editarMenu.add(crearMenuItem("Eliminar", this::accionEliminar));
-        editarMenu.add(crearMenuItem("Editar", this::accionEditar));
+        editarMenu.add(crearMenuItem(rb.getString("agregar_equipo"), e -> {
+            EquipmentFormPanel equipmentPanel = new EquipmentFormPanel();
+            equipmentPanel.setCoordinator(coordinator);
+            equipmentPanel.run();
+        }));
+
+        editarMenu.add(crearMenuItem(rb.getString("agregar_puerto"), e -> {
+            PortTypeFormPanel portTypePanel = new PortTypeFormPanel();
+            portTypePanel.setCoordinator(coordinator);
+            portTypePanel.run();
+        }));
+
+        editarMenu.add(crearMenuItem(rb.getString("agregar_ubicacion"), e -> {
+            LocationFormPanel locationPanel = new LocationFormPanel();
+            locationPanel.setCoordinator(coordinator);
+            locationPanel.run();
+        }));
+
+        editarMenu.add(crearMenuItem(rb.getString("agregar_connexion"), e -> {
+            EditConnection editConnection = new EditConnection();
+            editConnection.setCoordinator(coordinator);
+            editConnection.run(null);
+        }));
+
+        editarMenu.add(crearMenuItem(rb.getString("Eliminar"), this::accionEliminar));
+
+        editarMenu.add(crearMenuItem(rb.getString("Editar"), this::accionEditar));
+
 
         return editarMenu;
     }
@@ -104,7 +129,7 @@ public class BarraMenu {
                 case Location location -> coordinator.eraseLocation(location);
                 case PortType puerto -> coordinator.erasePort(puerto);
                 case Connection connection -> coordinator.eraseConnection(connection);
-                default -> System.out.println("Clase no detectada: " + seleccionado.getClass());
+                default -> System.out.println(rb.getString("Clase no detectada: ") + seleccionado.getClass());
             }
         }
     }
@@ -113,21 +138,37 @@ public class BarraMenu {
         Object seleccionado = coordinator.getSelectedItem();
         if (seleccionado != null) {
             switch (seleccionado) {
-                case Equipment equipment -> new EditEquipmentFormPanel(LAN, equipment.getCode());
-                case Location location -> new EditLocationFormPanel(LAN, location.getCode());
-                case PortType puerto -> new EditPortTypeFormPanel(LAN, puerto.getCode());
-                case Connection connection -> new EditConnection(LAN, connection);
-                default -> System.out.println("Clase no detectada: " + seleccionado.getClass());
+                case Equipment equipment -> {
+                    EditEquipmentFormPanel equipmentPanel = new EditEquipmentFormPanel();
+                    equipmentPanel.setCoordinator(coordinator);
+                    equipmentPanel.run(equipment.getCode());
+                }
+                case Location location -> {
+                    EditLocationFormPanel locationPanel = new EditLocationFormPanel();
+                    locationPanel.setCoordinator(coordinator);
+                    locationPanel.run( location.getCode());
+                }
+                case PortType puerto -> {
+                    EditPortTypeFormPanel portTypePanel = new EditPortTypeFormPanel();
+                    portTypePanel.setCoordinator(coordinator);
+                    portTypePanel.run(puerto.getCode());
+                }
+                case Connection connection -> {
+                    EditConnection connectionPanel = new EditConnection();
+                    connectionPanel.setCoordinator(coordinator);
+                    connectionPanel.run(connection);
+                }
+                default -> System.out.println(rb.getString("Clase no detectada: ") + seleccionado.getClass());
             }
         }
     }
 
     private JMenu crearAyudaMenu() {
-        JMenu ayudaMenu = new JMenu("Ayuda");
+        JMenu ayudaMenu = new JMenu(rb.getString("Ayuda"));
         StylusUI.styleMenu(ayudaMenu);
         
-        ayudaMenu.add(crearMenuItem("Como Usar" , e -> abrirManual()));
-        ayudaMenu.add(crearMenuItem("Acerca de" , e -> acercaDe()));
+        ayudaMenu.add(crearMenuItem(rb.getString("Como Usar") , e -> abrirManual()));
+        ayudaMenu.add(crearMenuItem(rb.getString("Acerca de") , e -> acercaDe()));
         return ayudaMenu;
     }
 
@@ -148,7 +189,7 @@ public class BarraMenu {
         InputStream pdfStream = getClass().getResourceAsStream("/Manual.pdf");
 
         if (pdfStream == null) {
-            System.out.println("No se pudo encontrar el archivo manual.pdf");
+            System.out.println(rb.getString("No se pudo encontrar el archivo manual.pdf"));
             return;
         }
 
@@ -168,7 +209,7 @@ public class BarraMenu {
             if (Desktop.isDesktopSupported()) {
                 Desktop.getDesktop().open(tempFile);
             } else {
-                System.out.println("Desktop no es compatible en este sistema.");
+                System.out.println(rb.getString("Desktop no es compatible en este sistema."));
             }
 
         } catch (IOException e) {
@@ -185,14 +226,14 @@ public class BarraMenu {
 
 
     private JMenu crearHerramientasMenu() {
-        JMenu herramientasMenu = new JMenu("Herramientas");
+        JMenu herramientasMenu = new JMenu(rb.getString("Herramientas"));
         StylusUI.styleMenu(herramientasMenu);
 
-        herramientasMenu.add(crearMenuItem("Ping en rango", e -> iniciarPing()));
-        herramientasMenu.add(crearMenuItem("Equipos Activos", e -> iniciarPingEquipos()));
-        herramientasMenu.add(crearMenuItem("Conexiones", e -> iniciarConnectionIssues()));
-        herramientasMenu.add(crearMenuItem("Visualizar Grafo", e ->   iniciarVerGrafo()));
-        herramientasMenu.add(crearMenuItem("Traceroute", e -> iniciarTraceroute()));
+        herramientasMenu.add(crearMenuItem(rb.getString("Ping en rango"), e -> iniciarPing()));
+        herramientasMenu.add(crearMenuItem(rb.getString("Equipos Activos"), e -> iniciarPingEquipos()));
+        herramientasMenu.add(crearMenuItem(rb.getString("Conexiones"), e -> iniciarConnectionIssues()));
+        herramientasMenu.add(crearMenuItem(rb.getString("Visualizar Grafo"), e ->   iniciarVerGrafo()));
+        herramientasMenu.add(crearMenuItem(rb.getString("Traceroute"), e -> iniciarTraceroute()));
 
         return herramientasMenu;
     }

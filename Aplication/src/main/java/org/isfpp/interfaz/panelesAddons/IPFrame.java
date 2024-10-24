@@ -11,6 +11,7 @@ import java.awt.event.FocusListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.ResourceBundle;
 
 
 public class IPFrame {
@@ -18,17 +19,19 @@ public class IPFrame {
     private JTextArea textArea;
     private List<String> direcciones;
     private Coordinator coordinator;
+    private ResourceBundle rb;
 
 
     public IPFrame() {
     }
 
     public void scanIp() {
+        this.rb=coordinator.getResourceBundle();
         direcciones = new ArrayList<>();
-        frame = new JFrame("IP Scanner");
+        frame = new JFrame(rb.getString("ip_Scanner"));
         frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         frame.setSize(400, 300);
-        JTextField ipInicial = new JTextField("IP a escanear");
+        JTextField ipInicial = new JTextField(rb.getString("ip_escanear"));
         String defecto = getIPSeleccionada();
         System.out.println(defecto);
         if (!Objects.equals(defecto, "0")) {
@@ -40,7 +43,7 @@ public class IPFrame {
         ipInicial.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
-                if (ipInicial.getText().equals("IP a escanear")) {
+                if (ipInicial.getText().equals(rb.getString("ip_escanear"))) {
                     ipInicial.setText("");
                 }
             }
@@ -48,7 +51,7 @@ public class IPFrame {
             @Override
             public void focusLost(FocusEvent e) {
                 if (ipInicial.getText().isEmpty()) {
-                    ipInicial.setText("IP a escanear");
+                    ipInicial.setText(rb.getString("ip_escanear"));
                 }
             }
         });
@@ -56,7 +59,7 @@ public class IPFrame {
         textArea = new JTextArea();
         textArea.setEditable(false);
         JScrollPane scrollPane = new JScrollPane(textArea);
-        JButton scanButton = new JButton("Scan IPs");
+        JButton scanButton = new JButton(rb.getString("scan_IPs"));
         scanButton.addActionListener(e -> {
             direcciones.clear();
             try {

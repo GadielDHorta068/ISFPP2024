@@ -13,10 +13,12 @@ import org.isfpp.modelo.LAN;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.ResourceBundle;
 
 public class MainMenu {
     Coordinator coordinator;
     JFrame frame;
+    private ResourceBundle rb;
 
     public MainMenu() {
         frame = new JFrame("ISFPP24");
@@ -25,24 +27,25 @@ public class MainMenu {
     }
 
     public void components(LAN LAN) {
+        rb = coordinator.getResourceBundle();
         StylusUI.inicializar(false);
-
+System.out.println(rb.getString("greeting"));
         PanelDerecho panelDerecho = new PanelDerecho();
 
         DesplegableComponent<Equipment> desplegableNodos = new DesplegableComponent<>();
         coordinator.addTabla(desplegableNodos);
         desplegableNodos.setCoordinator(coordinator);
-        desplegableNodos.IniciarTabla("Equipos", new ArrayList<>(LAN.getHardware().values()), panelDerecho);
+        desplegableNodos.IniciarTabla(rb.getString("equipos"), new ArrayList<>(LAN.getHardware().values()), panelDerecho);
 
         DesplegableComponent<Location> desplegableUbicaciones = new DesplegableComponent<>();
         coordinator.addTabla(desplegableUbicaciones);
         desplegableUbicaciones.setCoordinator(coordinator);
-        desplegableUbicaciones.IniciarTabla("Ubicaciones", new ArrayList<>(LAN.getLocations().values()), panelDerecho);
+        desplegableUbicaciones.IniciarTabla(rb.getString("ubicaciones"), new ArrayList<>(LAN.getLocations().values()), panelDerecho);
 
         DesplegableComponent<Connection> desplegableConexiones = new DesplegableComponent<>();
         coordinator.addTabla(desplegableConexiones);
         desplegableConexiones.setCoordinator(coordinator);
-        desplegableConexiones.IniciarTabla("Conexiones", LAN.getConnections(), panelDerecho);
+        desplegableConexiones.IniciarTabla(rb.getString("conexiones"), LAN.getConnections(), panelDerecho);
 
         BarraMenu barraMenu = new BarraMenu(LAN);
         barraMenu.setCoordinador(coordinator);
@@ -54,7 +57,7 @@ public class MainMenu {
         panelIzquierdo.add(desplegableUbicaciones.getPanel());
         frame.setJMenuBar(barraMenu.crearBarraMenu());
         frame.add(panelIzquierdo, BorderLayout.WEST);
-        frame.add(panelDerecho.crearPanelDerecho(), BorderLayout.EAST);
+        frame.add(panelDerecho.crearPanelDerecho(coordinator.getResourceBundle()), BorderLayout.EAST);
 
         frame.setSize(800, 600);
         panelIzquierdo.setPreferredSize(new Dimension(frame.getWidth() - 262, 400));

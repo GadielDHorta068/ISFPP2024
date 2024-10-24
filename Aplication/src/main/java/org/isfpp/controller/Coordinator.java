@@ -8,9 +8,7 @@ import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * La clase Coordinator es responsable de gestionar diversas funcionalidades relacionadas con la web y sus componentes.
@@ -21,6 +19,7 @@ public class Coordinator {
     private MainMenu mainMenu;
     private Object selectedItem;
     private final List<DesplegableComponent> tablas = new ArrayList<>();
+    private Settings settings;
 
     /**
      * Constructor por defecto de la clase Coordinator.
@@ -394,5 +393,32 @@ public class Coordinator {
      */
     public void addTabla(DesplegableComponent d) {
         tablas.add(d);
+    }
+
+    public void setSettings(Settings settings) {this.settings=settings;
+    }
+
+    public ResourceBundle getResourceBundle() {return this.settings.getResourceBundle();
+    }
+
+    public void updateConnection(Connection c, Connection connection) {
+        LAN.updateConnection(c,connection);
+    }
+
+    public HashMap<Object, EquipmentType> getEquipmentTypes() {return LAN.getEquipmentTypes();
+    }
+
+    public HashMap<String, PortType> getPortTypes() { return LAN.getPortTypes();}
+
+    public HashMap<String, WireType> getWireTypes() { return LAN.getWireTypes();
+    }
+
+    public void updateEquipment(String codeOriginal, Equipment equipment) {LAN.updateEquipment(codeOriginal, equipment);
+    }
+
+    public void updateLocation(String codeOriginial, Location location) { LAN.updateLocation(codeOriginial, location);
+    }
+
+    public void updatePortType(String codeOriginal, PortType port) {LAN.updatePortType(codeOriginal, port);
     }
 }

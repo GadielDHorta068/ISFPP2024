@@ -1,36 +1,44 @@
 package org.isfpp.interfaz.panelesEditadores;
 
+import org.isfpp.controller.Coordinator;
 import org.isfpp.interfaz.stylusUI.StylusUI;
 import org.isfpp.modelo.Location;
 import org.isfpp.modelo.LAN;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ResourceBundle;
 
 public class EditLocationFormPanel extends JPanel {
-    private final JTextField codeField;
-    private final JTextField descriptionField;
+    private JTextField codeField;
+    private JTextField descriptionField;
+    private Coordinator coordinator;
+    private ResourceBundle rb;
 
-    public EditLocationFormPanel(LAN LAN, String codeOriginial) {
+    public EditLocationFormPanel() {
+    }
 
-        JFrame frame = new JFrame("Agregar Ubicación");
+    public void run(String codeOriginal) {
+        rb = coordinator.getResourceBundle(); // Asignar el ResourceBundle desde el Coordinator
+
+        JFrame frame = new JFrame(rb.getString("agregar_uicacion")); // Usar rb.getString() para el texto
         frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         frame.setSize(400, 150);
 
         setLayout(new BorderLayout());
 
-        Location loc = LAN.getLocations().get(codeOriginial);
+        Location loc = coordinator.getLocations().get(codeOriginal); // Obtener Location usando el Coordinator
         JPanel formPanel = new JPanel(new GridLayout(2, 2, 10, 20));
         StylusUI.aplicarEstiloPanel(formPanel);
 
-        JLabel codigo = new JLabel("Codigo");
+        JLabel codigo = new JLabel(rb.getString("codigo")); // Texto traducido
         StylusUI.aplicarEstiloEtiqueta(codigo);
         formPanel.add(codigo);
         codeField = new JTextField(loc.getCode());
         StylusUI.aplicarEstiloCampoTexto(codeField);
         formPanel.add(codeField);
 
-        JLabel des = new JLabel("Descripcion:");
+        JLabel des = new JLabel(rb.getString("descripcion")); // Texto traducido
         StylusUI.aplicarEstiloEtiqueta(des);
         formPanel.add(des);
         descriptionField = new JTextField(loc.getDescription());
@@ -38,21 +46,26 @@ public class EditLocationFormPanel extends JPanel {
         formPanel.add(descriptionField);
         add(formPanel, BorderLayout.CENTER);
 
-        JButton createButton = new JButton("modificar Ubicacion");
+        JButton createButton = new JButton(rb.getString("Modificar_Ubicacion")); // Texto traducido
         StylusUI.aplicarEstiloBoton(createButton, true);
         add(createButton, BorderLayout.SOUTH);
 
         createButton.addActionListener(e -> {
             try {
-                LAN.updateLocation(codeOriginial,new Location(codeField.getText(),descriptionField.getText()));
-                JOptionPane.showMessageDialog(this, "Ubicacion modificado con éxito");
+                coordinator.updateLocation(codeOriginal, new Location(codeField.getText(), descriptionField.getText()));
+                JOptionPane.showMessageDialog(this, rb.getString("Ubicacion_modificada_exito")); // Texto traducido
                 frame.setVisible(false);
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this, "Error modificar: " + ex.getMessage());
+                JOptionPane.showMessageDialog(this, rb.getString("Error_modificar") + ": " + ex.getMessage()); // Texto traducido
             }
         });
 
         frame.add(this);
         frame.setVisible(true);
     }
+
+    public void setCoordinator(Coordinator coordinator) {
+        this.coordinator = coordinator;
+    }
 }
+
