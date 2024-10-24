@@ -21,7 +21,7 @@ public class Settings {
                 input = Settings.class.getClassLoader().getResourceAsStream("config.properties");
                 prop.load(input);
            //     Locale.setDefault(new Locale(prop.getProperty("language"), prop.getProperty("country")));
-                Locale locale = new Locale("es", "AR");
+                Locale locale = Locale.getDefault();
               //  resourceBundle = ResourceBundle.getBundle(prop.getProperty("labels"));
                 resourceBundle = ResourceBundle.getBundle("messages", locale);
 
@@ -36,7 +36,19 @@ public class Settings {
             return resourceBundle;
         }
 
-        public void setCoordinador(Coordinator coordinador) {
+    public static class ObtenerIdiomaSistema {
+        public static void main(String[] args) {
+            Locale locale = Locale.getDefault();
+            String idioma = locale.getLanguage();
+            String pais = locale.getCountry();
+
+            System.out.println("Idioma del sistema: " + idioma);
+            System.out.println("País del sistema: " + pais);
+        }
+    }
+
+
+    public void setCoordinador(Coordinator coordinador) {
             this.coordinador = coordinador;
         }
  }
