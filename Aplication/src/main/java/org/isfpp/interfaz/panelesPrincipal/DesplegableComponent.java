@@ -31,6 +31,7 @@ public class DesplegableComponent<T> {
      * Constructor de la clase DesplegableComponent.
      */
     public DesplegableComponent() {
+     //   this.rb = coordinator.getResourceBundle();
     }
 
     /**
@@ -140,6 +141,7 @@ public class DesplegableComponent<T> {
     public void IniciarTabla(String titulo, List<T> dataList, PanelDerecho panelDerecho) {
         this.LAN = this.coordinator.getWeb();
         this.dataList = dataList;
+        rb = coordinator.getResourceBundle();
 
         panel = new JPanel();
         panel.setLayout(new BorderLayout());

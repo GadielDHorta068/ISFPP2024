@@ -29,7 +29,7 @@ public class MainMenu {
     public void components(LAN LAN) {
         rb = coordinator.getResourceBundle();
         StylusUI.inicializar(false);
-
+System.out.println(rb.getString("greeting"));
         PanelDerecho panelDerecho = new PanelDerecho();
 
         DesplegableComponent<Equipment> desplegableNodos = new DesplegableComponent<>();
