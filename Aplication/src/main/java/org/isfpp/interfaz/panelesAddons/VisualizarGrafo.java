@@ -22,10 +22,12 @@ import java.util.*;
 public class VisualizarGrafo extends JFrame {
     private Properties properties;
     private Coordinator coordinator;
+    private ResourceBundle rb;
 
     public VisualizarGrafo() throws HeadlessException {
     }
     public void Visualizar() {
+        this.rb=coordinator.getResourceBundle();
         Graph<Equipment, Connection> graph = coordinator.getGraph(); // Usar SimpleGraph para grafo no dirigido
 
         cargarProperties();
@@ -77,7 +79,7 @@ public class VisualizarGrafo extends JFrame {
 
 
 
-        setTitle("Visualización del Grafo");
+        setTitle(rb.getString("Visualización del Grafo"));
         setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         pack();
         setVisible(true);
@@ -87,11 +89,11 @@ public class VisualizarGrafo extends JFrame {
         properties = new Properties();
         try (InputStream input = getClass().getClassLoader().getResourceAsStream("config.properties")) {
             if (input == null) {
-                throw new IOException("Archivo de propiedades no encontrado.");
+                throw new IOException(rb.getString("Archivo de propiedades no encontrado."));
             }
             properties.load(input);
         } catch (IOException e) {
-            JOptionPane.showMessageDialog(this, "Error al cargar el archivo de propiedades: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, rb.getString("Error al cargar el archivo de propiedades: ") + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
         }
     }

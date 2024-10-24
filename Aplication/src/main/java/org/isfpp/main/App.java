@@ -1,6 +1,7 @@
 package org.isfpp.main;
 
 import org.isfpp.controller.Coordinator;
+import org.isfpp.controller.Settings;
 import org.isfpp.datos.CargarParametros;
 import org.isfpp.datos.ResourceExtractor;
 import org.isfpp.interfaz.panelesCreadores.MainMenu;
@@ -20,6 +21,7 @@ public class App {
 
     // controlador
     private Coordinator coordinator;
+    private Settings settings;
 
     public static void main(String[] args) throws IOException {
         ResourceExtractor.extractResourcesToExecutionDir();
@@ -36,16 +38,20 @@ public class App {
 
     private void inicio(){
         LAN =new LAN();
+        settings=new Settings();
         coordinator = new Coordinator();
         calculoGraph =new CalculoGraph();
         mainMenu= new MainMenu();
+
         /* Se establecen las relaciones entre clases */
+        settings.setCoordinador(coordinator);
         LAN.setCoordinator(coordinator);
         calculoGraph.setCoordinator(coordinator);
         mainMenu.SetCoordinator(coordinator);
 
 
         /* Se establecen relaciones con la clase coordinador */
+        coordinator.setSettings(settings);
         coordinator.setWeb(LAN);
         coordinator.setUtils(calculoGraph);
         coordinator.setMainMenu(mainMenu);

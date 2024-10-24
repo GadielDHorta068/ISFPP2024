@@ -1,5 +1,4 @@
 package org.isfpp.interfaz.panelesPrincipal;
-
 import org.isfpp.controller.Coordinator;
 import org.isfpp.interfaz.stylusUI.StylusUI;
 import org.isfpp.modelo.Connection;
@@ -12,6 +11,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 
 /**
  * Clase que representa un componente desplegable genérico para mostrar datos en una tabla.
@@ -25,6 +25,7 @@ public class DesplegableComponent<T> {
     private List<T> dataList;
     private Coordinator coordinator;
     private LAN LAN;
+    private ResourceBundle rb;
 
     /**
      * Constructor de la clase DesplegableComponent.
@@ -39,7 +40,7 @@ public class DesplegableComponent<T> {
         isExpanded = !isExpanded;
         table.setVisible(isExpanded);
         table.getTableHeader().setVisible(isExpanded);
-        toggleButton.setText(isExpanded ? "▼ " + toggleButton.getText().substring(2) : "▶" + toggleButton.getText().substring(2));
+        toggleButton.setText(isExpanded ? "▼ " + toggleButton.getText().substring(2) : "▶ " + toggleButton.getText().substring(2));
         panel.revalidate();
         panel.repaint();
     }
@@ -56,6 +57,7 @@ public class DesplegableComponent<T> {
      * Método para actualizar los datos de la tabla.
      */
     public void updateTable() {
+        rb=coordinator.getResourceBundle();
         // Inicializa dataList basado en el tipo del primer elemento
         Object e = dataList.isEmpty() ? null : dataList.get(0);
         if (e instanceof Equipment) {
@@ -82,7 +84,11 @@ public class DesplegableComponent<T> {
                     data[i][2] = location;
                 }
                 case Connection connection -> {
-                    data[i][0] = String.format("%s - %s - %s - %s", connection.getPort1().getEquipment().getCode(), connection.getPort1().getPortType().getCode(), connection.getPort2().getPortType().getCode(), connection.getPort2().getEquipment().getCode());
+                    data[i][0] = String.format("%s - %s - %s - %s",
+                            connection.getPort1().getEquipment().getCode(),
+                            connection.getPort1().getPortType().getCode(),
+                            connection.getPort2().getPortType().getCode(),
+                            connection.getPort2().getEquipment().getCode());
                     data[i][1] = connection.getWire().getDescription();
                     data[i][2] = connection;
                 }
@@ -95,7 +101,7 @@ public class DesplegableComponent<T> {
         }
 
         // Aquí vuelves a crear el modelo, pero asegúrate de que siga siendo no editable
-        DefaultTableModel model = new DefaultTableModel(data, new String[]{"Nombre", "Descripción", "Objeto"}) {
+        DefaultTableModel model = new DefaultTableModel(data, new String[]{rb.getString("nombre"), rb.getString("descripcion"), rb.getString("objeto")}) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
@@ -138,7 +144,7 @@ public class DesplegableComponent<T> {
         panel = new JPanel();
         panel.setLayout(new BorderLayout());
 
-        toggleButton = new JButton("▶ " + titulo);
+        toggleButton = new JButton("▶ " + rb.getString(titulo));
         StylusUI.aplicarEstiloBoton(toggleButton, false);
         toggleButton.setHorizontalAlignment(SwingConstants.LEFT);
         //toggleButton.addActionListener(e -> toggle());
@@ -159,7 +165,11 @@ public class DesplegableComponent<T> {
                     data[i][2] = location;
                 }
                 case Connection connection -> {
-                    data[i][0] = String.format("%s - %s - %s - %s", connection.getPort1().getEquipment().getCode(), connection.getPort1().getPortType().getCode(), connection.getPort2().getPortType().getCode(), connection.getPort2().getEquipment().getCode());
+                    data[i][0] = String.format("%s - %s - %s - %s",
+                            connection.getPort1().getEquipment().getCode(),
+                            connection.getPort1().getPortType().getCode(),
+                            connection.getPort2().getPortType().getCode(),
+                            connection.getPort2().getEquipment().getCode());
                     data[i][1] = connection.getWire().getDescription();
                     data[i][2] = item;
                 }
@@ -172,7 +182,7 @@ public class DesplegableComponent<T> {
             }
         }
 
-        String[] columnNames = {"Nombre", "Descripción", "Objeto"};
+        String[] columnNames = {rb.getString("nombre"), rb.getString("descripcion"), rb.getString("objeto")};
 
         DefaultTableModel model = new DefaultTableModel(data, columnNames) {
             @Override
@@ -212,7 +222,7 @@ public class DesplegableComponent<T> {
                                 panelDerecho.updateProperties(selectedConnection);
                         case null, default ->
                             // Fallback para cualquier otro tipo de objeto
-                                panelDerecho.updateProperties(selectedItem.toString(), "Descripción no disponible");
+                                panelDerecho.updateProperties(selectedItem.toString(), rb.getString("descripcion_no_disponible"));
                     }
                 }
             }

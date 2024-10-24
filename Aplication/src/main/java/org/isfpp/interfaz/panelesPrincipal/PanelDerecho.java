@@ -8,6 +8,7 @@ import org.isfpp.modelo.Location;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ResourceBundle;
 
 /**
  * PanelDerecho: Esta clase representa un panel en la interfaz de usuario que muestra propiedades
@@ -16,6 +17,8 @@ import java.awt.*;
 public class PanelDerecho {
     private JTextArea propiedades;
     private JLabel logo;
+    private ResourceBundle rb;
+
     private final JPanel panel = new JPanel() {
         @Override
         public Dimension getPreferredSize() {
@@ -23,17 +26,19 @@ public class PanelDerecho {
         }
     };
 
+
     /**
      * crearPanelDerecho: Crea y aplica el estilo al panel derecho.
      * @return un JPanel estilizado.
      */
-    public JPanel crearPanelDerecho() {
+    public JPanel crearPanelDerecho(ResourceBundle resourceBundle) {
+        this.rb=resourceBundle;
         StylusUI.aplicarEstiloPanel(panel);
         panel.setLayout(new BorderLayout());
 
         // Set inicial; cambiar esto a un signo de pregunta y que al seleccionar un tipo x usar setIcon
         setIcon("help");
-        propiedades = new JTextArea("Seleccione un objeto para ver sus propiedades");
+        propiedades = new JTextArea( rb.getString("Seleccione un objeto para ver sus propiedades"));
         StylusUI.styleTextArea(propiedades);
         panel.add(propiedades, BorderLayout.CENTER);
 
@@ -61,10 +66,10 @@ public class PanelDerecho {
             setIcon(eq.getEquipmentType().getCode());
         } else if (e instanceof Location lo) {
             setIcon("LOC");
-            propiedades.setText("Codigo: " + lo.getCode() + "\n" + "Descripcion: " + lo.getDescription());
+            propiedades.setText( rb.getString("Codigo: ") + lo.getCode() + "\n" +  rb.getString("Descripcion: ") + lo.getDescription());
         } else if (e instanceof Connection con) {
             setIcon(con.getWire().getCode());
-            propiedades.setText("Equipo origen: " + con.getPort1().getEquipment().getCode() + "\n" + "Puerto: " + con.getPort1().getPortType().getCode() + "\n" + "MAC: " + con.getPort1().getMACAddress() + "\n" + "\n" + "Equipo Destino: " + con.getPort2().getEquipment().getCode() + "\n" + "Puerto: " + con.getPort2().getPortType().getCode() + "\n" + "MAC: " + con.getPort2().getMACAddress());
+            propiedades.setText( rb.getString("Equipo origen: ") + con.getPort1().getEquipment().getCode() + "\n" + rb.getString( "Puerto: " )+ con.getPort1().getPortType().getCode() + "\n" +  rb.getString("MAC: ") + con.getPort1().getMACAddress() + "\n" + "\n" +  rb.getString("Equipo Destino: " )+ con.getPort2().getEquipment().getCode() + "\n" +  rb.getString("Puerto: " )+ con.getPort2().getPortType().getCode() + "\n" +  rb.getString("MAC: ") + con.getPort2().getMACAddress());
         }
     }
 

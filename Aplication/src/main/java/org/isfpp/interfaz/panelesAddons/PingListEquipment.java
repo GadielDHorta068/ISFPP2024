@@ -8,19 +8,22 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 public class PingListEquipment {
     private JTextArea textArea;
     private Coordinator coordinator;
     private HashMap<Equipment, Boolean> direcciones;
+    private ResourceBundle rb;
 
     public PingListEquipment() {
 
     }
 
     public void ping() {
+        this.rb=coordinator.getResourceBundle();
         direcciones = new HashMap<>();
-        JFrame frame = new JFrame("Equipos Activos");
+        JFrame frame = new JFrame(rb.getString("Equipos Activos"));
         frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         frame.setSize(400, 300);
         textArea = new JTextArea();
