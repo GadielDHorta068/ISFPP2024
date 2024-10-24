@@ -64,35 +64,35 @@ public class EditEquipmentFormPanel extends JPanel {
         StylusUI.aplicarEstiloCampoTexto(modeloField);
         formPanel.add(modeloField);
 
-        JLabel tipoDeEquipo = new JLabel(rb.getString("Tipo de equipo"));
+        JLabel tipoDeEquipo = new JLabel(rb.getString("tipo_equipo"));
         StylusUI.aplicarEstiloEtiqueta(tipoDeEquipo);
         formPanel.add(tipoDeEquipo);
         equipmentTypeCombo = new JComboBox<>(coordinator.getEquipmentTypes().values().toArray(new EquipmentType[0]));
         StylusUI.aplicarEstiloComboBox(equipmentTypeCombo);
         formPanel.add(equipmentTypeCombo);
 
-        JLabel ubi = new JLabel(rb.getString("Ubicacion"));
+        JLabel ubi = new JLabel(rb.getString("ubicacion"));
         StylusUI.aplicarEstiloEtiqueta(ubi);
         formPanel.add(ubi);
         locationCombo = new JComboBox<>(coordinator.getLocations().values().toArray(new Location[0]));
         StylusUI.aplicarEstiloComboBox(locationCombo);
         formPanel.add(locationCombo);
 
-        JLabel puerto = new JLabel(rb.getString("Tipo de Puerto"));
+        JLabel puerto = new JLabel(rb.getString("tipo_puerto"));
         StylusUI.aplicarEstiloEtiqueta(puerto);
         formPanel.add(puerto);
         portTypeCombo = new JComboBox<>(coordinator.getPortTypes().values().toArray(new PortType[0]));
         StylusUI.aplicarEstiloComboBox(portTypeCombo);
         formPanel.add(portTypeCombo);
 
-        JLabel capacidad = new JLabel(rb.getString("Cantidad de puertos"));
+        JLabel capacidad = new JLabel(rb.getString("cantidad_puertos"));
         StylusUI.aplicarEstiloEtiqueta(capacidad);
         formPanel.add(capacidad);
         capacidadField = new JTextField(0);
         StylusUI.aplicarEstiloCampoTexto(capacidadField);
         formPanel.add(capacidadField);
 
-        JLabel estado = new JLabel(rb.getString("Estado (Activo)"));
+        JLabel estado = new JLabel(rb.getString("estado"));
         StylusUI.aplicarEstiloEtiqueta(estado);
         formPanel.add(estado);
         statusCheckBox = new JCheckBox();
@@ -101,7 +101,7 @@ public class EditEquipmentFormPanel extends JPanel {
 
         add(formPanel, BorderLayout.CENTER);
 
-        JButton createButton = new JButton(rb.getString("Editar Equipo"));
+        JButton createButton = new JButton(rb.getString("editar_equipo"));
         StylusUI.aplicarEstiloBoton(createButton, true);
         add(createButton, BorderLayout.SOUTH);
 
@@ -118,10 +118,10 @@ public class EditEquipmentFormPanel extends JPanel {
             try {
                 coordinator.updateEquipment(codeOriginal, new Equipment(code, description, marca, modelo, portType, Integer.parseInt(capacidadField.getText()), equipmentType, location, status));
 
-                JOptionPane.showMessageDialog(this, rb.getString("Equipo modificado con éxito"));
+                JOptionPane.showMessageDialog(this, rb.getString("equipo_modificado"));
                 frame.setVisible(false);
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this, rb.getString("Error al modificar equipo") + ": " + ex.getMessage());
+                JOptionPane.showMessageDialog(this, rb.getString("Error_equipo") + ": " + ex.getMessage());
             }
         });
 

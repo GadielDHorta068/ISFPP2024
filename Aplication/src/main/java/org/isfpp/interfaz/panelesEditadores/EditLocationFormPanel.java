@@ -21,7 +21,7 @@ public class EditLocationFormPanel extends JPanel {
     public void run(String codeOriginal) {
         rb = coordinator.getResourceBundle(); // Asignar el ResourceBundle desde el Coordinator
 
-        JFrame frame = new JFrame(rb.getString("agregar_uicacion")); // Usar rb.getString() para el texto
+        JFrame frame = new JFrame(rb.getString("agregar_ubicacion")); // Usar rb.getString() para el texto
         frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         frame.setSize(400, 150);
 
@@ -46,14 +46,14 @@ public class EditLocationFormPanel extends JPanel {
         formPanel.add(descriptionField);
         add(formPanel, BorderLayout.CENTER);
 
-        JButton createButton = new JButton(rb.getString("Modificar_Ubicacion")); // Texto traducido
+        JButton createButton = new JButton(rb.getString("modificar_ubicacion")); // Texto traducido
         StylusUI.aplicarEstiloBoton(createButton, true);
         add(createButton, BorderLayout.SOUTH);
 
         createButton.addActionListener(e -> {
             try {
                 coordinator.updateLocation(codeOriginal, new Location(codeField.getText(), descriptionField.getText()));
-                JOptionPane.showMessageDialog(this, rb.getString("Ubicacion_modificada_exito")); // Texto traducido
+                JOptionPane.showMessageDialog(this, rb.getString("ubicacion_modificada_exito")); // Texto traducido
                 frame.setVisible(false);
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, rb.getString("Error_modificar") + ": " + ex.getMessage()); // Texto traducido

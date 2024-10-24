@@ -42,7 +42,7 @@ public class EquipmentFormPanel extends JPanel {
         StylusUI.aplicarEstiloCampoTexto(codeField);
         formPanel.add(codeField);
 
-        JLabel des = new JLabel(rb.getString("descripcion:"));
+        JLabel des = new JLabel(rb.getString("descripcion"));
         StylusUI.aplicarEstiloEtiqueta(des);
         formPanel.add(des);
         descriptionField = new JTextField();
@@ -57,7 +57,7 @@ public class EquipmentFormPanel extends JPanel {
         formPanel.add(marcaField);
 
 
-        JLabel mod = new JLabel(rb.getString("modelo:"));
+        JLabel mod = new JLabel(rb.getString("modelo"));
         StylusUI.aplicarEstiloEtiqueta(mod);
         formPanel.add(mod);
         modeloField = new JTextField();
@@ -72,7 +72,7 @@ public class EquipmentFormPanel extends JPanel {
         StylusUI.aplicarEstiloComboBox(equipmentTypeCombo);
         formPanel.add(equipmentTypeCombo);
 
-        JLabel ubi = new JLabel(rb.getString("ubicacion:"));
+        JLabel ubi = new JLabel(rb.getString("ubicacion"));
         StylusUI.aplicarEstiloEtiqueta(ubi);
         formPanel.add(ubi);
         locationCombo = new JComboBox<>(coordinator.getLocations().values().toArray(new Location[0]));
@@ -116,7 +116,7 @@ public class EquipmentFormPanel extends JPanel {
             }
 
             if (portType == null) {
-                JOptionPane.showMessageDialog(this, rb.getString("Debe seleccionar al menos un tipo de puerto"), rb.getString("Error"), JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, rb.getString("seleccionar_puerto"), rb.getString("Error"), JOptionPane.ERROR_MESSAGE);
                 return;
             }
 

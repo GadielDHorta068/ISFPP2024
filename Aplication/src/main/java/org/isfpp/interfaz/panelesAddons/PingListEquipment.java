@@ -23,7 +23,7 @@ public class PingListEquipment {
     public void ping() {
         this.rb=coordinator.getResourceBundle();
         direcciones = new HashMap<>();
-        JFrame frame = new JFrame(rb.getString("equipos_Activos"));
+        JFrame frame = new JFrame(rb.getString("equipos_activos"));
         frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         frame.setSize(400, 300);
         textArea = new JTextArea();

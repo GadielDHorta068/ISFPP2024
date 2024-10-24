@@ -18,7 +18,7 @@ public class LocationFormPanel extends JPanel {
     public void run() {
         this.rb=coordinator.getResourceBundle();
 
-        JFrame frame = new JFrame(rb.getString("agregar_ubicación"));
+        JFrame frame = new JFrame(rb.getString("agregar_ubicacion"));
         frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         frame.setSize(400, 150);
 

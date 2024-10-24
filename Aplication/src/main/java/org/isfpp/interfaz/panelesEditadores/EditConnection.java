@@ -38,7 +38,7 @@ public class EditConnection extends JPanel {
         StylusUI.aplicarEstiloComboBox(eq1ComboBox);
         formPanel.add(eq1ComboBox);
 
-        JLabel tipoPuerto1 = new JLabel(rb.getString("Puerto origen"));
+        JLabel tipoPuerto1 = new JLabel(rb.getString("puerto_origen"));
         StylusUI.aplicarEstiloEtiqueta(tipoPuerto1);
         formPanel.add(tipoPuerto1);
         Equipment e1 = (Equipment) eq1ComboBox.getSelectedItem();
@@ -54,14 +54,14 @@ public class EditConnection extends JPanel {
             }
         }));
 
-        JLabel equipo2 = new JLabel(rb.getString("Equipo destino"));
+        JLabel equipo2 = new JLabel(rb.getString("equipo_destino"));
         StylusUI.aplicarEstiloEtiqueta(equipo2);
         formPanel.add(equipo2);
         eq2ComboBox = new JComboBox<>(coordinator.getHardware().values().toArray(new Equipment[1]));
         StylusUI.aplicarEstiloComboBox(eq2ComboBox);
         formPanel.add(eq2ComboBox);
 
-        JLabel tipoPuerto2 = new JLabel(rb.getString("Puerto destino"));
+        JLabel tipoPuerto2 = new JLabel(rb.getString("equipo_destino"));
         StylusUI.aplicarEstiloEtiqueta(tipoPuerto2);
         formPanel.add(tipoPuerto2);
         Equipment e2 = (Equipment) eq1ComboBox.getSelectedItem();
@@ -77,7 +77,7 @@ public class EditConnection extends JPanel {
             }
         }));
 
-        JLabel wireType = new JLabel(rb.getString("Tipo de Cable"));
+        JLabel wireType = new JLabel(rb.getString("tipo_cable"));
         StylusUI.aplicarEstiloEtiqueta(wireType);
         formPanel.add(wireType);
         wireComboBox = new JComboBox<>(coordinator.getWireTypes().values().toArray(new WireType[0]));
@@ -87,7 +87,7 @@ public class EditConnection extends JPanel {
 
         add(formPanel, BorderLayout.CENTER);
 
-        JButton createButton = new JButton(rb.getString("Agregar/Cambiar Conexion"));
+        JButton createButton = new JButton(rb.getString("switch_estado"));
         StylusUI.aplicarEstiloBoton(createButton, true);
         add(createButton, BorderLayout.SOUTH);
 
