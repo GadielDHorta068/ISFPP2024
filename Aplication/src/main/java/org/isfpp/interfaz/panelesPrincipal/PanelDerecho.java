@@ -38,7 +38,7 @@ public class PanelDerecho {
 
         // Set inicial; cambiar esto a un signo de pregunta y que al seleccionar un tipo x usar setIcon
         setIcon("help");
-        propiedades = new JTextArea( rb.getString("Seleccione un objeto para ver sus propiedades"));
+        propiedades = new JTextArea( rb.getString("seleccione_objeto"));
         StylusUI.styleTextArea(propiedades);
         panel.add(propiedades, BorderLayout.CENTER);
 
@@ -66,10 +66,10 @@ public class PanelDerecho {
             setIcon(eq.getEquipmentType().getCode());
         } else if (e instanceof Location lo) {
             setIcon("LOC");
-            propiedades.setText( rb.getString("Codigo: ") + lo.getCode() + "\n" +  rb.getString("Descripcion: ") + lo.getDescription());
+            propiedades.setText( rb.getString("codigo") + lo.getCode() + "\n" +  rb.getString("descripcion") + lo.getDescription());
         } else if (e instanceof Connection con) {
             setIcon(con.getWire().getCode());
-            propiedades.setText( rb.getString("Equipo origen: ") + con.getPort1().getEquipment().getCode() + "\n" + rb.getString( "Puerto: " )+ con.getPort1().getPortType().getCode() + "\n" +  rb.getString("MAC: ") + con.getPort1().getMACAddress() + "\n" + "\n" +  rb.getString("Equipo Destino: " )+ con.getPort2().getEquipment().getCode() + "\n" +  rb.getString("Puerto: " )+ con.getPort2().getPortType().getCode() + "\n" +  rb.getString("MAC: ") + con.getPort2().getMACAddress());
+            propiedades.setText( rb.getString("equipo_origen") + con.getPort1().getEquipment().getCode() + "\n" + rb.getString( "puerto" )+ con.getPort1().getPortType().getCode() + "\n" +  rb.getString("mac") + con.getPort1().getMACAddress() + "\n" + "\n" +  rb.getString("equipo_destino" )+ con.getPort2().getEquipment().getCode() + "\n" +  rb.getString("puerto" )+ con.getPort2().getPortType().getCode() + "\n" +  rb.getString("mac") + con.getPort2().getMACAddress());
         }
     }
 

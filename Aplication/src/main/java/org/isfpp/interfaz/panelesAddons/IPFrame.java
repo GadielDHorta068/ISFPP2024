@@ -28,10 +28,10 @@ public class IPFrame {
     public void scanIp() {
         this.rb=coordinator.getResourceBundle();
         direcciones = new ArrayList<>();
-        frame = new JFrame(rb.getString("IP Scanner"));
+        frame = new JFrame(rb.getString("ip_Scanner"));
         frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         frame.setSize(400, 300);
-        JTextField ipInicial = new JTextField(rb.getString("IP a escanear"));
+        JTextField ipInicial = new JTextField(rb.getString("ip_escanear"));
         String defecto = getIPSeleccionada();
         System.out.println(defecto);
         if (!Objects.equals(defecto, "0")) {
@@ -43,7 +43,7 @@ public class IPFrame {
         ipInicial.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
-                if (ipInicial.getText().equals(rb.getString("IP a escanear"))) {
+                if (ipInicial.getText().equals(rb.getString("ip_escanear"))) {
                     ipInicial.setText("");
                 }
             }
@@ -51,7 +51,7 @@ public class IPFrame {
             @Override
             public void focusLost(FocusEvent e) {
                 if (ipInicial.getText().isEmpty()) {
-                    ipInicial.setText(rb.getString("IP a escanear"));
+                    ipInicial.setText(rb.getString("ip_escanear"));
                 }
             }
         });
@@ -59,7 +59,7 @@ public class IPFrame {
         textArea = new JTextArea();
         textArea.setEditable(false);
         JScrollPane scrollPane = new JScrollPane(textArea);
-        JButton scanButton = new JButton(rb.getString("Scan IPs"));
+        JButton scanButton = new JButton(rb.getString("scan_IPs"));
         scanButton.addActionListener(e -> {
             direcciones.clear();
             try {

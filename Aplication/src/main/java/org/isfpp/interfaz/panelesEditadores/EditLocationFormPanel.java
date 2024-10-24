@@ -21,7 +21,7 @@ public class EditLocationFormPanel extends JPanel {
     public void run(String codeOriginal) {
         rb = coordinator.getResourceBundle(); // Asignar el ResourceBundle desde el Coordinator
 
-        JFrame frame = new JFrame(rb.getString("Agregar_Ubicacion")); // Usar rb.getString() para el texto
+        JFrame frame = new JFrame(rb.getString("agregar_uicacion")); // Usar rb.getString() para el texto
         frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         frame.setSize(400, 150);
 
@@ -31,14 +31,14 @@ public class EditLocationFormPanel extends JPanel {
         JPanel formPanel = new JPanel(new GridLayout(2, 2, 10, 20));
         StylusUI.aplicarEstiloPanel(formPanel);
 
-        JLabel codigo = new JLabel(rb.getString("Codigo")); // Texto traducido
+        JLabel codigo = new JLabel(rb.getString("codigo")); // Texto traducido
         StylusUI.aplicarEstiloEtiqueta(codigo);
         formPanel.add(codigo);
         codeField = new JTextField(loc.getCode());
         StylusUI.aplicarEstiloCampoTexto(codeField);
         formPanel.add(codeField);
 
-        JLabel des = new JLabel(rb.getString("Descripcion")); // Texto traducido
+        JLabel des = new JLabel(rb.getString("descripcion")); // Texto traducido
         StylusUI.aplicarEstiloEtiqueta(des);
         formPanel.add(des);
         descriptionField = new JTextField(loc.getDescription());

@@ -26,7 +26,7 @@ public class EquipmentFormPanel extends JPanel {
     public EquipmentFormPanel() {}
     public void run() {
         this.rb=coordinator.getResourceBundle();
-        JFrame frame = new JFrame(rb.getString("Formulario de Equipo"));
+        JFrame frame = new JFrame(rb.getString("formulario_equipo"));
         frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         frame.setSize(800, 600);
 
@@ -35,14 +35,14 @@ public class EquipmentFormPanel extends JPanel {
         JPanel formPanel = new JPanel(new GridLayout(11, 2, 10, 10));
         StylusUI.aplicarEstiloPanel(formPanel);
 
-        JLabel codigo = new JLabel(rb.getString("Codigo"));
+        JLabel codigo = new JLabel(rb.getString("codigo"));
         StylusUI.aplicarEstiloEtiqueta(codigo);
         formPanel.add(codigo);
         codeField = new JTextField();
         StylusUI.aplicarEstiloCampoTexto(codeField);
         formPanel.add(codeField);
 
-        JLabel des = new JLabel(rb.getString("Descripcion:"));
+        JLabel des = new JLabel(rb.getString("descripcion:"));
         StylusUI.aplicarEstiloEtiqueta(des);
         formPanel.add(des);
         descriptionField = new JTextField();
@@ -57,7 +57,7 @@ public class EquipmentFormPanel extends JPanel {
         formPanel.add(marcaField);
 
 
-        JLabel mod = new JLabel(rb.getString("Modelo:"));
+        JLabel mod = new JLabel(rb.getString("modelo:"));
         StylusUI.aplicarEstiloEtiqueta(mod);
         formPanel.add(mod);
         modeloField = new JTextField();
@@ -65,28 +65,28 @@ public class EquipmentFormPanel extends JPanel {
         formPanel.add(modeloField);
 
 
-        JLabel tipoDeEquipo = new JLabel(rb.getString("Tipo de equipo"));
+        JLabel tipoDeEquipo = new JLabel(rb.getString("tipo_equipo"));
         StylusUI.aplicarEstiloEtiqueta(tipoDeEquipo);
         formPanel.add(tipoDeEquipo);
         equipmentTypeCombo = new JComboBox<>(coordinator.getEquipmentTypes().values().toArray(new EquipmentType[0]));
         StylusUI.aplicarEstiloComboBox(equipmentTypeCombo);
         formPanel.add(equipmentTypeCombo);
 
-        JLabel ubi = new JLabel(rb.getString("Ubicacion:"));
+        JLabel ubi = new JLabel(rb.getString("ubicacion:"));
         StylusUI.aplicarEstiloEtiqueta(ubi);
         formPanel.add(ubi);
         locationCombo = new JComboBox<>(coordinator.getLocations().values().toArray(new Location[0]));
         StylusUI.aplicarEstiloComboBox(locationCombo);
         formPanel.add(locationCombo);
 
-        JLabel puerto = new JLabel(rb.getString("Tipo de Puerto"));
+        JLabel puerto = new JLabel(rb.getString("tipo_puerto"));
         StylusUI.aplicarEstiloEtiqueta(puerto);
         formPanel.add(puerto);
         portTypeCombo = new JComboBox<>(coordinator.getPortTypes().values().toArray(new PortType[0]));
         StylusUI.aplicarEstiloComboBox(portTypeCombo);
         formPanel.add(portTypeCombo);
 
-        JLabel estado = new JLabel(rb.getString("Estado (Activo)"));
+        JLabel estado = new JLabel(rb.getString("estado_activo"));
         StylusUI.aplicarEstiloEtiqueta(estado);
         formPanel.add(estado);
         statusCheckBox = new JCheckBox();
@@ -96,7 +96,7 @@ public class EquipmentFormPanel extends JPanel {
 
         add(formPanel, BorderLayout.CENTER);
 
-        JButton createButton = new JButton(rb.getString("Crear Equipo"));
+        JButton createButton = new JButton(rb.getString("crear_equipo"));
         StylusUI.aplicarEstiloBoton(createButton, true);
         add(createButton, BorderLayout.SOUTH);
 
@@ -111,7 +111,7 @@ public class EquipmentFormPanel extends JPanel {
             boolean status = statusCheckBox.isSelected();
 
             if (Objects.equals(code, "")) {
-                JOptionPane.showMessageDialog(this, rb.getString("EL codigo no debe estar vacio"),rb.getString( "Error"), JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, rb.getString("codigo_no_vacio"),rb.getString( "error"), JOptionPane.ERROR_MESSAGE);
                 return;
             }
 

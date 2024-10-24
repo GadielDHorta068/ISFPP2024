@@ -1,5 +1,7 @@
 package org.isfpp.controller;
 
+import org.isfpp.datos.Cargar;
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -16,10 +18,12 @@ public class Settings {
             Properties prop = new Properties();
             InputStream input;
             try {
-                input = new FileInputStream("config.properties");
+                input = Settings.class.getClassLoader().getResourceAsStream("config.properties");
                 prop.load(input);
-                Locale.setDefault(new Locale(prop.getProperty("language"), prop.getProperty("country")));
-                resourceBundle = ResourceBundle.getBundle(prop.getProperty("labels"));
+           //     Locale.setDefault(new Locale(prop.getProperty("language"), prop.getProperty("country")));
+                Locale locale = new Locale("es", "AR");
+              //  resourceBundle = ResourceBundle.getBundle(prop.getProperty("labels"));
+                resourceBundle = ResourceBundle.getBundle("messages", locale);
 
             } catch (Exception e) {
                 // TODO Auto-generated catch block

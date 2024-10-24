@@ -20,7 +20,7 @@ public class PortTypeFormPanel extends JPanel {
         this.rb=coordinator.getResourceBundle();
 
 
-        JFrame frame = new JFrame(rb.getString("Agregar tipo de Puerto"));
+        JFrame frame = new JFrame(rb.getString("agregar_puerto"));
         frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         frame.setSize(400, 200);
         setLayout(new BorderLayout());
@@ -28,14 +28,14 @@ public class PortTypeFormPanel extends JPanel {
         JPanel formPanel = new JPanel(new GridLayout(3, 2, 10, 20));
         StylusUI.aplicarEstiloPanel(formPanel);
 
-        JLabel codigo = new JLabel(rb.getString("Codigo"));
+        JLabel codigo = new JLabel(rb.getString("codigo"));
         StylusUI.aplicarEstiloEtiqueta(codigo);
         formPanel.add(codigo);
         codeField = new JTextField();
         StylusUI.aplicarEstiloCampoTexto(codeField);
         formPanel.add(codeField);
 
-        JLabel des = new JLabel(rb.getString("Descripcion:"));
+        JLabel des = new JLabel(rb.getString("descripcion"));
         StylusUI.aplicarEstiloEtiqueta(des);
         formPanel.add(des);
         descriptionField = new JTextField();
@@ -43,7 +43,7 @@ public class PortTypeFormPanel extends JPanel {
         formPanel.add(descriptionField);
         add(formPanel, BorderLayout.CENTER);
 
-        JLabel speed = new JLabel(rb.getString("Velocidad:"));
+        JLabel speed = new JLabel(rb.getString("velocidad"));
         StylusUI.aplicarEstiloEtiqueta(speed);
         formPanel.add(speed);
         speedField = new JTextField();
@@ -51,7 +51,7 @@ public class PortTypeFormPanel extends JPanel {
         formPanel.add(speedField);
         add(formPanel, BorderLayout.CENTER);
 
-        JButton createButton = new JButton(rb.getString("Crear tipo de puerto"));
+        JButton createButton = new JButton(rb.getString("crear_tipo_puerto"));
         StylusUI.aplicarEstiloBoton(createButton, true);
         add(createButton, BorderLayout.SOUTH);
 
@@ -61,16 +61,16 @@ public class PortTypeFormPanel extends JPanel {
             int portSpeed = Integer.parseInt(speedField.getText());
 
             if (Objects.equals(code, "")) {
-                JOptionPane.showMessageDialog(this, rb.getString("El codigo no debe estar vacio"), rb.getString("Error"), JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, rb.getString("codigo_no_vacio"), rb.getString("Error"), JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
             try {
                 coordinator.addPort(code, description, portSpeed);
-                JOptionPane.showMessageDialog(this, rb.getString("Tipo de puerto creado con éxito"));
+                JOptionPane.showMessageDialog(this, rb.getString("puerto_creado"));
                 frame.setVisible(false);
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this,rb.getString( "Error al crear puerto: ") + ex.getMessage());
+                JOptionPane.showMessageDialog(this,rb.getString( "error_crear_puerto") + ex.getMessage());
             }
         });
         frame.add(this);

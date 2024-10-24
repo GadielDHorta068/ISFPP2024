@@ -35,17 +35,17 @@ public class MainMenu {
         DesplegableComponent<Equipment> desplegableNodos = new DesplegableComponent<>();
         coordinator.addTabla(desplegableNodos);
         desplegableNodos.setCoordinator(coordinator);
-        desplegableNodos.IniciarTabla(rb.getString("Equipos"), new ArrayList<>(LAN.getHardware().values()), panelDerecho);
+        desplegableNodos.IniciarTabla(rb.getString("equipos"), new ArrayList<>(LAN.getHardware().values()), panelDerecho);
 
         DesplegableComponent<Location> desplegableUbicaciones = new DesplegableComponent<>();
         coordinator.addTabla(desplegableUbicaciones);
         desplegableUbicaciones.setCoordinator(coordinator);
-        desplegableUbicaciones.IniciarTabla(rb.getString("Ubicaciones"), new ArrayList<>(LAN.getLocations().values()), panelDerecho);
+        desplegableUbicaciones.IniciarTabla(rb.getString("ubicaciones"), new ArrayList<>(LAN.getLocations().values()), panelDerecho);
 
         DesplegableComponent<Connection> desplegableConexiones = new DesplegableComponent<>();
         coordinator.addTabla(desplegableConexiones);
         desplegableConexiones.setCoordinator(coordinator);
-        desplegableConexiones.IniciarTabla(rb.getString("Conexiones"), LAN.getConnections(), panelDerecho);
+        desplegableConexiones.IniciarTabla(rb.getString("conexiones"), LAN.getConnections(), panelDerecho);
 
         BarraMenu barraMenu = new BarraMenu(LAN);
         barraMenu.setCoordinador(coordinator);

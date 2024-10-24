@@ -22,7 +22,7 @@ public class EditPortTypeFormPanel extends JPanel {
     public void run(String codeOriginal) {
         rb = coordinator.getResourceBundle();
 
-        JFrame frame = new JFrame(rb.getString("Modificar_tipo_Puerto"));
+        JFrame frame = new JFrame(rb.getString("modificar_tipo_Puerto"));
         frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         frame.setSize(400, 200);
 

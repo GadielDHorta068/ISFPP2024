@@ -26,7 +26,7 @@ public class EditEquipmentFormPanel extends JPanel {
 
     public void run(String codeOriginal) {
         rb = coordinator.getResourceBundle();
-        JFrame frame = new JFrame(rb.getString("Edicion de Equipo"));
+        JFrame frame = new JFrame(rb.getString("edicion_equipo"));
         frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         frame.setSize(800, 600);
 
@@ -36,28 +36,28 @@ public class EditEquipmentFormPanel extends JPanel {
         JPanel formPanel = new JPanel(new GridLayout(11, 2, 10, 10));
         StylusUI.aplicarEstiloPanel(formPanel);
 
-        JLabel codigo = new JLabel(rb.getString("Codigo"));
+        JLabel codigo = new JLabel(rb.getString("codigo"));
         StylusUI.aplicarEstiloEtiqueta(codigo);
         formPanel.add(codigo);
         codeField = new JTextField(eq.getCode());
         StylusUI.aplicarEstiloCampoTexto(codeField);
         formPanel.add(codeField);
 
-        JLabel des = new JLabel(rb.getString("Descripcion"));
+        JLabel des = new JLabel(rb.getString("descripcion"));
         StylusUI.aplicarEstiloEtiqueta(des);
         formPanel.add(des);
         descriptionField = new JTextField(eq.getDescription());
         StylusUI.aplicarEstiloCampoTexto(descriptionField);
         formPanel.add(descriptionField);
 
-        JLabel marc = new JLabel(rb.getString("Marca"));
+        JLabel marc = new JLabel(rb.getString("marca"));
         StylusUI.aplicarEstiloEtiqueta(marc);
         formPanel.add(marc);
         marcaField = new JTextField(eq.getMake());
         StylusUI.aplicarEstiloCampoTexto(marcaField);
         formPanel.add(marcaField);
 
-        JLabel mod = new JLabel(rb.getString("Modelo"));
+        JLabel mod = new JLabel(rb.getString("modelo"));
         StylusUI.aplicarEstiloEtiqueta(mod);
         formPanel.add(mod);
         modeloField = new JTextField(eq.getModel());

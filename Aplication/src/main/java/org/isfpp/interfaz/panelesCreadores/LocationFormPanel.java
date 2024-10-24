@@ -18,7 +18,7 @@ public class LocationFormPanel extends JPanel {
     public void run() {
         this.rb=coordinator.getResourceBundle();
 
-        JFrame frame = new JFrame(rb.getString("Agregar Ubicación"));
+        JFrame frame = new JFrame(rb.getString("agregar_ubicación"));
         frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         frame.setSize(400, 150);
 
@@ -27,14 +27,14 @@ public class LocationFormPanel extends JPanel {
         JPanel formPanel = new JPanel(new GridLayout(2, 2, 10, 20));
         StylusUI.aplicarEstiloPanel(formPanel);
 
-        JLabel codigo = new JLabel(rb.getString("Codigo"));
+        JLabel codigo = new JLabel(rb.getString("codigo"));
         StylusUI.aplicarEstiloEtiqueta(codigo);
         formPanel.add(codigo);
         codeField = new JTextField();
         StylusUI.aplicarEstiloCampoTexto(codeField);
         formPanel.add(codeField);
 
-        JLabel des = new JLabel(rb.getString("Descripcion:"));
+        JLabel des = new JLabel(rb.getString("descripcion"));
         StylusUI.aplicarEstiloEtiqueta(des);
         formPanel.add(des);
         descriptionField = new JTextField();
@@ -42,7 +42,7 @@ public class LocationFormPanel extends JPanel {
         formPanel.add(descriptionField);
         add(formPanel, BorderLayout.CENTER);
 
-        JButton createButton = new JButton(rb.getString("Crear Ubicacion"));
+        JButton createButton = new JButton(rb.getString("crear_ubicacion"));
         StylusUI.aplicarEstiloBoton(createButton, true);
         add(createButton, BorderLayout.SOUTH);
 
@@ -52,10 +52,10 @@ public class LocationFormPanel extends JPanel {
 
             try {
                 coordinator.addLocation(code, description);
-                JOptionPane.showMessageDialog(this, rb.getString("Ubicacion creado con éxito"));
+                JOptionPane.showMessageDialog(this, rb.getString("ubicacion_exito"));
                 frame.setVisible(false);
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this, rb.getString("Error al crear ubicacion: ") + ex.getMessage());
+                JOptionPane.showMessageDialog(this, rb.getString("error_crear_ubicacion: ") + ex.getMessage());
             }
         });
 

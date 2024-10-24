@@ -79,7 +79,7 @@ public class VisualizarGrafo extends JFrame {
 
 
 
-        setTitle(rb.getString("Visualización del Grafo"));
+        setTitle(rb.getString("ver_grafo"));
         setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         pack();
         setVisible(true);
@@ -89,11 +89,11 @@ public class VisualizarGrafo extends JFrame {
         properties = new Properties();
         try (InputStream input = getClass().getClassLoader().getResourceAsStream("config.properties")) {
             if (input == null) {
-                throw new IOException(rb.getString("Archivo de propiedades no encontrado."));
+                throw new IOException(rb.getString("propiedades_falta"));
             }
             properties.load(input);
         } catch (IOException e) {
-            JOptionPane.showMessageDialog(this, rb.getString("Error al cargar el archivo de propiedades: ") + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, rb.getString("error_propiedades: ") + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
         }
     }

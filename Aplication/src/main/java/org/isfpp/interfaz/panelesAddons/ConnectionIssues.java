@@ -30,10 +30,10 @@ public class ConnectionIssues {
     public void scanIp() {
         this.rb=coordinator.getResourceBundle();
         direcciones = new ArrayList<>();
-        frame = new JFrame(rb.getString("Alcanze del equipo"));
+        frame = new JFrame(rb.getString("alcanze_equipo"));
         frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         frame.setSize(400, 300);
-        JTextField ipInicial = new JTextField(rb.getString("IP a escanear"));
+        JTextField ipInicial = new JTextField(rb.getString("ip_escanear"));
         String defecto = getIPSeleccionada();
         System.out.println(defecto);
         if (!Objects.equals(defecto, "0")) {
@@ -45,7 +45,7 @@ public class ConnectionIssues {
         ipInicial.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
-                if (ipInicial.getText().equals(rb.getString("IP a escanear"))) {
+                if (ipInicial.getText().equals(rb.getString("ip_escanear"))) {
                     ipInicial.setText("");
                 }
             }
@@ -53,7 +53,7 @@ public class ConnectionIssues {
             @Override
             public void focusLost(FocusEvent e) {
                 if (ipInicial.getText().isEmpty()) {
-                    ipInicial.setText(rb.getString("IP a escanear"));
+                    ipInicial.setText(rb.getString("ip_escanear"));
                 }
             }
         });
@@ -61,7 +61,7 @@ public class ConnectionIssues {
         textArea = new JTextArea();
         textArea.setEditable(false);
         JScrollPane scrollPane = new JScrollPane(textArea);
-        scanButton = new JButton(rb.getString("Conexiones"));
+        scanButton = new JButton(rb.getString("conexiones"));
         scanButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -93,7 +93,7 @@ public class ConnectionIssues {
     private void updateTextArea() {
         textArea.setText("");
         if (direcciones.size() == 1) {
-            textArea.append(rb.getString("no esta conectado a ningun equipo"));
+            textArea.append(rb.getString("no_conectado"));
         } else {
             for (Equipment direccion : direcciones) {
                 textArea.append(direccion.getCode() + "\n");

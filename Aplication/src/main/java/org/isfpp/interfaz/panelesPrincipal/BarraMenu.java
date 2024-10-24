@@ -43,12 +43,12 @@ public class BarraMenu {
 
     private JMenu crearArchivoMenu() {
         this.rb=coordinator.getResourceBundle();
-        JMenu archivoMenu = new JMenu(rb.getString("Archivo"));
+        JMenu archivoMenu = new JMenu(rb.getString("archivo"));
         StylusUI.styleMenu(archivoMenu);
 
-        archivoMenu.add(crearMenuItem(rb.getString("Cargar"), this::accionCargar));
-        archivoMenu.add(crearMenuItem(rb.getString("Guardar"), this::accionGuardar));
-        archivoMenu.add(crearMenuItem(rb.getString("Salir"), e -> System.exit(0)));
+        archivoMenu.add(crearMenuItem(rb.getString("cargar"), this::accionCargar));
+        archivoMenu.add(crearMenuItem(rb.getString("guardar"), this::accionGuardar));
+        archivoMenu.add(crearMenuItem(rb.getString("salir"), e -> System.exit(0)));
 
         return archivoMenu;
     }
@@ -86,28 +86,28 @@ public class BarraMenu {
     }
 
     private JMenu crearEditarMenu() {
-        JMenu editarMenu = new JMenu(rb.getString("Editar"));
+        JMenu editarMenu = new JMenu(rb.getString("editar"));
         StylusUI.styleMenu(editarMenu);
 
-        editarMenu.add(crearMenuItem(rb.getString("Agregar Equipo"), e -> {
+        editarMenu.add(crearMenuItem(rb.getString("agregar_equipo"), e -> {
             EquipmentFormPanel equipmentPanel = new EquipmentFormPanel();
             equipmentPanel.setCoordinator(coordinator);
             equipmentPanel.run();
         }));
 
-        editarMenu.add(crearMenuItem(rb.getString("Agregar tipo Puerto"), e -> {
+        editarMenu.add(crearMenuItem(rb.getString("agregar_puerto"), e -> {
             PortTypeFormPanel portTypePanel = new PortTypeFormPanel();
             portTypePanel.setCoordinator(coordinator);
             portTypePanel.run();
         }));
 
-        editarMenu.add(crearMenuItem(rb.getString("Agregar Ubicacion"), e -> {
+        editarMenu.add(crearMenuItem(rb.getString("agregar_ubicacion"), e -> {
             LocationFormPanel locationPanel = new LocationFormPanel();
             locationPanel.setCoordinator(coordinator);
             locationPanel.run();
         }));
 
-        editarMenu.add(crearMenuItem(rb.getString("Agregar Conexion"), e -> {
+        editarMenu.add(crearMenuItem(rb.getString("agregar_connexion"), e -> {
             EditConnection editConnection = new EditConnection();
             editConnection.setCoordinator(coordinator);
             editConnection.run(null);

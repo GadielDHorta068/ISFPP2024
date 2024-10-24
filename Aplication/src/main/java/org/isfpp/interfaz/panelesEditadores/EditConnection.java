@@ -22,7 +22,7 @@ public class EditConnection extends JPanel {
 
     public void run(Connection c) {
         rb= coordinator.getResourceBundle();
-        JFrame frame = new JFrame(rb.getString("Edicion de Conexion"));
+        JFrame frame = new JFrame(rb.getString("edicion_conexion"));
         frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         frame.setSize(800, 600);
 
@@ -31,7 +31,7 @@ public class EditConnection extends JPanel {
         JPanel formPanel = new JPanel(new GridLayout(11, 2, 10, 10));
         StylusUI.aplicarEstiloPanel(formPanel);
 
-        JLabel equipo1 = new JLabel(rb.getString("Equipo origen"));
+        JLabel equipo1 = new JLabel(rb.getString("equipo_origen"));
         StylusUI.aplicarEstiloEtiqueta(equipo1);
         formPanel.add(equipo1);
         eq1ComboBox = new JComboBox<>(coordinator.getHardware().values().toArray(new Equipment[0]));

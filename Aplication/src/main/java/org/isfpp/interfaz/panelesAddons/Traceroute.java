@@ -27,17 +27,17 @@ public class Traceroute {
 
     public void trace() {
         this.rb=coordinator.getResourceBundle();
-        frame = new JFrame(rb.getString("TraceRouter"));
+        frame = new JFrame(rb.getString("traceroute"));
         frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         frame.setSize(400, 300);
-        textE1 = new JTextField(rb.getString("codigo equipo 1"));
-        textE2 = new JTextField(rb.getString("codigo equipo 2"));
+        textE1 = new JTextField(rb.getString("codigo_1"));
+        textE2 = new JTextField(rb.getString("codigo_2"));
         StylusUI.aplicarEstiloCampoTexto(textE1);
         StylusUI.aplicarEstiloCampoTexto(textE2);
         textArea = new JTextArea();
         textArea.setEditable(false);
         JScrollPane scrollPane = new JScrollPane(textArea);
-        JButton okButton = new JButton(rb.getString("Tracerouter"));
+        JButton okButton = new JButton(rb.getString("traceroute"));
         okButton.addActionListener(e -> {
             try {
                 textArea.setText("");
@@ -57,7 +57,7 @@ public class Traceroute {
         textE1.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
-                if (textE1.getText().equals(rb.getString("codigo equipo 1"))) {
+                if (textE1.getText().equals(rb.getString("codigo_1"))) {
                     textE1.setText("");
                 }
             }
@@ -65,7 +65,7 @@ public class Traceroute {
             @Override
             public void focusLost(FocusEvent e) {
                 if (textE1.getText().isEmpty()) {
-                    textE1.setText(rb.getString("codigo equipo 1"));
+                    textE1.setText(rb.getString("codigo_1"));
                 }
             }
         });
@@ -73,7 +73,7 @@ public class Traceroute {
         textE2.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
-                if (textE2.getText().equals(rb.getString("codigo equipo 2"))) {
+                if (textE2.getText().equals(rb.getString("codigo_2"))) {
                     textE2.setText("");
                 }
             }
@@ -81,7 +81,7 @@ public class Traceroute {
             @Override
             public void focusLost(FocusEvent e) {
                 if (textE2.getText().isEmpty()) {
-                    textE2.setText(rb.getString("codigo equipo 2"));
+                    textE2.setText(rb.getString("codigo_2"));
                 }
             }
         });
