@@ -8,11 +8,10 @@ import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.ResourceBundle;
 
 /**
  * La clase Coordinator es responsable de gestionar diversas funcionalidades relacionadas con la web y sus componentes.
@@ -398,26 +397,33 @@ public class Coordinator {
         tablas.add(d);
     }
 
-    public void saveALlData(String fileDirectory) throws FileNotFoundException {
-        File dataDir = new File(fileDirectory, "data");
-        if (!dataDir.exists()) {
-            throw new FileNotFoundException("La carpeta 'data' no fue encontrada en: " + dataDir.getAbsolutePath());
-        }
 
-        insertAllInto(fileDirectory);
-        //return cargarRed(name, equipmentFile, connectionFile, locationFile, portTypeFile, wireTypeFile, equipmentTypeFile);
+    public void setSettings(Settings settings) {this.settings=settings;
     }
 
-    public void LoadALlData(String fileDirectory) throws FileNotFoundException {
-        File dataDir = new File(fileDirectory, "data");
-        if (!dataDir.exists()) {
-            throw new FileNotFoundException("La carpeta 'data' no fue encontrada en: " + dataDir.getAbsolutePath());
-        }
-
-        searchAllOf(fileDirectory);
-        //return cargarRed(name, equipmentFile, connectionFile, locationFile, portTypeFile, wireTypeFile, equipmentTypeFile);
+    public ResourceBundle getResourceBundle() {return this.settings.getResourceBundle();
     }
 
+    public void updateConnection(Connection c, Connection connection) {
+        lan.updateConnection(c,connection);
+    }
+
+    public HashMap<Object, EquipmentType> getEquipmentTypes() {return LAN.getEquipmentTypes();
+    }
+
+    public HashMap<String, PortType> getPortTypes() { return LAN.getPortTypes();}
+
+    public HashMap<String, WireType> getWireTypes() { return LAN.getWireTypes();
+    }
+
+    public void updateEquipment(String codeOriginal, Equipment equipment) {LAN.updateEquipment(codeOriginal, equipment);
+    }
+
+    public void updateLocation(String codeOriginial, Location location) { LAN.updateLocation(codeOriginial, location);
+    }
+
+    public void updatePortType(String codeOriginal, PortType port) {LAN.updatePortType(codeOriginal, port);
+    }
 
 
     //metodos searchAllOf de Web, (lectura)

@@ -1,5 +1,6 @@
 package org.isfpp.interfaz;
 
+import org.isfpp.controller.Settings;
 import org.isfpp.interfaz.panelesPrincipal.BarraMenu;
 import org.isfpp.interfaz.panelesPrincipal.PanelDerecho;
 import org.isfpp.interfaz.stylusUI.StylusUI;
@@ -8,6 +9,7 @@ import org.isfpp.modelo.Lan;
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
+import java.util.ResourceBundle;
 
 public class GUI {
     public static void main(String[] args) throws IOException {
@@ -15,6 +17,7 @@ public class GUI {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(new BorderLayout());
         StylusUI.inicializar(false);
+        Settings settings = new Settings();
 
         PanelDerecho panelDerecho = new PanelDerecho();
 
@@ -28,7 +31,7 @@ public class GUI {
 
         frame.setJMenuBar(barraMenu.crearBarraMenu());
         frame.add(panelIzquierdo, BorderLayout.WEST);
-        frame.add(panelDerecho.crearPanelDerecho(), BorderLayout.EAST);
+        frame.add(panelDerecho.crearPanelDerecho(settings.getResourceBundle()), BorderLayout.EAST);
 
         frame.setSize(800, 600);
         panelIzquierdo.setPreferredSize(new Dimension(frame.getWidth() - 262, 400));

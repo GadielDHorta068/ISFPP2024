@@ -50,7 +50,6 @@ public class App {
 
     private void luanch() {
         mainMenu.components(coordinator.getWeb());
-
     }
 
     private void minitest() {
@@ -60,4 +59,3 @@ public class App {
         FileTextToBD.FileTextToBD();
     }
 }
-

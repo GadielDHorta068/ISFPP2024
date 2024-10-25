@@ -13,6 +13,7 @@ import java.awt.event.FocusListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.ResourceBundle;
 
 public class ConnectionIssues {
     private JFrame frame;
@@ -20,17 +21,19 @@ public class ConnectionIssues {
     private JButton scanButton;
     private List<Equipment> direcciones;
     private Coordinator coordinator;
+    private ResourceBundle rb;
 
 
     public ConnectionIssues() {
     }
 
     public void scanIp() {
+        this.rb=coordinator.getResourceBundle();
         direcciones = new ArrayList<>();
-        frame = new JFrame("Alcanze del equipo");
+        frame = new JFrame(rb.getString("alcanze_equipo"));
         frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         frame.setSize(400, 300);
-        JTextField ipInicial = new JTextField("IP a escanear");
+        JTextField ipInicial = new JTextField(rb.getString("ip_escanear"));
         String defecto = getIPSeleccionada();
         System.out.println(defecto);
         if (!Objects.equals(defecto, "0")) {
@@ -42,7 +45,7 @@ public class ConnectionIssues {
         ipInicial.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
-                if (ipInicial.getText().equals("IP a escanear")) {
+                if (ipInicial.getText().equals(rb.getString("ip_escanear"))) {
                     ipInicial.setText("");
                 }
             }
@@ -50,7 +53,7 @@ public class ConnectionIssues {
             @Override
             public void focusLost(FocusEvent e) {
                 if (ipInicial.getText().isEmpty()) {
-                    ipInicial.setText("IP a escanear");
+                    ipInicial.setText(rb.getString("ip_escanear"));
                 }
             }
         });
@@ -58,7 +61,7 @@ public class ConnectionIssues {
         textArea = new JTextArea();
         textArea.setEditable(false);
         JScrollPane scrollPane = new JScrollPane(textArea);
-        scanButton = new JButton("Conexiones");
+        scanButton = new JButton(rb.getString("conexiones"));
         scanButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -90,7 +93,7 @@ public class ConnectionIssues {
     private void updateTextArea() {
         textArea.setText("");
         if (direcciones.size() == 1) {
-            textArea.append("no esta conectado a ningun equipo");
+            textArea.append(rb.getString("no_conectado"));
         } else {
             for (Equipment direccion : direcciones) {
                 textArea.append(direccion.getCode() + "\n");
