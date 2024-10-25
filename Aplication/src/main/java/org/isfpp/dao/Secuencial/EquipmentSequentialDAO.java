@@ -10,18 +10,20 @@ import java.io.*;
 import java.util.*;
 
 public class EquipmentSequentialDAO implements EquipmentDAO {
+    private boolean update;
+
     private Hashtable<String, Equipment> map;
     private String fileName;
-    private boolean update;
-    private Hashtable<String, PortType> portTypes;
-    private Hashtable<String, EquipmentType> equipmentTypes;
-    private Hashtable<String, Location> locations;
+
+    private final Hashtable<String, PortType> portTypes;
+    private final Hashtable<String, EquipmentType> equipmentTypes;
+    private final Hashtable<String, Location> locations;
 
     public EquipmentSequentialDAO() {
         equipmentTypes = readEquipmentTypes();
         locations = readLocations();
         portTypes = readPortTypes();
-        ResourceBundle rb = ResourceBundle.getBundle("config");
+        ResourceBundle rb = ResourceBundle.getBundle("sequential");
         fileName = rb.getString("rs.connection");
         update = true;
     }
@@ -30,8 +32,8 @@ public class EquipmentSequentialDAO implements EquipmentDAO {
         Hashtable<String, Equipment> map = new Hashtable<>();
         Scanner inFile = null;
 
+
         try {
-            inFile = new Scanner(new File(fileName));
             // Cambia a FileInputStream para leer del sistema de archivos
             inFile = new Scanner(new FileInputStream(fileName));
             inFile.useDelimiter("\\s*;\\s*");
@@ -78,9 +80,13 @@ public class EquipmentSequentialDAO implements EquipmentDAO {
             HashMap<PortType, Integer> portMap;
             for (Equipment equipment : equipmentMap.values()) {
                 portMap = equipment.getAllPortsTypes();
-                writer.write(String.format("%s;%s;%s;%s;%s;%s;", equipment.getCode(),
-                        equipment.getDescription(), equipment.getMake(), equipment.getModel(),
-                        equipment.getEquipmentType().getCode(), equipment.getLocation().getCode()));
+                writer.write(String.format("%s;%s;%s;%s;%s;%s;",
+                        equipment.getCode(),
+                        equipment.getDescription(),
+                        equipment.getMake(),
+                        equipment.getModel(),
+                        equipment.getEquipmentType().getCode(),
+                        equipment.getLocation().getCode()));
 
                 for (PortType portType : portMap.keySet())
                     writer.write(String.format("%s,%s", portType.getCode(), portMap.get(portType)));
@@ -101,10 +107,34 @@ public class EquipmentSequentialDAO implements EquipmentDAO {
         }
     }
 
+    private void appendToFile(Equipment equipment, String fileName) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true))) {
+            HashMap<PortType, Integer> portMap;
+            portMap = equipment.getAllPortsTypes();
+            writer.write(String.format("%s;%s;%s;%s;%s;%s;", equipment.getCode(),
+                    equipment.getDescription(), equipment.getMake(), equipment.getModel(),
+                    equipment.getEquipmentType().getCode(), equipment.getLocation().getCode()));
+
+            for (PortType portType : portMap.keySet())
+                writer.write(String.format("%s,%s", portType.getCode(), portMap.get(portType)));
+            writer.write(";");
+
+            for (int i = 0; i < equipment.getIpAdresses().size(); i++)
+                writer.write(String.format("%s%s", equipment.getIpAdresses().get(i),
+                        (i < equipment.getIpAdresses().size() - 1 ? "," : ";")));
+
+            writer.write(String.format("%s;", equipment.isStatus() ? "true" : "false"));
+            writer.newLine();
+        } catch (IOException e) {
+            System.err.println("Error appending to file of Connection.");
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public void insert(Equipment equipment) {
-        map.put(equipment.getCode(), equipment);
-        writeToFile(map, fileName); // Descomenta esta línea si deseas guardar automáticamente al insertar
+        map.put(equipment.getCode(),equipment);
+        appendToFile(equipment, fileName); // Descomenta esta línea si deseas guardar automáticamente al insertar
         update = true;
     }
 
@@ -119,6 +149,7 @@ public class EquipmentSequentialDAO implements EquipmentDAO {
     public void erase(Equipment equipment) {
         map.remove(equipment.getCode());
         writeToFile(map, fileName);
+
         update = true;
     }
 
@@ -157,6 +188,7 @@ public class EquipmentSequentialDAO implements EquipmentDAO {
             System.err.println("El archivo no tiene permisos de lectura: " + file.getAbsolutePath());
             check = false;
         }
+
 
         if (check)
             writeToFile(map, file.getAbsolutePath());

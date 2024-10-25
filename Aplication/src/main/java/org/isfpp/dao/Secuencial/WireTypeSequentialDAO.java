@@ -1,6 +1,7 @@
 package org.isfpp.dao.Secuencial;
 
 import org.isfpp.dao.WireTypeDAO;
+import org.isfpp.modelo.PortType;
 import org.isfpp.modelo.WireType;
 
 import java.io.*;
@@ -12,7 +13,7 @@ public class WireTypeSequentialDAO implements WireTypeDAO {
     private boolean update;
 //Aplication/src/main/resources/config.properties
     public WireTypeSequentialDAO() {
-        ResourceBundle rb = ResourceBundle.getBundle("config");
+        ResourceBundle rb = ResourceBundle.getBundle("sequential");
         fileName = rb.getString("rs.wireType");
         update = true;
     }
@@ -51,17 +52,28 @@ public class WireTypeSequentialDAO implements WireTypeDAO {
     private void writeToFile(Hashtable<String,WireType> wireTypeMap, String fileName) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, false))) {
             for (WireType wireType: wireTypeMap.values()) {
-                writer.write(String.format("%s;%s;%s;\n", wireType.getCode(), wireType.getDescription(), wireType.getSpeed()));
+                writer.write(String.format("%s;%s;%s;", wireType.getCode(), wireType.getDescription(), wireType.getSpeed()));
+                writer.newLine();
             }
             } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
+    private void appendToFile(WireType wireType, String fileName) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true))) {
+            writer.write(String.format("%s;%s;%d;", wireType.getCode(), wireType.getDescription(), wireType.getSpeed()));
+            writer.newLine();
+        } catch (IOException e) {
+            System.err.println("Error appending to file of Connection.");
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public void insert(WireType wireType) {
         map.put(wireType.getCode(),wireType);
-        writeToFile(map,fileName);
+        appendToFile(wireType,fileName);
         update = true;
     }
 

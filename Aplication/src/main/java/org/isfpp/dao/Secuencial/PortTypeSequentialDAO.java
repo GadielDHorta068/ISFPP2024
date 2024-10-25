@@ -2,6 +2,7 @@ package org.isfpp.dao.Secuencial;
 
 
 import org.isfpp.dao.PortTypeDAO;
+import org.isfpp.modelo.Location;
 import org.isfpp.modelo.PortType;
 
 import java.io.*;
@@ -13,7 +14,7 @@ public class PortTypeSequentialDAO implements PortTypeDAO {
     private boolean update;
 
     public PortTypeSequentialDAO() {
-        ResourceBundle rb = ResourceBundle.getBundle("config");
+        ResourceBundle rb = ResourceBundle.getBundle("sequential");
         fileName = rb.getString("rs.portType");
         update = true;
     }
@@ -51,17 +52,28 @@ public class PortTypeSequentialDAO implements PortTypeDAO {
     private void writeToFile(Hashtable<String, PortType> portTypeMap, String fileName) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, false))) {
             for (PortType portType : portTypeMap.values()) {
-                writer.write(String.format("%s;%s;%d;\n", portType.getCode(), portType.getDescription(), portType.getSpeed()));
+                writer.write(String.format("%s;%s;%d;", portType.getCode(), portType.getDescription(), portType.getSpeed()));
+                writer.newLine();
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
+    private void appendToFile(PortType portType, String fileName) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true))) {
+            writer.write(String.format("%s;%s;%d;", portType.getCode(), portType.getDescription(), portType.getSpeed()));
+            writer.newLine();
+        } catch (IOException e) {
+            System.err.println("Error appending to file of Connection.");
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public void insert(PortType type) {
         map.put(type.getCode(), type);
-        writeToFile(map, fileName);
+        appendToFile(type, fileName);
         update = true;
     }
 

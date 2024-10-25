@@ -1,6 +1,7 @@
 package org.isfpp.dao.Secuencial;
 
 import org.isfpp.dao.LocationDAO;
+import org.isfpp.modelo.EquipmentType;
 import org.isfpp.modelo.Location;
 import org.isfpp.modelo.PortType;
 
@@ -13,7 +14,7 @@ public class LocationSequentialDAO implements LocationDAO {
     private boolean update;
 
     public LocationSequentialDAO() {
-        ResourceBundle rb = ResourceBundle.getBundle("config");
+        ResourceBundle rb = ResourceBundle.getBundle("sequential");
         fileName = rb.getString("rs.location");
         update = true;
     }
@@ -50,17 +51,28 @@ public class LocationSequentialDAO implements LocationDAO {
     private void writeToFile(Hashtable<String, Location> locationMap, String fileName) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, false))) {
             for (Location location : locationMap.values()) {
-                writer.write(String.format("%s;%s;\n", location.getCode(), location.getDescription()));
+                writer.write(String.format("%s;%s;", location.getCode(), location.getDescription()));
+                writer.newLine();
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
+    private void appendToFile(Location location, String fileName) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true))) {
+            writer.write(String.format("%s;%s;", location.getCode(), location.getDescription()));
+            writer.newLine();
+        } catch (IOException e) {
+            System.err.println("Error appending to file of Connection.");
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public void insert(Location location) {
         map.put(location.getCode(), location);
-        writeToFile(map, fileName);
+        appendToFile(location, fileName);
         update = true;
     }
 

@@ -1,12 +1,12 @@
 package org.isfpp.dao.Secuencial;
 
 import org.isfpp.dao.EquipmentTypeDAO;
+import org.isfpp.modelo.Equipment;
 import org.isfpp.modelo.EquipmentType;
+import org.isfpp.modelo.PortType;
 
 import java.io.*;
-import java.util.Hashtable;
-import java.util.NoSuchElementException;
-import java.util.Scanner;
+import java.util.*;
 
 public class EquipmentTypeSequentialDAO implements EquipmentTypeDAO {
     private Hashtable<String, EquipmentType> map;
@@ -14,7 +14,7 @@ public class EquipmentTypeSequentialDAO implements EquipmentTypeDAO {
     private boolean update;
 
     public EquipmentTypeSequentialDAO() {
-        ResourceBundle rb = ResourceBundle.getBundle("config");
+        ResourceBundle rb = ResourceBundle.getBundle("sequential");
         fileName = rb.getString("rs.equipmentType");
         update = true;
     }
@@ -67,10 +67,20 @@ public class EquipmentTypeSequentialDAO implements EquipmentTypeDAO {
         }
     }
 
+    private void appendToFile(EquipmentType equipmentType, String fileName) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true))) {
+            writer.write(String.format("%s;%s;", equipmentType.getCode(), equipmentType.getDescription()));
+            writer.newLine();
+        } catch (IOException e) {
+            System.err.println("Error appending to file of Connection.");
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public void insert(EquipmentType equipmentType) {
         map.put(equipmentType.getCode(), equipmentType);
-        writeToFile(map, fileName);
+        appendToFile(equipmentType, fileName);
         update = true;
     }
 

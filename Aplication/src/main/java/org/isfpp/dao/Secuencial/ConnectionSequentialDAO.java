@@ -13,18 +13,19 @@ import java.io.*;
 import java.util.*;
 
 public class ConnectionSequentialDAO implements ConnectionDAO {
+
     private List<Connection> list;
     private String fileName;
     private boolean update;
-    private Hashtable<String, Equipment> equipments;
-    private Hashtable<String, PortType> portTypes;
-    private Hashtable<String, WireType> wireTypes;
+    private final Hashtable<String, Equipment> equipments;
+    private final Hashtable<String, PortType> portTypes;
+    private final Hashtable<String, WireType> wireTypes;
 
     public ConnectionSequentialDAO() {
         equipments = readEquipments();
         portTypes = readPortTypes();
         wireTypes = readWireTypes();
-        ResourceBundle rb = ResourceBundle.getBundle("config");
+        ResourceBundle rb = ResourceBundle.getBundle("sequential");
         fileName = rb.getString("rs.connection");
         update = true;
     }
@@ -80,6 +81,7 @@ public class ConnectionSequentialDAO implements ConnectionDAO {
             System.err.println("Error in File of Connection");
         }
     }
+
     private void appendToFile(Connection connection, String fileName) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true))) {
             writer.write(String.format("%s;%s;%s;%s;%s;\n",
@@ -205,7 +207,6 @@ public class ConnectionSequentialDAO implements ConnectionDAO {
         update = false;
         return connectionList; // Retornar la lista de conexiones leídas
     }
-
 
     private Hashtable<String, Equipment> readEquipments() {
         EquipmentDAO equipmentDAO = new EquipmentSequentialDAO();
