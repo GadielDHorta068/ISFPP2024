@@ -1,16 +1,18 @@
 package org.isfpp.main;
 
-import com.github.kwhat.jnativehook.mouse.NativeMouseInputListener;
 import org.isfpp.controller.Coordinator;
+import org.isfpp.data.FileTextToBD;
+import org.isfpp.datos.ResourceExtractor;
 import org.isfpp.interfaz.panelesCreadores.MainMenu;
 import org.isfpp.logica.CalculoGraph;
-import org.isfpp.modelo.LAN;
+import org.isfpp.modelo.Lan;
 
+import java.io.File;
 import java.io.IOException;
 
 public class App {
     // l�gica
-    private LAN LAN = null;
+    private Lan lan = null;
     private CalculoGraph calculoGraph;
 
     //vista
@@ -20,12 +22,7 @@ public class App {
     private Coordinator coordinator;
 
     public static void main(String[] args) throws IOException {
-        ResourceExtractor.extractResourcesToExecutionDir();
-        String directorio = new File(App.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getParent();
-        System.out.println("Ruta absoluta: " + directorio);
-
         App app = new App();
-        CargarParametros.parametros();
         app.inicio();
         app.luanch();
         app.minitest();
@@ -33,18 +30,19 @@ public class App {
     }
 
     private void inicio(){
-        LAN =new LAN();
+
+        lan =new Lan();
         coordinator = new Coordinator();
         calculoGraph =new CalculoGraph();
         mainMenu= new MainMenu();
         /* Se establecen las relaciones entre clases */
-        LAN.setCoordinator(coordinator);
+        lan.setCoordinator(coordinator);
         calculoGraph.setCoordinator(coordinator);
         mainMenu.SetCoordinator(coordinator);
 
 
         /* Se establecen relaciones con la clase coordinador */
-        coordinator.setWeb(LAN);
+        coordinator.setWeb(lan);
         coordinator.setUtils(calculoGraph);
         coordinator.setMainMenu(mainMenu);
         coordinator.LoadData(coordinator.getWeb());
@@ -56,6 +54,10 @@ public class App {
     }
 
     private void minitest() {
+    }
+
+    private void fileTextToDB(){
+        FileTextToBD.FileTextToBD();
     }
 }
 

@@ -15,16 +15,14 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
-import java.net.URL;
-import java.util.Objects;
 
 
 public class BarraMenu {
-    private final LAN LAN;
+    private final Lan lan;
     private Coordinator coordinator;
 
-    public BarraMenu(LAN LAN) {
-        this.LAN = LAN;
+    public BarraMenu(Lan lan) {
+        this.lan = Lan.getLan();
     }
 
     public JMenuBar crearBarraMenu() {
@@ -56,7 +54,7 @@ public class BarraMenu {
         if (fileChooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
             String directory = fileChooser.getSelectedFile().getAbsolutePath();
             coordinator.searchAllOf(directory);
-            coordinator.updateTablas();
+            coordinator.updateTablas(lan);
         }
     }
 
@@ -76,10 +74,10 @@ public class BarraMenu {
         JMenu editarMenu = new JMenu("Editar");
         StylusUI.styleMenu(editarMenu);
 
-        editarMenu.add(crearMenuItem("Agregar Equipo", e -> new EquipmentFormPanel(LAN)));
-        editarMenu.add(crearMenuItem("Agregar tipo Puerto", e -> new PortTypeFormPanel(LAN)));
-        editarMenu.add(crearMenuItem("Agregar Ubicacion", e -> new LocationFormPanel(LAN)));
-        editarMenu.add(crearMenuItem("Agregar Conexion", e -> new EditConnection(LAN, null)));
+        editarMenu.add(crearMenuItem("Agregar Equipo", e -> new EquipmentFormPanel(lan)));
+        editarMenu.add(crearMenuItem("Agregar tipo Puerto", e -> new PortTypeFormPanel(lan)));
+        editarMenu.add(crearMenuItem("Agregar Ubicacion", e -> new LocationFormPanel(lan)));
+        editarMenu.add(crearMenuItem("Agregar Conexion", e -> new EditConnection(lan, null)));
         editarMenu.add(crearMenuItem("Eliminar", this::accionEliminar));
         editarMenu.add(crearMenuItem("Editar", this::accionEditar));
 
@@ -96,7 +94,7 @@ public class BarraMenu {
                 case Connection connection -> coordinator.eraseConnection(connection);
                 default -> System.out.println("Clase no detectada: " + seleccionado.getClass());
             }
-            coordinator.updateTablas();
+            coordinator.updateTablas(lan);
         }
     }
 
@@ -104,10 +102,10 @@ public class BarraMenu {
         Object seleccionado = coordinator.getSelectedItem();
         if (seleccionado != null) {
             switch (seleccionado) {
-                case Equipment equipment -> new EditEquipmentFormPanel(LAN, equipment.getCode());
-                case Location location -> new EditLocationFormPanel(LAN, location.getCode());
-                case PortType puerto -> new EditPortTypeFormPanel(LAN, puerto.getCode());
-                case Connection connection -> new EditConnection(LAN, connection);
+                case Equipment equipment -> new EditEquipmentFormPanel(lan, equipment.getCode());
+                case Location location -> new EditLocationFormPanel(lan, location.getCode());
+                case PortType puerto -> new EditPortTypeFormPanel(lan, puerto.getCode());
+                case Connection connection -> new EditConnection(lan, connection);
                 default -> System.out.println("Clase no detectada: " + seleccionado.getClass());
             }
         }

@@ -14,7 +14,7 @@ public class EditConnection extends JPanel {
     private final JComboBox<WireType> wireComboBox;
 
 
-    public EditConnection(LAN LAN, Connection c) {
+    public EditConnection(Lan LAN, Connection c) {
         JFrame frame = new JFrame("Edicion de Conexion");
         frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         frame.setSize(800, 600);

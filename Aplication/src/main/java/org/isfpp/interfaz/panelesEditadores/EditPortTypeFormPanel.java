@@ -2,7 +2,7 @@ package org.isfpp.interfaz.panelesEditadores;
 
 import org.isfpp.interfaz.stylusUI.StylusUI;
 import org.isfpp.modelo.PortType;
-import org.isfpp.modelo.LAN;
+import org.isfpp.modelo.Lan;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,12 +12,12 @@ public class EditPortTypeFormPanel extends JPanel {
     private final JTextField descriptionField;
     private final JTextField speedField;
 
-    public EditPortTypeFormPanel(LAN LAN, String codeOriginal) {
+    public EditPortTypeFormPanel(Lan Lan, String codeOriginal) {
         JFrame frame = new JFrame("Modificar tipo de Puerto");
         frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         frame.setSize(400, 200);
         setLayout(new BorderLayout());
-        PortType port = LAN.getPortTypes().get(codeOriginal);
+        PortType port = Lan.getPortTypes().get(codeOriginal);
 
         JPanel formPanel = new JPanel(new GridLayout(3, 2, 10, 20));
         StylusUI.aplicarEstiloPanel(formPanel);
@@ -57,7 +57,7 @@ public class EditPortTypeFormPanel extends JPanel {
                 port.setCode(code);
                 port.setDescription(description);
                 port.setSpeed(portSpeed);
-                LAN.updatePortType(codeOriginal,port);
+                Lan.updatePortType(codeOriginal,port);
                 JOptionPane.showMessageDialog(this, "Tipo de puerto modificar con éxito");
                 frame.setVisible(false);
             } catch (Exception ex) {

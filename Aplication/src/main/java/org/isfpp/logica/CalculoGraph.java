@@ -6,7 +6,7 @@ import org.isfpp.exceptions.NotFoundException;
 import org.isfpp.modelo.Connection;
 import org.isfpp.modelo.Equipment;
 import org.isfpp.modelo.PortType;
-import org.isfpp.modelo.LAN;
+import org.isfpp.modelo.Lan;
 import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
@@ -36,7 +36,7 @@ public class CalculoGraph {
      * @throws IllegalArgumentException Si se intenta agregar una conexión entre el mismo equipo o si hay una
      *                                  conexión duplicada en el grafo.
      */
-    public void LoadData(LAN LAN) {
+    public void LoadData(Lan LAN) {
         HashMap<String, Equipment> hardware = LAN.getHardware();
         ArrayList<Connection> connections = LAN.getConnections();
         // Crear un grafo no dirigido
@@ -364,7 +364,7 @@ public class CalculoGraph {
      * @param LAN    La red en la que se encuentra el equipo.
      * @return Una nueva IP generada para el equipo.
      */
-    public static String generarNuevaIP(Equipment equipo, LAN LAN) {
+    public static String generarNuevaIP(Equipment equipo, Lan LAN) {
         String[] parts = equipo.getIpAdresses().getFirst().split("\\.");
         String nuevaIP = "";
         int pool = Integer.parseInt(parts[3]);

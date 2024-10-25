@@ -1,6 +1,6 @@
 package org.isfpp.interfaz.panelesCreadores;
 import org.isfpp.interfaz.stylusUI.StylusUI;
-import org.isfpp.modelo.LAN;
+import org.isfpp.modelo.Lan;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,7 +11,7 @@ public class PortTypeFormPanel extends JPanel {
     private final JTextField descriptionField;
     private final JTextField speedField;
 
-    public PortTypeFormPanel(LAN LAN) {
+    public PortTypeFormPanel(Lan lan) {
         JFrame frame = new JFrame("Agregar tipo de Puerto");
         frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         frame.setSize(400, 200);
@@ -58,7 +58,7 @@ public class PortTypeFormPanel extends JPanel {
             }
 
             try {
-                LAN.addPort(code, description, portSpeed);
+                lan.addPort(code, description, portSpeed);
                 JOptionPane.showMessageDialog(this, "Tipo de puerto creado con éxito");
                 frame.setVisible(false);
             } catch (Exception ex) {

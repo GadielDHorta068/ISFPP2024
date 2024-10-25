@@ -4,7 +4,7 @@ import org.isfpp.interfaz.stylusUI.StylusUI;
 import org.isfpp.modelo.EquipmentType;
 import org.isfpp.modelo.Location;
 import org.isfpp.modelo.PortType;
-import org.isfpp.modelo.LAN;
+import org.isfpp.modelo.Lan;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,7 +20,7 @@ public class EquipmentFormPanel extends JPanel {
     private final JComboBox<PortType> portTypeCombo;
     private final JCheckBox statusCheckBox;
 
-    public EquipmentFormPanel(LAN LAN) {
+    public EquipmentFormPanel(Lan lan) {
         JFrame frame = new JFrame("Formulario de Equipo");
         frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         frame.setSize(800, 600);
@@ -63,21 +63,21 @@ public class EquipmentFormPanel extends JPanel {
         JLabel tipoDeEquipo = new JLabel("Tipo de equipo");
         StylusUI.aplicarEstiloEtiqueta(tipoDeEquipo);
         formPanel.add(tipoDeEquipo);
-        equipmentTypeCombo = new JComboBox<>(LAN.getEquipmentTypes().values().toArray(new EquipmentType[0]));
+        equipmentTypeCombo = new JComboBox<>(lan.getEquipmentTypes().values().toArray(new EquipmentType[0]));
         StylusUI.aplicarEstiloComboBox(equipmentTypeCombo);
         formPanel.add(equipmentTypeCombo);
 
         JLabel ubi = new JLabel("Ubicacion:");
         StylusUI.aplicarEstiloEtiqueta(ubi);
         formPanel.add(ubi);
-        locationCombo = new JComboBox<>(LAN.getLocations().values().toArray(new Location[0]));
+        locationCombo = new JComboBox<>(lan.getLocations().values().toArray(new Location[0]));
         StylusUI.aplicarEstiloComboBox(locationCombo);
         formPanel.add(locationCombo);
 
         JLabel puerto = new JLabel("Tipo de Puerto");
         StylusUI.aplicarEstiloEtiqueta(puerto);
         formPanel.add(puerto);
-        portTypeCombo = new JComboBox<>(LAN.getPortTypes().values().toArray(new PortType[0]));
+        portTypeCombo = new JComboBox<>(lan.getPortTypes().values().toArray(new PortType[0]));
         StylusUI.aplicarEstiloComboBox(portTypeCombo);
         formPanel.add(portTypeCombo);
 
@@ -116,7 +116,7 @@ public class EquipmentFormPanel extends JPanel {
             }
 
             try {
-                LAN.addEquipment(code, description, marca, modelo, portType, 1, equipmentType, location, status);
+                lan.addEquipment(code, description, marca, modelo, portType, 1, equipmentType, location, status);
                 JOptionPane.showMessageDialog(this, "Equipo creado con éxito");
                 frame.setVisible(false);
             } catch (Exception ex) {

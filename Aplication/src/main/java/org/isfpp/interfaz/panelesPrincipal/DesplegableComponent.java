@@ -5,7 +5,7 @@ import org.isfpp.interfaz.stylusUI.StylusUI;
 import org.isfpp.modelo.Connection;
 import org.isfpp.modelo.Equipment;
 import org.isfpp.modelo.Location;
-import org.isfpp.modelo.LAN;
+import org.isfpp.modelo.Lan;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -24,7 +24,7 @@ public class DesplegableComponent<T> {
     private JTable table;
     private List<T> dataList;
     private Coordinator coordinator;
-    private LAN LAN;
+    private Lan lan;
 
     /**
      * Constructor de la clase DesplegableComponent.
@@ -59,11 +59,11 @@ public class DesplegableComponent<T> {
         // Inicializa dataList basado en el tipo del primer elemento
         Object e = dataList.isEmpty() ? null : dataList.get(0);
         if (e instanceof Equipment) {
-            dataList = (List<T>) new ArrayList<>(LAN.getHardware().values());
+            dataList = (List<T>) new ArrayList<>(lan.getHardware().values());
         } else if (e instanceof Location) {
-            dataList = (List<T>) new ArrayList<>(LAN.getLocations().values());
+            dataList = (List<T>) new ArrayList<>(lan.getLocations().values());
         } else if (e instanceof Connection) {
-            dataList = (List<T>) new ArrayList<>(LAN.getConnections());
+            dataList = (List<T>) new ArrayList<>(lan.getConnections());
         }
 
         Object[][] data = new Object[dataList.size()][3];
@@ -132,7 +132,7 @@ public class DesplegableComponent<T> {
      * @param panelDerecho El panel derecho donde se mostrarán propiedades adicionales.
      */
     public void IniciarTabla(String titulo, List<T> dataList, PanelDerecho panelDerecho) {
-        this.LAN = this.coordinator.getWeb();
+        this.lan = this.coordinator.getWeb();
         this.dataList = dataList;
 
         panel = new JPanel();

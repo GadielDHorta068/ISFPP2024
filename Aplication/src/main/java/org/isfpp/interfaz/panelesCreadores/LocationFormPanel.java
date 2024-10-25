@@ -1,16 +1,15 @@
 package org.isfpp.interfaz.panelesCreadores;
 import org.isfpp.interfaz.stylusUI.StylusUI;
-import org.isfpp.modelo.LAN;
+import org.isfpp.modelo.Lan;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.IOException;
 
 public class LocationFormPanel extends JPanel {
     private final JTextField codeField;
     private final JTextField descriptionField;
 
-    public LocationFormPanel(LAN LAN) {
+    public LocationFormPanel(Lan lan) {
 
         JFrame frame = new JFrame("Agregar Ubicación");
         frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -45,7 +44,7 @@ public class LocationFormPanel extends JPanel {
             String description = descriptionField.getText();
 
             try {
-                LAN.addLocation(code, description);
+                lan.addLocation(code, description);
                 JOptionPane.showMessageDialog(this, "Ubicacion creado con éxito");
                 frame.setVisible(false);
             } catch (Exception ex) {

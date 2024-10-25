@@ -2,7 +2,7 @@ package org.isfpp.interfaz.panelesEditadores;
 
 import org.isfpp.interfaz.stylusUI.StylusUI;
 import org.isfpp.modelo.Location;
-import org.isfpp.modelo.LAN;
+import org.isfpp.modelo.Lan;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,7 +11,7 @@ public class EditLocationFormPanel extends JPanel {
     private final JTextField codeField;
     private final JTextField descriptionField;
 
-    public EditLocationFormPanel(LAN LAN, String codeOriginial) {
+    public EditLocationFormPanel(Lan LAN, String codeOriginial) {
 
         JFrame frame = new JFrame("Agregar Ubicación");
         frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);

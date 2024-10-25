@@ -8,7 +8,7 @@ import org.isfpp.interfaz.stylusUI.StylusUI;
 import org.isfpp.modelo.Connection;
 import org.isfpp.modelo.Equipment;
 import org.isfpp.modelo.Location;
-import org.isfpp.modelo.LAN;
+import org.isfpp.modelo.Lan;
 
 import javax.swing.*;
 import java.awt.*;
@@ -24,7 +24,7 @@ public class MainMenu {
         frame.setLayout(new BorderLayout());
     }
 
-    public void components(LAN LAN) {
+    public void components(Lan lan) {
         StylusUI.inicializar(false);
 
         PanelDerecho panelDerecho = new PanelDerecho();
@@ -32,19 +32,19 @@ public class MainMenu {
         DesplegableComponent<Equipment> desplegableNodos = new DesplegableComponent<>();
         coordinator.addTabla(desplegableNodos);
         desplegableNodos.setCoordinator(coordinator);
-        desplegableNodos.IniciarTabla("Equipos", new ArrayList<>(LAN.getHardware().values()), panelDerecho);
+        desplegableNodos.IniciarTabla("Equipos", new ArrayList<>(lan.getHardware().values()), panelDerecho);
 
         DesplegableComponent<Location> desplegableUbicaciones = new DesplegableComponent<>();
         coordinator.addTabla(desplegableUbicaciones);
         desplegableUbicaciones.setCoordinator(coordinator);
-        desplegableUbicaciones.IniciarTabla("Ubicaciones", new ArrayList<>(LAN.getLocations().values()), panelDerecho);
+        desplegableUbicaciones.IniciarTabla("Ubicaciones", new ArrayList<>(lan.getLocations().values()), panelDerecho);
 
         DesplegableComponent<Connection> desplegableConexiones = new DesplegableComponent<>();
         coordinator.addTabla(desplegableConexiones);
         desplegableConexiones.setCoordinator(coordinator);
-        desplegableConexiones.IniciarTabla("Conexiones", LAN.getConnections(), panelDerecho);
+        desplegableConexiones.IniciarTabla("Conexiones", lan.getConnections(), panelDerecho);
 
-        BarraMenu barraMenu = new BarraMenu(LAN);
+        BarraMenu barraMenu = new BarraMenu(lan);
         barraMenu.setCoordinador(coordinator);
         JPanel panelIzquierdo = new JPanel();
         StylusUI.aplicarEstiloPanel(panelIzquierdo);

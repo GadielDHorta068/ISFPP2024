@@ -24,7 +24,7 @@ public class Traceroute {
     }
 
     public void trace() {
-        frame = new JFrame("TraceRouter");
+        frame = new JFrame("TraceRoute");
         frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         frame.setSize(400, 300);
         textE1 = new JTextField("codigo equipo 1");

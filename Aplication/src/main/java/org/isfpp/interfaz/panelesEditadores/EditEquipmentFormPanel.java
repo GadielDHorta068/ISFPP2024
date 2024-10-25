@@ -17,14 +17,14 @@ public class EditEquipmentFormPanel extends JPanel {
     private final JComboBox<PortType> portTypeCombo;
     private final JCheckBox statusCheckBox;
 
-    public EditEquipmentFormPanel(LAN LAN, String codeOriginal) {
+    public EditEquipmentFormPanel(Lan lan, String codeOriginal) {
         JFrame frame = new JFrame("Edicion de Equipo");
         frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         frame.setSize(800, 600);
 
         setLayout(new BorderLayout());
 
-        Equipment eq = LAN.getHardware().get(codeOriginal);
+        Equipment eq = lan.getHardware().get(codeOriginal);
         JPanel formPanel = new JPanel(new GridLayout(11, 2, 10, 10));
         StylusUI.aplicarEstiloPanel(formPanel);
 
@@ -61,21 +61,21 @@ public class EditEquipmentFormPanel extends JPanel {
         JLabel tipoDeEquipo = new JLabel("Tipo de equipo");
         StylusUI.aplicarEstiloEtiqueta(tipoDeEquipo);
         formPanel.add(tipoDeEquipo);
-        equipmentTypeCombo = new JComboBox<>(LAN.getEquipmentTypes().values().toArray(new EquipmentType[0]));
+        equipmentTypeCombo = new JComboBox<>(lan.getEquipmentTypes().values().toArray(new EquipmentType[0]));
         StylusUI.aplicarEstiloComboBox(equipmentTypeCombo);
         formPanel.add(equipmentTypeCombo);
 
         JLabel ubi = new JLabel("Ubicacion:");
         StylusUI.aplicarEstiloEtiqueta(ubi);
         formPanel.add(ubi);
-        locationCombo = new JComboBox<>(LAN.getLocations().values().toArray(new Location[0]));
+        locationCombo = new JComboBox<>(lan.getLocations().values().toArray(new Location[0]));
         StylusUI.aplicarEstiloComboBox(locationCombo);
         formPanel.add(locationCombo);
 
         JLabel puerto = new JLabel("Tipo de Puerto");
         StylusUI.aplicarEstiloEtiqueta(puerto);
         formPanel.add(puerto);
-        portTypeCombo = new JComboBox<>(LAN.getPortTypes().values().toArray(new PortType[0]));
+        portTypeCombo = new JComboBox<>(lan.getPortTypes().values().toArray(new PortType[0]));
         StylusUI.aplicarEstiloComboBox(portTypeCombo);
         formPanel.add(portTypeCombo);
         JLabel capacidad = new JLabel("cantidad de puertos");
@@ -110,10 +110,10 @@ public class EditEquipmentFormPanel extends JPanel {
             boolean status = statusCheckBox.isSelected();
 
             try {
-                LAN.updateEquipment(codeOriginal,new Equipment(code,description,marca,modelo,portType,Integer.parseInt(capacidadField.getText()),equipmentType,location,status));
+                lan.updateEquipment(codeOriginal,new Equipment(code,description,marca,modelo,portType,Integer.parseInt(capacidadField.getText()),equipmentType,location,status));
 
                 JOptionPane.showMessageDialog(this, "Equipo modificado con éxito");
-                LAN.getCoordinator().updateTablas(LAN);
+                lan.getCoordinator().updateTablas(lan);
                 frame.setVisible(false);
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, "Error al mod equipo: " + ex.getMessage());
