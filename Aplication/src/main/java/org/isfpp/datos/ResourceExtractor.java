@@ -9,18 +9,8 @@ import java.nio.file.StandardCopyOption;
 import java.util.Objects;
 
 public class ResourceExtractor {
-
     /**
-     * MÃ©todo principal que llama a la extracciÃ³n de recursos.
-     *
-     * @param args Argumentos de la lÃ­nea de comandos (no usados).
-     */
-    public static void main(String[] args) {
-        extractResourcesToExecutionDir();
-    }
-
-    /**
-     * Extrae los archivos de recursos al directorio de ejecuciÃ³n.
+     * Extrae los archivos de recursos al directorio de ejecucion.
      */
     public static void extractResourcesToExecutionDir() {
         // Obtiene el directorio desde donde se estÃ¡ ejecutando el jar
@@ -37,8 +27,9 @@ public class ResourceExtractor {
                 targetFile.getParentFile().mkdirs();
 
                 // Copia el archivo al directorio de ejecuciÃ³n
-                Files.copy(in, Paths.get(executionDir, file), StandardCopyOption.REPLACE_EXISTING);
-                System.out.println("Archivo extraÃ­do: " + file);
+
+                Files.copy(in, Paths.get(executionDir, file)); //, StandardCopyOption.REPLACE_EXISTING
+                System.out.println("Archivo extraido: " + file);
             } catch (IOException e) {
                 e.printStackTrace();
             }

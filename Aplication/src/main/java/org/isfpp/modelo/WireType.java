@@ -14,9 +14,9 @@ public class WireType {
 
 	/**
 	 * Constructor con parámetros.
-	 * @param code El código del tipo de alambre.
-	 * @param description La descripción del tipo de alambre.
-	 * @param speed La velocidad del tipo de alambre.
+	 * @param code El código del tipo de cable.
+	 * @param description La descripción del tipo de cable.
+	 * @param speed La velocidad del tipo de cable.
 	 */
 	public WireType(String code, String description, int speed) {
 		super();
@@ -26,38 +26,38 @@ public class WireType {
 	}
 
 	/**
-	 * Obtiene el código del tipo de alambre.
-	 * @return El código del tipo de alambre.
+	 * Obtiene el código del tipo de cable.
+	 * @return El código del tipo de cable.
 	 */
 	public String getCode() {return code;}
 
 	/**
-	 * Configura el código del tipo de alambre.
-	 * @param code El código del tipo de alambre.
+	 * Configura el código del tipo de cable.
+	 * @param code El código del tipo de cable.
 	 */
 	public void setCode(String code) {this.code = code;}
 
 	/**
-	 * Obtiene la descripción del tipo de alambre.
-	 * @return La descripción del tipo de alambre.
+	 * Obtiene la descripción del tipo de cable.
+	 * @return La descripción del tipo de cable.
 	 */
 	public String getDescription() {return description;}
 
 	/**
-	 * Configura la descripción del tipo de alambre.
-	 * @param description La descripción del tipo de alambre.
+	 * Configura la descripción del tipo de cable.
+	 * @param description La descripción del tipo de cable.
 	 */
 	public void setDescription(String description) {this.description = description;}
 
 	/**
-	 * Obtiene la velocidad del tipo de alambre.
-	 * @return La velocidad del tipo de alambre.
+	 * Obtiene la velocidad del tipo de cable.
+	 * @return La velocidad del tipo de cable.
 	 */
 	public int getSpeed() {return speed;}
 
 	/**
-	 * Configura la velocidad del tipo de alambre.
-	 * @param speed La velocidad del tipo de alambre.
+	 * Configura la velocidad del tipo de cable.
+	 * @param speed La velocidad del tipo de cable.
 	 */
 	public void setSpeed(int speed) {this.speed = speed;}
 

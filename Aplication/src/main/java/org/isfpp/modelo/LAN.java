@@ -197,11 +197,13 @@ public class LAN {
 			if (e.getLocation().equals(l))
 				codes.add(e.getCode());
 		}
-		if (!codes.isEmpty())
+		if (!codes.isEmpty()){
 			JOptionPane.showMessageDialog(null,"Hay equipos que dependen de la ubicacion", "Error de dependencia", JOptionPane.INFORMATION_MESSAGE);
-		locations.remove(l.getCode(), l);
-		locationService.erase(l);
-		coordinator.updateTablas(this);
+		}else{
+			locations.remove(l.getCode(), l);
+			locationService.erase(l);
+			coordinator.updateTablas(this);
+		}
 	}
 
 
