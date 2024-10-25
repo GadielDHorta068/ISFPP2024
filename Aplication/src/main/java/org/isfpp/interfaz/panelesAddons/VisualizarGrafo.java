@@ -75,9 +75,8 @@ public class VisualizarGrafo extends JFrame {
 
         // Aplicar un layout orgánico al grafo (evita que se superpongan los nodos)
         mxOrganicLayout layout = new mxOrganicLayout(mxGraph);
+
         layout.execute(mxGraph.getDefaultParent());
-
-
 
         setTitle(rb.getString("ver_grafo"));
         setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);

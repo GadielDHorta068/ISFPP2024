@@ -64,7 +64,7 @@ public class LAN {
 		coordinator = new Coordinator();
 	}
 
-	public static LAN getWeb() {
+	public static LAN getLAN() {
 		if (LAN ==  null)
 			LAN = new LAN();
 		return LAN;

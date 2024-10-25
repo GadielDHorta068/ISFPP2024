@@ -5,6 +5,7 @@ import org.isfpp.controller.Settings;
 import org.isfpp.datos.CargarParametros;
 import org.isfpp.datos.ResourceExtractor;
 import org.isfpp.interfaz.panelesCreadores.MainMenu;
+import org.isfpp.interfaz.panelesEditadores.EditPortsFromEquipment;
 import org.isfpp.logica.CalculoGraph;
 import org.isfpp.modelo.LAN;
 
@@ -63,5 +64,8 @@ public class App {
     }
 
     private void minitest(){
+        EditPortsFromEquipment ed = new EditPortsFromEquipment();
+        ed.setCoordinator(coordinator);
+        ed.run("SW01");
     }
 }

@@ -28,7 +28,7 @@ public class ResourceExtractor {
 
                 // Copia el archivo al directorio de ejecuciÃ³n
 
-                Files.copy(in, Paths.get(executionDir, file)); //, StandardCopyOption.REPLACE_EXISTING
+                Files.copy(in, Paths.get(executionDir, file), StandardCopyOption.REPLACE_EXISTING); //, StandardCopyOption.REPLACE_EXISTING
                 System.out.println("Archivo extraido: " + file);
             } catch (IOException e) {
                 e.printStackTrace();
