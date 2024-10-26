@@ -114,11 +114,25 @@ public class BarraMenu {
         }));
 
         editarMenu.add(crearMenuItem(rb.getString("eliminar"), this::accionEliminar));
-
+        editarMenu.add(crearMenuItem(rb.getString("editar_puerto"), this::accionEditarPuerto));
         editarMenu.add(crearMenuItem(rb.getString("editar"), this::accionEditar));
 
 
         return editarMenu;
+    }
+
+    private void accionEditarPuerto(ActionEvent actionEvent) {
+        Object seleccionado = coordinator.getSelectedItem();
+        if (seleccionado != null) {
+            switch (seleccionado) {
+                case Equipment equipment -> {
+                    EditPortsFromEquipment ed = new EditPortsFromEquipment();
+                    ed.setCoordinator(coordinator);
+                    ed.run(equipment.getCode());
+                }
+                default ->  JOptionPane.showMessageDialog(null, rb.getString("seleccionar_equipo"));
+            }
+        }
     }
 
     private void accionEliminar(ActionEvent actionEvent) {
@@ -154,9 +168,7 @@ public class BarraMenu {
                     portTypePanel.run(puerto.getCode());
                 }
                 case Connection connection -> {
-                    EditConnection connectionPanel = new EditConnection();
-                    connectionPanel.setCoordinator(coordinator);
-                    connectionPanel.run(connection);
+                    JOptionPane.showMessageDialog(null,rb.getString( "Error_crear_conexion"));
                 }
                 default -> System.out.println(rb.getString("clase_no_detectada: ") + seleccionado.getClass());
             }

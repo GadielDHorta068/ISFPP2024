@@ -64,8 +64,6 @@ public class App {
     }
 
     private void minitest(){
-        EditPortsFromEquipment ed = new EditPortsFromEquipment();
-        ed.setCoordinator(coordinator);
-        ed.run("SW01");
+
     }
 }

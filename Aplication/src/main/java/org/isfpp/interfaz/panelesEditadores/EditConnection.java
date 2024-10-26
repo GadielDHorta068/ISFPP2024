@@ -100,11 +100,11 @@ public class EditConnection extends JPanel {
                 assert port2 != null;
                 assert port1 != null;
 
-                coordinator.updateConnection(c,new Connection(port1, port2, wire));
-                JOptionPane.showMessageDialog(this, rb.getString("Red creada con éxito"));
+                coordinator.addConnection(port1, port2, wire);
+                JOptionPane.showMessageDialog(this, rb.getString("Red_creada"));
                 frame.setVisible(false);
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this,rb.getString( "Error al crear equipo: ") + ex.getMessage());
+                JOptionPane.showMessageDialog(this,rb.getString( "Error_crear_conexion") + ex.getMessage());
             }
 
         });

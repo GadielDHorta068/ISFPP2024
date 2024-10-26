@@ -91,7 +91,6 @@ public class LAN {
 		hardware.put(code, e);
 		equipmentService.insert(e);
 		coordinator.updateTablas(this);
-		System.out.println("aca");
 		return e;
 	}
 
@@ -129,7 +128,7 @@ public class LAN {
 		this.hardware = hardware;
 	}
 
-	//Connection
+
 	public Connection addConnection(Port port1, Port port2, WireType wire) {
 		// Verificar si los equipos existen en el hardware
 		if (!hardware.containsKey(port1.getEquipment().getCode()))
@@ -154,7 +153,6 @@ public class LAN {
 		if (!connections.contains(connection))
 			throw new NotFoundException("La conexión no se encuentra.");
 
-		// Eliminar la conexión de la lista
 		connection.getPort1().setInUse(false);
 		connection.getPort2().setInUse(false);
 		connections.remove(connection);
@@ -396,8 +394,10 @@ public class LAN {
 		coordinator.updateTablas(this);
 	}
 	public void updateConnection(Connection originalConnection,Connection updateConnection){
-		if (connections.contains(updateConnection) && !originalConnection.equals(updateConnection))
-			throw new NotFoundException("ya existe esa conexion");
+			if (connections.contains(updateConnection) && !originalConnection.equals(updateConnection))
+				throw new NotFoundException("ya existe esa conexion");
+
+
 		if(originalConnection.equals(updateConnection)){
 			connectionService.update(updateConnection);
 		}
@@ -413,16 +413,38 @@ public class LAN {
 
 	}
 	public void updateEquipment(String codeOriginal, Equipment updateEquipment) {
-		if (!hardware.containsKey(updateEquipment.getCode()) && !codeOriginal.equals(updateEquipment.getCode()))
+		if (hardware.containsKey(updateEquipment.getCode()) && !codeOriginal.equals(updateEquipment.getCode()))
 			throw new NotFoundException("Ese codigo ya existe");
 
 		if(codeOriginal.equals(updateEquipment.getCode())){
 			equipmentService.update(updateEquipment);
 		}
 		else {
+			Equipment eq = hardware.get(codeOriginal);
+			Connection con;
+			for (Connection c : connections){
+				if(c.getPort1().getEquipment().equals(eq)){
+					con = new Connection(c.getPort1(), c.getPort2(), c.getWire());
+					c.getPort1().setEquipment(updateEquipment);
+					connectionService.erase(c);
+					connectionService.insert(con);
+				}
+			}
+			for (Connection c : connections){
+				if(c.getPort2().getEquipment().equals(eq)){
+					con = new Connection(c.getPort1(), c.getPort2(), c.getWire());
+					c.getPort2().setEquipment(updateEquipment);
+					connectionService.erase(c);
+					connectionService.insert(con);
+				}
+			}
+			for (Port p : updateEquipment.getPorts()){
+				p.setEquipment(updateEquipment);
+			}
 			equipmentService.erase(hardware.get(codeOriginal));
 			equipmentService.insert(updateEquipment);
 			hardware.remove(codeOriginal);
+			hardware.put(updateEquipment.getCode(), updateEquipment);
 		}
 		hardware.replace(updateEquipment.getCode(),updateEquipment);
 		coordinator.updateTablas(this);
