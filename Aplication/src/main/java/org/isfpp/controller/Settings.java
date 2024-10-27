@@ -29,7 +29,7 @@ public class Settings {
                 ls = new LanguageSelectorPanel(latch);
                 latch.await();
            //     Locale.setDefault(new Locale(prop.getProperty("language"), prop.getProperty("country")));
-                    Locale locale = LanguageSelectorPanel.getLoc();
+                Locale locale = LanguageSelectorPanel.getLoc();
               //  resourceBundle = ResourceBundle.getBundle(prop.getProperty("labels"));
                 resourceBundle = ResourceBundle.getBundle("messages", locale);
                 name = ls.getName();
