@@ -129,6 +129,7 @@ public class Coordinator {
     public String getNombre() {
         return LAN.getNombre();
     }
+    public String getUser(){return settings.getName();}
 
     /**
      * Establece el nombre de la red.

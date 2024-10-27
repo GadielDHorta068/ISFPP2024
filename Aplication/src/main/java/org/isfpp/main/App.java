@@ -6,11 +6,13 @@ import org.isfpp.datos.CargarParametros;
 import org.isfpp.datos.ResourceExtractor;
 import org.isfpp.interfaz.panelesCreadores.MainMenu;
 import org.isfpp.interfaz.panelesEditadores.EditPortsFromEquipment;
+import org.isfpp.interfaz.panelesPrincipal.LanguageSelectorPanel;
 import org.isfpp.logica.CalculoGraph;
 import org.isfpp.modelo.LAN;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.CountDownLatch;
 
 public class App {
     // l�gica
@@ -20,11 +22,12 @@ public class App {
     // vista
     private MainMenu mainMenu;
 
+
     // controlador
     private Coordinator coordinator;
     private Settings settings;
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, InterruptedException {
         ResourceExtractor.extractResourcesToExecutionDir();
         String directorio = new File(App.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getParent();
         System.out.println("Ruta absoluta: " + directorio);
@@ -37,7 +40,8 @@ public class App {
 
     }
 
-    private void inicio(){
+    private void inicio() throws InterruptedException {
+
         LAN =new LAN();
         settings=new Settings();
         coordinator = new Coordinator();
@@ -59,7 +63,7 @@ public class App {
         coordinator.LoadData(coordinator.getWeb());
     }
 
-    private void launch(){
+    private void launch() throws InterruptedException {
         mainMenu.components(coordinator.getWeb());
     }
 

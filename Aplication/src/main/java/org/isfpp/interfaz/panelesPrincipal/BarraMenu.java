@@ -143,7 +143,7 @@ public class BarraMenu {
                 case Location location -> coordinator.eraseLocation(location);
                 case PortType puerto -> coordinator.erasePort(puerto);
                 case Connection connection -> coordinator.eraseConnection(connection);
-                default -> System.out.println(rb.getString("clase_no_detectada: ") + seleccionado.getClass());
+                default -> System.out.println(rb.getString("clase_no_detectada") + seleccionado.getClass());
             }
         }
     }
@@ -170,7 +170,7 @@ public class BarraMenu {
                 case Connection connection -> {
                     JOptionPane.showMessageDialog(null,rb.getString( "Error_crear_conexion"));
                 }
-                default -> System.out.println(rb.getString("clase_no_detectada: ") + seleccionado.getClass());
+                default -> System.out.println(rb.getString("clase_no_detectada") + seleccionado.getClass());
             }
         }
     }
@@ -201,7 +201,7 @@ public class BarraMenu {
         InputStream pdfStream = getClass().getResourceAsStream("/Manual.pdf");
 
         if (pdfStream == null) {
-            System.out.println(rb.getString("No se pudo encontrar el archivo manual.pdf"));
+            System.out.println(rb.getString("manual_not_found"));
             return;
         }
 
@@ -221,7 +221,7 @@ public class BarraMenu {
             if (Desktop.isDesktopSupported()) {
                 Desktop.getDesktop().open(tempFile);
             } else {
-                System.out.println(rb.getString("Desktop no es compatible en este sistema."));
+                System.out.println(rb.getString("Desktop_no_sistema."));
             }
 
         } catch (IOException e) {
