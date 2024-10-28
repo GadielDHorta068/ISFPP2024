@@ -17,6 +17,9 @@ public class LanguageSelectorPanel extends JFrame {
     private ResourceBundle messages;
     private final CountDownLatch latch;
     private static Locale loc;
+    private JLabel introLabel;
+    private JButton continueButton;
+    private JLabel nameLabel;
 
     public LanguageSelectorPanel(CountDownLatch latch) {
         this.latch = latch;
@@ -31,12 +34,12 @@ public class LanguageSelectorPanel extends JFrame {
         JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
         StylusUI.aplicarEstiloPanel(mainPanel);
 
-        JLabel introLabel = new JLabel("Primera vez? Vamos a personalazirar tu experiencia, por favor diganos su nombre y lenguaje de preferencia");
+        introLabel = new JLabel(messages.getString("greeting"));
         introLabel.setHorizontalAlignment(JLabel.CENTER);
         StylusUI.aplicarEstiloEtiqueta(introLabel);
 
 
-        JLabel nameLabel = new JLabel(messages.getString("nombre"));
+        nameLabel = new JLabel(messages.getString("nombre"));
         nameField = new JTextField(15);
         StylusUI.aplicarEstiloEtiqueta(nameLabel);
 
@@ -54,7 +57,7 @@ public class LanguageSelectorPanel extends JFrame {
         namePanel.add(nameField);
         namePanel.add(languageComboBox);
 
-        JButton continueButton = new JButton("Continuar");
+        continueButton = new JButton(messages.getString("continuar"));
         continueButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -107,6 +110,10 @@ public class LanguageSelectorPanel extends JFrame {
     private void reloadTexts() {
         // Actualizar el saludo con el nombre ingresado
         greetingLabel.setText(messages.getString("greeting") + ", " + nameField.getText() + "!");
+        introLabel.setText(messages.getString("greeting"));
+        continueButton.setText(messages.getString("continuar"));
+        nameLabel.setText(messages.getString("nombre"));
+
 
         // Aquí actualizarías otros componentes si los tuvieras
         revalidate();
