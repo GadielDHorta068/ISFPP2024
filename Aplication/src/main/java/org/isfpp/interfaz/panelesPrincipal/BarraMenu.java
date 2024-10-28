@@ -254,6 +254,7 @@ public class BarraMenu {
     private void alternarEstado() {
         if (coordinator.getSelectedItem() instanceof Equipment equipo){
             equipo.setStatus(!equipo.isStatus());
+            coordinator.updateTablas(LAN);
         }
     }
 

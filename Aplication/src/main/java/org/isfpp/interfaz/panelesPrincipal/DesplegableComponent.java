@@ -26,6 +26,7 @@ public class DesplegableComponent<T> {
     private Coordinator coordinator;
     private LAN LAN;
     private ResourceBundle rb;
+    private PanelDerecho panelDerecho;
 
     /**
      * Constructor de la clase DesplegableComponent.
@@ -99,7 +100,11 @@ public class DesplegableComponent<T> {
                     data[i][2] = item;
                 }
             }
+
+
         }
+
+        panelDerecho.updateProperties(coordinator.getSelectedItem());
 
         // Aquí vuelves a crear el modelo, pero asegúrate de que siga siendo no editable
         DefaultTableModel model = new DefaultTableModel(data, new String[]{rb.getString("nombre"), rb.getString("descripcion"), rb.getString("objeto")}) {
@@ -141,6 +146,7 @@ public class DesplegableComponent<T> {
     public void IniciarTabla(String titulo, List<T> dataList, PanelDerecho panelDerecho) {
         this.LAN = this.coordinator.getWeb();
         this.dataList = dataList;
+        this.panelDerecho = panelDerecho;
         rb = coordinator.getResourceBundle();
 
         panel = new JPanel();
