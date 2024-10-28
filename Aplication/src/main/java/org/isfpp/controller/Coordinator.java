@@ -375,17 +375,6 @@ public class Coordinator {
         this.selectedItem = selectedItem;
     }
 
-    /**
-     * Actualiza las tablas de la interfaz.
-     */
-
-    public void updateTablas(LAN w1) {
-        this.LoadData(w1);
-        for (DesplegableComponent tabla : tablas) {
-            tabla.updateTable();
-        }
-    }
-
 
     /**
      * Agrega un componente desplegable a las tablas.
@@ -421,5 +410,15 @@ public class Coordinator {
     }
 
     public void updatePortType(String codeOriginal, PortType port) {LAN.updatePortType(codeOriginal, port);
+    }
+    /**
+     * Actualiza las tablas de la interfaz.
+     */
+
+    public void updateTablas(LAN w1) {
+        this.LoadData(w1);
+        for (DesplegableComponent tabla : tablas) {
+            tabla.updateTable();
+        }
     }
 }
