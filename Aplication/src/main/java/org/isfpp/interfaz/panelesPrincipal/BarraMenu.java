@@ -246,8 +246,15 @@ public class BarraMenu {
         herramientasMenu.add(crearMenuItem(rb.getString("conexiones"), e -> iniciarConnectionIssues()));
         herramientasMenu.add(crearMenuItem(rb.getString("ver_grafo"), e ->   iniciarVerGrafo()));
         herramientasMenu.add(crearMenuItem(rb.getString("traceroute"), e -> iniciarTraceroute()));
+        herramientasMenu.add(crearMenuItem(rb.getString("alternar_estado"), e -> alternarEstado()));
 
         return herramientasMenu;
+    }
+
+    private void alternarEstado() {
+        if (coordinator.getSelectedItem() instanceof Equipment equipo){
+            equipo.setStatus(!equipo.isStatus());
+        }
     }
 
     private void iniciarVerGrafo() {

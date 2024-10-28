@@ -63,7 +63,7 @@ public class MainMenu {
         frame.setVisible(true);
         frame.setLocationRelativeTo(null);
         frame.setResizable(false);
-        frame.setTitle(rb.getString("titulo_princial") + coordinator.getUser());
+        frame.setTitle(rb.getString("titulo_principal") + coordinator.getUser());
     }
 
     public void SetCoordinator(Coordinator coordinator) {
