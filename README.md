@@ -5,7 +5,7 @@ Si estas leyendo esto, probablemente no deberias estar aca
 ## Instrucciones de uso:
 ###  [Último Release](https://github.com/GadielDHorta068/ISFPP2024/releases/latest)
 ### [Documentación](https://github.com/GadielDHorta068/ISFPP2024/wiki)
-### [Documentación Javadoc](https://github.com/GadielDHorta068/ISFPP2024/tree/release-2/Aplication/src/main/resources/assets/javadoc/index.html)
+### [Documentación Javadoc](https://gadieldhorta068.github.io/ISFPP2024/)
 
 
 
