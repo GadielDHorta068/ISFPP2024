@@ -11,15 +11,15 @@ import java.util.ResourceBundle;
 import java.util.concurrent.CountDownLatch;
 
 public class LanguageSelectorPanel extends JFrame {
-    private JTextField nameField;
-    private JComboBox<String> languageComboBox;
-    private JLabel greetingLabel;
+    private final JTextField nameField;
+    private final JComboBox<String> languageComboBox;
+    private final JLabel greetingLabel;
     private ResourceBundle messages;
     private final CountDownLatch latch;
     private static Locale loc;
-    private JLabel introLabel;
-    private JButton continueButton;
-    private JLabel nameLabel;
+    private final JLabel introLabel;
+    private final JButton continueButton;
+    private final JLabel nameLabel;
 
     public LanguageSelectorPanel(CountDownLatch latch) {
         this.latch = latch;
@@ -28,7 +28,6 @@ public class LanguageSelectorPanel extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
-        // Cargar mensajes en el idioma predeterminado
         messages = ResourceBundle.getBundle("messages", new Locale("es", "ES"));
 
         JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
@@ -45,11 +44,11 @@ public class LanguageSelectorPanel extends JFrame {
 
         String[] languages = {"Español", "English", "Français"};
         languageComboBox = new JComboBox<>(languages);
+        languageComboBox.setSelectedIndex(0);
         StylusUI.aplicarEstiloComboBox(languageComboBox);
 
         greetingLabel = new JLabel(messages.getString("greeting"));
         StylusUI.aplicarEstiloEtiqueta(greetingLabel);
-
 
         JPanel namePanel = new JPanel();
         StylusUI.aplicarEstiloPanel(namePanel);
@@ -85,7 +84,8 @@ public class LanguageSelectorPanel extends JFrame {
                 updateLanguage();
             }
         });
-
+        updateLanguage();
+        setLocationRelativeTo(null);
         pack();
         setVisible(true);
     }

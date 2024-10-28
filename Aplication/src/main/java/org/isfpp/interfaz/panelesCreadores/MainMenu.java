@@ -61,6 +61,7 @@ public class MainMenu {
         frame.setSize(800, 600);
         panelIzquierdo.setPreferredSize(new Dimension(frame.getWidth() - 262, 400));
         frame.setVisible(true);
+        frame.setLocationRelativeTo(null);
         frame.setResizable(false);
         frame.setTitle(rb.getString("titulo_princial") + coordinator.getUser());
     }
