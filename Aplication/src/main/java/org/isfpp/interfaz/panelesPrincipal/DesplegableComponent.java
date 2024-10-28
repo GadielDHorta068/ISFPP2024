@@ -1,5 +1,4 @@
 package org.isfpp.interfaz.panelesPrincipal;
-
 import org.isfpp.controller.Coordinator;
 import org.isfpp.interfaz.stylusUI.StylusUI;
 import org.isfpp.modelo.Connection;
@@ -26,6 +25,8 @@ public class DesplegableComponent<T> {
     private List<T> dataList;
     private Coordinator coordinator;
     private Lan lan;
+    private ResourceBundle rb;
+    private PanelDerecho panelDerecho;
 
     /**
      * Constructor de la clase DesplegableComponent.
@@ -62,11 +63,11 @@ public class DesplegableComponent<T> {
         // Inicializa dataList basado en el tipo del primer elemento
         Object e = dataList.isEmpty() ? null : dataList.get(0);
         if (e instanceof Equipment) {
-            dataList = (List<T>) new ArrayList<>(LAN.getHardware().values());
+            dataList = (List<T>) new ArrayList<>(lan.getHardware().values());
         } else if (e instanceof Location) {
-            dataList = (List<T>) new ArrayList<>(LAN.getLocations().values());
+            dataList = (List<T>) new ArrayList<>(lan.getLocations().values());
         } else if (e instanceof Connection) {
-            dataList = (List<T>) new ArrayList<>(LAN.getConnections());
+            dataList = (List<T>) new ArrayList<>(lan.getConnections());
         }
 
         Object[][] data = new Object[dataList.size()][3];

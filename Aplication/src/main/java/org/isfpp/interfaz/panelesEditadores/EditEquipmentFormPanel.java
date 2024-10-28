@@ -80,24 +80,24 @@ public class EditEquipmentFormPanel extends JPanel {
 
         JLabel puerto = new JLabel(rb.getString("tipo_puerto"));
         StylusUI.aplicarEstiloEtiqueta(puerto);
-        formPanel.add(puerto);
+   //     formPanel.add(puerto);
         portTypeCombo = new JComboBox<>(coordinator.getPortTypes().values().toArray(new PortType[0]));
         StylusUI.aplicarEstiloComboBox(portTypeCombo);
-        formPanel.add(portTypeCombo);
+   //     formPanel.add(portTypeCombo);
 
         JLabel capacidad = new JLabel(rb.getString("cantidad_puertos"));
         StylusUI.aplicarEstiloEtiqueta(capacidad);
-        formPanel.add(capacidad);
+ //       formPanel.add(capacidad);
         capacidadField = new JTextField(0);
         StylusUI.aplicarEstiloCampoTexto(capacidadField);
-        formPanel.add(capacidadField);
+   //     formPanel.add(capacidadField);
 
         JLabel estado = new JLabel(rb.getString("estado"));
         StylusUI.aplicarEstiloEtiqueta(estado);
-        formPanel.add(estado);
+      //  formPanel.add(estado);
         statusCheckBox = new JCheckBox();
         StylusUI.aplicarEstiloCheckBox(statusCheckBox);
-        formPanel.add(statusCheckBox);
+     //   formPanel.add(statusCheckBox);
 
         add(formPanel, BorderLayout.CENTER);
 
@@ -112,11 +112,14 @@ public class EditEquipmentFormPanel extends JPanel {
             String modelo = modeloField.getText();
             EquipmentType equipmentType = (EquipmentType) equipmentTypeCombo.getSelectedItem();
             Location location = (Location) locationCombo.getSelectedItem();
-            PortType portType = (PortType) portTypeCombo.getSelectedItem();
-            boolean status = statusCheckBox.isSelected();
+            //PortType portType = eq.getAllPortsTypes();
+       //     boolean status = statusCheckBox.isSelected();
 
             try {
-                coordinator.updateEquipment(codeOriginal, new Equipment(code, description, marca, modelo, portType, Integer.parseInt(capacidadField.getText()), equipmentType, location, status));
+                Equipment modEq = new Equipment(code, description, marca, modelo, null, 0, equipmentType, location, eq.isStatus());
+                modEq.setPorts(eq.getPorts());
+                modEq.setIpAdresses(eq.getIpAdresses());
+                coordinator.updateEquipment(codeOriginal, modEq);
 
                 JOptionPane.showMessageDialog(this, rb.getString("equipo_modificado"));
                 frame.setVisible(false);

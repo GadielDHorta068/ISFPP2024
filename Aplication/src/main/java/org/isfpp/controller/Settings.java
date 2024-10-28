@@ -1,17 +1,21 @@
 package org.isfpp.controller;
 
 import org.isfpp.datos.Cargar;
+import org.isfpp.interfaz.panelesPrincipal.LanguageSelectorPanel;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
+import java.util.concurrent.CountDownLatch;
 
 public class Settings {
 
         private Coordinator coordinador;
         private ResourceBundle resourceBundle;
+        private LanguageSelectorPanel ls;
+        private String name;
 
 
         public Settings() {
@@ -20,10 +24,15 @@ public class Settings {
             try {
                 input = Settings.class.getClassLoader().getResourceAsStream("config.properties");
                 prop.load(input);
+
+                CountDownLatch latch = new CountDownLatch(1);
+                ls = new LanguageSelectorPanel(latch);
+                latch.await();
            //     Locale.setDefault(new Locale(prop.getProperty("language"), prop.getProperty("country")));
-                Locale locale = Locale.getDefault();
+                Locale locale = LanguageSelectorPanel.getLoc();
               //  resourceBundle = ResourceBundle.getBundle(prop.getProperty("labels"));
                 resourceBundle = ResourceBundle.getBundle("messages", locale);
+                name = ls.getName();
 
             } catch (Exception e) {
                 // TODO Auto-generated catch block
@@ -51,6 +60,7 @@ public class Settings {
     public void setCoordinador(Coordinator coordinador) {
             this.coordinador = coordinador;
         }
+        public String getName(){return name;}
  }
 
 

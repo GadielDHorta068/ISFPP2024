@@ -1,12 +1,13 @@
 package org.isfpp.logica;
 
+import org.apache.log4j.Logger;
 import org.isfpp.controller.Coordinator;
-import org.isfpp.exceptions.AlreadyExistException;
 import org.isfpp.exceptions.NotFoundException;
 import org.isfpp.modelo.Connection;
 import org.isfpp.modelo.Equipment;
-import org.isfpp.modelo.PortType;
 import org.isfpp.modelo.Lan;
+import org.isfpp.modelo.PortType;
+import org.isfpp.modelo.LAN;
 import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
@@ -18,11 +19,19 @@ import org.jgrapht.traverse.BreadthFirstIterator;
 import java.util.*;
 import java.util.stream.IntStream;
 
-public class CalculoGraph {
+public class CalculoGraph implements Observer{
+    private final static Logger logger = Logger.getLogger(CalculoGraph.class);
     private static Graph<Equipment, Connection> graph;
     private Coordinator coordinator;
+    private Subject subject;
+    private boolean actualizar;
 
     public CalculoGraph() {
+    }
+    public void init(Subject subject) {
+        this.subject = subject;
+        this.subject.attach(this);
+        this.actualizar = true;
     }
 
     /**
@@ -36,9 +45,10 @@ public class CalculoGraph {
      * @throws IllegalArgumentException Si se intenta agregar una conexión entre el mismo equipo o si hay una
      *                                  conexión duplicada en el grafo.
      */
-    public void LoadData(Lan LAN) {
-        HashMap<String, Equipment> hardware = LAN.getHardware();
-        ArrayList<Connection> connections = LAN.getConnections();
+    public void LoadData(Lan lan) {
+        if (actualizar) {
+        HashMap<String, Equipment> hardware = coordinator.getHardware();
+        ArrayList<Connection> connections = coordinator.getConnections();
         // Crear un grafo no dirigido
         graph = new SimpleGraph<>(Connection.class);
         for (Equipment valor : hardware.values()) {
@@ -54,34 +64,12 @@ public class CalculoGraph {
             if (!graph.containsEdge(sourceNode, targetNode))
                 graph.addEdge(sourceNode, targetNode, c);
         }
-        coordinator.setGraph(graph);
-        coordinator.setWeb(LAN);
-        System.out.println("Actualizado");
-
-
+            actualizar = false;
+            logger.info("Se actualizaron los datos para realizar calculos");
+        } else
+            logger.info("No se actualizaron los datos");
     }
 
-    public void addVertex(Equipment equipment){
-        if (!graph.addVertex(equipment))
-            throw new AlreadyExistException("The equipment Already exist");
-
-        graph.addVertex(equipment);
-    }
-
-    public void eraseVertex(Equipment equipment){
-        graph.removeVertex(equipment);
-    }
-
-    public void addEdge(Connection connection){
-        if (graph.containsEdge(connection))
-            throw new AlreadyExistException("The connection already exist");
-
-        graph.addEdge(connection.getPort1().getEquipment(),connection.getPort2().getEquipment(),connection);
-    }
-
-    public void eraseEdge(Connection connection){
-        graph.removeEdge(connection);
-    }
     /**
      * Encuentra el camino más corto entre dos equipos utilizando el algoritmo de Dijkstra.
      * <p>
@@ -109,7 +97,7 @@ public class CalculoGraph {
 
         if (!e1.isStatus() || !e2.isStatus()) {
             throw new IllegalArgumentException(String.format(
-                    "Uno de los equipos no está activo %s, estatus: %s; %s, estatus: %s",
+                    "Uno de los equipos no está activo %s %s %s %s",
                     e1.getCode(),
                     e1.isStatus(),
                     e2.getCode(),
@@ -364,7 +352,7 @@ public class CalculoGraph {
      * @param LAN    La red en la que se encuentra el equipo.
      * @return Una nueva IP generada para el equipo.
      */
-    public static String generarNuevaIP(Equipment equipo, Lan LAN) {
+    public static String generarNuevaIP(Equipment equipo, LAN LAN) {
         String[] parts = equipo.getIpAdresses().getFirst().split("\\.");
         String nuevaIP = "";
         int pool = Integer.parseInt(parts[3]);
@@ -382,5 +370,10 @@ public class CalculoGraph {
             }
         }
         return nuevaIP;
+    }
+
+    @Override
+    public void update() {
+        actualizar=true;
     }
 }

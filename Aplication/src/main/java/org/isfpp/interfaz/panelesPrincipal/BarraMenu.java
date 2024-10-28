@@ -100,11 +100,25 @@ public class BarraMenu {
         }));
 
         editarMenu.add(crearMenuItem(rb.getString("eliminar"), this::accionEliminar));
-
+        editarMenu.add(crearMenuItem(rb.getString("editar_puerto"), this::accionEditarPuerto));
         editarMenu.add(crearMenuItem(rb.getString("editar"), this::accionEditar));
 
 
         return editarMenu;
+    }
+
+    private void accionEditarPuerto(ActionEvent actionEvent) {
+        Object seleccionado = coordinator.getSelectedItem();
+        if (seleccionado != null) {
+            switch (seleccionado) {
+                case Equipment equipment -> {
+                    EditPortsFromEquipment ed = new EditPortsFromEquipment();
+                    ed.setCoordinator(coordinator);
+                    ed.run(equipment.getCode());
+                }
+                default ->  JOptionPane.showMessageDialog(null, rb.getString("seleccionar_equipo"));
+            }
+        }
     }
 
     private void accionEliminar(ActionEvent actionEvent) {
@@ -115,7 +129,7 @@ public class BarraMenu {
                 case Location location -> coordinator.eraseLocation(location);
                 case PortType puerto -> coordinator.erasePort(puerto);
                 case Connection connection -> coordinator.eraseConnection(connection);
-                default -> System.out.println(rb.getString("clase_no_detectada: ") + seleccionado.getClass());
+                default -> System.out.println(rb.getString("clase_no_detectada") + seleccionado.getClass());
             }
         }
     }
@@ -140,11 +154,9 @@ public class BarraMenu {
                     portTypePanel.run(puerto.getCode());
                 }
                 case Connection connection -> {
-                    EditConnection connectionPanel = new EditConnection();
-                    connectionPanel.setCoordinator(coordinator);
-                    connectionPanel.run(connection);
+                    JOptionPane.showMessageDialog(null,rb.getString( "Error_crear_conexion"));
                 }
-                default -> System.out.println(rb.getString("clase_no_detectada: ") + seleccionado.getClass());
+                default -> System.out.println(rb.getString("clase_no_detectada") + seleccionado.getClass());
             }
         }
     }
@@ -175,7 +187,7 @@ public class BarraMenu {
         InputStream pdfStream = getClass().getResourceAsStream("/Manual.pdf");
 
         if (pdfStream == null) {
-            System.out.println(rb.getString("No se pudo encontrar el archivo manual.pdf"));
+            System.out.println(rb.getString("manual_not_found"));
             return;
         }
 
@@ -195,7 +207,7 @@ public class BarraMenu {
             if (Desktop.isDesktopSupported()) {
                 Desktop.getDesktop().open(tempFile);
             } else {
-                System.out.println(rb.getString("Desktop no es compatible en este sistema."));
+                System.out.println(rb.getString("Desktop_no_sistema."));
             }
 
         } catch (IOException e) {
@@ -220,8 +232,16 @@ public class BarraMenu {
         herramientasMenu.add(crearMenuItem(rb.getString("conexiones"), e -> iniciarConnectionIssues()));
         herramientasMenu.add(crearMenuItem(rb.getString("ver_grafo"), e ->   iniciarVerGrafo()));
         herramientasMenu.add(crearMenuItem(rb.getString("traceroute"), e -> iniciarTraceroute()));
+        herramientasMenu.add(crearMenuItem(rb.getString("alternar_estado"), e -> alternarEstado()));
 
         return herramientasMenu;
+    }
+
+    private void alternarEstado() {
+        if (coordinator.getSelectedItem() instanceof Equipment equipo){
+            equipo.setStatus(!equipo.isStatus());
+            coordinator.updateTablas(LAN);
+        }
     }
 
     private void iniciarVerGrafo() {

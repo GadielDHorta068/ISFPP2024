@@ -29,7 +29,6 @@ public class MainMenu {
     public void components(Lan lan) {
         rb = coordinator.getResourceBundle();
         StylusUI.inicializar(false);
-System.out.println(rb.getString("greeting"));
         PanelDerecho panelDerecho = new PanelDerecho();
 
         DesplegableComponent<Equipment> desplegableNodos = new DesplegableComponent<>();
@@ -62,7 +61,9 @@ System.out.println(rb.getString("greeting"));
         frame.setSize(800, 600);
         panelIzquierdo.setPreferredSize(new Dimension(frame.getWidth() - 262, 400));
         frame.setVisible(true);
+        frame.setLocationRelativeTo(null);
         frame.setResizable(false);
+        frame.setTitle(rb.getString("titulo_principal") + coordinator.getUser());
     }
 
     public void SetCoordinator(Coordinator coordinator) {
