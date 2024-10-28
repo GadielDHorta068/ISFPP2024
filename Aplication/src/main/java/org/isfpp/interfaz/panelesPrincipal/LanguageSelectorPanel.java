@@ -11,12 +11,15 @@ import java.util.ResourceBundle;
 import java.util.concurrent.CountDownLatch;
 
 public class LanguageSelectorPanel extends JFrame {
-    private JTextField nameField;
-    private JComboBox<String> languageComboBox;
-    private JLabel greetingLabel;
+    private final JTextField nameField;
+    private final JComboBox<String> languageComboBox;
+    private final JLabel greetingLabel;
     private ResourceBundle messages;
     private final CountDownLatch latch;
     private static Locale loc;
+    private final JLabel introLabel;
+    private final JButton continueButton;
+    private final JLabel nameLabel;
 
     public LanguageSelectorPanel(CountDownLatch latch) {
         this.latch = latch;
@@ -25,28 +28,27 @@ public class LanguageSelectorPanel extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
-        // Cargar mensajes en el idioma predeterminado
         messages = ResourceBundle.getBundle("messages", new Locale("es", "ES"));
 
         JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
         StylusUI.aplicarEstiloPanel(mainPanel);
 
-        JLabel introLabel = new JLabel("Primera vez? Vamos a personalazirar tu experiencia, por favor diganos su nombre y lenguaje de preferencia");
+        introLabel = new JLabel(messages.getString("greeting"));
         introLabel.setHorizontalAlignment(JLabel.CENTER);
         StylusUI.aplicarEstiloEtiqueta(introLabel);
 
 
-        JLabel nameLabel = new JLabel(messages.getString("nombre"));
+        nameLabel = new JLabel(messages.getString("nombre"));
         nameField = new JTextField(15);
         StylusUI.aplicarEstiloEtiqueta(nameLabel);
 
         String[] languages = {"Español", "English", "Français"};
         languageComboBox = new JComboBox<>(languages);
+        languageComboBox.setSelectedIndex(0);
         StylusUI.aplicarEstiloComboBox(languageComboBox);
 
         greetingLabel = new JLabel(messages.getString("greeting"));
         StylusUI.aplicarEstiloEtiqueta(greetingLabel);
-
 
         JPanel namePanel = new JPanel();
         StylusUI.aplicarEstiloPanel(namePanel);
@@ -54,7 +56,7 @@ public class LanguageSelectorPanel extends JFrame {
         namePanel.add(nameField);
         namePanel.add(languageComboBox);
 
-        JButton continueButton = new JButton("Continuar");
+        continueButton = new JButton(messages.getString("continuar"));
         continueButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -82,7 +84,8 @@ public class LanguageSelectorPanel extends JFrame {
                 updateLanguage();
             }
         });
-
+        updateLanguage();
+        setLocationRelativeTo(null);
         pack();
         setVisible(true);
     }
@@ -107,6 +110,10 @@ public class LanguageSelectorPanel extends JFrame {
     private void reloadTexts() {
         // Actualizar el saludo con el nombre ingresado
         greetingLabel.setText(messages.getString("greeting") + ", " + nameField.getText() + "!");
+        introLabel.setText(messages.getString("greeting"));
+        continueButton.setText(messages.getString("continuar"));
+        nameLabel.setText(messages.getString("nombre"));
+
 
         // Aquí actualizarías otros componentes si los tuvieras
         revalidate();
