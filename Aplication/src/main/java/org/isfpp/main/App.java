@@ -8,6 +8,7 @@ import org.isfpp.interfaz.panelesCreadores.MainMenu;
 import org.isfpp.interfaz.panelesEditadores.EditPortsFromEquipment;
 import org.isfpp.interfaz.panelesPrincipal.LanguageSelectorPanel;
 import org.isfpp.logica.CalculoGraph;
+import org.isfpp.logica.Subject;
 import org.isfpp.modelo.LAN;
 
 import java.io.File;
@@ -18,7 +19,7 @@ public class App {
     // l�gica
     private LAN LAN = null;
     private CalculoGraph calculoGraph;
-
+    private Subject subject;
     // vista
     private MainMenu mainMenu;
 
@@ -47,6 +48,7 @@ public class App {
         coordinator = new Coordinator();
         calculoGraph =new CalculoGraph();
         mainMenu= new MainMenu();
+        subject = new Subject();
 
         /* Se establecen las relaciones entre clases */
         settings.setCoordinador(coordinator);
@@ -60,6 +62,8 @@ public class App {
         coordinator.setWeb(LAN);
         coordinator.setUtils(calculoGraph);
         coordinator.setMainMenu(mainMenu);
+        LAN.init(subject);
+        calculoGraph.init(subject);
         coordinator.LoadData(coordinator.getWeb());
     }
 

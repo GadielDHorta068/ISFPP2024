@@ -1,5 +1,6 @@
 package org.isfpp.logica;
 
+import org.apache.log4j.Logger;
 import org.isfpp.controller.Coordinator;
 import org.isfpp.exceptions.NotFoundException;
 import org.isfpp.modelo.Connection;
@@ -17,11 +18,19 @@ import org.jgrapht.traverse.BreadthFirstIterator;
 import java.util.*;
 import java.util.stream.IntStream;
 
-public class CalculoGraph {
+public class CalculoGraph implements Observer{
+    private final static Logger logger = Logger.getLogger(CalculoGraph.class);
     private static Graph<Equipment, Connection> graph;
     private Coordinator coordinator;
+    private Subject subject;
+    private boolean actualizar;
 
     public CalculoGraph() {
+    }
+    public void init(Subject subject) {
+        this.subject = subject;
+        this.subject.attach(this);
+        this.actualizar = true;
     }
 
     /**
@@ -36,8 +45,9 @@ public class CalculoGraph {
      *                                  conexión duplicada en el grafo.
      */
     public void LoadData(LAN LAN) {
-        HashMap<String, Equipment> hardware = LAN.getHardware();
-        ArrayList<Connection> connections = LAN.getConnections();
+        if (actualizar) {
+        HashMap<String, Equipment> hardware = coordinator.getHardware();
+        ArrayList<Connection> connections = coordinator.getConnections();
         // Crear un grafo no dirigido
         graph = new SimpleGraph<>(Connection.class);
         for (Equipment valor : hardware.values()) {
@@ -53,11 +63,10 @@ public class CalculoGraph {
             if (!graph.containsEdge(sourceNode, targetNode))
                 graph.addEdge(sourceNode, targetNode, c);
         }
-        coordinator.setGraph(graph);
-        coordinator.setWeb(LAN);
-        System.out.println("Actualizado");
-
-
+            actualizar = false;
+            logger.info("Se actualizaron los datos para realizar calculos");
+        } else
+            logger.info("No se actualizaron los datos");
     }
 
     /**
@@ -360,5 +369,10 @@ public class CalculoGraph {
             }
         }
         return nuevaIP;
+    }
+
+    @Override
+    public void update() {
+        actualizar=true;
     }
 }
