@@ -1,0 +1,16 @@
+org.isfpp.controller
+org.isfpp.dao
+org.isfpp.dao.Secuencial
+org.isfpp.datos
+org.isfpp.exceptions
+org.isfpp.interfaz
+org.isfpp.interfaz.panelesAddons
+org.isfpp.interfaz.panelesCreadores
+org.isfpp.interfaz.panelesEditadores
+org.isfpp.interfaz.panelesPrincipal
+org.isfpp.interfaz.stylusUI
+org.isfpp.logica
+org.isfpp.main
+org.isfpp.modelo
+org.isfpp.Service
+org.isfpp.test

@@ -3,7 +3,11 @@
 
 Si estas leyendo esto, probablemente no deberias estar aca
 ## Instrucciones de uso:
-### Link de descarga: (link al release)
+###  [Último Release](https://github.com/GadielDHorta068/ISFPP2024/releases/latest)
+### [Documentación](https://github.com/GadielDHorta068/ISFPP2024/wiki)
+### [Javadoc](Aplication/src/main/resources/assets/javadoc/index.html)
+
+
 Debereas tener instalado Java 21 o superior en tu sistema.
 Tambien deberas tene acceso a internet para la gestion de la Base de datos del programa
 
