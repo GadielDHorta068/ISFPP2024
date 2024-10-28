@@ -5,7 +5,8 @@ Si estas leyendo esto, probablemente no deberias estar aca
 ## Instrucciones de uso:
 ###  [Último Release](https://github.com/GadielDHorta068/ISFPP2024/releases/latest)
 ### [Documentación](https://github.com/GadielDHorta068/ISFPP2024/wiki)
-### [Javadoc](Aplication/src/main/resources/assets/javadoc/index.html)
+### [Documentación Javadoc](https://github.com/GadielDHorta068/ISFPP2024/tree/release-2/Aplication/src/main/resources/assets/javadoc/index.html)
+
 
 
 Debereas tener instalado Java 21 o superior en tu sistema.
