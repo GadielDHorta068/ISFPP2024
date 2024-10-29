@@ -1,5 +1,5 @@
 
-package org.isfpp.modelo;
+package org.isfpp.logica;
 
 import java.util.*;
 
@@ -10,7 +10,8 @@ import org.isfpp.controller.Coordinator;
 import org.isfpp.exceptions.AlreadyExistException;
 import org.isfpp.exceptions.NotFoundException;
 
-import javax.security.auth.Subject;
+import org.isfpp.modelo.*;
+
 import javax.swing.*;
 
 public class Lan {
@@ -27,7 +28,7 @@ public class Lan {
 	private LocationService locationService;
 	private final HashMap<Object, EquipmentType> equipmentTypes;
 	private EquipmentTypeService equipmentTypeService;
-	private final HashMap<String,WireType>wireTypes;
+	private final HashMap<String, WireType>wireTypes;
 	private WireTypeService wireTypeService;
 	private final HashMap<String,PortType>portTypes;
 	private PortTypeService portTypeService;
@@ -111,12 +112,11 @@ public class Lan {
 		if (!hardware.containsKey(e.getCode())) {
 			throw new NotFoundException("equipo invalido");
 		}
-		Iterator<Connection> iterator = connections.iterator();
+		Iterator<Connection> iterator = List.copyOf(connections).iterator();
 		while (iterator.hasNext()) {
 			Connection c = iterator.next();
 			// Eliminar la conexión del equipo si coincide con alguno de los puertos
 			if (c.getPort1().getEquipment().equals(e) || c.getPort2().getEquipment().equals(e)) {
-				iterator.remove(); // Elimina la conexión del Iterator para evitar ConcurrentModificationException
 				if (connections.contains(c)) {
 					eraseConnection(c); // Solo llama a eraseConnection si la conexión aún está en la lista
 				}
@@ -128,24 +128,6 @@ public class Lan {
 		subject.refresh();
 		logger.info("Se elimino un equipo");
 	}
-
-	public void updateEquipment(String codeOriginal, Equipment updateEquipment) {
-		if (!hardware.containsKey(updateEquipment.getCode()) && !codeOriginal.equals(updateEquipment.getCode()))
-			throw new NotFoundException("Ese codigo ya existe");
-
-		if(codeOriginal.equals(updateEquipment.getCode())){
-			equipmentService.update(updateEquipment);
-		}
-		else {
-			equipmentService.erase(hardware.get(codeOriginal));
-			equipmentService.insert(updateEquipment);
-			hardware.remove(codeOriginal);
-		}
-		hardware.replace(updateEquipment.getCode(),updateEquipment);
-        subject.refresh();
-        logger.info("Se agrega un equipo");
-
-    }
 
 	public Equipment searchEquipment(Equipment equipment) {
 		return hardware.get(equipment.getCode());
@@ -244,28 +226,6 @@ public class Lan {
 		subject.refresh();
 		logger.info("Se borro una conexion");
 	}
-
-	/**
-	 *
-	 * @param originalConnection
-	 * @param updateConnection
-	 * @throws NotFoundException si la conexión no se encuentra
-	 */
-	public void updateConnection(Connection originalConnection,Connection updateConnection){
-		if (connections.contains(updateConnection) && !originalConnection.equals(updateConnection))
-			throw new NotFoundException("ya existe esa conexion");
-		if(originalConnection.equals(updateConnection)){
-			connectionService.update(updateConnection);
-		}
-		else {
-			connectionService.erase(originalConnection);
-			connectionService.insert(updateConnection);
-		}
-		connections.remove(originalConnection);
-		connections.add(updateConnection);
-        subject.refresh();
-        logger.info("Se actualizo una conexion");
-    }
 
 	public void updateConnection(Equipment originalEquipment1, Equipment originalEquipment2,Connection updateConnection){
 		Connection originalConnection = null, connectionIndex;
@@ -370,22 +330,6 @@ public class Lan {
 		}
 	}
 
-	public void updateLocation(String codeOriginal, Location updateLocation){
-		if (locations.containsKey(updateLocation.getCode()) && !codeOriginal.equals(updateLocation.getCode()))
-			throw new NotFoundException("localizacion ya extiste");
-		if(codeOriginal.equals(updateLocation.getCode())){
-			locationService.update(updateLocation);
-		}
-		else {
-			locationService.erase(locations.get(codeOriginal));
-			locationService.insert(updateLocation);
-			locations.remove(codeOriginal);
-		}
-		locations.put(updateLocation.getCode(),updateLocation);
-        subject.refresh();
-        logger.info("Se actualizo una localizacion");
-	}
-
         /**
          * Agrega todas las ubicaciones que se encuentran en el directorio dado
          *  y actualiza las ubicaciones ya existentes dentro de la red
@@ -451,11 +395,11 @@ public class Lan {
 		logger.info("Se elimino un cable");
 	}
 
-	public void updateWire(WireType wireType){
+	public void updateWire(String originalCode,WireType wireType){
 		if (wireTypes.containsKey(wireType.getCode()))
 			throw new NotFoundException("Tipo de cable no encontrado");
 
-		wireTypes.replace(wireType.getCode(),wireType);
+		wireTypes.replace(originalCode, wireType);
 		wireTypeService.update(wireType);
 		subject.refresh();
 		logger.info("cable actualizado");
@@ -606,23 +550,6 @@ public class Lan {
 		logger.info("Se elimino un tipo equipo");
 	}
 
-	public void updateEquipmentType(String originalCode,EquipmentType updateEquipmentType){
-		if (equipmentTypes.containsKey(updateEquipmentType.getCode()) && !Objects.equals(originalCode,updateEquipmentType.getCode()))
-			throw new NotFoundException("No se pudo encontrar el tipo de equipo");
-		if(Objects.equals(updateEquipmentType.getCode(), originalCode)){
-			equipmentTypeService.update(updateEquipmentType);
-		}
-		else {
-			equipmentTypeService.erase(equipmentTypes.get(originalCode));
-			equipmentTypeService.insert(updateEquipmentType);
-			equipmentTypes.remove(originalCode);
-		}
-		equipmentTypes.remove(originalCode);
-		equipmentTypes.put(updateEquipmentType.getCode(), updateEquipmentType);
-        subject.refresh();
-        logger.info("Se actualizo un tipo equipo");
-    }
-
 	/**
 	 * Agrega todos los tipos de puerto que se encuentran en el directorio dado
 	 *  y actualiza los tipos de puerto ya existentes dentro de la red
@@ -759,4 +686,8 @@ public class Lan {
         equipmentTypeService.insertAllIn(directory);
     }
 
+
+	public void init(org.isfpp.logica.Subject subject){
+		this.subject = subject;
+	}
 }

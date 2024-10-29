@@ -4,6 +4,7 @@ import org.isfpp.controller.Coordinator;
 import org.isfpp.interfaz.panelesAddons.*;
 import org.isfpp.interfaz.panelesCreadores.*;
 import org.isfpp.interfaz.panelesEditadores.*;
+import org.isfpp.logica.Lan;
 import org.isfpp.modelo.*;
 import org.isfpp.interfaz.stylusUI.StylusUI;
 
@@ -15,9 +16,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.util.ResourceBundle;
 
 
 public class BarraMenu {
+    private ResourceBundle rb;
     private final Lan lan;
     private Coordinator coordinator;
 
@@ -75,25 +78,40 @@ public class BarraMenu {
         JMenu editarMenu = new JMenu(rb.getString("editar"));
         StylusUI.styleMenu(editarMenu);
 
-        editarMenu.add(crearMenuItem(rb.getString("agregar_equipo"), e -> {
+        JMenu subMenuAgregar = new JMenu(rb.getString("editar"));
+        editarMenu.add(subMenuAgregar);
+
+        subMenuAgregar.add(crearMenuItem(rb.getString("agregar_equipo"), e -> {
             EquipmentFormPanel equipmentPanel = new EquipmentFormPanel();
             equipmentPanel.setCoordinator(coordinator);
             equipmentPanel.run();
         }));
 
-        editarMenu.add(crearMenuItem(rb.getString("agregar_puerto"), e -> {
+        subMenuAgregar.add(crearMenuItem(rb.getString("agregar_puerto"), e -> {
             PortTypeFormPanel portTypePanel = new PortTypeFormPanel();
             portTypePanel.setCoordinator(coordinator);
             portTypePanel.run();
         }));
 
-        editarMenu.add(crearMenuItem(rb.getString("agregar_ubicacion"), e -> {
+        subMenuAgregar.add(crearMenuItem(rb.getString("agregar_ubicacion"), e -> {
             LocationFormPanel locationPanel = new LocationFormPanel();
             locationPanel.setCoordinator(coordinator);
             locationPanel.run();
         }));
 
-        editarMenu.add(crearMenuItem(rb.getString("agregar_connexion"), e -> {
+        subMenuAgregar.add(crearMenuItem(rb.getString("agregar_connexion"), e -> {
+            EditConnection editConnection = new EditConnection();
+            editConnection.setCoordinator(coordinator);
+            editConnection.run(null);
+        }));
+        //mod
+        subMenuAgregar.add(crearMenuItem(rb.getString("agregar_tipo_de_equipo"), e -> {
+            EditConnection editConnection = new EditConnection();
+            editConnection.setCoordinator(coordinator);
+            editConnection.run(null);
+        }));
+
+        subMenuAgregar.add(crearMenuItem(rb.getString("agregar_tipo_de_cable"), e -> {
             EditConnection editConnection = new EditConnection();
             editConnection.setCoordinator(coordinator);
             editConnection.run(null);
@@ -101,7 +119,15 @@ public class BarraMenu {
 
         editarMenu.add(crearMenuItem(rb.getString("eliminar"), this::accionEliminar));
         editarMenu.add(crearMenuItem(rb.getString("editar_puerto"), this::accionEditarPuerto));
-        editarMenu.add(crearMenuItem(rb.getString("editar"), this::accionEditar));
+
+        JMenu subMenuEditar = new JMenu(rb.getString("editar"));
+        editarMenu.add(subMenuEditar);
+        subMenuEditar.add(crearMenuItem(rb.getString("editar_equipo"), this::accionEditar));
+        subMenuEditar.add(crearMenuItem(rb.getString("editar_conexión"), this::accionEditar));
+        subMenuEditar.add(crearMenuItem(rb.getString("editar_ubicacion"), this::accionEditar));
+        subMenuEditar.add(crearMenuItem(rb.getString("editar_tipo_de_cable"), this::accionEditar));
+        subMenuEditar.add(crearMenuItem(rb.getString("editar_tipo_de_puerto"), this::accionEditar));
+        subMenuEditar.add(crearMenuItem(rb.getString("editar_tipo_de_equipo"), this::accionEditar));
 
 
         return editarMenu;
@@ -240,7 +266,7 @@ public class BarraMenu {
     private void alternarEstado() {
         if (coordinator.getSelectedItem() instanceof Equipment equipo){
             equipo.setStatus(!equipo.isStatus());
-            coordinator.updateTablas(LAN);
+            coordinator.updateTablas(lan);
         }
     }
 

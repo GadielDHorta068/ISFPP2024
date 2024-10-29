@@ -2,7 +2,6 @@ package org.isfpp.interfaz.panelesCreadores;
 
 import org.isfpp.controller.Coordinator;
 import org.isfpp.interfaz.stylusUI.StylusUI;
-import org.isfpp.modelo.Lan;
 
 import javax.swing.*;
 import java.awt.*;

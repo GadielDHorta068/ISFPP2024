@@ -5,7 +5,6 @@ import org.isfpp.interfaz.stylusUI.StylusUI;
 import org.isfpp.modelo.EquipmentType;
 import org.isfpp.modelo.Location;
 import org.isfpp.modelo.PortType;
-import org.isfpp.modelo.Lan;
 
 import javax.swing.*;
 import java.awt.*;

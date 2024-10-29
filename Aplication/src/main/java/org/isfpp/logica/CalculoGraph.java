@@ -5,9 +5,7 @@ import org.isfpp.controller.Coordinator;
 import org.isfpp.exceptions.NotFoundException;
 import org.isfpp.modelo.Connection;
 import org.isfpp.modelo.Equipment;
-import org.isfpp.modelo.Lan;
 import org.isfpp.modelo.PortType;
-import org.isfpp.modelo.LAN;
 import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
@@ -41,7 +39,7 @@ public class CalculoGraph implements Observer{
      * y construye un grafo no dirigido. Cada equipo se agrega como un vértice en el grafo y cada conexión se agrega
      * como una arista entre los equipos correspondientes.
      *
-     * @param LAN El objeto {@code Web} que contiene la información de hardware y conexiones.
+     * @param lan El objeto {@code Web} que contiene la información de hardware y conexiones.
      * @throws IllegalArgumentException Si se intenta agregar una conexión entre el mismo equipo o si hay una
      *                                  conexión duplicada en el grafo.
      */
@@ -349,10 +347,10 @@ public class CalculoGraph implements Observer{
      * Genera una nueva dirección IP para un equipo dentro de una red.
      * 
      * @param equipo El equipo para el cual se desea generar la IP.
-     * @param LAN    La red en la que se encuentra el equipo.
+     * @param lan    La red en la que se encuentra el equipo.
      * @return Una nueva IP generada para el equipo.
      */
-    public static String generarNuevaIP(Equipment equipo, LAN LAN) {
+    public static String generarNuevaIP(Equipment equipo, Lan lan) {
         String[] parts = equipo.getIpAdresses().getFirst().split("\\.");
         String nuevaIP = "";
         int pool = Integer.parseInt(parts[3]);
@@ -362,7 +360,7 @@ public class CalculoGraph implements Observer{
             t = false;
             pool += 1;
             nuevaIP = String.format("%s.%s.%s.%d", parts[0], parts[1], parts[2], pool);
-            for (Equipment eq :  LAN.getHardware().values()) {
+            for (Equipment eq :  lan.getHardware().values()) {
                 if (eq.getIpAdresses().contains(nuevaIP)) {
                     t = true;
                     break;

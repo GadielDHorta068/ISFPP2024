@@ -2,13 +2,14 @@ package org.isfpp.main;
 
 import org.isfpp.controller.Coordinator;
 import org.isfpp.controller.Settings;
+import org.isfpp.dao.Secuencial.EquipmentSequentialDAO;
 import org.isfpp.data.FileTextToBD;
-import org.isfpp.datos.ResourceExtractor;
 import org.isfpp.interfaz.panelesCreadores.MainMenu;
 import org.isfpp.logica.CalculoGraph;
-import org.isfpp.modelo.Lan;
+import org.isfpp.logica.Subject;
+import org.isfpp.modelo.Equipment;
+import org.isfpp.logica.Lan;
 
-import java.io.File;
 import java.io.IOException;
 
 public class App {
@@ -27,13 +28,14 @@ public class App {
     public static void main(String[] args) throws IOException {
         App app = new App();
         app.inicio();
-        app.luanch();
+        app.launch();
         app.minitest();
 
     }
 
     private void inicio(){
-        lan = new Lan();
+        lan = Lan.getLan();
+        subject = new Subject();
         settings=new Settings();
         coordinator = new Coordinator();
         calculoGraph =new CalculoGraph();
@@ -41,14 +43,14 @@ public class App {
 
         /* Se establecen las relaciones entre clases */
         settings.setCoordinador(coordinator);
-        LAN.setCoordinator(coordinator);
+        lan.setCoordinator(coordinator);
         calculoGraph.setCoordinator(coordinator);
         mainMenu.SetCoordinator(coordinator);
 
 
         /* Se establecen relaciones con la clase coordinador */
         coordinator.setSettings(settings);
-        coordinator.setWeb(LAN);
+        coordinator.setWeb(lan);
         coordinator.setUtils(calculoGraph);
         coordinator.setMainMenu(mainMenu);
         lan.init(subject);
@@ -61,6 +63,9 @@ public class App {
     }
 
     private void minitest(){
+        EquipmentSequentialDAO dad = new EquipmentSequentialDAO();
+        for (Equipment equipment: dad.searchAll().values())
+            System.out.println(equipment.getCode());
     }
 
     private void fileTextToDB(){

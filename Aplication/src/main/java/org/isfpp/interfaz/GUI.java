@@ -4,12 +4,11 @@ import org.isfpp.controller.Settings;
 import org.isfpp.interfaz.panelesPrincipal.BarraMenu;
 import org.isfpp.interfaz.panelesPrincipal.PanelDerecho;
 import org.isfpp.interfaz.stylusUI.StylusUI;
-import org.isfpp.modelo.Lan;
+import org.isfpp.logica.Lan;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
-import java.util.ResourceBundle;
 
 public class GUI {
     public static void main(String[] args) throws IOException {
