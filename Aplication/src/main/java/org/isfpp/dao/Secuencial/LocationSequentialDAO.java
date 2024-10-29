@@ -9,14 +9,13 @@ import java.io.*;
 import java.util.*;
 
 public class LocationSequentialDAO implements LocationDAO {
-    private Hashtable<String, Location> map;
+    private static Hashtable<String, Location> map;
     private String fileName;
-    private boolean update;
+    private static boolean update  = true;
 
     public LocationSequentialDAO() {
         ResourceBundle rb = ResourceBundle.getBundle("sequential");
         fileName = rb.getString("rs.location");
-        update = true;
     }
 
     private Hashtable<String, Location> readFromFile(String fileName) {
@@ -132,6 +131,7 @@ public class LocationSequentialDAO implements LocationDAO {
     @Override
     public Hashtable<String, Location> searchAll() {
         if (update) {
+            System.out.println("SAS EN TODA LA BOCA");
             map = readFromFile(fileName);
             update = false;
         }

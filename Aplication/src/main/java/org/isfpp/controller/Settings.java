@@ -1,11 +1,8 @@
 package org.isfpp.controller;
 
-import org.isfpp.datos.Cargar;
+
 import org.isfpp.interfaz.panelesPrincipal.LanguageSelectorPanel;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 import java.util.concurrent.CountDownLatch;

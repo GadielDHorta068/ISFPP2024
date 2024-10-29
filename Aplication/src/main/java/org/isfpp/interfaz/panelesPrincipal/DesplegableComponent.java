@@ -4,7 +4,7 @@ import org.isfpp.interfaz.stylusUI.StylusUI;
 import org.isfpp.modelo.Connection;
 import org.isfpp.modelo.Equipment;
 import org.isfpp.modelo.Location;
-import org.isfpp.modelo.Lan;
+import org.isfpp.logica.Lan;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;

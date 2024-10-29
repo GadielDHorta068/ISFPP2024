@@ -5,10 +5,7 @@ import org.isfpp.dao.Secuencial.*;
 import org.isfpp.dao.posgresql.*;
 import org.isfpp.modelo.*;
 
-import javax.swing.*;
-import java.awt.*;
-
-public class FileTextToBD {
+public class BDToFileText {
     public static void FileTextToBD(){
         PortTypeDAO portTypeSequentialDAO = new PortTypeSequentialDAO();
         PortTypeDAO portTypePosgresqlDAO = new PortTypePosgresqlDAO();
@@ -39,13 +36,5 @@ public class FileTextToBD {
         ConnectionDAO connectionPosgresqlDAO= new ConnectionPosgresqlDAO();
         for (Connection connection: connectionSequentialDAO.searchAll())
             connectionPosgresqlDAO.insert(connection);
-
-        JFrame frame = new JFrame("Prueba interfaz por modulos ISFPP24");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setLayout(new BorderLayout());
-        frame.setSize(800, 600);
-        frame.setVisible(true);
-
     }
-
 }

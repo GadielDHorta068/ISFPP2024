@@ -15,6 +15,7 @@ import java.util.Hashtable;
 import java.util.List;
 
 public class ConnectionPosgresqlDAO implements ConnectionDAO {
+
     private final PortTypeDAO portTypeDAO;
     private final EquipmentDAO equipmentDAO;
     private final WireTypeDAO wireTypeDAO;
@@ -25,11 +26,8 @@ public class ConnectionPosgresqlDAO implements ConnectionDAO {
 
     public ConnectionPosgresqlDAO(){
         portTypeDAO = new PortTypePosgresqlDAO();
-        portTypeTable = loadPortTypes();
         wireTypeDAO = new WireTypePosgresqlDAO();
-        wireTypeTable = loadWireType();
         equipmentDAO = new EquipmentPosgresqlDAO();
-        equipmentTable = loadEquipments();
     }
 
     private Hashtable<String, PortType> loadPortTypes(){
@@ -53,13 +51,19 @@ public class ConnectionPosgresqlDAO implements ConnectionDAO {
         try {
             con = BDConnection.getConnection();
             String sql ="";
-            sql+="INSERT INTO public.connection (code_equipment1, code_port_type1,code_equipment2, code_port_type2, code_wire_type)";
+            sql+="INSERT INTO poo2024.rcg_connection (" +
+                    "   code_port_type1," +
+                    "   code_equipment1," +
+                    "   code_port_type2," +
+                    "   code_equipment2," +
+                    "   code_wire_type" +
+                    ")";
             sql+="VALUES(?, ?, ?, ?, ?)";
             pstm = con.prepareStatement(sql);
-            pstm.setString(1, connection.getPort1().getEquipment().getCode());
             pstm.setString(2, connection.getPort1().getPortType().getCode());
-            pstm.setString(3, connection.getPort2().getEquipment().getCode());
+            pstm.setString(1, connection.getPort1().getEquipment().getCode());
             pstm.setString(4, connection.getPort2().getPortType().getCode());
+            pstm.setString(3, connection.getPort2().getEquipment().getCode());
             pstm.setString(5, connection.getWire().getCode());
             pstm.executeUpdate();
         } catch (SQLException e) {
@@ -75,6 +79,7 @@ public class ConnectionPosgresqlDAO implements ConnectionDAO {
                 throw new RuntimeException(e);
             }
         }
+
     }
 
     @Override
@@ -85,15 +90,19 @@ public class ConnectionPosgresqlDAO implements ConnectionDAO {
 
         try {
             con = BDConnection.getConnection();;
-            String sql = "UPDATE public.connection ";
-            sql += "SET code_equipment1 = ?, code_port_type1 = ?,code_equipment2 = ?, code_port_type2 = ?, code_wire_type = ?";
+            String sql = "UPDATE poo2024.rcg_connection ";
+            sql += "SET code_port_type1 = ?," +
+                    "   code_equipment1 = ?," +
+                    "   code_port_type2 = ?," +
+                    "   code_equipment2 = ?," +
+                    "   code_wire_type = ?";
             sql += "WHERE code_equipment1 = ? AND code_equipment2 = ?";
             pstm = con.prepareStatement(sql);
             //SET
-            pstm.setString(1, connection.getPort1().getEquipment().getCode());
             pstm.setString(2, connection.getPort1().getPortType().getCode());
-            pstm.setString(3, connection.getPort2().getEquipment().getCode());
+            pstm.setString(1, connection.getPort1().getEquipment().getCode());
             pstm.setString(4, connection.getPort2().getPortType().getCode());
+            pstm.setString(3, connection.getPort2().getEquipment().getCode());
             pstm.setString(5, connection.getWire().getCode());
             //WHERE
             pstm.setString(6, connection.getPort1().getEquipment().getCode());
@@ -123,7 +132,8 @@ public class ConnectionPosgresqlDAO implements ConnectionDAO {
         try {
             con = BDConnection.getConnection();
             String sql = "";
-            sql += "DELETE FROM public.connection WHERE code_equipment1 = ? AND code_equipment2 = ?";
+            sql += "DELETE FROM poo2024.rcg_connection " +
+                    "WHERE code_equipment1 = ? AND code_equipment2 = ?";
             pstm = con.prepareStatement(sql);
             pstm.setString(1, connection.getPort1().getEquipment().getCode());
             pstm.setString(2, connection.getPort2().getEquipment().getCode());
@@ -154,12 +164,12 @@ public class ConnectionPosgresqlDAO implements ConnectionDAO {
         ResultSet rs = null;
         try {
             con = BDConnection.getConnection();
-            String sql = "SELECT code_equipment1," +
-                    " code_port_type1," +
-                    " code_equipment2," +
-                    " code_port_type2," +
-                    " code_wire_type";
-            sql += " FROM public.connection ";
+            String sql = "SELECT code_port_type1," +
+                    "   code_equipment1," +
+                    "   code_port_type2," +
+                    "   code_equipment2," +
+                    "   code_wire_type";
+            sql += " FROM poo2024.rcg_connection ";
             pstm = con.prepareStatement(sql);
             rs = pstm.executeQuery();
             List<Connection> ret = new ArrayList<>();

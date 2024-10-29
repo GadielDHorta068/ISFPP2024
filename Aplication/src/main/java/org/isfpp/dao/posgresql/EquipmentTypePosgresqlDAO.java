@@ -26,9 +26,11 @@ public class EquipmentTypePosgresqlDAO implements EquipmentTypeDAO {
         try {
             con = BDConnection.getConnection();
             String sql ="";
-            sql+="INSERT INTO public.equipment_Type (code_equipment_type," +
-                    " description_equipment_type)";
-            sql+="VALUES(?, ?)";
+            sql+="INSERT INTO poo2024.rcg_equipment_type (" +
+                    "   code," +
+                    "   description" +
+                    ") " +
+                    "VALUES(?, ?)";
             pstm = con.prepareStatement(sql);
             pstm.setString(1, equipmentType.getCode());
             pstm.setString(2, equipmentType.getDescription());
@@ -55,10 +57,10 @@ public class EquipmentTypePosgresqlDAO implements EquipmentTypeDAO {
 
         try {
             con = BDConnection.getConnection();;
-            String sql = "UPDATE public.equipment_Type ";
-            sql += "SET code_equipment_type = ?," +
-                    " description_equipment_type = ? ";
-            sql += "WHERE code_equipment_type = ?";
+            String sql = "UPDATE poo2024.rcg_equipment_type ";
+            sql += "SET code = ?," +
+                    " description = ? ";
+            sql += "WHERE code = ?";
             pstm = con.prepareStatement(sql);
             //SET
             pstm.setString(1, equipmentType.getCode());
@@ -91,7 +93,7 @@ public class EquipmentTypePosgresqlDAO implements EquipmentTypeDAO {
         try {
             con = BDConnection.getConnection();
             String sql = "";
-            sql += "DELETE FROM public.equipment_type WHERE code_equipment_type = ?";
+            sql += "DELETE FROM poo2024.rcg_equipment_type WHERE code = ?";
             pstm = con.prepareStatement(sql);
             pstm.setString(1, equipmentType.getCode());
             pstm.executeUpdate();
@@ -121,16 +123,17 @@ public class EquipmentTypePosgresqlDAO implements EquipmentTypeDAO {
         ResultSet rs = null;
         try {
             con = BDConnection.getConnection();
-            String sql = "SELECT code_equipment_type," +
-                    " description_equipment_type";
-            sql += " FROM public.equipment_type ";
+            String sql = "SELECT " +
+                    "   code," +
+                    "   description " +
+                    "FROM poo2024.rcg_equipment_type ";
             pstm = con.prepareStatement(sql);
             rs = pstm.executeQuery();
             Hashtable<String, EquipmentType> ret= new Hashtable<>();
             while (rs.next()) {
                 EquipmentType equipmentType = new EquipmentType();
-                equipmentType.setCode(rs.getString("code_equipment_type"));
-                equipmentType.setDescription(rs.getString("description_equipment_type"));
+                equipmentType.setCode(rs.getString("code"));
+                equipmentType.setDescription(rs.getString("description"));
                 ret.put(equipmentType.getCode(), equipmentType);
             }
             return ret;

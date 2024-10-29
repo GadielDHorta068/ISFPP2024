@@ -25,9 +25,10 @@ public class WireTypePosgresqlDAO implements WireTypeDAO {
         try {
             con = BDConnection.getConnection();
             String sql ="";
-            sql+="INSERT INTO public.wire_type (code_wire_type," +
-                    " description_wire_type," +
-                    " speed_wire_type)";
+            sql+="INSERT INTO poo2024.RCG_Wire_type (" +
+                    "   code," +
+                    "   description," +
+                    "   speed)";
             sql+="VALUES(?, ?, ?) ";
             pstm = con.prepareStatement(sql);
             pstm.setString(1,wireType.getCode());
@@ -56,13 +57,13 @@ public class WireTypePosgresqlDAO implements WireTypeDAO {
 
         try {
             con = BDConnection.getConnection();;
-            String sql = "UPDATE public.wire_type ";
-            sql += "SET code_wire_type = ?, " +
-                    "description_wire_type = ?, " +
-                    "speed_wire_type = ? ";
-            sql += "WHERE code_wire_type = ? ";
+            String sql = "UPDATE poo2024.RCG_Wire_type ";
+            sql += "SET code = ?, " +
+                    "   description = ?, " +
+                    "   speed = ? ";
+            sql += "WHERE code = ? ";
             pstm = con.prepareStatement(sql);
-            pstm.setString(1, wireType.getDescription());
+            pstm.setString(1, wireType.getCode());
             pstm.setString(2, wireType.getDescription());
             pstm.setInt(3,wireType.getSpeed());
             pstm.setString(4,wireType.getCode());
@@ -92,8 +93,8 @@ public class WireTypePosgresqlDAO implements WireTypeDAO {
         try {
             con = BDConnection.getConnection();
             String sql = "";
-            sql += "DELETE FROM public.wire_type " +
-                    "WHERE code_wire_type = ?";
+            sql += "DELETE FROM poo2024.RCG_Wire_type " +
+                    "WHERE getCode() = ?";
             pstm = con.prepareStatement(sql);
             pstm.setString(1, wireType.getCode());
             pstm.executeUpdate();
@@ -123,18 +124,18 @@ public class WireTypePosgresqlDAO implements WireTypeDAO {
         ResultSet rs = null;
         try {
             con = BDConnection.getConnection();
-            String sql = "SELECT code_wire_type, " +
-                    "description_wire_type, " +
-                    "speed_wire_type ";
-            sql += "FROM public.wire_ype ";
+            String sql = "SELECT code, " +
+                    "   description, " +
+                    "   speed ";
+            sql += "FROM poo2024.RCG_Wire_type ";
             pstm = con.prepareStatement(sql);
             rs = pstm.executeQuery();
             Hashtable<String, WireType> ret = new Hashtable<>();
             while (rs.next()) {
                 WireType wireType = new WireType();
-                wireType.setCode(rs.getString("code_wire_type"));
-                wireType.setDescription(rs.getString("description_wire_type"));
-                wireType.setSpeed(rs.getInt("speed_wire_type"));
+                wireType.setCode(rs.getString("code"));
+                wireType.setDescription(rs.getString("description"));
+                wireType.setSpeed(rs.getInt("speed"));
                 ret.put(wireType.getCode(), wireType);
             }
             return ret;

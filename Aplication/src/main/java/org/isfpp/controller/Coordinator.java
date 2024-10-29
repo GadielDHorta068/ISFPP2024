@@ -3,6 +3,7 @@ package org.isfpp.controller;
 import org.isfpp.interfaz.panelesCreadores.MainMenu;
 import org.isfpp.interfaz.panelesPrincipal.DesplegableComponent;
 import org.isfpp.logica.CalculoGraph;
+import org.isfpp.logica.Lan;
 import org.isfpp.modelo.*;
 import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
@@ -350,7 +351,7 @@ public class Coordinator {
     /**
      * Carga los datos de la web.
      *
-     * @param LAN la web cuyos datos se van a cargar.
+     * @param lan la web cuyos datos se van a cargar.
      */
     public void LoadData(Lan lan) {
         this.calculoGraph.LoadData(lan);
@@ -394,28 +395,28 @@ public class Coordinator {
         lan.updateConnection(c,connection);
     }
 
-    public HashMap<Object, EquipmentType> getEquipmentTypes() {return LAN.getEquipmentTypes();
+    public HashMap<Object, EquipmentType> getEquipmentTypes() {return lan.getEquipmentTypes();
     }
 
-    public HashMap<String, PortType> getPortTypes() { return LAN.getPortTypes();}
+    public HashMap<String, PortType> getPortTypes() { return lan.getPortTypes();}
 
-    public HashMap<String, WireType> getWireTypes() { return LAN.getWireTypes();
+    public HashMap<String, WireType> getWireTypes() { return lan.getWireTypes();
     }
 
-    public void updateEquipment(String codeOriginal, Equipment equipment) {LAN.updateEquipment(codeOriginal, equipment);
+    public void updateEquipment(String codeOriginal, Equipment equipment) {lan.updateEquipment(codeOriginal, equipment);
     }
 
-    public void updateLocation(String codeOriginial, Location location) { LAN.updateLocation(codeOriginial, location);
+    public void updateLocation(String codeOriginial, Location location) { lan.updateLocation(codeOriginial, location);
     }
 
-    public void updatePortType(String codeOriginal, PortType port) {LAN.updatePortType(codeOriginal, port);
+    public void updatePortType(String codeOriginal, PortType port) {lan.updatePortType(codeOriginal, port);
     }
     /**
      * Actualiza las tablas de la interfaz.
      */
 
-    public void updateTablas(LAN w1) {
-        this.LoadData(w1);
+    public void updateTablas(Lan l1) {
+        this.LoadData(l1);
         for (DesplegableComponent tabla : tablas) {
             tabla.updateTable();
         }
@@ -487,5 +488,9 @@ public class Coordinator {
         insertAllLocationInto(directory);
         insertAllPortTypeInto(directory);
         insertAllWireTypeInto(directory);
+    }
+
+    public String getUser() {
+       return settings.getName();
     }
 }

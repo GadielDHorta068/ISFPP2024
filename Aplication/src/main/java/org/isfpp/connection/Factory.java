@@ -14,8 +14,8 @@ public class Factory {
             // si no existe entonces lo instancio y lo agrego
             if (obj == null) {
                 ResourceBundle rb = ResourceBundle.getBundle("factory");
-                String sClassname = rb.getString(objName);
-                obj = Class.forName(sClassname).newInstance();
+                String Classname = rb.getString(objName);
+                obj = Class.forName(Classname).newInstance();
                 // agrego el objeto a la hashtable
                 instances.put(objName, obj);
             }

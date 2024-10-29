@@ -9,14 +9,13 @@ import java.io.*;
 import java.util.*;
 
 public class PortTypeSequentialDAO implements PortTypeDAO {
-    private Hashtable<String, PortType> map;
+    private static Hashtable<String, PortType> map;
     private String fileName;
-    private boolean update;
+    private static boolean update  = true;
 
     public PortTypeSequentialDAO() {
         ResourceBundle rb = ResourceBundle.getBundle("sequential");
         fileName = rb.getString("rs.portType");
-        update = true;
     }
 
     private Hashtable<String, PortType> readFromFile(String fileName) {
@@ -134,6 +133,7 @@ public class PortTypeSequentialDAO implements PortTypeDAO {
     @Override
     public Hashtable<String, PortType> searchAll() {
         if (update) {
+            System.out.println("SAS EN TODA LA BOCA");
             map = readFromFile(fileName);
             update = false;
         }

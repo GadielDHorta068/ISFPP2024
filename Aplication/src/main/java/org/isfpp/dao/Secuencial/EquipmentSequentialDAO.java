@@ -10,22 +10,21 @@ import java.io.*;
 import java.util.*;
 
 public class EquipmentSequentialDAO implements EquipmentDAO {
-    private boolean update;
+    private static boolean update  = true;
 
-    private Hashtable<String, Equipment> map;
+    private static Hashtable<String, Equipment> map;
     private String fileName;
 
-    private final Hashtable<String, PortType> portTypes;
-    private final Hashtable<String, EquipmentType> equipmentTypes;
-    private final Hashtable<String, Location> locations;
+    private Hashtable<String, PortType> portTypes;
+    private Hashtable<String, EquipmentType> equipmentTypes;
+    private Hashtable<String, Location> locations;
 
     public EquipmentSequentialDAO() {
         equipmentTypes = readEquipmentTypes();
         locations = readLocations();
         portTypes = readPortTypes();
         ResourceBundle rb = ResourceBundle.getBundle("sequential");
-        fileName = rb.getString("rs.connection");
-        update = true;
+        fileName = rb.getString("rs.equipment");
     }
 
     private Hashtable<String, Equipment> readFromFile(String fileName) {
@@ -56,8 +55,8 @@ public class EquipmentSequentialDAO implements EquipmentDAO {
                     equipment.addIp(ip);
 
                 equipment.setStatus(inFile.nextBoolean());
+                System.out.println("SAS EN TODA LA BOCA"+equipment.getCode());
                 map.put(equipment.getCode(), equipment);
-                System.out.println("Equipo leído: " + equipment.getCode());
             }
         } catch (FileNotFoundException fileNotFoundException) {
             System.err.println("Error al abrir el archivo: " + fileName);
@@ -87,11 +86,12 @@ public class EquipmentSequentialDAO implements EquipmentDAO {
                         equipment.getModel(),
                         equipment.getEquipmentType().getCode(),
                         equipment.getLocation().getCode()));
-
-                for (PortType portType : portMap.keySet())
-                    writer.write(String.format("%s,%s", portType.getCode(), portMap.get(portType)));
-                writer.write(";");
-
+                int portIndex = 0;
+                for (PortType portType : portMap.keySet()) {
+                    writer.write(String.format("%s,%s%s", portType.getCode(), portMap.get(portType),
+                            (portIndex < portMap.size() - 1 ? "," : ";")));
+                    portIndex++;
+                }
                 for (int i = 0; i < equipment.getIpAdresses().size(); i++)
                     writer.write(String.format("%s%s", equipment.getIpAdresses().get(i),
                             (i < equipment.getIpAdresses().size() - 1 ? "," : ";")));
@@ -196,6 +196,10 @@ public class EquipmentSequentialDAO implements EquipmentDAO {
     @Override
     public Hashtable<String, Equipment> searchAll() {
         if (update) {
+            equipmentTypes = readEquipmentTypes();
+            portTypes = readPortTypes();
+            locations = readLocations();
+
             map = readFromFile(fileName);
             update = false;
         }

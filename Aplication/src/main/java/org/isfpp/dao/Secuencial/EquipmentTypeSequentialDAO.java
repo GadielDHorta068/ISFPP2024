@@ -9,14 +9,14 @@ import java.io.*;
 import java.util.*;
 
 public class EquipmentTypeSequentialDAO implements EquipmentTypeDAO {
-    private Hashtable<String, EquipmentType> map;
+    private static Hashtable<String, EquipmentType> map;
     private String fileName;
-    private boolean update;
+    private static boolean update  = true;
+
 
     public EquipmentTypeSequentialDAO() {
         ResourceBundle rb = ResourceBundle.getBundle("sequential");
         fileName = rb.getString("rs.equipmentType");
-        update = true;
     }
 
     private Hashtable<String, EquipmentType> readFromFile(String fileName) {
@@ -141,6 +141,7 @@ public class EquipmentTypeSequentialDAO implements EquipmentTypeDAO {
     @Override
     public Hashtable<String, EquipmentType> searchAll() {
         if (update) {
+            System.out.println("SAS EN TODA LA BOCA");
             map = readFromFile(fileName);
             update = false;
         }

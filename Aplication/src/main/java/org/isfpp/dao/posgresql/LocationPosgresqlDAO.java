@@ -26,9 +26,11 @@ public class LocationPosgresqlDAO implements LocationDAO {
         try {
             con = BDConnection.getConnection();
             String sql ="";
-            sql+="INSERT INTO public.location (code_location," +
-                    " description_location)";
-            sql+="VALUES(?,?) ";
+            sql+="INSERT INTO poo2024.RCG_Location (" +
+                    "   code," +
+                    "   description" +
+                    ") " +
+                    "VALUES(?,?) ";
             pstm = con.prepareStatement(sql);
             pstm.setString(1,location.getCode());
             pstm.setString(2,location.getDescription());
@@ -55,12 +57,12 @@ public class LocationPosgresqlDAO implements LocationDAO {
 
         try {
             con = BDConnection.getConnection();;
-            String sql = "UPDATE public.Location ";
-            sql += "SET code_Location = ?, " +
-                    "description_Location = ? ";
-            sql += "WHERE code_Location = ? ";
+            String sql = "UPDATE poo2024.RCG_Location " +
+                    "SET code = ?, " +
+                    "   description = ? " +
+                    "WHERE code = ?";
             pstm = con.prepareStatement(sql);
-            pstm.setString(1, location.getDescription());
+            pstm.setString(1, location.getCode());
             pstm.setString(2, location.getDescription());
             pstm.setString(3,location.getCode());
             pstm.execute();
@@ -88,8 +90,8 @@ public class LocationPosgresqlDAO implements LocationDAO {
         try {
             con = BDConnection.getConnection();
             String sql = "";
-            sql += "DELETE FROM public.Location " +
-                    "WHERE Location_code = ?";
+            sql += "DELETE FROM poo2024.RCG_Location " +
+                    "WHERE code = ?";
             pstm = con.prepareStatement(sql);
             pstm.setString(1, location.getCode());
             pstm.executeUpdate();
@@ -119,14 +121,16 @@ public class LocationPosgresqlDAO implements LocationDAO {
         ResultSet rs = null;
         try {
             con = BDConnection.getConnection();
-            String sql = "SELECT code_location, description_location FROM public.Location ";
+            String sql = "SELECT code," +
+                    "   description " +
+                    "FROM poo2024.RCG_Location";
             pstm = con.prepareStatement(sql);
             rs = pstm.executeQuery();
             Hashtable<String, Location> ret = new Hashtable<String, Location>();
             while (rs.next()) {
                 Location location = new Location();
-                location.setCode(rs.getString("code_location"));
-                location.setDescription(rs.getString("description_location"));
+                location.setCode(rs.getString("code"));
+                location.setDescription(rs.getString("description"));
                 ret.put(location.getCode(), location);
             }
             return ret;

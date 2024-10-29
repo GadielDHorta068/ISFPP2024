@@ -20,9 +20,11 @@ public class PortTypePosgresqlDAO implements PortTypeDAO {
         try {
             con = BDConnection.getConnection();
             String sql ="";
-            sql+="INSERT INTO public.port_type (code_port_type," +
-                    " description_port_type," +
-                    " speed_port_type)";
+            sql+="INSERT INTO poo2024.RCG_port_Type (" +
+                    "   code," +
+                    "   description," +
+                    "   speed" +
+                    ")";
             sql+="VALUES(?, ?, ?) ";
             pstm = con.prepareStatement(sql);
             pstm.setString(1,portType.getCode());
@@ -51,13 +53,13 @@ public class PortTypePosgresqlDAO implements PortTypeDAO {
 
         try {
             con = BDConnection.getConnection();;
-            String sql = "UPDATE public.port_Type ";
-            sql += "SET code_port_type = ?, " +
-                    "description_port_type = ?, " +
-                    "speed_port_type = ? ";
-            sql += "WHERE code_port_type = ? ";
+            String sql = "UPDATE poo2024.RCG_port_Type ";
+            sql += "SET code = ?, " +
+                    "   description = ?, " +
+                    "   speed = ? ";
+            sql += "WHERE code = ? ";
             pstm = con.prepareStatement(sql);
-            pstm.setString(1, portType.getDescription());
+            pstm.setString(1, portType.getCode());
             pstm.setString(2, portType.getDescription());
             pstm.setInt(3,portType.getSpeed());
             pstm.setString(4,portType.getCode());
@@ -87,8 +89,8 @@ public class PortTypePosgresqlDAO implements PortTypeDAO {
         try {
             con = BDConnection.getConnection();
             String sql = "";
-            sql += "DELETE FROM public.port_type " +
-                    "WHERE code_port_type = ?";
+            sql += "DELETE FROM poo2024.RCG_port_Type " +
+                    "WHERE code = ?";
             pstm = con.prepareStatement(sql);
             pstm.setString(1, portType.getCode());
             pstm.executeUpdate();
@@ -118,18 +120,18 @@ public class PortTypePosgresqlDAO implements PortTypeDAO {
         ResultSet rs = null;
         try {
             con = BDConnection.getConnection();
-            String sql = "SELECT code_port_type, " +
-                    "description_port_type, " +
-                    "speed_port_type ";
-            sql += "FROM public.Location ";
+            String sql = "SELECT code, " +
+                    "   description, " +
+                    "   speed ";
+            sql += "FROM poo2024.RCG_port_Type ";
             pstm = con.prepareStatement(sql);
             rs = pstm.executeQuery();
             Hashtable<String, PortType> ret = new Hashtable<>();
             while (rs.next()) {
                 PortType portType = new PortType();
-                portType.setCode(rs.getString("code_port_type"));
-                portType.setDescription(rs.getString("description_port_type"));
-                portType.setSpeed(rs.getInt("speed_port_type"));
+                portType.setCode(rs.getString("code"));
+                portType.setDescription(rs.getString("description"));
+                portType.setSpeed(rs.getInt("speed"));
                 ret.put(portType.getCode(), portType);
             }
             return ret;

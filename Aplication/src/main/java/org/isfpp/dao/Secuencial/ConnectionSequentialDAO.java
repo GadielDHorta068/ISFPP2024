@@ -14,12 +14,13 @@ import java.util.*;
 
 public class ConnectionSequentialDAO implements ConnectionDAO {
 
-    private List<Connection> list;
+    private static List<Connection> list;
     private String fileName;
-    private boolean update;
-    private final Hashtable<String, Equipment> equipments;
-    private final Hashtable<String, PortType> portTypes;
-    private final Hashtable<String, WireType> wireTypes;
+    private static  boolean update;
+
+    private Hashtable<String, Equipment> equipments;
+    private Hashtable<String, PortType> portTypes;
+    private Hashtable<String, WireType> wireTypes;
 
     public ConnectionSequentialDAO() {
         equipments = readEquipments();
@@ -160,6 +161,10 @@ public class ConnectionSequentialDAO implements ConnectionDAO {
     @Override
     public List<Connection> searchAll() {
         if (update) {
+            equipments = readEquipments();
+            portTypes = readPortTypes();
+            wireTypes = readWireTypes();
+
             list = readFromFile(fileName);
             update = false;
         }

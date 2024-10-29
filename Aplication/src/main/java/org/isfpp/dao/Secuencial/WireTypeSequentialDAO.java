@@ -8,14 +8,14 @@ import java.io.*;
 import java.util.*;
 
 public class WireTypeSequentialDAO implements WireTypeDAO {
-    private Hashtable<String, WireType> map;
+    private static Hashtable<String, WireType> map;
     private String fileName;
-    private boolean update;
-//Aplication/src/main/resources/config.properties
+    private static boolean update  = true;
+
+    //Aplication/src/main/resources/config.properties
     public WireTypeSequentialDAO() {
         ResourceBundle rb = ResourceBundle.getBundle("sequential");
         fileName = rb.getString("rs.wireType");
-        update = true;
     }
 
     private Hashtable<String, WireType> readFromFile(String fileName) {
@@ -132,6 +132,7 @@ public class WireTypeSequentialDAO implements WireTypeDAO {
     @Override
     public Hashtable<String,WireType> searchAll() {
         if (update) {
+            System.out.println("SAS EN TODA LA BOCA");
             map = readFromFile(fileName);
             update = false;
         }
