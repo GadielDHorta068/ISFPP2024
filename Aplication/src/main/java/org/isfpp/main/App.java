@@ -7,6 +7,7 @@ import org.isfpp.datos.ResourceExtractor;
 import org.isfpp.interfaz.panelesCreadores.MainMenu;
 import org.isfpp.interfaz.panelesEditadores.EditPortsFromEquipment;
 import org.isfpp.interfaz.panelesPrincipal.LanguageSelectorPanel;
+import org.isfpp.interfaz.stylusUI.SlidingDialog;
 import org.isfpp.logica.CalculoGraph;
 import org.isfpp.modelo.LAN;
 
@@ -68,6 +69,5 @@ public class App {
     }
 
     private void minitest(){
-
     }
 }

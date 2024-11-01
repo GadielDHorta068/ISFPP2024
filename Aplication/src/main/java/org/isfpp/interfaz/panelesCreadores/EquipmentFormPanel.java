@@ -1,6 +1,7 @@
 package org.isfpp.interfaz.panelesCreadores;
 
 import org.isfpp.controller.Coordinator;
+import org.isfpp.interfaz.stylusUI.SlidingDialog;
 import org.isfpp.interfaz.stylusUI.StylusUI;
 import org.isfpp.modelo.EquipmentType;
 import org.isfpp.modelo.Location;
@@ -90,7 +91,7 @@ public class EquipmentFormPanel extends JPanel {
         StylusUI.aplicarEstiloEtiqueta(estado);
         formPanel.add(estado);
         statusCheckBox = new JCheckBox();
-        //StylusUI.aplicarEstiloCheckBox(statusCheckBox);
+        StylusUI.aplicarEstiloCheckBox(statusCheckBox);
         formPanel.add(statusCheckBox);
 
 
@@ -112,6 +113,7 @@ public class EquipmentFormPanel extends JPanel {
 
             if (Objects.equals(code, "")) {
                 JOptionPane.showMessageDialog(this, rb.getString("codigo_no_vacio"),rb.getString( "error"), JOptionPane.ERROR_MESSAGE);
+                SlidingDialog sd = new SlidingDialog(frame,"error", rb.getString("codigo_no_vacio"));
                 return;
             }
 
@@ -122,10 +124,10 @@ public class EquipmentFormPanel extends JPanel {
 
             try {
                 coordinator.addEquipment(code, description, marca, modelo, portType, 1, equipmentType, location, status);
-                JOptionPane.showMessageDialog(this, rb.getString("Equipo creado con éxito"));
+                JOptionPane.showMessageDialog(this, rb.getString("exito_crear_equipo"));
                 frame.setVisible(false);
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this, rb.getString("Error al crear equipo: " )+ ex.getMessage());
+                JOptionPane.showMessageDialog(this, rb.getString("error_crear_equipo" )+ ex.getMessage());
             }
 
         });

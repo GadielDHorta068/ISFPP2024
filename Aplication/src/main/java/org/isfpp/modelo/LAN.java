@@ -113,6 +113,7 @@ public class LAN {
 		hardware.remove(e.getCode(), e);  // Eliminar el equipo del hardware
 		equipmentService.erase(e);
 		coordinator.updateTablas(this);
+		coordinator.setSelectedItem(null);
 	}
 
 
@@ -158,6 +159,7 @@ public class LAN {
 		connections.remove(connection);
 		connectionService.erase(connection);
 		coordinator.updateTablas(this);
+		coordinator.setSelectedItem(null);
 	}
 
 
@@ -201,6 +203,7 @@ public class LAN {
 			locations.remove(l.getCode(), l);
 			locationService.erase(l);
 			coordinator.updateTablas(this);
+			coordinator.setSelectedItem(null);
 		}
 	}
 
@@ -241,6 +244,7 @@ public class LAN {
 		wireTypes.remove(w.getCode(),w);
 		wireTypeService.erase(w);
 		coordinator.updateTablas(this);
+		coordinator.setSelectedItem(null);
 	}
 
 	public void updateWire(WireType wireType){

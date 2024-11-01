@@ -422,4 +422,8 @@ public class Coordinator {
 
     public void updatePortType(String codeOriginal, PortType port) {LAN.updatePortType(codeOriginal, port);
     }
+
+    public Settings getSettings(){
+        return settings;
+    }
 }

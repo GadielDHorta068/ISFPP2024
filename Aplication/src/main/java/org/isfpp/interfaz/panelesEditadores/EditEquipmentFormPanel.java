@@ -3,6 +3,7 @@ package org.isfpp.interfaz.panelesEditadores;
 
 import org.isfpp.controller.Coordinator;
 import org.isfpp.interfaz.stylusUI.StylusUI;
+import org.isfpp.interfaz.stylusUI.WindowUtils;
 import org.isfpp.modelo.*;
 
 import javax.swing.*;
@@ -122,7 +123,7 @@ public class EditEquipmentFormPanel extends JPanel {
                 coordinator.updateEquipment(codeOriginal, modEq);
 
                 JOptionPane.showMessageDialog(this, rb.getString("equipo_modificado"));
-                frame.setVisible(false);
+                frame.dispose();
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, rb.getString("Error_equipo") + ": " + ex.getMessage());
             }

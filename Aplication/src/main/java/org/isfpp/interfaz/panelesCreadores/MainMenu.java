@@ -50,6 +50,8 @@ public class MainMenu {
         barraMenu.setCoordinador(coordinator);
         JPanel panelIzquierdo = new JPanel();
         StylusUI.aplicarEstiloPanel(panelIzquierdo);
+
+        StylusUI.aplicarEstiloPanel(panelIzquierdo);
         panelIzquierdo.setLayout(new BoxLayout(panelIzquierdo, BoxLayout.Y_AXIS));
         panelIzquierdo.add(desplegableNodos.getPanel());
         panelIzquierdo.add(desplegableConexiones.getPanel());

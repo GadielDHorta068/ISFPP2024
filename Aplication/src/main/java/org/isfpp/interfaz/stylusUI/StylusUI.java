@@ -133,6 +133,7 @@ public class StylusUI {
      */
     public static void aplicarEstiloPanel(JPanel panel) {
         panel.setBackground(COLOR_PRIMARIO);
+        
     }
 
     /**
