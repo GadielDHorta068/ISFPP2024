@@ -272,7 +272,7 @@ public class EquipmentPosgresqlDAO implements EquipmentDAO {
         ResultSet rs = null;
 
         try {
-            con = BDConnection.getConnection();
+             con = BDConnection.getConnection();
             String sql = "";
             sql += "DELETE FROM poo2024.RCG_equipment_ips WHERE code_equipment = ?; " +
                     "DELETE FROM poo2024.RCG_equipment_port WHERE code_equipment = ?; " +
