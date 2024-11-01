@@ -259,7 +259,7 @@ public class Equipment {
     /**
      * Retorna una lista de puertos que no están en uso.
      * 
-     * @return Lista de puertos no utilizados.
+     * @return Lista de puertos no utilizados.a
      */
     public List<Port> getPortsNotInUse() {
         return getPorts().stream()

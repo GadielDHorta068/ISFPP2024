@@ -190,8 +190,7 @@ public class BarraMenu {
     private JMenu crearAyudaMenu() {
         JMenu ayudaMenu = new JMenu(rb.getString("ayuda"));
         StylusUI.styleMenu(ayudaMenu);
-        
-        ayudaMenu.add(crearMenuItem(rb.getString("como_usar") , e -> abrirManual()));
+
         ayudaMenu.add(crearMenuItem(rb.getString("acerca_de") , e -> acercaDe()));
         return ayudaMenu;
     }
