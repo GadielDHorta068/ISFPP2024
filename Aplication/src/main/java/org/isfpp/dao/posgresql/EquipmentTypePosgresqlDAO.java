@@ -34,6 +34,7 @@ public class EquipmentTypePosgresqlDAO implements EquipmentTypeDAO {
             pstm = con.prepareStatement(sql);
             pstm.setString(1, equipmentType.getCode());
             pstm.setString(2, equipmentType.getDescription());
+            pstm.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }finally {

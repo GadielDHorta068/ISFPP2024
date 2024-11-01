@@ -9,8 +9,10 @@ import org.isfpp.logica.CalculoGraph;
 import org.isfpp.logica.Subject;
 import org.isfpp.modelo.Equipment;
 import org.isfpp.logica.Lan;
+import org.isfpp.modelo.PortType;
 
 import java.io.IOException;
+import java.util.stream.Collectors;
 
 public class App {
     // l�gica
@@ -63,12 +65,47 @@ public class App {
     }
 
     private void minitest(){
-        EquipmentSequentialDAO dad = new EquipmentSequentialDAO();
-        for (Equipment equipment: dad.searchAll().values())
-            System.out.println(equipment.getCode());
+        Equipment equipment = new Equipment();
+        PortType p1 = new PortType("KKK", "JAJAJA", 100);
+        PortType p2 = new PortType("LLL", "JIJIJI", 1000);
+        equipment.addPort(p1);
+        equipment.addPort(p2);
+        equipment.addIp("100.11.1.1");
+        equipment.addIp("103.11.1.1");
+        equipment.addIp("124.11.1.1");
+
+        equipment.setCode("FAFA");
+
+        String insertsPortFormat = equipment.getAllPortsTypes().entrySet().stream()
+                .map(entry -> String.format("INSERT INTO poo2024.RCG_equipment_port (cantidad, code_port_type, code_equipment) VALUES %d, '%s', '%s'",
+                        entry.getValue(), entry.getKey().getCode(),equipment.getCode()))
+                .collect(Collectors.joining(";"));
+
+        String insertsIpFormat = equipment.getIpAdresses().stream()
+                .map(ip -> String.format("INSERT INTO poo2024.RCG_equipment_ips (code_equipment, ip) VALUES '%s', '%s'::INET", equipment.getCode(), ip))
+                .collect(Collectors.joining(";"));
+
+
+        String sql = "" +
+                "  INSERT INTO poo2024.RCG_equipment (code," +
+                "   description, " +
+                "   marca, " +
+                "   modelo, " +
+                "   code_equipment_type, " +
+                "   code_location, " +
+                "   status" +
+                ") " +
+                "  VALUES (?, ?, ?, ?, ?, ?, ?) " +
+                ";" +
+                //parte de la consulta sobre los puertos, hace una UNION ALL sobre todos los elementos del puerto
+                insertsPortFormat+
+                //parte de la consulta de las ips, hace lo mismo que con los puertos, pero usando la lista de puertos
+                insertsIpFormat;
+
+        System.out.println("codigo equipo: "+equipment.getCode()+"\n"+sql);
     }
 
     private void fileTextToDB(){
-        FileTextToBD.FileTextToBD();
+        FileTextToBD.fileTextToBD();
     }
 }

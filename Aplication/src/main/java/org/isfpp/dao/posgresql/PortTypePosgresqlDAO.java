@@ -30,6 +30,7 @@ public class PortTypePosgresqlDAO implements PortTypeDAO {
             pstm.setString(1,portType.getCode());
             pstm.setString(2,portType.getDescription());
             pstm.setInt(3,portType.getSpeed());
+            pstm.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }finally {

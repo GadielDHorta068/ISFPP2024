@@ -15,8 +15,8 @@ CONSTRAINT fk_RCG_equipment_equipment_type FOREIGN KEY (code_equipment_type) REF
 );
 
 
--- puertos del equipo(PortType portType, Equipment equipment) 
-create table if not exists RCG_equipment_port(
+-- puertos del equipo(PortType portType, Equt equipment)
+create table if not exists RCG_equipmentipmen_port(
 cantidad smallint NOT NULL CHECK (cantidad > 0),
 code_port_type varchar,
 code_equipment varchar,

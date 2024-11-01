@@ -34,6 +34,7 @@ public class WireTypePosgresqlDAO implements WireTypeDAO {
             pstm.setString(1,wireType.getCode());
             pstm.setString(2,wireType.getDescription());
             pstm.setInt(3,wireType.getSpeed());
+            pstm.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }finally {

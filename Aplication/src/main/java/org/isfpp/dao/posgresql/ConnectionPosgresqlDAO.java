@@ -4,6 +4,7 @@ import org.isfpp.connection.BDConnection;
 import org.isfpp.dao.ConnectionDAO;
 import org.isfpp.dao.EquipmentDAO;
 import org.isfpp.dao.PortTypeDAO;
+import org.isfpp.dao.Secuencial.ConnectionSequentialDAO;
 import org.isfpp.dao.WireTypeDAO;
 import org.isfpp.modelo.*;
 
@@ -14,7 +15,9 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
-public class ConnectionPosgresqlDAO implements ConnectionDAO {
+public class ConnectionPosgresqlDAO implements ConnectionDAO{
+    private static boolean update;
+    private static List<Connection> list;
 
     private final PortTypeDAO portTypeDAO;
     private final EquipmentDAO equipmentDAO;

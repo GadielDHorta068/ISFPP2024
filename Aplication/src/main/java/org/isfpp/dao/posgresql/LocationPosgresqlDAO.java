@@ -34,6 +34,7 @@ public class LocationPosgresqlDAO implements LocationDAO {
             pstm = con.prepareStatement(sql);
             pstm.setString(1,location.getCode());
             pstm.setString(2,location.getDescription());
+            pstm.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }finally {
