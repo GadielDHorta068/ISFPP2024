@@ -1,6 +1,8 @@
 package org.isfpp.interfaz.panelesPrincipal;
 
+import org.isfpp.interfaz.stylusUI.MacOSWindowButtons;
 import org.isfpp.interfaz.stylusUI.StylusUI;
+import org.isfpp.interfaz.stylusUI.WindowUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -26,12 +28,15 @@ public class LanguageSelectorPanel extends JFrame {
         setTitle("Selección de idioma");
         setSize(400, 250);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setResizable(false);
         setLayout(new BorderLayout());
+
 
         messages = ResourceBundle.getBundle("messages", new Locale("es", "ES"));
 
         JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
         StylusUI.aplicarEstiloPanel(mainPanel);
+
 
         introLabel = new JLabel(messages.getString("greeting"));
         introLabel.setHorizontalAlignment(JLabel.CENTER);
@@ -40,6 +45,7 @@ public class LanguageSelectorPanel extends JFrame {
 
         nameLabel = new JLabel(messages.getString("nombre"));
         nameField = new JTextField(15);
+        nameField.setText("admin");
         StylusUI.aplicarEstiloEtiqueta(nameLabel);
 
         String[] languages = {"Español", "English", "Français"};
@@ -55,7 +61,6 @@ public class LanguageSelectorPanel extends JFrame {
         namePanel.add(nameLabel);
         namePanel.add(nameField);
         namePanel.add(languageComboBox);
-
         continueButton = new JButton(messages.getString("continuar"));
         continueButton.addActionListener(new ActionListener() {
             @Override

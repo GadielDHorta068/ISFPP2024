@@ -493,4 +493,8 @@ public class Coordinator {
     public String getUser() {
        return settings.getName();
     }
+
+    public Settings getSettings(){
+        return settings;
+    }
 }

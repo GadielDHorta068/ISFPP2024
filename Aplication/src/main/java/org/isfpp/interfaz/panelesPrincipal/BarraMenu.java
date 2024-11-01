@@ -31,9 +31,11 @@ public class BarraMenu {
     public JMenuBar crearBarraMenu() {
         JMenuBar menuBar = new JMenuBar();
         StylusUI.styleMenuBar(menuBar);
-
-        menuBar.add(crearArchivoMenu());
-        menuBar.add(crearEditarMenu());
+        this.rb=coordinator.getResourceBundle();
+        if (coordinator.getSettings().getName().equals("admin")){
+            menuBar.add(crearArchivoMenu());
+            menuBar.add(crearEditarMenu());
+        }
         menuBar.add(crearAyudaMenu());
         menuBar.add(crearHerramientasMenu());
 
@@ -41,7 +43,7 @@ public class BarraMenu {
     }
 
     private JMenu crearArchivoMenu() {
-        this.rb=coordinator.getResourceBundle();
+
         JMenu archivoMenu = new JMenu(rb.getString("archivo"));
         StylusUI.styleMenu(archivoMenu);
 
@@ -157,6 +159,8 @@ public class BarraMenu {
                 case Connection connection -> coordinator.eraseConnection(connection);
                 default -> System.out.println(rb.getString("clase_no_detectada") + seleccionado.getClass());
             }
+        } else {
+            JOptionPane.showMessageDialog(null,rb.getString( "sin_seleccion"));
         }
     }
 
@@ -184,6 +188,8 @@ public class BarraMenu {
                 }
                 default -> System.out.println(rb.getString("clase_no_detectada") + seleccionado.getClass());
             }
+        }else {
+            JOptionPane.showMessageDialog(null,rb.getString( "sin_seleccion"));
         }
     }
 
