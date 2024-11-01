@@ -353,14 +353,14 @@ public class EquipmentPosgresqlDAO implements EquipmentDAO {
                         "   e.description," +
                         "   e.marca," +
                         "   e.modelo," +
-                        "   e.equipment_type" +
-                        "   e.location," +
+                        "   e.code_equipment_type," +
+                        "   e.code_location," +
                         "   e.status," +
                         "   p.cantidad, " +
                         "   p.code_port_type, " +
-                        "   i.ip" +
+                        "   i.ip " +
                         "FROM poo2024.rcg_equipment e join poo2024.rcg_equipment_port p ON (e.code = p.code_equipment)" +
-                        "join poo2024.ips i ON (e.code = i.code_equipment);";
+                        "join poo2024.RCG_equipment_ips i ON (e.code = i.code_equipment);";
                 pstm = con.prepareStatement(sql);
                 rs = pstm.executeQuery();
                 Hashtable<String, Equipment> ret = new Hashtable<>();
