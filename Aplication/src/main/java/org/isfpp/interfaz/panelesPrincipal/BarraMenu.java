@@ -31,11 +31,9 @@ public class BarraMenu {
     public JMenuBar crearBarraMenu() {
         JMenuBar menuBar = new JMenuBar();
         StylusUI.styleMenuBar(menuBar);
-        this.rb=coordinator.getResourceBundle();
-        if (coordinator.getSettings().getName().equals("admin")){
-            menuBar.add(crearArchivoMenu());
-            menuBar.add(crearEditarMenu());
-        }
+
+        menuBar.add(crearArchivoMenu());
+        menuBar.add(crearEditarMenu());
         menuBar.add(crearAyudaMenu());
         menuBar.add(crearHerramientasMenu());
 
@@ -43,7 +41,7 @@ public class BarraMenu {
     }
 
     private JMenu crearArchivoMenu() {
-
+        this.rb=coordinator.getResourceBundle();
         JMenu archivoMenu = new JMenu(rb.getString("archivo"));
         StylusUI.styleMenu(archivoMenu);
 
@@ -106,17 +104,11 @@ public class BarraMenu {
             editConnection.setCoordinator(coordinator);
             editConnection.run(null);
         }));
-        //mod
-        subMenuAgregar.add(crearMenuItem(rb.getString("agregar_tipo_de_equipo"), e -> {
-            EditConnection editConnection = new EditConnection();
-            editConnection.setCoordinator(coordinator);
-            editConnection.run(null);
-        }));
 
         subMenuAgregar.add(crearMenuItem(rb.getString("agregar_tipo_de_cable"), e -> {
-            EditConnection editConnection = new EditConnection();
-            editConnection.setCoordinator(coordinator);
-            editConnection.run(null);
+            WireTypeFromPanel wireTypeFromPanel= new WireTypeFromPanel();
+            wireTypeFromPanel.setCoordinator(coordinator);
+            wireTypeFromPanel.run();
         }));
 
         editarMenu.add(crearMenuItem(rb.getString("eliminar"), this::accionEliminar));
@@ -129,8 +121,6 @@ public class BarraMenu {
         subMenuEditar.add(crearMenuItem(rb.getString("editar_ubicacion"), this::accionEditar));
         subMenuEditar.add(crearMenuItem(rb.getString("editar_tipo_de_cable"), this::accionEditar));
         subMenuEditar.add(crearMenuItem(rb.getString("editar_tipo_de_puerto"), this::accionEditar));
-        subMenuEditar.add(crearMenuItem(rb.getString("editar_tipo_de_equipo"), this::accionEditar));
-
 
         return editarMenu;
     }
@@ -159,8 +149,6 @@ public class BarraMenu {
                 case Connection connection -> coordinator.eraseConnection(connection);
                 default -> System.out.println(rb.getString("clase_no_detectada") + seleccionado.getClass());
             }
-        } else {
-            JOptionPane.showMessageDialog(null,rb.getString( "sin_seleccion"));
         }
     }
 
@@ -188,8 +176,6 @@ public class BarraMenu {
                 }
                 default -> System.out.println(rb.getString("clase_no_detectada") + seleccionado.getClass());
             }
-        }else {
-            JOptionPane.showMessageDialog(null,rb.getString( "sin_seleccion"));
         }
     }
 

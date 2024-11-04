@@ -1,6 +1,5 @@
 --	public Connection(Port port1, Port port2, WireType wire)
-create table if not exists rcg_connection( 
-	ID_calificacion SERIAL PRIMARY KEY,
+create table if not exists rcg_connection(
 	code_port_type1 varchar,
 	code_equipment1 varchar,
 	code_port_type2 varchar,

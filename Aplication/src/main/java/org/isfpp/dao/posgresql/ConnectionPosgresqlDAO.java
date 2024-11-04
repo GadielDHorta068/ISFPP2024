@@ -63,10 +63,10 @@ public class ConnectionPosgresqlDAO implements ConnectionDAO{
                     ")";
             sql+="VALUES(?, ?, ?, ?, ?)";
             pstm = con.prepareStatement(sql);
-            pstm.setString(2, connection.getPort1().getPortType().getCode());
-            pstm.setString(1, connection.getPort1().getEquipment().getCode());
-            pstm.setString(4, connection.getPort2().getPortType().getCode());
-            pstm.setString(3, connection.getPort2().getEquipment().getCode());
+            pstm.setString(1, connection.getPort1().getPortType().getCode());
+            pstm.setString(2, connection.getPort1().getEquipment().getCode());
+            pstm.setString(3, connection.getPort2().getPortType().getCode());
+            pstm.setString(4, connection.getPort2().getEquipment().getCode());
             pstm.setString(5, connection.getWire().getCode());
             pstm.executeUpdate();
         } catch (SQLException e) {
@@ -79,6 +79,7 @@ public class ConnectionPosgresqlDAO implements ConnectionDAO{
                     pstm.close();
             } catch (SQLException e) {
                 System.err.println("Error a la hora de cerrar la consulta");
+                e.printStackTrace();
                 throw new RuntimeException(e);
             }
         }
@@ -102,10 +103,10 @@ public class ConnectionPosgresqlDAO implements ConnectionDAO{
             sql += "WHERE code_equipment1 = ? AND code_equipment2 = ?";
             pstm = con.prepareStatement(sql);
             //SET
-            pstm.setString(2, connection.getPort1().getPortType().getCode());
-            pstm.setString(1, connection.getPort1().getEquipment().getCode());
-            pstm.setString(4, connection.getPort2().getPortType().getCode());
-            pstm.setString(3, connection.getPort2().getEquipment().getCode());
+            pstm.setString(1, connection.getPort1().getPortType().getCode());
+            pstm.setString(2, connection.getPort1().getEquipment().getCode());
+            pstm.setString(3, connection.getPort2().getPortType().getCode());
+            pstm.setString(4, connection.getPort2().getEquipment().getCode());
             pstm.setString(5, connection.getWire().getCode());
             //WHERE
             pstm.setString(6, connection.getPort1().getEquipment().getCode());
@@ -184,7 +185,7 @@ public class ConnectionPosgresqlDAO implements ConnectionDAO{
                 connection.setPort1(equipmentTable.get(rs.getString("code_equipment1")).
                         checkPort(portTypeTable.get(rs.getString("code_port_type1"))));
                 connection.setPort2(equipmentTable.get(rs.getString("code_equipment2")).
-                        checkPort(portTypeTable.get(rs.getString("code_port_type2"))));
+                        checkPort(portTypeTable.get(rs.getString("code_port_type1"))));
                 connection.setWire(wireTypeTable.get(rs.getString("code_wire_type")));
 
                 ret.add(connection);

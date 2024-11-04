@@ -113,10 +113,6 @@ public class EditConnection extends JPanel {
         frame.setVisible(true);
 
     }
-    public void setCoordinador(Coordinator coordinator) {
-        this.coordinator = coordinator;
-    }
-
     public void setCoordinator(Coordinator coordinator) {this.coordinator=coordinator;
     }
 }

@@ -82,10 +82,12 @@ public class Lan {
 			throw new NotFoundException("El tipo de equipo no se encuentra en la lista");
 		Equipment e = new Equipment(code, description, marca, model, portType,cantidad, equipmentType, location,status);
 		hardware.put(code, e);
+		coordinator.updateTablas(this);
 		equipmentService.insert(e);
 		subject.refresh();
 		logger.info("Se agrega un equipo");
 		return e;
+
 	}
 
 	/**
@@ -103,9 +105,11 @@ public class Lan {
 		if (!equipmentTypes.containsKey(equipment.getEquipmentType().getCode()))
 			throw new NotFoundException("El tipo de equipo no se encuentra en la lista");
 		hardware.put(equipment.getCode(), equipment);
+		coordinator.updateTablas(this);
 		equipmentService.insert(equipment);
         subject.refresh();
         logger.info("Se agrega un equipo");
+
     }
 
 	public void eraseEquipment(Equipment e) {
@@ -127,6 +131,8 @@ public class Lan {
 		equipmentService.erase(e);
 		subject.refresh();
 		logger.info("Se elimino un equipo");
+		coordinator.updateTablas(this);
+		coordinator.setSelectedItem(null);
 	}
 
 	public Equipment searchEquipment(Equipment equipment) {
@@ -144,6 +150,7 @@ public class Lan {
 				updateEquipment(equipment.getCode(),equipment);
 			else
 				addEquipment(equipment);
+			coordinator.updateTablas(this);
 		}
 	}
 
@@ -179,6 +186,7 @@ public class Lan {
 		// Agregar la conexión a la lista de conexiones
 		connections.add(connection);
 		connectionService.insert(connection);
+		coordinator.updateTablas(this);
 		subject.refresh();
 		logger.info("Se agrega una conexion");
 		return connection;
@@ -207,10 +215,10 @@ public class Lan {
 
 		// Agregar la conexión a la lista de conexiones
 		connections.add(connection);
+		subject.refresh();
+		logger.info("Se agrega una conexion");
 		connectionService.insert(connection);
-        subject.refresh();
-        logger.info("Se agrega una conexion");
-
+		coordinator.updateTablas(this);
     }
 
 	public void eraseConnection(Connection connection) {
@@ -225,6 +233,8 @@ public class Lan {
 		connectionService.erase(connection);
 		subject.refresh();
 		logger.info("Se borro una conexion");
+		coordinator.updateTablas(this);
+		coordinator.setSelectedItem(null);
 	}
 
 	public void updateConnection(Equipment originalEquipment1, Equipment originalEquipment2,Connection updateConnection){
@@ -249,6 +259,7 @@ public class Lan {
 		connections.add(updateConnection);
         subject.refresh();
         logger.info("Se actualizo una conexion");
+		coordinator.updateTablas(this);
 
     }
 
@@ -264,8 +275,10 @@ public class Lan {
 	 */
 	public void addAllConnectionOf(String directory){
 		for (Connection connection: connectionService.searchAllIn(directory))
-			if (connections.contains(connection))
+			if (connections.contains(connection)) {
 				updateConnection(connection.getPort1().getEquipment(), connection.getPort2().getEquipment(), connection);
+
+			}
 			else
 				addConnection(connection);
 	}
@@ -287,6 +300,7 @@ public class Lan {
 		}
 		Location l = new Location(code, description);
 		locations.put(code, l);
+		coordinator.updateTablas(this);
 		locationService.insert(l);
 		subject.refresh();
 		logger.info("Se agrego una localizacion");
@@ -325,6 +339,8 @@ public class Lan {
 		}else{
 			locations.remove(l.getCode(), l);
 			locationService.erase(l);
+			coordinator.updateTablas(this);
+			coordinator.setSelectedItem(null);
 			subject.refresh();
 			logger.info("Se borro una localizacion");
 		}
@@ -391,6 +407,7 @@ public class Lan {
 			throw new IllegalStateException("las siguientes conexiones tienen ese tipo de cable" + codes);
 		wireTypes.remove(w.getCode(),w);
 		wireTypeService.erase(w);
+		coordinator.updateTablas(this);
 		subject.refresh();
 		logger.info("Se elimino un cable");
 	}
@@ -468,6 +485,7 @@ public class Lan {
 			throw new IllegalStateException("Hay equipos que usan ese tipo de puertos: " + codes);
 		portTypes.remove(portType.getCode(),portType);
 		portTypeService.erase(portType);
+		coordinator.updateTablas(this);
 		subject.refresh();
 		logger.info("Se elimino un puerto");
 	}
@@ -547,6 +565,7 @@ public class Lan {
 		equipmentTypes.remove(equipmentType.getCode(),equipmentType);
 		equipmentTypeService.erase(equipmentType);
 		subject.refresh();
+		coordinator.updateTablas(this);
 		logger.info("Se elimino un tipo equipo");
 	}
 
