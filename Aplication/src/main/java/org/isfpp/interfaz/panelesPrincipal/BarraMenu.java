@@ -136,13 +136,12 @@ public class BarraMenu {
     private void accionEditarPuerto(ActionEvent actionEvent) {
         Object seleccionado = coordinator.getSelectedItem();
         if (seleccionado != null) {
-            switch (seleccionado) {
-                case Equipment equipment -> {
-                    EditPortsFromEquipment ed = new EditPortsFromEquipment();
-                    ed.setCoordinator(coordinator);
-                    ed.run(equipment.getCode());
-                }
-                default ->  JOptionPane.showMessageDialog(null, rb.getString("seleccionar_equipo"));
+            if (seleccionado instanceof Equipment equipment) {
+                EditPortsFromEquipment ed = new EditPortsFromEquipment();
+                ed.setCoordinator(coordinator);
+                ed.run(equipment.getCode());
+            } else {
+                JOptionPane.showMessageDialog(null, rb.getString("seleccionar_equipo"));
             }
         }
     }
