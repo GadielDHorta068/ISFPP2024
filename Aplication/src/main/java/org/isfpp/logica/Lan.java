@@ -21,18 +21,19 @@ public class Lan {
     private Subject subject;
 	private String nombre;
 	private HashMap<String, Equipment> hardware;
-	private EquipmentService equipmentService;
+	private final EquipmentService equipmentService;
 	private ArrayList<Connection> connections;
-	private ConnectionService connectionService;
+	private final ConnectionService connectionService;
 	private HashMap<String, Location> locations;
-	private LocationService locationService;
+	private final LocationService locationService;
 	private final HashMap<Object, EquipmentType> equipmentTypes;
-	private EquipmentTypeService equipmentTypeService;
+	private final EquipmentTypeService equipmentTypeService;
 	private final HashMap<String, WireType>wireTypes;
-	private WireTypeService wireTypeService;
+	private final WireTypeService wireTypeService;
 	private final HashMap<String,PortType>portTypes;
-	private PortTypeService portTypeService;
+	private final PortTypeService portTypeService;
 	private Coordinator coordinator;
+
 
 	public Lan() {
 		super();
@@ -104,6 +105,11 @@ public class Lan {
 			throw new AlreadyExistException("el equipo ya se encuentra");
 		if (!equipmentTypes.containsKey(equipment.getEquipmentType().getCode()))
 			throw new NotFoundException("El tipo de equipo no se encuentra en la lista");
+
+		if (hardware.isEmpty()){
+			equipment.addIp("168.134.0.0");
+		}
+
 		hardware.put(equipment.getCode(), equipment);
 		coordinator.updateTablas(this);
 		equipmentService.insert(equipment);
@@ -116,16 +122,14 @@ public class Lan {
 		if (!hardware.containsKey(e.getCode())) {
 			throw new NotFoundException("equipo invalido");
 		}
-		Iterator<Connection> iterator = List.copyOf(connections).iterator();
-		while (iterator.hasNext()) {
-			Connection c = iterator.next();
-			// Eliminar la conexión del equipo si coincide con alguno de los puertos
-			if (c.getPort1().getEquipment().equals(e) || c.getPort2().getEquipment().equals(e)) {
-				if (connections.contains(c)) {
-					eraseConnection(c); // Solo llama a eraseConnection si la conexión aún está en la lista
-				}
-			}
-		}
+        for (Connection c : List.copyOf(connections)) {
+            // Eliminar la conexión del equipo si coincide con alguno de los puertos
+            if (c.getPort1().getEquipment().equals(e) || c.getPort2().getEquipment().equals(e)) {
+                if (connections.contains(c)) {
+                    eraseConnection(c); // Solo llama a eraseConnection si la conexión aún está en la lista
+                }
+            }
+        }
 
 		hardware.remove(e.getCode(), e);  // Eliminar el equipo del hardware
 		equipmentService.erase(e);
@@ -181,7 +185,7 @@ public class Lan {
 		if (!hardware.containsKey(port2.getEquipment().getCode()))
 			throw new NotFoundException("El equipo " + port2.getEquipment().getCode() + " no se encuentra.");
 
-
+		addIpToEquipment(e1, e2.getIpAdresses().getLast());
 
 		Connection connection = new Connection(port1,port2, wire);
 
@@ -246,13 +250,7 @@ public class Lan {
 	public void updateConnection(Equipment originalEquipment1, Equipment originalEquipment2,Connection updateConnection){
 		Connection originalConnection = null, connectionIndex;
 
-		for (int i = 0; originalConnection != null && i < connections.size(); i++){
-			connectionIndex = connections.get(i);
-			if ((originalEquipment1.equals(connectionIndex.getPort1().getEquipment()) && originalEquipment2.equals(connectionIndex.getPort2().getEquipment()))
-					|| (originalEquipment2.equals(connectionIndex.getPort1().getEquipment()) && originalEquipment1.equals(connectionIndex.getPort2().getEquipment())))
-				originalConnection = connectionIndex;
-		}
-		if (connections.contains(updateConnection) && !originalConnection.equals(updateConnection))
+        if (connections.contains(updateConnection) && !originalConnection.equals(updateConnection))
 			throw new NotFoundException("ya existe esa conexion");
 		if(originalConnection.equals(updateConnection)){
 			connectionService.update(updateConnection);
@@ -715,4 +713,41 @@ public class Lan {
 	public void init(org.isfpp.logica.Subject subject){
 		this.subject = subject;
 	}
+
+
+		public String getNextAvailableIp(Equipment equipment, String initialIp) {
+			Set<String> usedIps = new HashSet<>();
+			for (Equipment e : hardware.values()){
+				usedIps.addAll(e.getIpAdresses());
+			}
+			String newIp;
+			String[] ipParts = initialIp.split("\\.");
+
+			if (isSwitchOrRouter(equipment)) {
+				int fourOctet = Integer.parseInt(ipParts[3]);
+				do {
+					fourOctet++;
+					ipParts[3] = String.valueOf(fourOctet);
+					newIp = String.join(".", ipParts);
+				} while (usedIps.contains(newIp));
+			} else {
+				int lastOctet = Integer.parseInt(ipParts[2]);
+				do {
+					lastOctet++;
+					ipParts[2] = String.valueOf(lastOctet);
+					newIp = String.join(".", ipParts);
+				} while (usedIps.contains(newIp));
+			}
+			return newIp;
+		}
+
+		private boolean isSwitchOrRouter(Equipment equipment) {
+			String type = equipment.getEquipmentType().getCode();
+			return type.equalsIgnoreCase("SW") || type.equalsIgnoreCase("RT");
+		}
+
+		public void addIpToEquipment(Equipment equipment, String initialIp) {
+			String newIp = getNextAvailableIp(equipment, initialIp);
+			equipment.addIp(newIp);
+		}
 }

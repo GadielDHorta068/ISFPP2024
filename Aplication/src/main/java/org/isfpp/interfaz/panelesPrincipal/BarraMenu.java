@@ -268,6 +268,8 @@ public class BarraMenu {
         if (coordinator.getSelectedItem() instanceof Equipment equipo){
             equipo.setStatus(!equipo.isStatus());
             coordinator.updateTablas(lan);
+        }else {
+            JOptionPane.showMessageDialog(null, rb.getString("seleccionar_equipo"));
         }
     }
 

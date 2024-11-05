@@ -2,6 +2,7 @@ package org.isfpp.controller;
 
 import org.isfpp.interfaz.panelesCreadores.MainMenu;
 import org.isfpp.interfaz.panelesPrincipal.DesplegableComponent;
+import org.isfpp.interfaz.panelesPrincipal.PanelDerecho;
 import org.isfpp.logica.CalculoGraph;
 import org.isfpp.logica.Lan;
 import org.isfpp.modelo.*;
@@ -420,6 +421,7 @@ public class Coordinator {
         for (DesplegableComponent tabla : tablas) {
             tabla.updateTable();
         }
+
     }
 
     //metodos searchAllOf de Web, (lectura)

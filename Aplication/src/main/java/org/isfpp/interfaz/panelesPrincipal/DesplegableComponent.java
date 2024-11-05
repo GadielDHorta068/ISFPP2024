@@ -59,9 +59,14 @@ public class DesplegableComponent<T> {
      * Método para actualizar los datos de la tabla.
      */
     public void updateTable() {
+        if (coordinator.getSelectedItem() != null){
+            if(coordinator.getSelectedItem() instanceof Equipment) {
+                panelDerecho.updateProperties(coordinator.getSelectedItem());
+            }
+        }
         rb=coordinator.getResourceBundle();
         // Inicializa dataList basado en el tipo del primer elemento
-        Object e = dataList.isEmpty() ? null : dataList.get(0);
+        Object e = dataList.isEmpty() ? null : dataList.getFirst();
         if (e instanceof Equipment) {
             dataList = (List<T>) new ArrayList<>(lan.getHardware().values());
         } else if (e instanceof Location) {
@@ -95,11 +100,13 @@ public class DesplegableComponent<T> {
                     data[i][2] = connection;
                 }
                 case null, default -> {
+                    assert item != null;
                     data[i][0] = item.toString();
                     data[i][1] = "";
                     data[i][2] = item;
                 }
             }
+
         }
 
         // Aquí vuelves a crear el modelo, pero asegúrate de que siga siendo no editable
@@ -140,6 +147,7 @@ public class DesplegableComponent<T> {
      * @param panelDerecho El panel derecho donde se mostrarán propiedades adicionales.
      */
     public void IniciarTabla(String titulo, List<T> dataList, PanelDerecho panelDerecho) {
+        this.panelDerecho = panelDerecho;
         this.lan = this.coordinator.getWeb();
         this.dataList = dataList;
         rb = coordinator.getResourceBundle();
@@ -225,7 +233,10 @@ public class DesplegableComponent<T> {
                                 panelDerecho.updateProperties(selectedConnection);
                         case null, default ->
                             // Fallback para cualquier otro tipo de objeto
-                                panelDerecho.updateProperties(selectedItem.toString(), rb.getString("descripcion_no_disponible"));
+                        {
+                            assert selectedItem != null;
+                            panelDerecho.updateProperties(selectedItem.toString(), rb.getString("descripcion_no_disponible"));
+                        }
                     }
                 }
             }
