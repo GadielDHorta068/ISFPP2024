@@ -15,6 +15,9 @@ import org.jgrapht.graph.SimpleWeightedGraph;
 import org.jgrapht.traverse.BreadthFirstIterator;
 
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.stream.IntStream;
 
 import static java.lang.Thread.sleep;
@@ -287,58 +290,66 @@ public class CalculoGraph implements Observer{
      * @param ip La IP inicial para comenzar el escaneo.
      * @return Una lista de IPs válidas encontradas.
      */
-    public List<String> scanIP(String ip1, String ip2) {
-        // Dividir las IPs en segmentos
-        String[] parts1 = ip1.split("\\.");
-        String[] parts2 = ip2.split("\\.");  // Corregido, ahora se usa ip2
 
-        // Comprobar si ip1 es mayor que ip2 y si es así, intercambiarlas
+        // Convierte una IP en formato String a un valor entero
+        public static long ipToLong(String ip) {
+            String[] segments = ip.split("\\.");
+            long result = 0;
+            for (int i = 0; i < 4; i++) {
+                result |= (Long.parseLong(segments[i]) << (24 - (8 * i)));
+            }
+            return result;
+        }
+
+        public static String longToIp(long ipLong) {
+        return ((ipLong >> 24) & 0xFF) + "." + ((ipLong >> 16) & 0xFF) + "." +
+                ((ipLong >> 8) & 0xFF) + "." + (ipLong & 0xFF);
+    }
+    public List<String> scanIP(String ip1, String ip2) {
+        ExecutorService executor = Executors.newFixedThreadPool(2);
+        List<String> results = new ArrayList<>();
         if (compareIPs(ip1, ip2) > 0) {
             // Si ip1 > ip2, intercambiar las IPs
             String temp = ip1;
             ip1 = ip2;
             ip2 = temp;
-            // Volver a dividir las IPs después del intercambio
-            parts1 = ip1.split("\\.");
-            parts2 = ip2.split("\\.");
         }
 
-        List<String> ipList = new ArrayList<>();
+        try {
+            // Crear tareas para los dos subrangos
+            long ipStart = ipToLong(ip1);
+            long ipEnd = ipToLong(ip2);
+            long midPoint = (ipStart + ipEnd) / 2;
 
-        // Convertir los segmentos a enteros
-        int[] ip1Segments = new int[4];
-        int[] ip2Segments = new int[4];
-        for (int i = 0; i < 4; i++) {
-            ip1Segments[i] = Integer.parseInt(parts1[i]);
-            ip2Segments[i] = Integer.parseInt(parts2[i]);
+            Future<List<String>> firstHalfFuture = executor.submit(() -> scanRange(ipStart, midPoint));
+            Future<List<String>> secondHalfFuture = executor.submit(() ->scanRange(midPoint + 1, ipEnd));
+
+            // Esperar resultados y combinarlos
+            results.addAll(firstHalfFuture.get());
+            results.addAll(secondHalfFuture.get());
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            executor.shutdown();
         }
 
-        // Recorrer los segmentos
-        for (int i = ip1Segments[0]; i <= ip2Segments[0]; i++) {
-            for (int j = (i == ip1Segments[0] ? ip1Segments[1] : 0); j <= (i == ip2Segments[0] ? ip2Segments[1] : 255); j++) {
-                for (int k = (i == ip1Segments[0] && j == ip1Segments[1] ? ip1Segments[2] : 0); k <= (i == ip2Segments[0] && j == ip2Segments[1] ? ip2Segments[2] : 255); k++) {
-                    for (int l = (i == ip1Segments[0] && j == ip1Segments[1] && k == ip1Segments[2] ? ip1Segments[3] : 0); l <= (i == ip2Segments[0] && j == ip2Segments[1] && k == ip2Segments[2] ? ip2Segments[3] : 255); l++) {
-                        // Crear la nueva IP con formato adecuado
-                        String nuevaIP = i + "." + j + "." + k + "." + l;
-                        System.out.println(nuevaIP);  // Imprimir la nueva IP
-
-                        // Realizar el ping para verificar la IP
-                        if (CalculoGraph.ping(nuevaIP)) {
-                            System.out.println("Encontró: " + nuevaIP);
-                            ipList.add(nuevaIP);  // Agregar la IP válida a la lista
-                            try {
-                                Thread.sleep(1000);  // Uso correcto de sleep dentro de un hilo
-                            } catch (InterruptedException e) {
-                                throw new RuntimeException(e);
-                            }
-                        }
+        return results;
+    }
+        private static List<String> scanRange(long start, long end) {
+            List<String> ipList = new ArrayList<>();
+            for (long ipLong = start; ipLong <= end; ipLong++) {
+                String ip = longToIp(ipLong);
+                if (CalculoGraph.ping(ip)) { // Suponiendo que ping verifica si la IP es alcanzable
+                    ipList.add(ip);
+                    try {
+                        Thread.sleep(1000); // Pausa de un segundo entre pings
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
                     }
                 }
             }
+            return ipList;
         }
-
-        return ipList;  // Devolver la lista de IPs válidas
-    }
 
     private int compareIPs(String ip1, String ip2) {
         String[] parts1 = ip1.split("\\.");
