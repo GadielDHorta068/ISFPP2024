@@ -1,6 +1,6 @@
 package org.isfpp.controller;
 
-import org.isfpp.interfaz.panelesCreadores.MainMenu;
+import org.isfpp.interfaz.panelesPrincipal.MainMenu;
 import org.isfpp.interfaz.panelesPrincipal.DesplegableComponent;
 import org.isfpp.logica.CalculoGraph;
 import org.isfpp.logica.Lan;
@@ -341,11 +341,12 @@ public class Coordinator {
     /**
      * Escanea una dirección IP.
      *
-     * @param ip la dirección IP a escanear.
+     * @param ip   la dirección IP a escanear.
+     * @param text
      * @return una lista de resultados del escaneo.
      */
-    public List<String> scanIP(String ip) {
-        return calculoGraph.scanIP(ip);
+    public List<String> scanIP(String ip1, String ip2) {
+        return calculoGraph.scanIP(ip1,ip2);
     }
 
     /**

@@ -2,9 +2,8 @@ package org.isfpp.main;
 
 import org.isfpp.controller.Coordinator;
 import org.isfpp.controller.Settings;
-import org.isfpp.dao.Secuencial.EquipmentSequentialDAO;
 import org.isfpp.data.FileTextToBD;
-import org.isfpp.interfaz.panelesCreadores.MainMenu;
+import org.isfpp.interfaz.panelesPrincipal.MainMenu;
 import org.isfpp.logica.CalculoGraph;
 import org.isfpp.logica.Subject;
 import org.isfpp.modelo.Equipment;
