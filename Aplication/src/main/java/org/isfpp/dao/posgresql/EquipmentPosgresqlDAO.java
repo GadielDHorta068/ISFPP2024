@@ -225,27 +225,32 @@ public class EquipmentPosgresqlDAO implements EquipmentDAO {
             pstm.close();
 
             // 2. Inserta los puertos usando el código generado
-            String insertsPortFormat = equipment.getAllPortsTypes().entrySet().stream()
-                    .map(entry -> String.format("INSERT INTO poo2024.RCG_equipment_port (cantidad, code_port_type, code_equipment) " +
-                                    "VALUES (%d, '%s', '%s')",
-                            entry.getValue(), entry.getKey().getCode(), equipment.getCode()))
-                    .collect(Collectors.joining("; "));  // Separa cada `INSERT` con `;` para ejecutar múltiples instrucciones
+            HashMap<PortType, Integer> ports = equipment.getAllPortsTypes();
+            if (ports.size() > 1) {
+                String insertsPortFormat = ports.entrySet().stream()
+                        .map(entry -> String.format("INSERT INTO poo2024.RCG_equipment_port (cantidad, code_port_type, code_equipment) " +
+                                        "VALUES (%d, '%s', '%s')",
+                                entry.getValue(), entry.getKey().getCode(), equipment.getCode()))
+                        .collect(Collectors.joining("; "));  // Separa cada `INSERT` con `;` para ejecutar múltiples instrucciones
 
-            Statement stmtPorts = con.createStatement();
-            stmtPorts.executeUpdate(insertsPortFormat);  // Ejecuta todos los inserts de puertos
-            stmtPorts.close();
 
+                Statement stmtPorts = con.createStatement();
+                stmtPorts.executeUpdate(insertsPortFormat);  // Ejecuta todos los inserts de puertos
+                stmtPorts.close();
+            }
+            System.out.println(equipment.getIpAdresses());
             // 3. Inserta las IPs usando el código generado
-            String insertsIpFormat = equipment.getIpAdresses().stream()
-                    .map(ip -> String.format("INSERT INTO poo2024.RCG_equipment_ips (code_equipment, ip) " +
-                                    "VALUES ('%s', '%s'::INET)",
-                            equipment.getCode(), ip))
-                    .collect(Collectors.joining("; "));  // Separa cada `INSERT` con `;` para múltiples instrucciones
+            if (equipment.getIpAdresses().size() > 1) {
+                String insertsIpFormat = equipment.getIpAdresses().stream()
+                        .map(ip -> String.format("INSERT INTO poo2024.RCG_equipment_ips (code_equipment, ip) " +
+                                        "VALUES ('%s', '%s'::INET)",
+                                equipment.getCode(), ip))
+                        .collect(Collectors.joining("; "));  // Separa cada `INSERT` con `;` para múltiples instrucciones
 
-            Statement stmtIps = con.createStatement();
-            stmtIps.executeUpdate(insertsIpFormat);  // Ejecuta todos los inserts de IPs
-            stmtIps.close();
-
+                Statement stmtIps = con.createStatement();
+                stmtIps.executeUpdate(insertsIpFormat);  // Ejecuta todos los inserts de IPs
+                stmtIps.close();
+            }
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -393,7 +398,8 @@ public class EquipmentPosgresqlDAO implements EquipmentDAO {
                     }
 
                     String ip = rs.getString("ip");
-                    if (ip != null);
+                    System.out.println(ip);
+                    if (ip != null)
                         equipment.addIp(ip);
 
                 }
