@@ -63,6 +63,9 @@ public class CalculoGraph implements Observer{
                 graph.addEdge(sourceNode, targetNode, c);
         }
             actualizar = false;
+            coordinator.setGraph(graph);
+            coordinator.updateTablas(lan);
+
             logger.info("Se actualizaron los datos para realizar calculos");
         } else
             logger.info("No se actualizaron los datos");

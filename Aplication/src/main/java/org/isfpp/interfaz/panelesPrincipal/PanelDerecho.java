@@ -36,7 +36,6 @@ public class PanelDerecho {
         StylusUI.aplicarEstiloPanel(panel);
         panel.setLayout(new BorderLayout());
 
-        // Set inicial; cambiar esto a un signo de pregunta y que al seleccionar un tipo x usar setIcon
         setIcon("help");
         propiedades = new JTextArea( rb.getString("seleccione_objeto"));
         StylusUI.styleTextArea(propiedades);

@@ -48,8 +48,6 @@ public class EquipmentPosgresqlDAO implements EquipmentDAO {
     private Hashtable<String, Equipment> readFromFile(String fileName) {
         Hashtable<String, Equipment> map = new Hashtable<>();
         Scanner inFile = null;
-
-
         try {
             // Cambia a FileInputStream para leer del sistema de archivos
             inFile = new Scanner(new FileInputStream(fileName));
@@ -132,6 +130,8 @@ public class EquipmentPosgresqlDAO implements EquipmentDAO {
 
         try {
             con = BDConnection.getConnection();
+
+            System.out.println(con.getCatalog());
             System.out.println(equipment.getCode());
             // 1. Inserta el equipo y retorna el código generado
             String sqlInsertEquipment = "INSERT INTO poo2024.RCG_equipment " +
@@ -148,7 +148,8 @@ public class EquipmentPosgresqlDAO implements EquipmentDAO {
             pstm.setString(6, equipment.getLocation().getCode());
             pstm.setBoolean(7, equipment.isStatus());
             pstm.executeUpdate();
-            pstm.close();
+            System.out.println();
+            //pstm.close();
 
             // 2. Inserta los puertos usando el código generado
             String insertsPortFormat = equipment.getAllPortsTypes().entrySet().stream()
@@ -157,7 +158,6 @@ public class EquipmentPosgresqlDAO implements EquipmentDAO {
                             entry.getValue(), entry.getKey().getCode(), equipment.getCode()))
                     .collect(Collectors.joining("; "));  // Separa cada `INSERT` con `;` para ejecutar múltiples instrucciones
 
-            con = BDConnection.getConnection();
             Statement stmtPorts = con.createStatement();
             stmtPorts.executeUpdate(insertsPortFormat);  // Ejecuta todos los inserts de puertos
             stmtPorts.close();
@@ -168,17 +168,16 @@ public class EquipmentPosgresqlDAO implements EquipmentDAO {
                             equipment.getCode(), ip))
                     .collect(Collectors.joining("; "));  // Separa cada `INSERT` con `;` para múltiples instrucciones
 
-            con = BDConnection.getConnection();
             Statement stmtIps = con.createStatement();
             stmtIps.executeUpdate(insertsIpFormat);  // Ejecuta todos los inserts de IPs
             stmtIps.close();
-            con.close();
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
+            System.out.println("LALLAL");
             try {
                 if (pstm != null) pstm.close();
-                if (con != null) con.close();
             } catch (SQLException e) {
                 System.err.println("Error a la hora de cerrar la consulta");
                 throw new RuntimeException(e);
@@ -186,6 +185,7 @@ public class EquipmentPosgresqlDAO implements EquipmentDAO {
         }
         map.put(equipment.getCode(), equipment);
         update = true;
+
     }
 
 
@@ -227,12 +227,12 @@ public class EquipmentPosgresqlDAO implements EquipmentDAO {
                     "port_inserts AS ( " +
                     "  INSERT INTO poo2024.RCG_equipment_port (cantidad, code_port_type, code_equipment) " +
                        insertsPortFormat+
-                    "), "+
+                    ";), "+
 
                     "ip_inserts AS ( " +
                     "  INSERT INTO poo2024.RCG_equipment_ips (code_equipment, ip) " +
                        insertsIpFormat+
-                    ") " +
+                    ";) " +
                     "SELECT * FROM update_equipment;";
 
             pstm = con.prepareStatement(sql);
@@ -245,6 +245,8 @@ public class EquipmentPosgresqlDAO implements EquipmentDAO {
             pstm.setString(6, equipment.getLocation().getCode());
             pstm.setBoolean(7, equipment.isStatus());
             pstm.setString(8, equipment.getCode());
+            pstm.setString(9, equipment.getCode());
+            pstm.setString(10, equipment.getCode());
             pstm.executeUpdate();
             pstm.close();
 
@@ -272,11 +274,12 @@ public class EquipmentPosgresqlDAO implements EquipmentDAO {
         ResultSet rs = null;
 
         try {
-            con = BDConnection.getConnection();
+             con = BDConnection.getConnection();
             String sql = "";
-            sql += "DELETE FROM poo2024.RCG_equipment_ips WHERE code_equipment = ?" +
-                    "DELETE FROM poo2024.RCG_equipment_port WHERE code_equipment = ?" +
+            sql += "DELETE FROM poo2024.RCG_equipment_ips WHERE code_equipment = ?; " +
+                    "DELETE FROM poo2024.RCG_equipment_port WHERE code_equipment = ?; " +
                     "DELETE FROM poo2024.RCG_equipment WHERE code = ?";
+
             pstm = con.prepareStatement(sql);
             pstm.setString(1, equipment.getCode());
             pstm.setString(2, equipment.getCode());
@@ -346,21 +349,20 @@ public class EquipmentPosgresqlDAO implements EquipmentDAO {
             ResultSet rs = null;
             try {
                 con = BDConnection.getConnection();
-                String sql2 = "";
 
                 String sql = "SELECT " +
                         "   e.code AS equipment_code," +
                         "   e.description," +
                         "   e.marca," +
                         "   e.modelo," +
-                        "   e.equipment_type" +
-                        "   e.location," +
+                        "   e.code_equipment_type," +
+                        "   e.code_location," +
                         "   e.status," +
                         "   p.cantidad, " +
-                        "   p.code_port_type, " +
-                        "   i.ip" +
+                        "   p.code_port_type " +
+                        " " +
                         "FROM poo2024.rcg_equipment e join poo2024.rcg_equipment_port p ON (e.code = p.code_equipment)" +
-                        "join poo2024.ips i ON (e.code = i.code_equipment);";
+                        "" ;
                 pstm = con.prepareStatement(sql);
                 rs = pstm.executeQuery();
                 Hashtable<String, Equipment> ret = new Hashtable<>();
@@ -391,11 +393,6 @@ public class EquipmentPosgresqlDAO implements EquipmentDAO {
                         }
                     }
 
-                    // Agrega la IP, si está presente
-                    String ip = rs.getString("ip");
-                    if (ip != null) {
-                        equipment.addIp(ip);
-                    }
                 }
                 rs.close();
                 pstm.close();

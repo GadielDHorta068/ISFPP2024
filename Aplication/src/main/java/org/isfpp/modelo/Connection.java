@@ -45,6 +45,8 @@ public class Connection {
 		setPort2(port2);
 		port2.setInUse(true);
 
+
+
         // Configuramos el tipo de cable
 		setWire(wire);
 	}

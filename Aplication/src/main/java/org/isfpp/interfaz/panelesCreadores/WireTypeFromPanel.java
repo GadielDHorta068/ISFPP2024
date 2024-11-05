@@ -9,16 +9,16 @@ import java.awt.*;
 import java.util.ResourceBundle;
 
 public class WireTypeFromPanel extends JPanel{
-    private JTextField codeField;
-    private JTextField descriptionField;
-    private JTextField speedField;
+    private final JTextField codeField = new JTextField();;
+    private final JTextField descriptionField = new JTextField();
+    private final JTextField speedField = new JTextField();
     private Coordinator coordinator;
     private ResourceBundle rb;
 
     public WireTypeFromPanel() {
     }
 
-    public void run(String codeOriginal) {
+    public void run() {
         rb = coordinator.getResourceBundle();
 
         JFrame frame = new JFrame(rb.getString("Tipo_Cable"));
@@ -26,39 +26,36 @@ public class WireTypeFromPanel extends JPanel{
         frame.setSize(400, 200);
 
         setLayout(new BorderLayout());
-
-        WireType Wire = coordinator.getWireTypes().get(codeOriginal);
         JPanel formPanel = new JPanel(new GridLayout(3, 2, 10, 20));
         StylusUI.aplicarEstiloPanel(formPanel);
 
-        JLabel codigo = new JLabel(rb.getString("codigo"));
+        JLabel codigo = new JLabel(rb.getString("Codigo"));
         StylusUI.aplicarEstiloEtiqueta(codigo);
         formPanel.add(codigo);
-        codeField = new JTextField(Wire.getCode());
         StylusUI.aplicarEstiloCampoTexto(codeField);
         formPanel.add(codeField);
 
-        JLabel des = new JLabel(rb.getString("descripcion"));
+        JLabel des = new JLabel(rb.getString("Descripcion"));
         StylusUI.aplicarEstiloEtiqueta(des);
         formPanel.add(des);
-        descriptionField = new JTextField(Wire.getDescription());
-        StylusUI.aplicarEstiloCampoTexto(descriptionField);
         formPanel.add(descriptionField);
+        StylusUI.aplicarEstiloCampoTexto(descriptionField);
 
-        JLabel speed = new JLabel(rb.getString("Velocidad"));
+
+        JLabel speed = new JLabel(rb.getString("velocidad"));
         StylusUI.aplicarEstiloEtiqueta(speed);
         formPanel.add(speed);
-        speedField = new JTextField(String.valueOf(Wire.getSpeed()));
-        StylusUI.aplicarEstiloCampoTexto(speedField);
         formPanel.add(speedField);
+        StylusUI.aplicarEstiloCampoTexto(speedField);
 
         add(formPanel, BorderLayout.CENTER);
 
-        JButton createButton = new JButton(rb.getString("Modificar_tipo_Puerto"));
+        JButton createButton = new JButton(rb.getString("modificar_tipo_Puerto"));
         StylusUI.aplicarEstiloBoton(createButton, true);
         add(createButton, BorderLayout.SOUTH);
 
         createButton.addActionListener(e -> {
+
             String code = codeField.getText();
             String description = descriptionField.getText();
             int wireSpeed= Integer.parseInt(speedField.getText());

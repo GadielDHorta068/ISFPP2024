@@ -112,10 +112,10 @@ public class FileTextToBD {
         //FileTextToBD.deleteAllBD();
         EquipmentDAO equipmentSequentialDAO = new EquipmentSequentialDAO();
         EquipmentDAO equipmentPosgresqlDAO = new EquipmentPosgresqlDAO();
-        for (Equipment equipment : equipmentSequentialDAO.searchAll().values()) {
-            System.out.println(equipment);
-            equipmentPosgresqlDAO.insert(equipment);
-        }
 
+        LocationPosgresqlDAO a = new LocationPosgresqlDAO();
+        for (Equipment equipment : equipmentPosgresqlDAO.searchAll().values()) {
+            System.out.println(equipment.getCode()+equipment.getCode());
+        }
     }
 }

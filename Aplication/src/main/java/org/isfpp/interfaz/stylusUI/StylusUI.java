@@ -133,6 +133,7 @@ public class StylusUI {
      */
     public static void aplicarEstiloPanel(JPanel panel) {
         panel.setBackground(COLOR_PRIMARIO);
+        
     }
 
     /**
@@ -531,7 +532,7 @@ public class StylusUI {
 
     public static void styleMenu(JMenu menu) {
         menu.setFont(new Font("Arial", Font.BOLD, 14));
-        menu.setBackground(BUTTON_BACKGROUND_COLOR);
+        menu.setBackground(COLOR_SECUNDARIO);
         menu.setForeground(TEXT_COLOR);
     }
 
