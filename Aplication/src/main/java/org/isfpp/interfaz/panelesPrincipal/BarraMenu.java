@@ -78,8 +78,12 @@ public class BarraMenu {
         JMenu editarMenu = new JMenu(rb.getString("editar"));
         StylusUI.styleMenu(editarMenu);
 
-        JMenu subMenuAgregar = new JMenu(rb.getString("editar"));
+        JMenu subMenuAgregar = new JMenu(rb.getString("agregar"));
         editarMenu.add(subMenuAgregar);
+        StylusUI.styleMenu(subMenuAgregar);
+        subMenuAgregar.setBackground(StylusUI.COLOR_PRIMARIO);
+        subMenuAgregar.setOpaque(true);
+
 
         subMenuAgregar.add(crearMenuItem(rb.getString("agregar_equipo"), e -> {
             EquipmentFormPanel equipmentPanel = new EquipmentFormPanel();
@@ -114,8 +118,12 @@ public class BarraMenu {
         editarMenu.add(crearMenuItem(rb.getString("eliminar"), this::accionEliminar));
         editarMenu.add(crearMenuItem(rb.getString("editar_puerto"), this::accionEditarPuerto));
 
-        JMenu subMenuEditar = new JMenu(rb.getString("editar"));
+        JMenu subMenuEditar = new JMenu(rb.getString("modificar"));
         editarMenu.add(subMenuEditar);
+        StylusUI.styleMenu(subMenuEditar);
+        subMenuEditar.setBackground(StylusUI.COLOR_PRIMARIO);
+        subMenuEditar.setOpaque(true);
+
         subMenuEditar.add(crearMenuItem(rb.getString("editar_equipo"), this::accionEditar));
         subMenuEditar.add(crearMenuItem(rb.getString("editar_conexión"), this::accionEditar));
         subMenuEditar.add(crearMenuItem(rb.getString("editar_ubicacion"), this::accionEditar));
@@ -149,6 +157,8 @@ public class BarraMenu {
                 case Connection connection -> coordinator.eraseConnection(connection);
                 default -> System.out.println(rb.getString("clase_no_detectada") + seleccionado.getClass());
             }
+        }else {
+            JOptionPane.showMessageDialog(null,rb.getString( "seleccionar_item"));
         }
     }
 

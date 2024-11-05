@@ -173,12 +173,18 @@ public class Lan {
 	//Connection
 	public Connection addConnection(Port port1, Port port2, WireType wire) {
 		// Verificar si los equipos existen en el hardware
+		Equipment e1 = hardware.get(port1.getEquipment().getCode());
+		Equipment e2 = hardware.get(port2.getEquipment().getCode());
+
 		if (!hardware.containsKey(port1.getEquipment().getCode()))
 			throw new NotFoundException("El equipo " + port1.getEquipment().getCode() + " no se encuentra.");
 		if (!hardware.containsKey(port2.getEquipment().getCode()))
 			throw new NotFoundException("El equipo " + port2.getEquipment().getCode() + " no se encuentra.");
 
-		Connection connection = new Connection(port2,port1, wire);
+
+
+		Connection connection = new Connection(port1,port2, wire);
+
 
 		if (connections.contains(connection))
 			throw new AlreadyExistException("La conexión entre " + port1.getEquipment().getCode() + " y " + port2.getEquipment().getCode() + " ya existe.");
