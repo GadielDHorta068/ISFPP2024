@@ -81,7 +81,11 @@ public class Lan {
 			throw new NotFoundException("El puerto no se encuentra en la lista");
 		if(!equipmentTypes.containsKey(equipmentType.getCode()))
 			throw new NotFoundException("El tipo de equipo no se encuentra en la lista");
+
 		Equipment e = new Equipment(code, description, marca, model, portType,cantidad, equipmentType, location,status);
+		if (hardware.isEmpty()){
+			e.addIp("168.134.0.0");
+		}
 		hardware.put(code, e);
 		coordinator.updateTablas(this);
 		equipmentService.insert(e);
@@ -106,11 +110,8 @@ public class Lan {
 		if (!equipmentTypes.containsKey(equipment.getEquipmentType().getCode()))
 			throw new NotFoundException("El tipo de equipo no se encuentra en la lista");
 
-		if (hardware.isEmpty()){
-			equipment.addIp("168.134.0.0");
-		}
-
 		hardware.put(equipment.getCode(), equipment);
+		System.out.println(equipment.toString());
 		coordinator.updateTablas(this);
 		equipmentService.insert(equipment);
         subject.refresh();
@@ -743,7 +744,7 @@ public class Lan {
 
 		private boolean isSwitchOrRouter(Equipment equipment) {
 			String type = equipment.getEquipmentType().getCode();
-			return type.equalsIgnoreCase("SW") || type.equalsIgnoreCase("RT");
+			return type.equalsIgnoreCase("SW") || type.equalsIgnoreCase("RT") || type.equalsIgnoreCase("AP");
 		}
 
 		public void addIpToEquipment(Equipment equipment, String initialIp) {
