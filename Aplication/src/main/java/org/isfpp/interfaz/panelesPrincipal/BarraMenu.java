@@ -1,5 +1,6 @@
 package org.isfpp.interfaz.panelesPrincipal;
 
+import org.apache.log4j.Logger;
 import org.isfpp.controller.Coordinator;
 import org.isfpp.interfaz.panelesAddons.*;
 import org.isfpp.interfaz.panelesCreadores.*;
@@ -20,6 +21,7 @@ import java.util.ResourceBundle;
 
 
 public class BarraMenu {
+    private static final Logger log = Logger.getLogger(BarraMenu.class);
     private ResourceBundle rb;
     private final Lan lan;
     private Coordinator coordinator;
@@ -182,6 +184,9 @@ public class BarraMenu {
                     portTypePanel.run(puerto.getCode());
                 }
                 case Connection connection -> {
+                    EditConnection editConnection = new EditConnection();
+                    editConnection.setCoordinator(coordinator);
+                    editConnection.run(connection);
                     JOptionPane.showMessageDialog(null,rb.getString( "Error_crear_conexion"));
                 }
                 default -> System.out.println(rb.getString("clase_no_detectada") + seleccionado.getClass());
