@@ -198,57 +198,59 @@ public class EquipmentPosgresqlDAO implements EquipmentDAO {
         try {
             con = BDConnection.getConnection();;
 
-            String insertsPortFormat = equipment.getAllPortsTypes().entrySet().stream()
-                    .map(entry -> String.format("SELECT %d, '%s', code FROM update_equipment",
-                            entry.getValue(), entry.getKey().getCode()))
-                    .collect(Collectors.joining(" UNION ALL "));
+            String sql = "DELETE FROM poo2024.RCG_equipment_port WHERE code_equipment = ?;" +
+                    "DELETE FROM poo2024.RCG_equipment_ips WHERE code_equipment = ?;" +
 
-            String insertsIpFormat = equipment.getIpAdresses().stream()
-                    .map(ip -> String.format("SELECT code, '%s'::INET FROM update_equipment", ip))
-                    .collect(Collectors.joining(" UNION ALL "));
-
-            String sql = "WITH update_equipment AS (" +
-                    "UPDATE poo2024.RCG_equipment "+
+                    "UPDATE poo2024.RCG_equipment " +
                     "SET code = ?," +
                     "   description = ?," +
                     "   marca = ?," +
                     "   modelo = ?," +
                     "   code_equipment_type = ?," +
                     "   code_location = ?," +
-                    "   status = ? "+
-                    "WHERE code = ?" +
-                    ")," +
-
-                    "delete_port_ip AS ("+
-                    "DELETE FROM poo2024.RCG_equipment_port WHERE code_equipment = ?;" +
-                    "DELETE FROM poo2024.RCG_equipment_ips WHERE code_equipment = ?;" +
-                    ")," +
-
-                    "port_inserts AS ( " +
-                    "  INSERT INTO poo2024.RCG_equipment_port (cantidad, code_port_type, code_equipment) " +
-                       insertsPortFormat+
-                    ";), "+
-
-                    "ip_inserts AS ( " +
-                    "  INSERT INTO poo2024.RCG_equipment_ips (code_equipment, ip) " +
-                       insertsIpFormat+
-                    ";) " +
-                    "SELECT * FROM update_equipment;";
-
+                    "   status = ? " +
+                    "WHERE code = ?;";
             pstm = con.prepareStatement(sql);
-
             pstm.setString(1, equipment.getCode());
-            pstm.setString(2, equipment.getDescription());
-            pstm.setString(3, equipment.getMake());
-            pstm.setString(4, equipment.getModel());
-            pstm.setString(5, equipment.getEquipmentType().getCode());
-            pstm.setString(6, equipment.getLocation().getCode());
-            pstm.setBoolean(7, equipment.isStatus());
-            pstm.setString(8, equipment.getCode());
-            pstm.setString(9, equipment.getCode());
+            pstm.setString(2, equipment.getCode());
+            pstm.setString(3, equipment.getCode());
+            pstm.setString(4, equipment.getDescription());
+            pstm.setString(5, equipment.getMake());
+            pstm.setString(6, equipment.getModel());
+            pstm.setString(7, equipment.getEquipmentType().getCode());
+            pstm.setString(8, equipment.getLocation().getCode());
+            pstm.setBoolean(9, equipment.isStatus());
             pstm.setString(10, equipment.getCode());
             pstm.executeUpdate();
             pstm.close();
+
+            // 2. Inserta los puertos usando el código generado
+            HashMap<PortType, Integer> ports = equipment.getAllPortsTypes();
+            if (ports.size() > 1) {
+                String insertsPortFormat = ports.entrySet().stream()
+                        .map(entry -> String.format("INSERT INTO poo2024.RCG_equipment_port (cantidad, code_port_type, code_equipment) " +
+                                        "VALUES (%d, '%s', '%s')",
+                                entry.getValue(), entry.getKey().getCode(), equipment.getCode()))
+                        .collect(Collectors.joining("; "));  // Separa cada `INSERT` con `;` para ejecutar múltiples instrucciones
+
+
+                Statement stmtPorts = con.createStatement();
+                stmtPorts.executeUpdate(insertsPortFormat);  // Ejecuta todos los inserts de puertos
+                stmtPorts.close();
+            }
+            System.out.println(equipment.getIpAdresses());
+            // 3. Inserta las IPs usando el código generado
+            if (equipment.getIpAdresses().size() > 1) {
+                String insertsIpFormat = equipment.getIpAdresses().stream()
+                        .map(ip -> String.format("INSERT INTO poo2024.RCG_equipment_ips (code_equipment, ip) " +
+                                        "VALUES ('%s', '%s'::INET)",
+                                equipment.getCode(), ip))
+                        .collect(Collectors.joining("; "));  // Separa cada `INSERT` con `;` para múltiples instrucciones
+
+                Statement stmtIps = con.createStatement();
+                stmtIps.executeUpdate(insertsIpFormat);  // Ejecuta todos los inserts de IPs
+                stmtIps.close();
+            }
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -359,10 +361,12 @@ public class EquipmentPosgresqlDAO implements EquipmentDAO {
                         "   e.code_location," +
                         "   e.status," +
                         "   p.cantidad, " +
-                        "   p.code_port_type " +
+                        "   p.code_port_type, " +
+                        "   i.ip" +
                         " " +
-                        "FROM poo2024.rcg_equipment e join poo2024.rcg_equipment_port p ON (e.code = p.code_equipment)" +
-                        "" ;
+                        "FROM poo2024.rcg_equipment e left join poo2024.rcg_equipment_port p ON (e.code = p.code_equipment)" +
+                        " LEFT JOIN poo2024.rcg_equipment_ips i on (e.code = i.code_equipment)" +
+                        ";" ;
                 pstm = con.prepareStatement(sql);
                 rs = pstm.executeQuery();
                 Hashtable<String, Equipment> ret = new Hashtable<>();
@@ -392,6 +396,11 @@ public class EquipmentPosgresqlDAO implements EquipmentDAO {
                             equipment.addPort(portTypeTable.get(portTypeCode));
                         }
                     }
+
+                    String ip = rs.getString("ip");
+                    System.out.println(ip);
+                    if (ip != null)
+                        equipment.addIp(ip);
 
                 }
                 rs.close();
