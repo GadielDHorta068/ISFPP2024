@@ -33,12 +33,28 @@ public class IPFrame {
         frame.setSize(400, 300);
         JTextField ipInicial = new JTextField(rb.getString("ip_escanear"));
         String defecto = getIPSeleccionada();
+        JTextField ipFinal = new JTextField(rb.getString("ip_escanear"));
         System.out.println(defecto);
         if (!Objects.equals(defecto, "0")) {
             ipInicial.setText(defecto);
         }
 
         StylusUI.aplicarEstiloCampoTexto(ipInicial);
+        ipFinal.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                if (ipFinal.getText().equals(rb.getString("ip_escanear"))) {
+                    ipFinal.setText("");
+                }
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (ipFinal.getText().isEmpty()) {
+                    ipFinal.setText(rb.getString("ip_escanear"));
+                }
+            }
+        });
 
         ipInicial.addFocusListener(new FocusListener() {
             @Override
@@ -63,19 +79,23 @@ public class IPFrame {
         scanButton.addActionListener(e -> {
             direcciones.clear();
             try {
-                direcciones = coordinator.scanIP(ipInicial.getText());
+                direcciones = coordinator.scanIP(ipInicial.getText(),ipFinal.getText());
                 updateTextArea();
             } catch (Exception exception) {
                 textArea.setText("");
                 ipInicial.setText("");
+                ipFinal.setText("");
                 JOptionPane.showMessageDialog(frame, exception.getMessage());
             }
         });
 
-
+        JPanel northPanel = new JPanel();
+        northPanel.setLayout(new GridLayout(1, 2));
+        northPanel.add(ipInicial);
+        northPanel.add(ipFinal);
         frame.getContentPane().add(scrollPane, BorderLayout.CENTER);
         frame.getContentPane().add(scanButton, BorderLayout.SOUTH);
-        frame.getContentPane().add(ipInicial, BorderLayout.NORTH);
+        frame.getContentPane().add(northPanel, BorderLayout.NORTH);
         StylusUI.aplicarEstiloScrollPane(scrollPane);
         StylusUI.styleTextArea(textArea);
         StylusUI.aplicarEstiloBoton(scanButton, true);
