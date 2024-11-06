@@ -185,7 +185,7 @@ public class ConnectionPosgresqlDAO implements ConnectionDAO{
                 connection.setPort1(equipmentTable.get(rs.getString("code_equipment1")).
                         checkPort(portTypeTable.get(rs.getString("code_port_type1"))));
                 connection.setPort2(equipmentTable.get(rs.getString("code_equipment2")).
-                        checkPort(portTypeTable.get(rs.getString("code_port_type1"))));
+                        checkPort(portTypeTable.get(rs.getString("code_port_type2"))));
                 connection.setWire(wireTypeTable.get(rs.getString("code_wire_type")));
 
                 ret.add(connection);
