@@ -1,9 +1,6 @@
-package org.isfpp.interfaz.panelesCreadores;
+package org.isfpp.interfaz.panelesPrincipal;
 
 import org.isfpp.controller.Coordinator;
-import org.isfpp.interfaz.panelesPrincipal.BarraMenu;
-import org.isfpp.interfaz.panelesPrincipal.DesplegableComponent;
-import org.isfpp.interfaz.panelesPrincipal.PanelDerecho;
 import org.isfpp.interfaz.stylusUI.StylusUI;
 import org.isfpp.modelo.Connection;
 import org.isfpp.modelo.Equipment;

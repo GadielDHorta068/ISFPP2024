@@ -15,7 +15,12 @@ import org.jgrapht.graph.SimpleWeightedGraph;
 import org.jgrapht.traverse.BreadthFirstIterator;
 
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.stream.IntStream;
+
+import static java.lang.Thread.sleep;
 
 public class CalculoGraph implements Observer{
     private final static Logger logger = Logger.getLogger(CalculoGraph.class);
@@ -285,23 +290,81 @@ public class CalculoGraph implements Observer{
      * @param ip La IP inicial para comenzar el escaneo.
      * @return Una lista de IPs válidas encontradas.
      */
-    public List<String> scanIP(String ip) {
-        String[] parts = ip.split("\\.");
-        List<String> ipList = new ArrayList<>();
-        int start = Integer.parseInt(parts[3]);
-        int startThirdSegment = Integer.parseInt(parts[2]);
 
-        IntStream.range(startThirdSegment, 256).forEach(j -> IntStream.range(start, 256).forEach(i -> {
-            String nuevaIP = parts[0] +parts[1] + j +i;
-            System.out.println(nuevaIP);
-            if (CalculoGraph.ping(nuevaIP)) {
-                System.out.println("encontro");
-                ipList.add(nuevaIP);
+        // Convierte una IP en formato String a un valor entero
+        public static long ipToLong(String ip) {
+            String[] segments = ip.split("\\.");
+            long result = 0;
+            for (int i = 0; i < 4; i++) {
+                result |= (Long.parseLong(segments[i]) << (24 - (8 * i)));
             }
-        }));
+            return result;
+        }
 
-        return ipList; // Devolver la lista de IPs válidas
+        public static String longToIp(long ipLong) {
+        return ((ipLong >> 24) & 0xFF) + "." + ((ipLong >> 16) & 0xFF) + "." +
+                ((ipLong >> 8) & 0xFF) + "." + (ipLong & 0xFF);
     }
+    public List<String> scanIP(String ip1, String ip2) {
+        ExecutorService executor = Executors.newFixedThreadPool(2);
+        List<String> results = new ArrayList<>();
+        if (compareIPs(ip1, ip2) > 0) {
+            // Si ip1 > ip2, intercambiar las IPs
+            String temp = ip1;
+            ip1 = ip2;
+            ip2 = temp;
+        }
+
+        try {
+            // Crear tareas para los dos subrangos
+            long ipStart = ipToLong(ip1);
+            long ipEnd = ipToLong(ip2);
+            long midPoint = (ipStart + ipEnd) / 2;
+
+            Future<List<String>> firstHalfFuture = executor.submit(() -> scanRange(ipStart, midPoint));
+            Future<List<String>> secondHalfFuture = executor.submit(() ->scanRange(midPoint + 1, ipEnd));
+
+            // Esperar resultados y combinarlos
+            results.addAll(firstHalfFuture.get());
+            results.addAll(secondHalfFuture.get());
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            executor.shutdown();
+        }
+
+        return results;
+    }
+        private static List<String> scanRange(long start, long end) {
+            List<String> ipList = new ArrayList<>();
+            for (long ipLong = start; ipLong <= end; ipLong++) {
+                String ip = longToIp(ipLong);
+                if (CalculoGraph.ping(ip)) { // Suponiendo que ping verifica si la IP es alcanzable
+                    ipList.add(ip);
+                    try {
+                        Thread.sleep(1000); // Pausa de un segundo entre pings
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+            return ipList;
+        }
+
+    private int compareIPs(String ip1, String ip2) {
+        String[] parts1 = ip1.split("\\.");
+        String[] parts2 = ip2.split("\\.");
+
+        for (int i = 0; i < 4; i++) {
+            int diff = Integer.parseInt(parts1[i]) - Integer.parseInt(parts2[i]);
+            if (diff != 0) {
+                return diff;  // Si los segmentos son diferentes, devolver la diferencia
+            }
+        }
+        return 0;  // Si son iguales
+    }
+
+
 
     /**
      * Genera una dirección MAC aleatoria.
@@ -346,32 +409,6 @@ public class CalculoGraph implements Observer{
         return code.equals("SW") || code.equals("RT") || code.equals("AP");
     }
 
-    /**
-     * Genera una nueva dirección IP para un equipo dentro de una red.
-     * 
-     * @param equipo El equipo para el cual se desea generar la IP.
-     * @param lan    La red en la que se encuentra el equipo.
-     * @return Una nueva IP generada para el equipo.
-     */
-    public static String generarNuevaIP(Equipment equipo, Lan lan) {
-        String[] parts = equipo.getIpAdresses().getFirst().split("\\.");
-        String nuevaIP = "";
-        int pool = Integer.parseInt(parts[3]);
-
-        boolean t = true;
-        while (t) {
-            t = false;
-            pool += 1;
-            nuevaIP = String.format("%s.%s.%s.%d", parts[0], parts[1], parts[2], pool);
-            for (Equipment eq :  lan.getHardware().values()) {
-                if (eq.getIpAdresses().contains(nuevaIP)) {
-                    t = true;
-                    break;
-                }
-            }
-        }
-        return nuevaIP;
-    }
 
     @Override
     public void update() {
