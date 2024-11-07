@@ -186,8 +186,15 @@ public class Lan {
 		if (!hardware.containsKey(port2.getEquipment().getCode()))
 			throw new NotFoundException("El equipo " + port2.getEquipment().getCode() + " no se encuentra.");
 
-		addIpToEquipment(e1, e2.getIpAdresses().getLast());
-
+		if (e1.getIpAdresses().isEmpty() && e2.getIpAdresses().isEmpty()){
+			System.out.println(e1.getIpAdresses());
+			e1.addIp("168.134.0.0");
+			addIpToEquipment(e2, e1.getIpAdresses().getLast());
+		}else if (!e1.getIpAdresses().isEmpty() && e2.getIpAdresses().isEmpty()){
+			addIpToEquipment(e2, e1.getIpAdresses().getLast());
+		} else {
+			addIpToEquipment(e1, e2.getIpAdresses().getLast());
+		}
 		Connection connection = new Connection(port1,port2, wire);
 
 
@@ -725,17 +732,17 @@ public class Lan {
 			String[] ipParts = initialIp.split("\\.");
 
 			if (isSwitchOrRouter(equipment)) {
-				int fourOctet = Integer.parseInt(ipParts[3]);
+				int fourOctet = Integer.parseInt(ipParts[2]);
 				do {
 					fourOctet++;
-					ipParts[3] = String.valueOf(fourOctet);
+					ipParts[2] = String.valueOf(fourOctet);
 					newIp = String.join(".", ipParts);
 				} while (usedIps.contains(newIp));
 			} else {
-				int lastOctet = Integer.parseInt(ipParts[2]);
+				int lastOctet = Integer.parseInt(ipParts[3]);
 				do {
 					lastOctet++;
-					ipParts[2] = String.valueOf(lastOctet);
+					ipParts[3] = String.valueOf(lastOctet);
 					newIp = String.join(".", ipParts);
 				} while (usedIps.contains(newIp));
 			}
