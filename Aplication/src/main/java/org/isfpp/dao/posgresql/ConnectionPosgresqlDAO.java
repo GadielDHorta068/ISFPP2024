@@ -182,10 +182,20 @@ public class ConnectionPosgresqlDAO implements ConnectionDAO{
             wireTypeTable = loadWireType();
             while (rs.next()) {
                 Connection connection = new Connection();
+                System.out.println(rs.getString("code_equipment1"));
+                System.out.println(rs.getString("code_port_type1"));
+                System.out.println(rs.getString("code_equipment2"));
+                System.out.println(rs.getString("code_port_type2"));
+                System.out.println(rs.getString("code_wire_type"));
+                System.out.println(equipmentTable.get(rs.getString("code_equipment1")).getCode());
+                System.out.println(equipmentTable.get(rs.getString("code_equipment1")).getAllPortsTypes().keySet());
+                System.out.println(equipmentTable.get(rs.getString("code_equipment2")).getCode());
+                System.out.println(equipmentTable.get(rs.getString("code_equipment2")).getAllPortsTypes().keySet()+"\n\n");
+
                 connection.setPort1(equipmentTable.get(rs.getString("code_equipment1")).
                         checkPort(portTypeTable.get(rs.getString("code_port_type1"))));
                 connection.setPort2(equipmentTable.get(rs.getString("code_equipment2")).
-                        checkPort(portTypeTable.get(rs.getString("code_port_type1"))));
+                        checkPort(portTypeTable.get(rs.getString("code_port_type2"))));
                 connection.setWire(wireTypeTable.get(rs.getString("code_wire_type")));
 
                 ret.add(connection);

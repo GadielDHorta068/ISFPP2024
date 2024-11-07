@@ -238,7 +238,6 @@ public class EquipmentPosgresqlDAO implements EquipmentDAO {
                 stmtPorts.executeUpdate(insertsPortFormat);  // Ejecuta todos los inserts de puertos
                 stmtPorts.close();
             }
-            System.out.println(equipment.getIpAdresses());
             // 3. Inserta las IPs usando el código generado
             if (equipment.getIpAdresses().size() > 1) {
                 String insertsIpFormat = equipment.getIpAdresses().stream()
@@ -396,9 +395,7 @@ public class EquipmentPosgresqlDAO implements EquipmentDAO {
                             equipment.addPort(portTypeTable.get(portTypeCode));
                         }
                     }
-
                     String ip = rs.getString("ip");
-                    System.out.println(ip);
                     if (ip != null)
                         equipment.addIp(ip);
 
@@ -424,6 +421,7 @@ public class EquipmentPosgresqlDAO implements EquipmentDAO {
         }
         return map;
     }
+
 
     @Override
     public Hashtable<String, Equipment> searchAllIn(String directory) {

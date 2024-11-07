@@ -27,7 +27,6 @@ public class EditConnection extends JPanel {
         frame.setSize(800, 600);
 
         setLayout(new BorderLayout());
-
         JPanel formPanel = new JPanel(new GridLayout(11, 2, 10, 10));
         StylusUI.aplicarEstiloPanel(formPanel);
 
