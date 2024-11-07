@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Aplication/Aplication.iml" filepath="$PROJECT_DIR$/Aplication/Aplication.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/ISFPP2024.iml" filepath="$PROJECT_DIR$/.idea/ISFPP2024.iml" />
       <module fileurl="file://$PROJECT_DIR$/untitled/untitled.iml" filepath="$PROJECT_DIR$/untitled/untitled.iml" />
     </modules>

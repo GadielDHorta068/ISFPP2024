@@ -1,0 +1,4 @@
+C5;UTP Cat. 5;100;
+C5E;UTP Cat. 5e;1000;
+C6;UTP Cat. 6;1000;
+FOM;Fibra Optica Monomodo;10000;

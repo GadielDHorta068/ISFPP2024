@@ -1,0 +1,6 @@
+10M;10 Mbps;10;
+100M;100 Mbps;100;
+100MP;100 Mbps POE;100;
+1G;1Gbps;1000;
+SFP;4 Gbps Fibra;40;
+SFP+;10 Gbps Fibra;10000;
