@@ -21,7 +21,7 @@ public class EditConnection extends JPanel {
     }
 
     public void run(Connection c) {
-        rb= coordinator.getResourceBundle();
+        rb = coordinator.getResourceBundle();
         JFrame frame = new JFrame(rb.getString("edicion_conexion"));
         frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         frame.setSize(800, 600);
@@ -70,10 +70,33 @@ public class EditConnection extends JPanel {
         StylusUI.aplicarEstiloComboBox(port2ComboBox);
         formPanel.add(port2ComboBox);
 
+        // Añadimos el listener para el puerto 1
+        port1ComboBox.addActionListener(e -> {
+            Port selectedPort = (Port) port1ComboBox.getSelectedItem();
+            Equipment selectedEquip2 = (Equipment) eq2ComboBox.getSelectedItem();
+
+            // Si el puerto seleccionado es WiFi, buscamos el puerto WiFi en el segundo equipo
+            if (selectedPort != null && selectedEquip2 != null && isWiFiPort(selectedPort)) {
+                Port wifiPort = findWiFiPort(selectedEquip2);
+                if (wifiPort != null) {
+                    port2ComboBox.setSelectedItem(wifiPort);
+                }
+            }
+        });
+
         eq2ComboBox.addActionListener((e -> {
             Equipment selected2 = (Equipment) eq2ComboBox.getSelectedItem();
             if (selected2 != null) {
                 port2ComboBox.setModel(new DefaultComboBoxModel<>(selected2.getPortsNotInUse().toArray(new Port[0])));
+
+                // Verificamos si hay un puerto WiFi seleccionado en el primer equipo
+                Port selectedPort1 = (Port) port1ComboBox.getSelectedItem();
+                if (selectedPort1 != null && isWiFiPort(selectedPort1)) {
+                    Port wifiPort = findWiFiPort(selected2);
+                    if (wifiPort != null) {
+                        port2ComboBox.setSelectedItem(wifiPort);
+                    }
+                }
             }
         }));
 
@@ -83,7 +106,6 @@ public class EditConnection extends JPanel {
         wireComboBox = new JComboBox<>(coordinator.getWireTypes().values().toArray(new WireType[0]));
         StylusUI.aplicarEstiloComboBox(wireComboBox);
         formPanel.add(wireComboBox);
-
 
         add(formPanel, BorderLayout.CENTER);
 
@@ -104,15 +126,32 @@ public class EditConnection extends JPanel {
                 JOptionPane.showMessageDialog(this, rb.getString("Red_creada"));
                 frame.setVisible(false);
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this,rb.getString( "Error_crear_conexion") + ex.getMessage());
+                JOptionPane.showMessageDialog(this, rb.getString("Error_crear_conexion") + ex.getMessage());
             }
-
         });
 
         frame.add(this);
         frame.setVisible(true);
-
     }
-    public void setCoordinator(Coordinator coordinator) {this.coordinator=coordinator;
+
+    // Método auxiliar para verificar si un puerto es WiFi
+    private boolean isWiFiPort(Port port) {
+        // Aquí debes implementar la lógica para determinar si un puerto es WiFi
+        // Por ejemplo, podrías verificar el nombre del puerto o su tipo
+        return (port.getPortType().getCode().equals("WiFi"));
+    }
+
+    // Método auxiliar para encontrar el puerto WiFi en un equipo
+    private Port findWiFiPort(Equipment equipment) {
+        for (Port port : equipment.getPortsNotInUse()) {
+            if (isWiFiPort(port)) {
+                return port;
+            }
+        }
+        return null;
+    }
+
+    public void setCoordinator(Coordinator coordinator) {
+        this.coordinator = coordinator;
     }
 }
