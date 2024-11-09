@@ -84,7 +84,7 @@ public class Lan {
 
 		Equipment e = new Equipment(code, description, marca, model, portType,cantidad, equipmentType, location,status);
 		if (hardware.isEmpty()){
-			e.addIp("168.134.0.0");
+			e.addIp("192.168.0.0");
 		}
 		hardware.put(code, e);
 		coordinator.updateTablas(this);
@@ -111,7 +111,7 @@ public class Lan {
 			throw new NotFoundException("El tipo de equipo no se encuentra en la lista");
 
 		hardware.put(equipment.getCode(), equipment);
-		System.out.println(equipment.toString());
+		System.out.println(equipment);
 		coordinator.updateTablas(this);
 		equipmentService.insert(equipment);
         subject.refresh();
@@ -161,7 +161,7 @@ public class Lan {
 
 	/**
 	 * Guarda todos los equipos dentro de la red en el directorio dado
-	 * @param directory
+	 * @param directory Directorio desde donde se levanta los archivos
 	 */
 	public void insertAllEquipmentIn(String directory){
 		equipmentService.insertAllIn(directory);
@@ -188,7 +188,7 @@ public class Lan {
 
 		if (e1.getIpAdresses().isEmpty() && e2.getIpAdresses().isEmpty()){
 			System.out.println(e1.getIpAdresses());
-			e1.addIp("168.134.0.0");
+			e1.addIp("192.168.0.0");
 			addIpToEquipment(e2, e1.getIpAdresses().getLast());
 		}else if (!e1.getIpAdresses().isEmpty() && e2.getIpAdresses().isEmpty()){
 			addIpToEquipment(e2, e1.getIpAdresses().getLast());
@@ -214,7 +214,6 @@ public class Lan {
 	 * Agrega una nueva conexión a la red.
 	 *
 	 * @param connection Conexion que se quiere agregar a la red
-	 * @return la conexión agregada
 	 * @throws NotFoundException     si algún equipo no se encuentra
 	 * @throws AlreadyExistException si la conexión ya existe
 	 */

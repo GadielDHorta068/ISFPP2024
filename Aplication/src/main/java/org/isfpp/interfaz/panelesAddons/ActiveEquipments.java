@@ -10,13 +10,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-public class PingListEquipment {
+public class ActiveEquipments {
     private JTextArea textArea;
     private Coordinator coordinator;
     private HashMap<Equipment, Boolean> direcciones;
     private ResourceBundle rb;
 
-    public PingListEquipment() {
+    public ActiveEquipments() {
 
     }
 

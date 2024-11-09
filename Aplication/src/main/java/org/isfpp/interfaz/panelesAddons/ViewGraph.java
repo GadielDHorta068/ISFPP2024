@@ -1,6 +1,5 @@
 package org.isfpp.interfaz.panelesAddons;
 
-import com.mxgraph.layout.mxCompactTreeLayout;
 import com.mxgraph.layout.mxOrganicLayout;
 import com.mxgraph.swing.mxGraphComponent;
 import com.mxgraph.util.mxConstants;
@@ -11,7 +10,6 @@ import org.isfpp.interfaz.stylusUI.StylusUI;
 import org.isfpp.modelo.Connection;
 import org.isfpp.modelo.Equipment;
 import org.jgrapht.Graph;
-import org.jgrapht.graph.SimpleGraph;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,13 +17,20 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 
-public class VisualizarGrafo extends JFrame {
+/**
+ * Clase que creara la ventana donde visulizaremos el grafico de la red
+ */
+public class ViewGraph extends JFrame {
     private Properties properties;
     private Coordinator coordinator;
     private ResourceBundle rb;
 
-    public VisualizarGrafo() throws HeadlessException {
+    public ViewGraph() throws HeadlessException {
     }
+
+    /**
+     * Generacion de la ventana con el grafo y sus iconos
+     */
     public void Visualizar() {
         this.rb=coordinator.getResourceBundle();
         Graph<Equipment, Connection> graph = coordinator.getGraph(); // Usar SimpleGraph para grafo no dirigido
@@ -84,6 +89,9 @@ public class VisualizarGrafo extends JFrame {
         setVisible(true);
     }
 
+    /**
+     * Cargar el archivo properties con los iconos
+     */
     private void cargarProperties() {
         properties = new Properties();
         try (InputStream input = getClass().getClassLoader().getResourceAsStream("config.properties")) {
@@ -97,8 +105,13 @@ public class VisualizarGrafo extends JFrame {
         }
     }
 
+    /**
+     * Cofigurar la visualizacion de los vertices del grafo con los iconos y fuente
+     * @param mxGraph Grafo a ser tratado
+     * @param equipment equipo a setear icono basado en su code y el archivo de propiedades
+     * @return
+     */
     private String getVertexStyle(mxGraph mxGraph, Equipment equipment) {
-        // Configurar estilos de vértices con imágenes basadas en el archivo de propiedades
         String equipmentType = equipment.getEquipmentType().getCode();
         String imagePath = properties.getProperty("icon." + equipmentType);
 
@@ -122,6 +135,10 @@ public class VisualizarGrafo extends JFrame {
         return styleName;
     }
 
+    /**
+     * COnfigurar coordinador
+     * @param coordinator Coordinador xd
+     */
     public void setCoordinator(Coordinator coordinator) {
         this.coordinator = coordinator;
     }

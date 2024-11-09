@@ -112,16 +112,13 @@ public class CalculoGraph implements Observer{
 
         }
 
-        // Crear un grafo temporal que contendrá solo los equipos activos
         SimpleWeightedGraph<Equipment, DefaultWeightedEdge> graphTemp = new SimpleWeightedGraph<>(DefaultWeightedEdge.class);
 
-        // Insertar vértices (equipos) activos en el grafo temporal
         for (Equipment e : graph.vertexSet()) {
             if (e.isStatus())
                 graphTemp.addVertex(e);
         }
 
-        // Insertar aristas con conexiones activas
         for (Connection edge : graph.edgeSet()) {
             Equipment source = graph.getEdgeSource(edge);
             Equipment target = graph.getEdgeTarget(edge);
@@ -130,18 +127,15 @@ public class CalculoGraph implements Observer{
                 // Calcular la velocidad mínima entre los puertos de los equipos y la velocidad del cable
                 int edgeValue = getMinSpeed(convertSetToList(source.getAllPortsTypes().keySet()), convertSetToList(target.getAllPortsTypes().keySet()), edge.getWire().getSpeed());
                 DefaultWeightedEdge newEdge = graphTemp.addEdge(source, target);
-                // Asignar el peso correspondiente a la arista
                 graphTemp.setEdgeWeight(newEdge, edgeValue);
             }
         }
 
-        // Encontrar el camino más corto desde e1 a e2
         GraphPath<Equipment, DefaultWeightedEdge> path = DijkstraShortestPath.findPathBetween(graphTemp, e1, e2);
         if (path == null) {
             throw new IllegalArgumentException("No existe un camino entre los equipos.");
         }
 
-        // Devolver el camino completo
         return path;
     }
 
@@ -342,7 +336,13 @@ public class CalculoGraph implements Observer{
                 if (CalculoGraph.ping(ip)) { // Suponiendo que ping verifica si la IP es alcanzable
                     ipList.add(ip);
                     try {
-                        Thread.sleep(1000); // Pausa de un segundo entre pings
+                        Thread.sleep(45); // Pausa 45ms entre ping devuelto
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                }else{
+                    try {
+                        Thread.sleep(200); // Pausa 200ms entre ping inexistene
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
                     }

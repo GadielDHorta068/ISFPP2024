@@ -252,8 +252,6 @@ public class BarraMenu {
         }
     }
 
-
-
     private JMenu crearHerramientasMenu() {
         JMenu herramientasMenu = new JMenu(rb.getString("herramientas"));
         StylusUI.styleMenu(herramientasMenu);
@@ -278,25 +276,25 @@ public class BarraMenu {
     }
 
     private void iniciarVerGrafo() {
-        VisualizarGrafo visualizarGrafo=new VisualizarGrafo();
-        visualizarGrafo.setCoordinator(coordinator);
-        visualizarGrafo.Visualizar();
+        ViewGraph viewGraph =new ViewGraph();
+        viewGraph.setCoordinator(coordinator);
+        viewGraph.Visualizar();
     }
 
     private void iniciarPing() {
-        IPFrame ipFrame = new IPFrame();
-        ipFrame.setCoordinator(coordinator);
-        ipFrame.scanIp();
+        PingAll pingAll = new PingAll();
+        pingAll.setCoordinator(coordinator);
+        pingAll.scanIp();
     }
 
     private void iniciarPingEquipos() {
-        PingListEquipment pingList = new PingListEquipment();
+        ActiveEquipments pingList = new ActiveEquipments();
         pingList.setCoordinator(coordinator);
         pingList.ping();
     }
 
     private void iniciarConnectionIssues() {
-        ConnectionIssues connection = new ConnectionIssues();
+        ConnectionsTo connection = new ConnectionsTo();
         connection.setCoordinator(coordinator);
         connection.scanIp();
     }
