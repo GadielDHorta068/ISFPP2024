@@ -1,4 +1,5 @@
 package org.isfpp.dao;
+import org.isfpp.modelo.Equipment;
 import org.isfpp.modelo.WireType;
 
 import java.util.HashMap;
@@ -12,5 +13,10 @@ public interface WireTypeDAO {
 
     void erase(WireType wireType);             // Elimina un WireType por su ID
 
+    void insertAllIn(String directory);
+
     Hashtable<String,WireType> searchAll();        // Lee todos los WireTypes
+
+    Hashtable<String, WireType> searchAllIn(String directory);
+
 }

@@ -1,41 +1,51 @@
 package org.isfpp.Service;
 
-import org.isfpp.dao.GenericDAO;
+import org.isfpp.connection.Factory;
 import org.isfpp.dao.LocationDAO;
-import org.isfpp.dao.Secuencial.LocationSequentialDAO;
 import org.isfpp.modelo.Location;
 
 import java.util.Hashtable;
-import java.util.List;
 
 public class LocationServiceImpl implements LocationService{
-    private LocationDAO LocationDAO;
+    private LocationDAO locationDAO;
 
     public LocationServiceImpl() {
-        LocationDAO = new LocationSequentialDAO();
+        locationDAO = (LocationDAO) Factory.getInstancia("LOCATION");
     }
 
 
     public void insert(Location location) {
-        LocationDAO.insert(location);
+        locationDAO.insert(location);
     }
 
 
     public void update(Location location) {
-        LocationDAO.update(location);
+        locationDAO.update(location);
 
     }
 
     @Override
     public void erase(Location location) {
-        LocationDAO.erase(location);
+        locationDAO.erase(location);
 
     }
 
     @Override
-    public Hashtable<String,Location> searchAll() {
-        return LocationDAO.searchAll();
+    public void insertAllIn(String directory) {
+        locationDAO.searchAllIn(directory);
     }
+
+    @Override
+    public Hashtable<String,Location> searchAll() {
+        return locationDAO.searchAll();
+    }
+
+    @Override
+    public Hashtable<String, Location> searchAllIn(String directory) {
+        return locationDAO.searchAllIn(directory);
+    }
+
+
 }
 
 

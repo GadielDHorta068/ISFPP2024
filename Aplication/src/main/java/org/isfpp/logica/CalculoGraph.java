@@ -1,11 +1,11 @@
 package org.isfpp.logica;
 
+import org.apache.log4j.Logger;
 import org.isfpp.controller.Coordinator;
 import org.isfpp.exceptions.NotFoundException;
 import org.isfpp.modelo.Connection;
 import org.isfpp.modelo.Equipment;
 import org.isfpp.modelo.PortType;
-import org.isfpp.modelo.LAN;
 import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
@@ -15,13 +15,26 @@ import org.jgrapht.graph.SimpleWeightedGraph;
 import org.jgrapht.traverse.BreadthFirstIterator;
 
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.stream.IntStream;
 
-public class CalculoGraph {
+import static java.lang.Thread.sleep;
+
+public class CalculoGraph implements Observer{
+    private final static Logger logger = Logger.getLogger(CalculoGraph.class);
     private static Graph<Equipment, Connection> graph;
     private Coordinator coordinator;
+    private Subject subject;
+    private boolean actualizar;
 
     public CalculoGraph() {
+    }
+    public void init(Subject subject) {
+        this.subject = subject;
+        this.subject.attach(this);
+        this.actualizar = true;
     }
 
     /**
@@ -31,13 +44,14 @@ public class CalculoGraph {
      * y construye un grafo no dirigido. Cada equipo se agrega como un vértice en el grafo y cada conexión se agrega
      * como una arista entre los equipos correspondientes.
      *
-     * @param LAN El objeto {@code Web} que contiene la información de hardware y conexiones.
+     * @param lan El objeto {@code Web} que contiene la información de hardware y conexiones.
      * @throws IllegalArgumentException Si se intenta agregar una conexión entre el mismo equipo o si hay una
      *                                  conexión duplicada en el grafo.
      */
-    public void LoadData(LAN LAN) {
-        HashMap<String, Equipment> hardware = LAN.getHardware();
-        ArrayList<Connection> connections = LAN.getConnections();
+    public void LoadData(Lan lan) {
+        if (actualizar) {
+        HashMap<String, Equipment> hardware = coordinator.getHardware();
+        ArrayList<Connection> connections = coordinator.getConnections();
         // Crear un grafo no dirigido
         graph = new SimpleGraph<>(Connection.class);
         for (Equipment valor : hardware.values()) {
@@ -53,11 +67,13 @@ public class CalculoGraph {
             if (!graph.containsEdge(sourceNode, targetNode))
                 graph.addEdge(sourceNode, targetNode, c);
         }
-        coordinator.setGraph(graph);
-        coordinator.setWeb(LAN);
-        System.out.println("Actualizado");
+            actualizar = false;
+            coordinator.setGraph(graph);
+            coordinator.updateTablas(lan);
 
-
+            logger.info("Se actualizaron los datos para realizar calculos");
+        } else
+            logger.info("No se actualizaron los datos");
     }
 
     /**
@@ -96,16 +112,13 @@ public class CalculoGraph {
 
         }
 
-        // Crear un grafo temporal que contendrá solo los equipos activos
         SimpleWeightedGraph<Equipment, DefaultWeightedEdge> graphTemp = new SimpleWeightedGraph<>(DefaultWeightedEdge.class);
 
-        // Insertar vértices (equipos) activos en el grafo temporal
         for (Equipment e : graph.vertexSet()) {
             if (e.isStatus())
                 graphTemp.addVertex(e);
         }
 
-        // Insertar aristas con conexiones activas
         for (Connection edge : graph.edgeSet()) {
             Equipment source = graph.getEdgeSource(edge);
             Equipment target = graph.getEdgeTarget(edge);
@@ -114,18 +127,15 @@ public class CalculoGraph {
                 // Calcular la velocidad mínima entre los puertos de los equipos y la velocidad del cable
                 int edgeValue = getMinSpeed(convertSetToList(source.getAllPortsTypes().keySet()), convertSetToList(target.getAllPortsTypes().keySet()), edge.getWire().getSpeed());
                 DefaultWeightedEdge newEdge = graphTemp.addEdge(source, target);
-                // Asignar el peso correspondiente a la arista
                 graphTemp.setEdgeWeight(newEdge, edgeValue);
             }
         }
 
-        // Encontrar el camino más corto desde e1 a e2
         GraphPath<Equipment, DefaultWeightedEdge> path = DijkstraShortestPath.findPathBetween(graphTemp, e1, e2);
         if (path == null) {
             throw new IllegalArgumentException("No existe un camino entre los equipos.");
         }
 
-        // Devolver el camino completo
         return path;
     }
 
@@ -274,23 +284,87 @@ public class CalculoGraph {
      * @param ip La IP inicial para comenzar el escaneo.
      * @return Una lista de IPs válidas encontradas.
      */
-    public List<String> scanIP(String ip) {
-        String[] parts = ip.split("\\.");
-        List<String> ipList = new ArrayList<>();
-        int start = Integer.parseInt(parts[3]);
-        int startThirdSegment = Integer.parseInt(parts[2]);
 
-        IntStream.range(startThirdSegment, 256).forEach(j -> IntStream.range(start, 256).forEach(i -> {
-            String nuevaIP = parts[0] +parts[1] + j +i;
-            System.out.println(nuevaIP);
-            if (CalculoGraph.ping(nuevaIP)) {
-                System.out.println("encontro");
-                ipList.add(nuevaIP);
+        // Convierte una IP en formato String a un valor entero
+        public static long ipToLong(String ip) {
+            String[] segments = ip.split("\\.");
+            long result = 0;
+            for (int i = 0; i < 4; i++) {
+                result |= (Long.parseLong(segments[i]) << (24 - (8 * i)));
             }
-        }));
+            return result;
+        }
 
-        return ipList; // Devolver la lista de IPs válidas
+        public static String longToIp(long ipLong) {
+        return ((ipLong >> 24) & 0xFF) + "." + ((ipLong >> 16) & 0xFF) + "." +
+                ((ipLong >> 8) & 0xFF) + "." + (ipLong & 0xFF);
     }
+    public List<String> scanIP(String ip1, String ip2) {
+        ExecutorService executor = Executors.newFixedThreadPool(2);
+        List<String> results = new ArrayList<>();
+        if (compareIPs(ip1, ip2) > 0) {
+            // Si ip1 > ip2, intercambiar las IPs
+            String temp = ip1;
+            ip1 = ip2;
+            ip2 = temp;
+        }
+
+        try {
+            // Crear tareas para los dos subrangos
+            long ipStart = ipToLong(ip1);
+            long ipEnd = ipToLong(ip2);
+            long midPoint = (ipStart + ipEnd) / 2;
+
+            Future<List<String>> firstHalfFuture = executor.submit(() -> scanRange(ipStart, midPoint));
+            Future<List<String>> secondHalfFuture = executor.submit(() ->scanRange(midPoint + 1, ipEnd));
+
+            // Esperar resultados y combinarlos
+            results.addAll(firstHalfFuture.get());
+            results.addAll(secondHalfFuture.get());
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            executor.shutdown();
+        }
+
+        return results;
+    }
+        private static List<String> scanRange(long start, long end) {
+            List<String> ipList = new ArrayList<>();
+            for (long ipLong = start; ipLong <= end; ipLong++) {
+                String ip = longToIp(ipLong);
+                if (CalculoGraph.ping(ip)) { // Suponiendo que ping verifica si la IP es alcanzable
+                    ipList.add(ip);
+                    try {
+                        Thread.sleep(45); // Pausa 45ms entre ping devuelto
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                }else{
+                    try {
+                        Thread.sleep(200); // Pausa 200ms entre ping inexistene
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+            return ipList;
+        }
+
+    private int compareIPs(String ip1, String ip2) {
+        String[] parts1 = ip1.split("\\.");
+        String[] parts2 = ip2.split("\\.");
+
+        for (int i = 0; i < 4; i++) {
+            int diff = Integer.parseInt(parts1[i]) - Integer.parseInt(parts2[i]);
+            if (diff != 0) {
+                return diff;  // Si los segmentos son diferentes, devolver la diferencia
+            }
+        }
+        return 0;  // Si son iguales
+    }
+
+
 
     /**
      * Genera una dirección MAC aleatoria.
@@ -335,30 +409,9 @@ public class CalculoGraph {
         return code.equals("SW") || code.equals("RT") || code.equals("AP");
     }
 
-    /**
-     * Genera una nueva dirección IP para un equipo dentro de una red.
-     * 
-     * @param equipo El equipo para el cual se desea generar la IP.
-     * @param LAN    La red en la que se encuentra el equipo.
-     * @return Una nueva IP generada para el equipo.
-     */
-    public static String generarNuevaIP(Equipment equipo, LAN LAN) {
-        String[] parts = equipo.getIpAdresses().getFirst().split("\\.");
-        String nuevaIP = "";
-        int pool = Integer.parseInt(parts[3]);
 
-        boolean t = true;
-        while (t) {
-            t = false;
-            pool += 1;
-            nuevaIP = String.format("%s.%s.%s.%d", parts[0], parts[1], parts[2], pool);
-            for (Equipment eq :  LAN.getHardware().values()) {
-                if (eq.getIpAdresses().contains(nuevaIP)) {
-                    t = true;
-                    break;
-                }
-            }
-        }
-        return nuevaIP;
+    @Override
+    public void update() {
+        actualizar=true;
     }
 }

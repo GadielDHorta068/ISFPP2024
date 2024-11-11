@@ -1,17 +1,16 @@
 package org.isfpp.Service;
 
+import org.isfpp.connection.Factory;
 import org.isfpp.dao.EquipmentDAO;
-import org.isfpp.dao.Secuencial.EquipmentSequentialDAO;
 import org.isfpp.modelo.Equipment;
 
 import java.util.Hashtable;
-import java.util.List;
 
 public class EquipmentServiceImpl implements EquipmentService {
     private EquipmentDAO equipmentDAO;
 
     public EquipmentServiceImpl() {
-        equipmentDAO = new EquipmentSequentialDAO();
+        equipmentDAO = (EquipmentDAO) Factory.getInstancia("EQUIPMENT");
     }
 
 
@@ -32,7 +31,21 @@ public class EquipmentServiceImpl implements EquipmentService {
     }
 
     @Override
+    public void insertAllIn(String directory) {
+        equipmentDAO.insertAllIn(directory);
+    }
+
+    @Override
     public Hashtable<String, Equipment> searchAll() {
         return equipmentDAO.searchAll();
+    }
+
+    @Override
+    public Hashtable<String, Equipment> searchAllIn(String directory) {
+        return equipmentDAO.searchAllIn(directory);
+    }
+
+    public void renameFilePath(String newFileName){
+
     }
 }

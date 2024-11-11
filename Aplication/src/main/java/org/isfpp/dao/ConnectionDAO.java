@@ -9,5 +9,9 @@ public interface ConnectionDAO {
 
     void erase(Connection connection);                 // Elimina una Connection por su ID
 
-    List<Connection> searchAll();          // Lee todas las Connections
+    void insertAllIn(String directory);
+
+    List<Connection> searchAll();   // Lee todas las Connections
+
+    List<Connection> searchAllIn(String directory);
 }

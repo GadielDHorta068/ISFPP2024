@@ -3,7 +3,6 @@ package org.isfpp.interfaz.panelesEditadores;
 import org.isfpp.controller.Coordinator;
 import org.isfpp.interfaz.stylusUI.StylusUI;
 import org.isfpp.modelo.Location;
-import org.isfpp.modelo.LAN;
 
 import javax.swing.*;
 import java.awt.*;
@@ -68,4 +67,3 @@ public class EditLocationFormPanel extends JPanel {
         this.coordinator = coordinator;
     }
 }
-

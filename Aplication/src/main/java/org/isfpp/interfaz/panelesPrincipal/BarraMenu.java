@@ -1,11 +1,11 @@
 package org.isfpp.interfaz.panelesPrincipal;
 
+import org.apache.log4j.Logger;
 import org.isfpp.controller.Coordinator;
-import org.isfpp.datos.Cargar;
-import org.isfpp.datos.Guardar;
 import org.isfpp.interfaz.panelesAddons.*;
 import org.isfpp.interfaz.panelesCreadores.*;
 import org.isfpp.interfaz.panelesEditadores.*;
+import org.isfpp.logica.Lan;
 import org.isfpp.modelo.*;
 import org.isfpp.interfaz.stylusUI.StylusUI;
 
@@ -21,22 +21,21 @@ import java.util.ResourceBundle;
 
 
 public class BarraMenu {
-    private final LAN LAN;
-    private Coordinator coordinator;
+    private static final Logger log = Logger.getLogger(BarraMenu.class);
     private ResourceBundle rb;
+    private final Lan lan;
+    private Coordinator coordinator;
 
-    public BarraMenu(LAN LAN) {
-        this.LAN = LAN;
+    public BarraMenu(Lan lan) {
+        this.lan = Lan.getLan();
     }
 
     public JMenuBar crearBarraMenu() {
         JMenuBar menuBar = new JMenuBar();
         StylusUI.styleMenuBar(menuBar);
-        this.rb=coordinator.getResourceBundle();
-        if (coordinator.getSettings().getName().equals("admin")){
-            menuBar.add(crearArchivoMenu());
-            menuBar.add(crearEditarMenu());
-        }
+
+        menuBar.add(crearArchivoMenu());
+        menuBar.add(crearEditarMenu());
         menuBar.add(crearAyudaMenu());
         menuBar.add(crearHerramientasMenu());
 
@@ -44,7 +43,7 @@ public class BarraMenu {
     }
 
     private JMenu crearArchivoMenu() {
-
+        this.rb=coordinator.getResourceBundle();
         JMenu archivoMenu = new JMenu(rb.getString("archivo"));
         StylusUI.styleMenu(archivoMenu);
 
@@ -60,12 +59,8 @@ public class BarraMenu {
         fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         if (fileChooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
             String directory = fileChooser.getSelectedFile().getAbsolutePath();
-            try {
-                Cargar cargar = new Cargar();
-                coordinator.updateTablas(cargar.cargarRedDesdeDirectorio(directory));
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
+            coordinator.searchAllOf(directory);
+            coordinator.updateTablas(lan);
         }
     }
 
@@ -75,15 +70,9 @@ public class BarraMenu {
         if (fileChooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
             String directory = fileChooser.getSelectedFile().getAbsolutePath();
             File dataDir = new File(fileChooser.getSelectedFile(), "data");
-            if (!dataDir.exists()) {
-                dataDir.mkdirs(); // Crea la subcarpeta 'data' si no existe
-            }
-            try {
-                Guardar guardar = new Guardar();
-                guardar.saveAll(LAN, directory);
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
+
+            coordinator.insertAllInto(directory);
+
         }
     }
 
@@ -91,34 +80,57 @@ public class BarraMenu {
         JMenu editarMenu = new JMenu(rb.getString("editar"));
         StylusUI.styleMenu(editarMenu);
 
-        editarMenu.add(crearMenuItem(rb.getString("agregar_equipo"), e -> {
+        JMenu subMenuAgregar = new JMenu(rb.getString("agregar"));
+        editarMenu.add(subMenuAgregar);
+        StylusUI.styleMenu(subMenuAgregar);
+        subMenuAgregar.setBackground(StylusUI.COLOR_PRIMARIO);
+        subMenuAgregar.setOpaque(true);
+
+
+        subMenuAgregar.add(crearMenuItem(rb.getString("agregar_equipo"), e -> {
             EquipmentFormPanel equipmentPanel = new EquipmentFormPanel();
             equipmentPanel.setCoordinator(coordinator);
             equipmentPanel.run();
         }));
 
-        editarMenu.add(crearMenuItem(rb.getString("agregar_puerto"), e -> {
+        subMenuAgregar.add(crearMenuItem(rb.getString("agregar_puerto"), e -> {
             PortTypeFormPanel portTypePanel = new PortTypeFormPanel();
             portTypePanel.setCoordinator(coordinator);
             portTypePanel.run();
         }));
 
-        editarMenu.add(crearMenuItem(rb.getString("agregar_ubicacion"), e -> {
+        subMenuAgregar.add(crearMenuItem(rb.getString("agregar_ubicacion"), e -> {
             LocationFormPanel locationPanel = new LocationFormPanel();
             locationPanel.setCoordinator(coordinator);
             locationPanel.run();
         }));
 
-        editarMenu.add(crearMenuItem(rb.getString("agregar_connexion"), e -> {
+        subMenuAgregar.add(crearMenuItem(rb.getString("agregar_connexion"), e -> {
             EditConnection editConnection = new EditConnection();
             editConnection.setCoordinator(coordinator);
             editConnection.run(null);
         }));
 
+        subMenuAgregar.add(crearMenuItem(rb.getString("agregar_tipo_de_cable"), e -> {
+            WireTypeFromPanel wireTypeFromPanel= new WireTypeFromPanel();
+            wireTypeFromPanel.setCoordinator(coordinator);
+            wireTypeFromPanel.run();
+        }));
+
         editarMenu.add(crearMenuItem(rb.getString("eliminar"), this::accionEliminar));
         editarMenu.add(crearMenuItem(rb.getString("editar_puerto"), this::accionEditarPuerto));
-        editarMenu.add(crearMenuItem(rb.getString("editar"), this::accionEditar));
 
+        JMenu subMenuEditar = new JMenu(rb.getString("modificar"));
+        editarMenu.add(subMenuEditar);
+        StylusUI.styleMenu(subMenuEditar);
+        subMenuEditar.setBackground(StylusUI.COLOR_PRIMARIO);
+        subMenuEditar.setOpaque(true);
+
+        subMenuEditar.add(crearMenuItem(rb.getString("editar_equipo"), this::accionEditar));
+        subMenuEditar.add(crearMenuItem(rb.getString("editar_conexión"), this::accionEditar));
+        subMenuEditar.add(crearMenuItem(rb.getString("editar_ubicacion"), this::accionEditar));
+        subMenuEditar.add(crearMenuItem(rb.getString("editar_tipo_de_cable"), this::accionEditar));
+        subMenuEditar.add(crearMenuItem(rb.getString("editar_tipo_de_puerto"), this::accionEditar));
 
         return editarMenu;
     }
@@ -126,13 +138,12 @@ public class BarraMenu {
     private void accionEditarPuerto(ActionEvent actionEvent) {
         Object seleccionado = coordinator.getSelectedItem();
         if (seleccionado != null) {
-            switch (seleccionado) {
-                case Equipment equipment -> {
-                    EditPortsFromEquipment ed = new EditPortsFromEquipment();
-                    ed.setCoordinator(coordinator);
-                    ed.run(equipment.getCode());
-                }
-                default ->  JOptionPane.showMessageDialog(null, rb.getString("seleccionar_equipo"));
+            if (seleccionado instanceof Equipment equipment) {
+                EditPortsFromEquipment ed = new EditPortsFromEquipment();
+                ed.setCoordinator(coordinator);
+                ed.run(equipment.getCode());
+            } else {
+                JOptionPane.showMessageDialog(null, rb.getString("seleccionar_equipo"));
             }
         }
     }
@@ -147,8 +158,8 @@ public class BarraMenu {
                 case Connection connection -> coordinator.eraseConnection(connection);
                 default -> System.out.println(rb.getString("clase_no_detectada") + seleccionado.getClass());
             }
-        } else {
-            JOptionPane.showMessageDialog(null,rb.getString( "sin_seleccion"));
+        }else {
+            JOptionPane.showMessageDialog(null,rb.getString( "seleccionar_item"));
         }
     }
 
@@ -172,12 +183,13 @@ public class BarraMenu {
                     portTypePanel.run(puerto.getCode());
                 }
                 case Connection connection -> {
+                    EditConnection editConnection = new EditConnection();
+                    editConnection.setCoordinator(coordinator);
+                    editConnection.run(connection);
                     JOptionPane.showMessageDialog(null,rb.getString( "Error_crear_conexion"));
                 }
                 default -> System.out.println(rb.getString("clase_no_detectada") + seleccionado.getClass());
             }
-        }else {
-            JOptionPane.showMessageDialog(null,rb.getString( "sin_seleccion"));
         }
     }
 
@@ -240,8 +252,6 @@ public class BarraMenu {
         }
     }
 
-
-
     private JMenu crearHerramientasMenu() {
         JMenu herramientasMenu = new JMenu(rb.getString("herramientas"));
         StylusUI.styleMenu(herramientasMenu);
@@ -259,30 +269,32 @@ public class BarraMenu {
     private void alternarEstado() {
         if (coordinator.getSelectedItem() instanceof Equipment equipo){
             equipo.setStatus(!equipo.isStatus());
-            coordinator.updateTablas(LAN);
+            coordinator.updateTablas(lan);
+        }else {
+            JOptionPane.showMessageDialog(null, rb.getString("seleccionar_equipo"));
         }
     }
 
     private void iniciarVerGrafo() {
-        VisualizarGrafo visualizarGrafo=new VisualizarGrafo();
-        visualizarGrafo.setCoordinator(coordinator);
-        visualizarGrafo.Visualizar();
+        ViewGraph viewGraph =new ViewGraph();
+        viewGraph.setCoordinator(coordinator);
+        viewGraph.Visualizar();
     }
 
     private void iniciarPing() {
-        IPFrame ipFrame = new IPFrame();
-        ipFrame.setCoordinator(coordinator);
-        ipFrame.scanIp();
+        PingAll pingAll = new PingAll();
+        pingAll.setCoordinator(coordinator);
+        pingAll.scanIp();
     }
 
     private void iniciarPingEquipos() {
-        PingListEquipment pingList = new PingListEquipment();
+        ActiveEquipments pingList = new ActiveEquipments();
         pingList.setCoordinator(coordinator);
         pingList.ping();
     }
 
     private void iniciarConnectionIssues() {
-        ConnectionIssues connection = new ConnectionIssues();
+        ConnectionsTo connection = new ConnectionsTo();
         connection.setCoordinator(coordinator);
         connection.scanIp();
     }

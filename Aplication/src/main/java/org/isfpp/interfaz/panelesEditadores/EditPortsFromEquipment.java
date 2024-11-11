@@ -1,18 +1,22 @@
 package org.isfpp.interfaz.panelesEditadores;
 
+import org.apache.log4j.Logger;
 import org.isfpp.controller.Coordinator;
 import org.isfpp.interfaz.stylusUI.StylusUI;
+import org.isfpp.logica.Lan;
 import org.isfpp.modelo.Equipment;
 import org.isfpp.modelo.Port;
 import org.isfpp.modelo.PortType;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
 public class EditPortsFromEquipment extends JPanel {
+    private final static org.apache.log4j.Logger logger = Logger.getLogger(EditPortsFromEquipment.class);
     private Coordinator coordinator;
     private ResourceBundle rb;
 
@@ -25,7 +29,7 @@ public class EditPortsFromEquipment extends JPanel {
 
         setLayout(new BorderLayout());
 
-        List<PortType> portTypes = new java.util.ArrayList<>(coordinator.getPortTypes().values());
+        List<PortType> portTypes = new ArrayList<>(coordinator.getPortTypes().values());
         Equipment equipment = coordinator.getHardware().get(codeOriginal);
         Map<PortType, Integer> portQuantities = equipment.getAllPortsTypes();
 
@@ -107,10 +111,13 @@ public class EditPortsFromEquipment extends JPanel {
 
         createButton.addActionListener(e -> {
             JOptionPane.showMessageDialog(this, rb.getString("Tipo_de_puerto_modificado_exito"));
+            logger.info("puerto editado, equipo: "+ equipment.getCode());
             frame.setVisible(false);
         });
 
         frame.add(this);
+        frame.pack();
+        frame.setSize(470,frame.getHeight());
         frame.setVisible(true);
     }
 

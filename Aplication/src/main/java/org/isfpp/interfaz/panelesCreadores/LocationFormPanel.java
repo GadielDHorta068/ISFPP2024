@@ -2,7 +2,6 @@ package org.isfpp.interfaz.panelesCreadores;
 
 import org.isfpp.controller.Coordinator;
 import org.isfpp.interfaz.stylusUI.StylusUI;
-import org.isfpp.modelo.LAN;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,7 +13,7 @@ public class LocationFormPanel extends JPanel {
     private ResourceBundle rb;
     private Coordinator coordinator;
     public LocationFormPanel(){}
-
+    
     public void run() {
         this.rb=coordinator.getResourceBundle();
 

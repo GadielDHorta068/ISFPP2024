@@ -1,4 +1,5 @@
 package org.isfpp.dao;
+import org.isfpp.modelo.Equipment;
 import org.isfpp.modelo.Location;
 
 import java.util.HashMap;
@@ -12,5 +13,10 @@ public interface LocationDAO {
 
     void erase(Location location);             // Elimina un Location por su ID
 
+    void insertAllIn(String directory);
+
     Hashtable<String,Location> searchAll();        // Lee todos los Locations
+
+    Hashtable<String, Location> searchAllIn(String directory);
+
 }

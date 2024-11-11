@@ -4,7 +4,7 @@ import org.isfpp.interfaz.stylusUI.StylusUI;
 import org.isfpp.modelo.Connection;
 import org.isfpp.modelo.Equipment;
 import org.isfpp.modelo.Location;
-import org.isfpp.modelo.LAN;
+import org.isfpp.logica.Lan;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -24,7 +24,7 @@ public class DesplegableComponent<T> {
     private JTable table;
     private List<T> dataList;
     private Coordinator coordinator;
-    private LAN LAN;
+    private Lan lan;
     private ResourceBundle rb;
     private PanelDerecho panelDerecho;
 
@@ -59,15 +59,20 @@ public class DesplegableComponent<T> {
      * Método para actualizar los datos de la tabla.
      */
     public void updateTable() {
+        if (coordinator.getSelectedItem() != null){
+            if(coordinator.getSelectedItem() instanceof Equipment) {
+                panelDerecho.updateProperties(coordinator.getSelectedItem());
+            }
+        }
         rb=coordinator.getResourceBundle();
         // Inicializa dataList basado en el tipo del primer elemento
-        Object e = dataList.isEmpty() ? null : dataList.get(0);
+        Object e = dataList.isEmpty() ? null : dataList.getFirst();
         if (e instanceof Equipment) {
-            dataList = (List<T>) new ArrayList<>(LAN.getHardware().values());
+            dataList = (List<T>) new ArrayList<>(lan.getHardware().values());
         } else if (e instanceof Location) {
-            dataList = (List<T>) new ArrayList<>(LAN.getLocations().values());
+            dataList = (List<T>) new ArrayList<>(lan.getLocations().values());
         } else if (e instanceof Connection) {
-            dataList = (List<T>) new ArrayList<>(LAN.getConnections());
+            dataList = (List<T>) new ArrayList<>(lan.getConnections());
         }
 
         Object[][] data = new Object[dataList.size()][3];
@@ -95,16 +100,14 @@ public class DesplegableComponent<T> {
                     data[i][2] = connection;
                 }
                 case null, default -> {
+                    assert item != null;
                     data[i][0] = item.toString();
                     data[i][1] = "";
                     data[i][2] = item;
                 }
             }
 
-
         }
-
-        panelDerecho.updateProperties(coordinator.getSelectedItem());
 
         // Aquí vuelves a crear el modelo, pero asegúrate de que siga siendo no editable
         DefaultTableModel model = new DefaultTableModel(data, new String[]{rb.getString("nombre"), rb.getString("descripcion"), rb.getString("objeto")}) {
@@ -144,9 +147,9 @@ public class DesplegableComponent<T> {
      * @param panelDerecho El panel derecho donde se mostrarán propiedades adicionales.
      */
     public void IniciarTabla(String titulo, List<T> dataList, PanelDerecho panelDerecho) {
-        this.LAN = this.coordinator.getWeb();
-        this.dataList = dataList;
         this.panelDerecho = panelDerecho;
+        this.lan = this.coordinator.getWeb();
+        this.dataList = dataList;
         rb = coordinator.getResourceBundle();
 
         panel = new JPanel();
@@ -230,7 +233,10 @@ public class DesplegableComponent<T> {
                                 panelDerecho.updateProperties(selectedConnection);
                         case null, default ->
                             // Fallback para cualquier otro tipo de objeto
-                                panelDerecho.updateProperties(selectedItem.toString(), rb.getString("descripcion_no_disponible"));
+                        {
+                            assert selectedItem != null;
+                            panelDerecho.updateProperties(selectedItem.toString(), rb.getString("descripcion_no_disponible"));
+                        }
                     }
                 }
             }

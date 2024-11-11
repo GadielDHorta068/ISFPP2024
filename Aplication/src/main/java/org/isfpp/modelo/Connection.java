@@ -40,10 +40,15 @@ public class Connection {
 		}
 
         // Configuramos los puertos y marcamos como en uso
+
 		setPort1(port1);
-		port1.setInUse(true);
+		if(!port1.getPortType().getCode().equals("WiFi")){
+			port1.setInUse(true);
+		}
 		setPort2(port2);
 		port2.setInUse(true);
+
+
 
         // Configuramos el tipo de cable
 		setWire(wire);

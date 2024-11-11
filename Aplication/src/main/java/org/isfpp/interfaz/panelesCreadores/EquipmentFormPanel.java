@@ -6,7 +6,6 @@ import org.isfpp.interfaz.stylusUI.StylusUI;
 import org.isfpp.modelo.EquipmentType;
 import org.isfpp.modelo.Location;
 import org.isfpp.modelo.PortType;
-import org.isfpp.modelo.LAN;
 
 import javax.swing.*;
 import java.awt.*;
@@ -89,10 +88,10 @@ public class EquipmentFormPanel extends JPanel {
 
         JLabel estado = new JLabel(rb.getString("estado_activo"));
         StylusUI.aplicarEstiloEtiqueta(estado);
-        formPanel.add(estado);
+        //formPanel.add(estado);
         statusCheckBox = new JCheckBox();
         StylusUI.aplicarEstiloCheckBox(statusCheckBox);
-        formPanel.add(statusCheckBox);
+        //formPanel.add(statusCheckBox);
 
 
         add(formPanel, BorderLayout.CENTER);
@@ -109,7 +108,7 @@ public class EquipmentFormPanel extends JPanel {
             EquipmentType equipmentType = (EquipmentType) equipmentTypeCombo.getSelectedItem();
             Location location = (Location) locationCombo.getSelectedItem();
             PortType portType = (PortType) portTypeCombo.getSelectedItem();
-            boolean status = statusCheckBox.isSelected();
+            boolean status = true;
 
             if (Objects.equals(code, "")) {
                 JOptionPane.showMessageDialog(this, rb.getString("codigo_no_vacio"),rb.getString( "error"), JOptionPane.ERROR_MESSAGE);
@@ -134,7 +133,7 @@ public class EquipmentFormPanel extends JPanel {
 
         frame.add(this);
         frame.setVisible(true);
-
+        frame.pack();
     }
 
     public void setCoordinator(Coordinator coordinator) {

@@ -1,8 +1,10 @@
 package org.isfpp.controller;
 
-import org.isfpp.interfaz.panelesCreadores.MainMenu;
+import org.isfpp.interfaz.panelesPrincipal.MainMenu;
 import org.isfpp.interfaz.panelesPrincipal.DesplegableComponent;
+import org.isfpp.interfaz.panelesPrincipal.PanelDerecho;
 import org.isfpp.logica.CalculoGraph;
+import org.isfpp.logica.Lan;
 import org.isfpp.modelo.*;
 import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
@@ -14,7 +16,7 @@ import java.util.*;
  * La clase Coordinator es responsable de gestionar diversas funcionalidades relacionadas con la web y sus componentes.
  */
 public class Coordinator {
-    private LAN LAN;
+    private Lan lan;
     private CalculoGraph calculoGraph;
     private MainMenu mainMenu;
     private Object selectedItem;
@@ -25,7 +27,7 @@ public class Coordinator {
      * Constructor por defecto de la clase Coordinator.
      */
     public Coordinator() {
-        this.LAN = null;
+        this.lan = null;
         this.calculoGraph = null;
         this.mainMenu = null;
         this.selectedItem = null;
@@ -54,17 +56,17 @@ public class Coordinator {
      *
      * @return el objeto Web.
      */
-    public LAN getWeb() {
-        return LAN;
+    public Lan getWeb() {
+        return lan;
     }
 
     /**
      * Establece el objeto Web.
      *
-     * @param LAN el objeto Web a establecer.
+     * @param lan el objeto Web a establecer.
      */
-    public void setWeb(LAN LAN) {
-        this.LAN = LAN;
+    public void setWeb(Lan lan) {
+        this.lan = lan;
     }
 
     /**
@@ -73,7 +75,7 @@ public class Coordinator {
      * @return un HashMap con el hardware de la red.
      */
     public HashMap<String, Equipment> getHardware() {
-        return LAN.getHardware();
+        return lan.getHardware();
     }
 
     /**
@@ -82,7 +84,7 @@ public class Coordinator {
      * @param hardware un HashMap con el hardware a establecer.
      */
     public void setHardware(HashMap<String, Equipment> hardware) {
-        LAN.setHardware(hardware);
+        lan.setHardware(hardware);
     }
 
     /**
@@ -91,7 +93,7 @@ public class Coordinator {
      * @return un ArrayList con las conexiones de la red.
      */
     public ArrayList<Connection> getConnections() {
-        return LAN.getConnections();
+        return lan.getConnections();
     }
 
     /**
@@ -100,7 +102,7 @@ public class Coordinator {
      * @param conections un ArrayList con las conexiones a establecer.
      */
     public void setConnections(ArrayList<Connection> conections) {
-        this.LAN.setConnections(conections);
+        this.lan.setConnections(conections);
     }
 
     /**
@@ -109,7 +111,7 @@ public class Coordinator {
      * @return un HashMap con las ubicaciones de la red.
      */
     public HashMap<String, Location> getLocations() {
-        return LAN.getLocations();
+        return lan.getLocations();
     }
 
     /**
@@ -118,7 +120,7 @@ public class Coordinator {
      * @param locations un HashMap con las ubicaciones a establecer.
      */
     public void setLocations(HashMap<String, Location> locations) {
-        this.LAN.setLocations(locations);
+        this.lan.setLocations(locations);
     }
 
     /**
@@ -127,9 +129,8 @@ public class Coordinator {
      * @return el nombre de la red.
      */
     public String getNombre() {
-        return LAN.getNombre();
+        return lan.getNombre();
     }
-    public String getUser(){return settings.getName();}
 
     /**
      * Establece el nombre de la red.
@@ -137,7 +138,7 @@ public class Coordinator {
      * @param nombre el nombre a establecer.
      */
     public void setNombre(String nombre) {
-        LAN.setNombre(nombre);
+        lan.setNombre(nombre);
     }
 
     /**
@@ -148,7 +149,7 @@ public class Coordinator {
      * @return la ubicación agregada.
      */
     public Location addLocation(String code, String description) {
-        return LAN.addLocation(code, description);
+        return lan.addLocation(code, description);
     }
 
     /**
@@ -157,7 +158,7 @@ public class Coordinator {
      * @param l la ubicación a eliminar.
      */
     public void eraseLocation(Location l) {
-        LAN.eraseLocation(l);
+        lan.eraseLocation(l);
     }
 
     /**
@@ -169,7 +170,7 @@ public class Coordinator {
      * @return el puerto agregado.
      */
     public PortType addPort(String code, String description, int speed) {
-        return LAN.addPort(code, description, speed);
+        return lan.addPort(code, description, speed);
     }
 
     /**
@@ -181,7 +182,7 @@ public class Coordinator {
      * @return el cable agregado.
      */
     public WireType addWire(String code, String description, int speed) {
-        return LAN.addWire(code, description, speed);
+        return lan.addWire(code, description, speed);
     }
 
     /**
@@ -192,7 +193,7 @@ public class Coordinator {
      * @return el tipo de equipo agregado.
      */
     public EquipmentType addEquipmentType(String code, String description) {
-        return LAN.addEquipmentType(code, description);
+        return lan.addEquipmentType(code, description);
     }
 
     /**
@@ -211,7 +212,7 @@ public class Coordinator {
      */
     public Equipment addEquipment(String code, String description, String marca, String model, PortType portType, int cantidad,
                                   EquipmentType equipmentType, Location location, Boolean status) {
-        return LAN.addEquipment(code, description, marca, model, portType, cantidad, equipmentType, location, status);
+        return lan.addEquipment(code, description, marca, model, portType, cantidad, equipmentType, location, status);
     }
 
     /**
@@ -220,7 +221,7 @@ public class Coordinator {
      * @param e el equipo a eliminar.
      */
     public void eraseEquipment(Equipment e) {
-        LAN.eraseEquipment(e);
+        lan.eraseEquipment(e);
     }
 
     /**
@@ -229,7 +230,7 @@ public class Coordinator {
      * @param w el cable a eliminar.
      */
     public void eraseWire(WireType w) {
-        LAN.eraseWire(w);
+        lan.eraseWire(w);
     }
 
     /**
@@ -238,7 +239,7 @@ public class Coordinator {
      * @param portType el puerto a eliminar.
      */
     public void erasePort(PortType portType) {
-        LAN.erasePort(portType);
+        lan.erasePort(portType);
     }
 
     /**
@@ -250,7 +251,7 @@ public class Coordinator {
      * @return la conexión agregada.
      */
     public Connection addConnection(Port port1, Port port2, WireType wire) {
-        return LAN.addConnection(port1, port2, wire);
+        return lan.addConnection(port1, port2, wire);
     }
 
     /**
@@ -259,7 +260,7 @@ public class Coordinator {
      * @param connection la conexión a eliminar.
      */
     public void eraseConnection(Connection connection) {
-        LAN.eraseConnection(connection);
+        lan.eraseConnection(connection);
     }
 
     /**
@@ -341,20 +342,21 @@ public class Coordinator {
     /**
      * Escanea una dirección IP.
      *
-     * @param ip la dirección IP a escanear.
+     * @param ip   la dirección IP a escanear.
+     * @param text
      * @return una lista de resultados del escaneo.
      */
-    public List<String> scanIP(String ip) {
-        return calculoGraph.scanIP(ip);
+    public List<String> scanIP(String ip1, String ip2) {
+        return calculoGraph.scanIP(ip1,ip2);
     }
 
     /**
      * Carga los datos de la web.
      *
-     * @param LAN la web cuyos datos se van a cargar.
+     * @param lan la web cuyos datos se van a cargar.
      */
-    public void LoadData(LAN LAN) {
-        this.calculoGraph.LoadData(LAN);
+    public void LoadData(Lan lan) {
+        this.calculoGraph.LoadData(lan);
     }
 
     /**
@@ -375,17 +377,6 @@ public class Coordinator {
         this.selectedItem = selectedItem;
     }
 
-    /**
-     * Actualiza las tablas de la interfaz.
-     */
-
-    public void updateTablas(LAN w1) {
-        this.LoadData(w1);
-        for (DesplegableComponent tabla : tablas) {
-            tabla.updateTable();
-        }
-    }
-
 
     /**
      * Agrega un componente desplegable a las tablas.
@@ -403,24 +394,107 @@ public class Coordinator {
     }
 
     public void updateConnection(Connection c, Connection connection) {
-        LAN.updateConnection(c,connection);
+        lan.updateConnection(c,connection);
     }
 
-    public HashMap<Object, EquipmentType> getEquipmentTypes() {return LAN.getEquipmentTypes();
+    public HashMap<Object, EquipmentType> getEquipmentTypes() {return lan.getEquipmentTypes();
     }
 
-    public HashMap<String, PortType> getPortTypes() { return LAN.getPortTypes();}
+    public HashMap<String, PortType> getPortTypes() { return lan.getPortTypes();}
 
-    public HashMap<String, WireType> getWireTypes() { return LAN.getWireTypes();
+    public HashMap<String, WireType> getWireTypes() { return lan.getWireTypes();
     }
 
-    public void updateEquipment(String codeOriginal, Equipment equipment) {LAN.updateEquipment(codeOriginal, equipment);
+    public void updateEquipment(String codeOriginal, Equipment equipment) {lan.updateEquipment(codeOriginal, equipment);
     }
 
-    public void updateLocation(String codeOriginial, Location location) { LAN.updateLocation(codeOriginial, location);
+    public void updateLocation(String codeOriginial, Location location) { lan.updateLocation(codeOriginial, location);
     }
 
-    public void updatePortType(String codeOriginal, PortType port) {LAN.updatePortType(codeOriginal, port);
+    public void updatePortType(String codeOriginal, PortType port) {lan.updatePortType(codeOriginal, port);
+    }
+    /**
+     * Actualiza las tablas de la interfaz.
+     */
+
+    public void updateTablas(Lan l1) {
+        this.LoadData(l1);
+        for (DesplegableComponent tabla : tablas) {
+            tabla.updateTable();
+        }
+
+    }
+
+    //metodos searchAllOf de Web, (lectura)
+    public void searchAllLocarionOf(String directory){
+        lan.addAllLocationOf(directory);
+    }
+
+    public void searchAllWireTypeOf(String directory){
+        lan.addAllWiretypeOf(directory);
+    }
+
+    public void searchAllEquipmentType(String directory){
+        lan.addAllEquipmentTypeOf(directory);
+    }
+
+    public void searchAllPortType(String directory){
+        lan.addAllPortTypeOf(directory);
+    }
+
+    public void searchAllEquipmentOf(String diretory){
+        lan.addAllEquipmentOf(diretory);
+    }
+
+    public void searchAllConnectionOf(String directory){
+        lan.addAllConnectionOf(directory);
+    }
+
+    public void searchAllOf(String directory){
+        searchAllLocarionOf(directory);
+        searchAllWireTypeOf(directory);
+        searchAllEquipmentType(directory);
+        searchAllPortType(directory);
+        searchAllEquipmentOf(directory);
+        searchAllConnectionOf(directory);
+    }
+
+    //metodos insertALl de Web, (escritor)
+    public void insertAllEquipmentInto(String directory){
+        lan.insertAllWireTypeInto(directory);
+    }
+
+    public void insertAllConnectionInto(String directory){
+        lan.insertAllConnectionInto(directory);
+    }
+
+    public void insertAllLocationInto(String directory){
+        lan.insertAllLocationInto(directory);
+    }
+
+    public void insertAllPortTypeInto(String directory){
+        lan.insertAllPortTypeInto(directory);
+    }
+
+    public void insertAllWireTypeInto(String directory){
+        lan.insertAllPortTypeInto(directory);
+    }
+
+    public void insertAllEquipmentTypeInto(String directory){
+        lan.insertAllEquipmentTypeInto(directory);
+    }
+
+    public void insertAllInto(String directory){
+        insertAllConnectionInto(directory);
+        insertAllEquipmentInto(directory);
+        insertAllEquipmentTypeInto(directory);
+        insertAllLocationInto(directory);
+        insertAllPortTypeInto(directory);
+        insertAllWireTypeInto(directory);
+    }
+
+    public String getUser() {
+       return settings.getName();
     }
 
     public Settings getSettings(){

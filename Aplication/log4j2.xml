@@ -1,0 +1,12 @@
+<RollingFile name="roll-by-size"
+             fileName="target/log4j2/roll-by-size/app.log"
+             filePattern="target/log4j2/roll-by-size/app.%d{dd-MM-yyyy}-%i.log.gz"
+             ignoreExceptions="false">
+    <PatternLayout>
+        <Pattern>%d{yyyy-MM-dd HH:mm:ss} %p %m%n</Pattern>
+    </PatternLayout>
+    <Policies>
+        <OnStartupTriggeringPolicy/>
+        <SizeBasedTriggeringPolicy size="5 KB"/>
+    </Policies>
+</RollingFile>

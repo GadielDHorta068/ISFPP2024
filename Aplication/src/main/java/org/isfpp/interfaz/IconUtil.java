@@ -34,7 +34,6 @@ public class IconUtil {
         String iconFileName = prop.getProperty("icon." + iconName);
         if (iconFileName != null) {
             ImageIcon icon = new ImageIcon(IconUtil.class.getClassLoader().getResource(iconFileName));
-
             // Convertimos el ImageIcon a BufferedImage
             Image image = icon.getImage();
             BufferedImage bufferedImage = new BufferedImage(image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_ARGB);
@@ -59,7 +58,7 @@ public class IconUtil {
      * @param args argumentos de la línea de comandos
      */
     public static void main(String[] args) {
-        ImageIcon icon = IconUtil.getIcon("pc");
+        ImageIcon icon = IconUtil.getIcon("charly");
         if (icon != null) {
             JOptionPane.showMessageDialog(null, "Icono cargado", "Icono", JOptionPane.INFORMATION_MESSAGE, icon);
         }
