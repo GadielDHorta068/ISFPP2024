@@ -8,6 +8,7 @@
     <option name="originalFiles">
       <list>
         <option value="$PROJECT_DIR$/Aplication/pom.xml" />
+        <option value="$MAVEN_REPOSITORY$/log4j/log4j/1.2.17/log4j-1.2.17.1.jar/pom.xml" />
       </list>
     </option>
   </component>
