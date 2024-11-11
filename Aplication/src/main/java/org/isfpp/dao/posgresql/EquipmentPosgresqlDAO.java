@@ -226,7 +226,7 @@ public class EquipmentPosgresqlDAO implements EquipmentDAO {
 
             // 2. Inserta los puertos usando el código generado
             HashMap<PortType, Integer> ports = equipment.getAllPortsTypes();
-            if (ports.size() > 1) {
+            if (!ports.isEmpty()) {
                 String insertsPortFormat = ports.entrySet().stream()
                         .map(entry -> String.format("INSERT INTO poo2024.RCG_equipment_port (cantidad, code_port_type, code_equipment) " +
                                         "VALUES (%d, '%s', '%s')",
@@ -396,9 +396,10 @@ public class EquipmentPosgresqlDAO implements EquipmentDAO {
                         }
                     }
                     String ip = rs.getString("ip");
-                    if (ip != null)
+                    if (ip != null && !equipment.getIpAdresses().contains(ip)) {
+                        System.out.println(ip);
                         equipment.addIp(ip);
-
+                    }
                 }
                 rs.close();
                 pstm.close();
