@@ -396,9 +396,10 @@ public class EquipmentPosgresqlDAO implements EquipmentDAO {
                         }
                     }
                     String ip = rs.getString("ip");
-                    if (ip != null)
+                    if (ip != null && !equipment.getIpAdresses().contains(ip)) {
+                        System.out.println(ip);
                         equipment.addIp(ip);
-
+                    }
                 }
                 rs.close();
                 pstm.close();
