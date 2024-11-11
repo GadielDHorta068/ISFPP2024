@@ -77,7 +77,6 @@ public class ConnectionsTo {
                     JOptionPane.showMessageDialog(frame, exception.getMessage());
                 }
             }
-
         });
 
 
