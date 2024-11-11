@@ -25,6 +25,8 @@ public class VisualizarGrafo extends JFrame {
     private ResourceBundle rb;
 
     public VisualizarGrafo() throws HeadlessException {
+        setLayout(new BorderLayout());  // Establecer el Layout a BorderLayout
+
     }
     public void Visualizar() {
         this.rb=coordinator.getResourceBundle();
@@ -69,18 +71,16 @@ public class VisualizarGrafo extends JFrame {
         }
 
 
-        mxGraphComponent graphComponent = new mxGraphComponent(mxGraph);
-        graphComponent.getViewport().setBackground(StylusUI.COLOR_PRIMARIO);
-        getContentPane().add(graphComponent);
-
-        // Aplicar un layout orgánico al grafo (evita que se superpongan los nodos)
         mxOrganicLayout layout = new mxOrganicLayout(mxGraph);
-
         layout.execute(mxGraph.getDefaultParent());
 
+        mxGraphComponent graphComponent = new mxGraphComponent(mxGraph);
+        graphComponent.getViewport().setBackground(StylusUI.COLOR_PRIMARIO);
+        add(graphComponent, BorderLayout.SOUTH);  // Coloca el componente en la parte superior
         setTitle(rb.getString("ver_grafo"));
         setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         pack();
+
         setVisible(true);
     }
 
