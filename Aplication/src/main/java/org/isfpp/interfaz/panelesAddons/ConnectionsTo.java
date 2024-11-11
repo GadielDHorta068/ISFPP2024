@@ -59,6 +59,7 @@ public class ConnectionsTo {
 
         textArea = new JTextArea();
         textArea.setEditable(false);
+        textArea.setFont(textArea.getFont().deriveFont(Font.PLAIN, 20));
         JScrollPane scrollPane = new JScrollPane(textArea);
         JButton scanButton = new JButton(rb.getString("conexiones"));
         scanButton.addActionListener(new ActionListener() {
@@ -76,6 +77,7 @@ public class ConnectionsTo {
                     JOptionPane.showMessageDialog(frame, exception.getMessage());
                 }
             }
+
         });
 
 

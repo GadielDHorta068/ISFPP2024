@@ -34,6 +34,7 @@ public class ActiveEquipments {
         updateTextArea();
         frame.getContentPane().add(scrollPane, BorderLayout.CENTER);
         StylusUI.aplicarEstiloScrollPane(scrollPane);
+        frame.pack();
         StylusUI.styleTextArea(textArea);
         frame.setVisible(true);
 

@@ -1,5 +1,6 @@
 package org.isfpp.interfaz.panelesAddons;
 
+import com.mxgraph.layout.hierarchical.mxHierarchicalLayout;
 import com.mxgraph.layout.mxOrganicLayout;
 import com.mxgraph.swing.mxGraphComponent;
 import com.mxgraph.util.mxConstants;
@@ -23,7 +24,7 @@ public class ViewGraph extends JFrame {
     private ResourceBundle rb;
 
     public ViewGraph() throws HeadlessException {
-        setLayout(new BorderLayout());  // Establecer el Layout a BorderLayout
+     //   setLayout(new BorderLayout());  // Establecer el Layout a BorderLayout
 
     }
     public void Visualizar() {
@@ -69,8 +70,12 @@ public class ViewGraph extends JFrame {
         }
 
 
-        mxOrganicLayout layout = new mxOrganicLayout(mxGraph);
+// Crear el layout con configuraciones para una distribución horizontal
+        mxHierarchicalLayout layout = new mxHierarchicalLayout(mxGraph);
+        layout.setOrientation(SwingConstants.WEST);  // Establecer orientación horizontal
+
         layout.execute(mxGraph.getDefaultParent());
+
 
         mxGraphComponent graphComponent = new mxGraphComponent(mxGraph);
         graphComponent.getViewport().setBackground(StylusUI.COLOR_PRIMARIO);
@@ -78,6 +83,7 @@ public class ViewGraph extends JFrame {
         setTitle(rb.getString("ver_grafo"));
         setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         pack();
+        setResizable(false);
         setVisible(true);
     }
 

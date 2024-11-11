@@ -87,6 +87,7 @@ public class PingAll {
                 ipFinal.setText("");
                 JOptionPane.showMessageDialog(frame, exception.getMessage());
             }
+            frame.pack();
         });
 
         JPanel northPanel = new JPanel();
@@ -108,7 +109,7 @@ public class PingAll {
         System.out.println(direcciones.size());
 
         for (String direccion : direcciones) {
-            textArea.append(direccion + "\n");
+            textArea.append(direccion + "\n" + "\n");
         }
 
     }

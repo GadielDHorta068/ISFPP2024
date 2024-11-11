@@ -30,7 +30,7 @@ public class App {
         App app = new App();
         app.inicio();
         app.launch();
-        app.minitest();
+      //  app.minitest();
 
     }
 
