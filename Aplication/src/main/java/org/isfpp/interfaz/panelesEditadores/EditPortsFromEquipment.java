@@ -116,6 +116,8 @@ public class EditPortsFromEquipment extends JPanel {
         });
 
         frame.add(this);
+        frame.pack();
+        frame.setSize(470,frame.getHeight());
         frame.setVisible(true);
     }
 

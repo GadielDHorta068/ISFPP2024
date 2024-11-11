@@ -1,6 +1,5 @@
 package org.isfpp.interfaz.panelesAddons;
 
-import com.mxgraph.layout.mxCompactTreeLayout;
 import com.mxgraph.layout.mxOrganicLayout;
 import com.mxgraph.swing.mxGraphComponent;
 import com.mxgraph.util.mxConstants;
@@ -11,7 +10,6 @@ import org.isfpp.interfaz.stylusUI.StylusUI;
 import org.isfpp.modelo.Connection;
 import org.isfpp.modelo.Equipment;
 import org.jgrapht.Graph;
-import org.jgrapht.graph.SimpleGraph;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,12 +17,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 
-public class VisualizarGrafo extends JFrame {
+public class ViewGraph extends JFrame {
     private Properties properties;
     private Coordinator coordinator;
     private ResourceBundle rb;
 
-    public VisualizarGrafo() throws HeadlessException {
+    public ViewGraph() throws HeadlessException {
         setLayout(new BorderLayout());  // Establecer el Layout a BorderLayout
 
     }
@@ -76,11 +74,10 @@ public class VisualizarGrafo extends JFrame {
 
         mxGraphComponent graphComponent = new mxGraphComponent(mxGraph);
         graphComponent.getViewport().setBackground(StylusUI.COLOR_PRIMARIO);
-        add(graphComponent, BorderLayout.SOUTH);  // Coloca el componente en la parte superior
+        add(graphComponent, BorderLayout.WEST);
         setTitle(rb.getString("ver_grafo"));
         setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         pack();
-
         setVisible(true);
     }
 
@@ -98,7 +95,6 @@ public class VisualizarGrafo extends JFrame {
     }
 
     private String getVertexStyle(mxGraph mxGraph, Equipment equipment) {
-        // Configurar estilos de vértices con imágenes basadas en el archivo de propiedades
         String equipmentType = equipment.getEquipmentType().getCode();
         String imagePath = properties.getProperty("icon." + equipmentType);
 
@@ -116,7 +112,7 @@ public class VisualizarGrafo extends JFrame {
 
 
         style.put("fontSize", 16);
-        style.put("fontColor", "#000000");
+        style.put("fontColor", "#FFFF00");
         String styleName = equipmentType + "_STYLE";
         mxGraph.getStylesheet().putCellStyle(styleName, style);
         return styleName;
