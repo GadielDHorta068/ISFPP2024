@@ -103,7 +103,7 @@ public class BarraMenu {
 
     private void verTablasDeTipos(ActionEvent actionEvent) {
         MainMenu menu = coordinator.getMainMenu();
-        menu.secundaryMenu(coordinator.getWeb());
+        menu.secondaryMenu(coordinator.getWeb());
     }
 
     private JMenu crearEditarMenu() {

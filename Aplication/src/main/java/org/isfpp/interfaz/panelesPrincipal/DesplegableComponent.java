@@ -201,12 +201,12 @@ public class DesplegableComponent<T> {
                 }
                 case PortType portType ->{
                     data[i][0] = portType.getCode();
-                    data[i][1] = String.format("%s-%s", portType.getDescription(),portType.getSpeed());
+                    data[i][1] = String.format("%s <-> %s", portType.getDescription(),portType.getSpeed());
                     data[i][2] = portType;
                 }
                 case WireType wireType ->{
                     data[i][0] = wireType.getCode();
-                    data[i][1] = String.format("%s-%s", wireType.getDescription(),wireType.getSpeed());
+                    data[i][1] = String.format("%s <-> %s", wireType.getDescription(),wireType.getSpeed());
                     data[i][2] = wireType;
                 }
                 case EquipmentType equipmentType ->{

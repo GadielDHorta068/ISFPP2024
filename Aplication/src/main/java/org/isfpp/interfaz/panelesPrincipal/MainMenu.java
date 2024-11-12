@@ -104,7 +104,7 @@ public class MainMenu {
     }
 
 
-    public void secundaryMenu(Lan lan) {
+    public void secondaryMenu(Lan lan) {
         if (select != 2) {
             frame.remove(panelIzquierdo);
             frame.repaint();
