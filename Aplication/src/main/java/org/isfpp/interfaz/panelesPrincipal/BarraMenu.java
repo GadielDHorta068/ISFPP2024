@@ -19,9 +19,7 @@ import java.io.InputStream;
 import java.net.URI;
 import java.util.ResourceBundle;
 
-/**
- * Barra superior de la interfaz
- */
+
 public class BarraMenu {
     private static final Logger log = Logger.getLogger(BarraMenu.class);
     private ResourceBundle rb;
@@ -45,6 +43,7 @@ public class BarraMenu {
         StylusUI.styleMenuBar(menuBar);
 
         menuBar.add(crearArchivoMenu());
+        menuBar.add(crearVistaMenu());
         menuBar.add(crearEditarMenu());
         menuBar.add(crearAyudaMenu());
         menuBar.add(crearHerramientasMenu());
@@ -98,6 +97,35 @@ public class BarraMenu {
         }
     }
 
+    private JMenu crearVistaMenu(){
+        JMenu vista = new JMenu("vista");
+        StylusUI.styleMenu(vista);
+        vista.add(crearMenuItem("vista",this::switchTablas));
+        return vista;
+    }
+
+    private void switchTablas(ActionEvent actionEvent) {
+        System.out.println(coordinator.getMainMenu().getSelect());
+        int i = coordinator.getMainMenu().getSelect();
+        switch (i){
+            case 1: verTablasDeTipos(actionEvent);
+                break;
+            case 2: verTablaPrincipal(actionEvent);
+                break;
+        }
+    }
+
+    private void verTablaPrincipal(ActionEvent actionEvent) {
+        MainMenu menu = coordinator.getMainMenu();
+        menu.principalMenu(coordinator.getWeb());
+    }
+
+
+    private void verTablasDeTipos(ActionEvent actionEvent) {
+        MainMenu menu = coordinator.getMainMenu();
+        menu.secondaryMenu(coordinator.getWeb());
+    }
+
     /**
      * Crear menu desplegable con el panel de edicion/ creacion/ eliminacion
      * @return JMenu
@@ -143,21 +171,16 @@ public class BarraMenu {
             wireTypeFromPanel.run();
         }));
 
+        subMenuAgregar.add(crearMenuItem(rb.getString("agregar_tipo_de_equipo"), e -> {
+            EquipmentTypeFromPanel equipmentTypePanel= new EquipmentTypeFromPanel();
+            equipmentTypePanel.setCoordinator(coordinator);
+            equipmentTypePanel.run();
+        }));
+
         editarMenu.add(crearMenuItem(rb.getString("eliminar"), this::accionEliminar));
         editarMenu.add(crearMenuItem(rb.getString("editar_puerto"), this::accionEditarPuerto));
 
-        JMenu subMenuEditar = new JMenu(rb.getString("modificar"));
-        editarMenu.add(subMenuEditar);
-        StylusUI.styleMenu(subMenuEditar);
-        subMenuEditar.setBackground(StylusUI.COLOR_PRIMARIO);
-        subMenuEditar.setOpaque(true);
-
-        subMenuEditar.add(crearMenuItem(rb.getString("editar_equipo"), this::accionEditar));
-        subMenuEditar.add(crearMenuItem(rb.getString("editar_conexión"), this::accionEditar));
-        subMenuEditar.add(crearMenuItem(rb.getString("editar_ubicacion"), this::accionEditar));
-        subMenuEditar.add(crearMenuItem(rb.getString("editar_tipo_de_cable"), this::accionEditar));
-        subMenuEditar.add(crearMenuItem(rb.getString("editar_tipo_de_puerto"), this::accionEditar));
-
+        editarMenu.add(crearMenuItem(rb.getString("modificar"), this::accionEditar));
         return editarMenu;
     }
 
@@ -207,16 +230,23 @@ public class BarraMenu {
                     locationPanel.setCoordinator(coordinator);
                     locationPanel.run( location.getCode());
                 }
-                case PortType puerto -> {
-                    EditPortTypeFormPanel portTypePanel = new EditPortTypeFormPanel();
-                    portTypePanel.setCoordinator(coordinator);
-                    portTypePanel.run(puerto.getCode());
-                }
                 case Connection connection -> {
                     EditConnection editConnection = new EditConnection();
                     editConnection.setCoordinator(coordinator);
                     editConnection.run(connection);
-                    JOptionPane.showMessageDialog(null,rb.getString( "Error_crear_conexion"));
+                    //JOptionPane.showMessageDialog(null,rb.getString( "Error_crear_conexion"));
+                }
+                case PortType puerto -> {
+                    JOptionPane.showMessageDialog(null, rb.getString("no_editable_tipo_puerto"),
+                            "Info", JOptionPane.INFORMATION_MESSAGE);
+                }
+                case WireType wireType -> {
+                    JOptionPane.showMessageDialog(null, rb.getString("no_editable_tipo_cable"),
+                            "Info", JOptionPane.INFORMATION_MESSAGE);
+                }
+                case EquipmentType equipmentType -> {
+                    JOptionPane.showMessageDialog(null, rb.getString("no_editable_tipo_equipo"),
+                            "Info", JOptionPane.INFORMATION_MESSAGE);
                 }
                 default -> System.out.println(rb.getString("clase_no_detectada") + seleccionado.getClass());
             }
@@ -281,6 +311,8 @@ public class BarraMenu {
             }
         }
     }
+
+
 
     private JMenu crearHerramientasMenu() {
         JMenu herramientasMenu = new JMenu(rb.getString("herramientas"));

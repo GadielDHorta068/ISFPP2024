@@ -74,6 +74,7 @@ public class EditEquipmentFormPanel extends JPanel {
         equipmentTypeCombo = new JComboBox<>(coordinator.getEquipmentTypes().values().toArray(new EquipmentType[0]));
         StylusUI.aplicarEstiloComboBox(equipmentTypeCombo);
         formPanel.add(equipmentTypeCombo);
+        equipmentTypeCombo.setSelectedItem(eq.getEquipmentType());
 
         JLabel ubi = new JLabel(rb.getString("ubicacion"));
         StylusUI.aplicarEstiloEtiqueta(ubi);
@@ -81,6 +82,7 @@ public class EditEquipmentFormPanel extends JPanel {
         locationCombo = new JComboBox<>(coordinator.getLocations().values().toArray(new Location[0]));
         StylusUI.aplicarEstiloComboBox(locationCombo);
         formPanel.add(locationCombo);
+        locationCombo.setSelectedItem(eq.getLocation());
 
         JLabel puerto = new JLabel(rb.getString("tipo_puerto"));
         StylusUI.aplicarEstiloEtiqueta(puerto);
