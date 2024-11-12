@@ -12,6 +12,9 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.concurrent.CountDownLatch;
 
+/**
+ * Panel selector de lenguaje que se inicia al ejecutar el programa
+ */
 public class LanguageSelectorPanel extends JFrame {
     private final JTextField nameField;
     private final JComboBox<String> languageComboBox;
@@ -23,6 +26,10 @@ public class LanguageSelectorPanel extends JFrame {
     private final JButton continueButton;
     private final JLabel nameLabel;
 
+    /**
+     * Constructor del panel
+     * @param latch Detiene la ejecucion del programa para esperar a que se continue en el boton
+     */
     public LanguageSelectorPanel(CountDownLatch latch) {
         this.latch = latch;
         setTitle("Selección de idioma");
@@ -95,6 +102,9 @@ public class LanguageSelectorPanel extends JFrame {
         setVisible(true);
     }
 
+    /**
+     * Configurar el locale con el lenguaje deseado
+     */
     private void updateLanguage() {
         String selectedLanguage = (String) languageComboBox.getSelectedItem();
         assert selectedLanguage != null;
@@ -104,31 +114,37 @@ public class LanguageSelectorPanel extends JFrame {
             default -> new Locale("es", "ES");
         };
 
-        // Recargar las propiedades en el nuevo idioma
         messages = ResourceBundle.getBundle("messages", locale);
 
-        // Actualizar los textos de todos los componentes
         reloadTexts();
         loc = locale;
     }
 
+    /**
+     * Actualizar textos con el idioma elejido
+     */
     private void reloadTexts() {
-        // Actualizar el saludo con el nombre ingresado
         greetingLabel.setText(messages.getString("greeting") + ", " + nameField.getText() + "!");
         introLabel.setText(messages.getString("greeting"));
         continueButton.setText(messages.getString("continuar"));
         nameLabel.setText(messages.getString("nombre"));
-
-
-        // Aquí actualizarías otros componentes si los tuvieras
         revalidate();
 
         repaint();
     }
 
+    /**
+     * Obtener idioma elejido
+     * @return Locale
+     */
     public static Locale getLoc() {
         return loc;
     }
+
+    /**
+     * Obtener nombre del usuario
+     * @return String
+     */
     public String getName(){
         return nameField.getText();
     }

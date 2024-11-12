@@ -15,6 +15,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+/**
+ * Panel editador de puertos para agregar o eliminar en un equipo
+ */
 public class EditPortsFromEquipment extends JPanel {
     private final static org.apache.log4j.Logger logger = Logger.getLogger(EditPortsFromEquipment.class);
     private Coordinator coordinator;
@@ -116,6 +119,8 @@ public class EditPortsFromEquipment extends JPanel {
         });
 
         frame.add(this);
+        frame.pack();
+        frame.setSize(470,frame.getHeight());
         frame.setVisible(true);
     }
 

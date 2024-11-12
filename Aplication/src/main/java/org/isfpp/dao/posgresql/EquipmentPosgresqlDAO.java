@@ -406,7 +406,7 @@ public class EquipmentPosgresqlDAO implements EquipmentDAO {
                 map = ret;
             } catch (Exception ex) {
                 ex.printStackTrace();
-                throw new RuntimeException(ex);
+              //  throw new RuntimeException(ex);
             } finally {
                 try {
                     if (rs != null)

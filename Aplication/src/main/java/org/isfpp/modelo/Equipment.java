@@ -243,7 +243,7 @@ public class Equipment {
     @Override
     public String toString() {
         return String.format(
-                "Código: %s\n\n Descripción: %s\n\n Marca: %s\n\n Modelo: %s\n\n Direcciones IP: %s\n\n Tipo de Equipo: %s\n\n Ubicación: %s\n\n Estado: %s\n\n Puertos: %d",
+                "Código: %s\n\n Descripción: %s\n\n Marca: %s\n\n Modelo: %s\n\n Direcciones IP: %s\n\n Tipo de Equipo: %s\n\n Ubicación: %s\n\n Estado: %s\n\n Puertos: %d \n",
                 code,
                 description,
                 make,

@@ -12,6 +12,9 @@ import java.awt.*;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
+/**
+ * Panel para crear un equipo nuevo
+ */
 public class EquipmentFormPanel extends JPanel {
     private JTextField codeField;
     private JTextField descriptionField;
@@ -26,6 +29,9 @@ public class EquipmentFormPanel extends JPanel {
 
     public EquipmentFormPanel() {}
 
+    /**
+     * Abrir nueva instancia del panel
+     */
     public void run() {
         this.rb=coordinator.getResourceBundle();
         JFrame frame = new JFrame(rb.getString("formulario_equipo"));
@@ -135,7 +141,7 @@ public class EquipmentFormPanel extends JPanel {
 
         frame.add(this);
         frame.setVisible(true);
-
+        frame.pack();
     }
 
     public void setCoordinator(Coordinator coordinator) {

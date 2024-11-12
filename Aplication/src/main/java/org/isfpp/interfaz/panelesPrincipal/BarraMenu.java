@@ -19,17 +19,27 @@ import java.io.InputStream;
 import java.net.URI;
 import java.util.ResourceBundle;
 
-
+/**
+ * Barra superior de la interfaz
+ */
 public class BarraMenu {
     private static final Logger log = Logger.getLogger(BarraMenu.class);
     private ResourceBundle rb;
     private final Lan lan;
     private Coordinator coordinator;
 
+    /**
+     * Constructor por defecto
+     * @param lan Red a ser tratada
+     */
     public BarraMenu(Lan lan) {
         this.lan = Lan.getLan();
     }
 
+    /**
+     * Crear la barra con sus botones y entradas
+     * @return JMenuBar
+     */
     public JMenuBar crearBarraMenu() {
         JMenuBar menuBar = new JMenuBar();
         StylusUI.styleMenuBar(menuBar);
@@ -43,6 +53,10 @@ public class BarraMenu {
         return menuBar;
     }
 
+    /**
+     * Crear seccion Archivo de la barra
+     * @return JMenu
+     */
     private JMenu crearArchivoMenu() {
         this.rb=coordinator.getResourceBundle();
         JMenu archivoMenu = new JMenu(rb.getString("archivo"));
@@ -55,6 +69,10 @@ public class BarraMenu {
         return archivoMenu;
     }
 
+    /**
+     * Cargar una red desde archivo
+     * @param actionEvent Listener del boton
+     */
     private void accionCargar(ActionEvent actionEvent) {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
@@ -65,6 +83,10 @@ public class BarraMenu {
         }
     }
 
+    /**
+     * Guardar a archivo la red
+     * @param actionEvent
+     */
     private void accionGuardar(ActionEvent actionEvent) {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
@@ -77,6 +99,10 @@ public class BarraMenu {
         }
     }
 
+    /**
+     * Crea un menu desplegable con la accion de cambiar la vista de las tablas
+     * @return JMenu
+     */
     private JMenu crearVistaMenu(){
         JMenu vista = new JMenu("vista");
         StylusUI.styleMenu(vista);
@@ -84,6 +110,10 @@ public class BarraMenu {
         return vista;
     }
 
+    /**
+     * se usa en crearVistaMenu() para intercambiar la vista de las tablas
+     * @param actionEvent
+     */
     private void switchTablas(ActionEvent actionEvent) {
         System.out.println(coordinator.getMainMenu().getSelect());
         int i = coordinator.getMainMenu().getSelect();
@@ -95,17 +125,28 @@ public class BarraMenu {
         }
     }
 
+    /**
+     * Permite ver las tablas principales del menu Principal
+     * @param actionEvent
+     */
     private void verTablaPrincipal(ActionEvent actionEvent) {
         MainMenu menu = coordinator.getMainMenu();
         menu.principalMenu(coordinator.getWeb());
     }
 
-
+    /**
+     * Permite ver las tablas secundarias del menu principal
+     * @param actionEvent
+     */
     private void verTablasDeTipos(ActionEvent actionEvent) {
         MainMenu menu = coordinator.getMainMenu();
         menu.secondaryMenu(coordinator.getWeb());
     }
 
+    /**
+     * Crear menu desplegable con el panel de edicion/ creacion/ eliminacion
+     * @return JMenu
+     */
     private JMenu crearEditarMenu() {
         JMenu editarMenu = new JMenu(rb.getString("editar"));
         StylusUI.styleMenu(editarMenu);
@@ -162,13 +203,12 @@ public class BarraMenu {
     private void accionEditarPuerto(ActionEvent actionEvent) {
         Object seleccionado = coordinator.getSelectedItem();
         if (seleccionado != null) {
-            switch (seleccionado) {
-                case Equipment equipment -> {
-                    EditPortsFromEquipment ed = new EditPortsFromEquipment();
-                    ed.setCoordinator(coordinator);
-                    ed.run(equipment.getCode());
-                }
-                default ->  JOptionPane.showMessageDialog(null, rb.getString("seleccionar_equipo"));
+            if (seleccionado instanceof Equipment equipment) {
+                EditPortsFromEquipment ed = new EditPortsFromEquipment();
+                ed.setCoordinator(coordinator);
+                ed.run(equipment.getCode());
+            } else {
+                JOptionPane.showMessageDialog(null, rb.getString("seleccionar_equipo"));
             }
         }
     }
@@ -284,8 +324,6 @@ public class BarraMenu {
         }
     }
 
-
-
     private JMenu crearHerramientasMenu() {
         JMenu herramientasMenu = new JMenu(rb.getString("herramientas"));
         StylusUI.styleMenu(herramientasMenu);
@@ -308,19 +346,19 @@ public class BarraMenu {
     }
 
     private void iniciarVerGrafo() {
-        VisualizarGrafo visualizarGrafo=new VisualizarGrafo();
-        visualizarGrafo.setCoordinator(coordinator);
-        visualizarGrafo.Visualizar();
+        ViewGraph viewGraph =new ViewGraph();
+        viewGraph.setCoordinator(coordinator);
+        viewGraph.Visualizar();
     }
 
     private void iniciarPing() {
-        IPFrame ipFrame = new IPFrame();
-        ipFrame.setCoordinator(coordinator);
-        ipFrame.scanIp();
+        PingAll pingAll = new PingAll();
+        pingAll.setCoordinator(coordinator);
+        pingAll.scanIp();
     }
 
     private void iniciarPingEquipos() {
-        PingListEquipment pingList = new PingListEquipment();
+        ActiveEquipments pingList = new ActiveEquipments();
         pingList.setCoordinator(coordinator);
         pingList.ping();
     }

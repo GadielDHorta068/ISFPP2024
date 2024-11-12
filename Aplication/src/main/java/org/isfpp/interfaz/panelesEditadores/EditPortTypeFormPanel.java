@@ -8,6 +8,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ResourceBundle;
 
+/**
+ * Panel editador de tipo de equipo
+ */
 public class EditPortTypeFormPanel extends JPanel {
     private JTextField codeField;
     private JTextField descriptionField;

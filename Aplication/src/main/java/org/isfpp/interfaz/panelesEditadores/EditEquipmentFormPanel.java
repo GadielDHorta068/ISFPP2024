@@ -10,6 +10,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ResourceBundle;
 
+/**
+ * Panel editor de equipos
+ */
 public class EditEquipmentFormPanel extends JPanel {
     private JTextField codeField;
     private JTextField descriptionField;

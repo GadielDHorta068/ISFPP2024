@@ -8,6 +8,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ResourceBundle;
 
+/**
+ * Panel creador de tipos de cable
+ */
 public class WireTypeFromPanel extends JPanel{
     private final JTextField codeField = new JTextField();;
     private final JTextField descriptionField = new JTextField();
