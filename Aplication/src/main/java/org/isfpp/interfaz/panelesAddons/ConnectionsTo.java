@@ -87,7 +87,7 @@ public class ConnectionsTo {
             }
         });
 
-
+    //😍
         frame.getContentPane().add(scrollPane, BorderLayout.CENTER);
         frame.getContentPane().add(scanButton, BorderLayout.SOUTH);
         frame.getContentPane().add(ipInicial, BorderLayout.NORTH);
