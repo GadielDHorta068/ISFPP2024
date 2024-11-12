@@ -7,6 +7,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ResourceBundle;
 
+/**
+ * Panel creador de nuevas locaciones
+ */
 public class LocationFormPanel extends JPanel {
     private JTextField codeField;
     private JTextField descriptionField;

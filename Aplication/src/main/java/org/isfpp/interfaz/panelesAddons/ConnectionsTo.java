@@ -15,6 +15,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
+/**
+ * Panel que mostrara el alcanze del equipo elegido
+ */
 public class ConnectionsTo {
     private JFrame frame;
     private JTextArea textArea;
@@ -22,10 +25,15 @@ public class ConnectionsTo {
     private Coordinator coordinator;
     private ResourceBundle rb;
 
-
+    /**
+     * Constructor por defecto
+     */
     public ConnectionsTo() {
     }
 
+    /**
+     * Metodo que dibujara el area de texto con el alcanze del equipo a analizar
+     */
     public void scanIp() {
         this.rb=coordinator.getResourceBundle();
         direcciones = new ArrayList<>();
@@ -90,6 +98,9 @@ public class ConnectionsTo {
         frame.requestFocus();
     }
 
+    /**
+     * Actualizar area de texto
+     */
     private void updateTextArea() {
         textArea.setText("");
         if (direcciones.size() == 1) {
@@ -101,10 +112,18 @@ public class ConnectionsTo {
         }
     }
 
+    /**
+     * Setear coordinador de la red
+     * @param coordinator coordinador
+     */
     public void setCoordinator(Coordinator coordinator) {
         this.coordinator = coordinator;
     }
 
+    /**
+     * Get ip del equipo
+     * @return String
+     */
     private String getIPSeleccionada() {
         if (coordinator.getSelectedItem() != null) {
             if (coordinator.getSelectedItem() instanceof Equipment eq) {

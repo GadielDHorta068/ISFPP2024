@@ -10,16 +10,23 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+/**
+ * Clase que mostrara los equipos que estan activos o inactivos
+ */
 public class ActiveEquipments {
     private JTextArea textArea;
     private Coordinator coordinator;
     private HashMap<Equipment, Boolean> direcciones;
     private ResourceBundle rb;
 
-    public ActiveEquipments() {
+    /**
+     * Constructor default
+     */
+    public ActiveEquipments() {}
 
-    }
-
+    /**
+     * Obtener el panel con el estado de todos los equipos
+     */
     public void ping() {
         this.rb=coordinator.getResourceBundle();
         direcciones = new HashMap<>();
@@ -37,15 +44,21 @@ public class ActiveEquipments {
         frame.pack();
         StylusUI.styleTextArea(textArea);
         frame.setVisible(true);
-
     }
 
+    /**
+     * Actualizar el area de texto
+     */
     private void updateTextArea() {
         for (Map.Entry<Equipment, Boolean> entry : direcciones.entrySet()) {
             textArea.append(entry.getKey().getCode() + " : " + entry.getValue() + "\n");
         }
     }
 
+    /**
+     * Setear coordinador
+     * @param coordinator coordinador de la red
+     */
     public void setCoordinator(Coordinator coordinator) {
         this.coordinator = coordinator;
     }

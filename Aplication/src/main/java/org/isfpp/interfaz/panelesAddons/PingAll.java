@@ -13,7 +13,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
-
+/**
+ * Clase que mostrara la ip entre dos rangos
+ */
 public class PingAll {
     private JFrame frame;
     private JTextArea textArea;
@@ -21,10 +23,15 @@ public class PingAll {
     private Coordinator coordinator;
     private ResourceBundle rb;
 
-
+    /**
+     * Constructor por defecto
+     */
     public PingAll() {
     }
 
+    /**
+     * Metodo que dibujara y contiene todos los elementos graficos
+     */
     public void scanIp() {
         this.rb=coordinator.getResourceBundle();
         direcciones = new ArrayList<>();
@@ -104,6 +111,9 @@ public class PingAll {
         frame.requestFocus();
     }
 
+    /**
+     * Actualizar area de texto
+     */
     private void updateTextArea() {
         textArea.setText("");
         System.out.println(direcciones.size());
@@ -114,10 +124,18 @@ public class PingAll {
 
     }
 
+    /**
+     * Setear coordinador de la red
+     * @param coordinator coordinador
+     */
     public void setCoordinator(Coordinator coordinator) {
         this.coordinator = coordinator;
     }
 
+    /**
+     * Obtener la ip clickeada en la tabla
+     * @return String
+     */
     private String getIPSeleccionada() {
         if (coordinator.getSelectedItem() != null) {
             if (coordinator.getSelectedItem() instanceof Equipment eq) {

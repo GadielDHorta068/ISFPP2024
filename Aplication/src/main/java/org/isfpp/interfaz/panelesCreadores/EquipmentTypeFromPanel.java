@@ -8,6 +8,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ResourceBundle;
 
+/**
+ * Clase creadora de nuevos tipos de equipo
+ */
 public class EquipmentTypeFromPanel extends JPanel {
     private JTextField codeField;
     private JTextField descriptionField;

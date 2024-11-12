@@ -8,6 +8,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ResourceBundle;
 
+/**
+ * Panel encargado de editar una conexion o crearla
+ */
 public class EditConnection extends JPanel {
     private JComboBox<Equipment> eq1ComboBox;
     private JComboBox<Equipment> eq2ComboBox;
