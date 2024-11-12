@@ -140,7 +140,7 @@ public class BarraMenu {
         subMenuAgregar.setBackground(StylusUI.COLOR_PRIMARIO);
         subMenuAgregar.setOpaque(true);
 
-t
+
         subMenuAgregar.add(crearMenuItem(rb.getString("agregar_equipo"), e -> {
             EquipmentFormPanel equipmentPanel = new EquipmentFormPanel();
             equipmentPanel.setCoordinator(coordinator);
