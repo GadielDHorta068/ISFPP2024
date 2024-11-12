@@ -18,18 +18,28 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 
+/**
+ * Clase para representar visualmente las conexiones que posee la red
+ */
 public class ViewGraph extends JFrame {
     private Properties properties;
     private Coordinator coordinator;
     private ResourceBundle rb;
 
+    /**
+     * Constructor default
+     * @throws HeadlessException error de I/O
+     */
     public ViewGraph() throws HeadlessException {
-     //   setLayout(new BorderLayout());  // Establecer el Layout a BorderLayout
 
     }
+
+    /**
+     * Clase principal que construye el grafo
+     */
     public void Visualizar() {
         this.rb=coordinator.getResourceBundle();
-        Graph<Equipment, Connection> graph = coordinator.getGraph(); // Usar SimpleGraph para grafo no dirigido
+        Graph<Equipment, Connection> graph = coordinator.getGraph();
 
         cargarProperties();
         mxGraph mxGraph = new mxGraph();
@@ -46,20 +56,19 @@ public class ViewGraph extends JFrame {
         Map<String, Object> edgeStyle = new Hashtable<>();
         edgeStyle.put("strokeColor", "#6482B9");
         edgeStyle.put("endArrow", "none");
+        edgeStyle.put(mxConstants.STYLE_FONTCOLOR, "#FFFF00");
         edgeStyle.put(mxConstants.STYLE_STROKEWIDTH, 2);
         stylesheet.putCellStyle("EDGE_STYLE", edgeStyle);
 
         try {
             HashMap<Equipment, Object> vertexMap = new HashMap<>();
 
-            // Agregar los vértices de JGraphT al grafo de JGraphX
             for (Equipment vertex : graph.vertexSet()) {
                 String vertexStyle = getVertexStyle(mxGraph, vertex);
-                Object v = mxGraph.insertVertex(parent, null, vertex.getCode(), 100, 100, 80, 80, vertexStyle);
+                Object v = mxGraph.insertVertex(parent, null, vertex.getCode(), 100, 100, 60, 60, vertexStyle);
                 vertexMap.put(vertex, v);
             }
 
-            // Agregar las aristas (conexiones) de JGraphT al grafo de JGraphX
             for (Connection edge : graph.edgeSet()) {
                 Equipment source = graph.getEdgeSource(edge);
                 Equipment target = graph.getEdgeTarget(edge);
@@ -70,9 +79,8 @@ public class ViewGraph extends JFrame {
         }
 
 
-// Crear el layout con configuraciones para una distribución horizontal
         mxHierarchicalLayout layout = new mxHierarchicalLayout(mxGraph);
-        layout.setOrientation(SwingConstants.WEST);  // Establecer orientación horizontal
+        layout.setOrientation(SwingConstants.WEST);
 
         layout.execute(mxGraph.getDefaultParent());
 
@@ -87,6 +95,9 @@ public class ViewGraph extends JFrame {
         setVisible(true);
     }
 
+    /**
+     * Cargar el archivo properties para obtener los iconos que correspondan
+     */
     private void cargarProperties() {
         properties = new Properties();
         try (InputStream input = getClass().getClassLoader().getResourceAsStream("config.properties")) {
@@ -100,6 +111,12 @@ public class ViewGraph extends JFrame {
         }
     }
 
+    /**
+     * Setear el estilo de los vertices con las propiedades obtenidas
+     * @param mxGraph grafo a trabajar
+     * @param equipment Equipo a configurar su estilo visual
+     * @return String con el estilo
+     */
     private String getVertexStyle(mxGraph mxGraph, Equipment equipment) {
         String equipmentType = equipment.getEquipmentType().getCode();
         String imagePath = properties.getProperty("icon." + equipmentType);
@@ -124,6 +141,10 @@ public class ViewGraph extends JFrame {
         return styleName;
     }
 
+    /**
+     * Setear cordinador para obtener la red correctamente
+     * @param coordinator coordinador de la red
+     */
     public void setCoordinator(Coordinator coordinator) {
         this.coordinator = coordinator;
     }

@@ -19,17 +19,27 @@ import java.io.InputStream;
 import java.net.URI;
 import java.util.ResourceBundle;
 
-
+/**
+ * Barra superior de la interfaz
+ */
 public class BarraMenu {
     private static final Logger log = Logger.getLogger(BarraMenu.class);
     private ResourceBundle rb;
     private final Lan lan;
     private Coordinator coordinator;
 
+    /**
+     * Constructor por defecto
+     * @param lan Red a ser tratada
+     */
     public BarraMenu(Lan lan) {
         this.lan = Lan.getLan();
     }
 
+    /**
+     * Crear la barra con sus botones y entradas
+     * @return JMenuBar
+     */
     public JMenuBar crearBarraMenu() {
         JMenuBar menuBar = new JMenuBar();
         StylusUI.styleMenuBar(menuBar);
@@ -42,6 +52,10 @@ public class BarraMenu {
         return menuBar;
     }
 
+    /**
+     * Crear seccion Archivo de la barra
+     * @return JMenu
+     */
     private JMenu crearArchivoMenu() {
         this.rb=coordinator.getResourceBundle();
         JMenu archivoMenu = new JMenu(rb.getString("archivo"));
@@ -54,6 +68,10 @@ public class BarraMenu {
         return archivoMenu;
     }
 
+    /**
+     * Cargar una red desde archivo
+     * @param actionEvent Listener del boton
+     */
     private void accionCargar(ActionEvent actionEvent) {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
@@ -64,6 +82,10 @@ public class BarraMenu {
         }
     }
 
+    /**
+     * Guardar a archivo la red
+     * @param actionEvent
+     */
     private void accionGuardar(ActionEvent actionEvent) {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
@@ -76,6 +98,10 @@ public class BarraMenu {
         }
     }
 
+    /**
+     * Crear menu desplegable con el panel de edicion/ creacion/ eliminacion
+     * @return JMenu
+     */
     private JMenu crearEditarMenu() {
         JMenu editarMenu = new JMenu(rb.getString("editar"));
         StylusUI.styleMenu(editarMenu);
@@ -135,6 +161,10 @@ public class BarraMenu {
         return editarMenu;
     }
 
+    /**
+     * editar puertos
+     * @param actionEvent metodo que se ejecuta al presionar el listener del boton
+     */
     private void accionEditarPuerto(ActionEvent actionEvent) {
         Object seleccionado = coordinator.getSelectedItem();
         if (seleccionado != null) {

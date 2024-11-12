@@ -8,6 +8,9 @@ import java.awt.*;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
+/**
+ * Panel creador de tipos de puerto
+ */
 public class PortTypeFormPanel extends JPanel {
     private JTextField codeField;
     private JTextField descriptionField;

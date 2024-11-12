@@ -12,6 +12,9 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.util.ResourceBundle;
 
+/**
+ * Camino mas corto entre dos equipos
+ */
 public class Traceroute {
     private JFrame frame;
     private JTextArea textArea;
@@ -21,10 +24,14 @@ public class Traceroute {
     private JTextField textE2;
     private ResourceBundle rb;
 
-    public Traceroute() {
+    /**
+     * Constructor default
+     */
+    public Traceroute() {}
 
-    }
-
+    /**
+     * Interfaz de la clase
+     */
     public void trace() {
         this.rb=coordinator.getResourceBundle();
         frame = new JFrame(rb.getString("traceroute"));
@@ -102,6 +109,9 @@ public class Traceroute {
 
     }
 
+    /**
+     * Actualizar el area de texto
+     */
     private void updateTextArea() {
         textE1.setText("");
         textE2.setText("");
@@ -112,6 +122,10 @@ public class Traceroute {
 
     }
 
+    /**
+     * Set coordinador de la red
+     * @param coordinator coordinador
+     */
     public void setCoordinator(Coordinator coordinator) {
         this.coordinator = coordinator;
     }
