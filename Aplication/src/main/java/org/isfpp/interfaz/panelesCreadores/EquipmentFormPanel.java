@@ -26,6 +26,7 @@ public class EquipmentFormPanel extends JPanel {
     private JCheckBox statusCheckBox;
     private ResourceBundle rb;
     private Coordinator coordinator;
+
     public EquipmentFormPanel() {}
 
     /**

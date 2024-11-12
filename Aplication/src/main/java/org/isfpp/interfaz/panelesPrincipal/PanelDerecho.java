@@ -2,9 +2,7 @@ package org.isfpp.interfaz.panelesPrincipal;
 
 import org.isfpp.interfaz.IconUtil;
 import org.isfpp.interfaz.stylusUI.StylusUI;
-import org.isfpp.modelo.Connection;
-import org.isfpp.modelo.Equipment;
-import org.isfpp.modelo.Location;
+import org.isfpp.modelo.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -37,7 +35,7 @@ public class PanelDerecho {
         panel.setLayout(new BorderLayout());
 
         setIcon("help");
-        propiedades = new JTextArea( rb.getString("seleccione_objeto"));
+        propiedades = new JTextArea("   " + rb.getString("seleccione_objeto"));
         StylusUI.styleTextArea(propiedades);
         panel.add(propiedades, BorderLayout.CENTER);
 
@@ -60,15 +58,46 @@ public class PanelDerecho {
      * @param e El objeto cuya información se presentará.
      */
     public void updateProperties(Object e) {
-        if (e instanceof Equipment eq) {
-            propiedades.setText(eq.toString());
-            setIcon(eq.getEquipmentType().getCode());
-        } else if (e instanceof Location lo) {
-            setIcon("LOC");
-            propiedades.setText( rb.getString("codigo") + lo.getCode() + "\n" +  rb.getString("descripcion") + lo.getDescription());
-        } else if (e instanceof Connection con) {
-            setIcon(con.getWire().getCode());
-            propiedades.setText( rb.getString("equipo_origen") + con.getPort1().getEquipment().getCode() + "\n" + rb.getString( "puerto" )+ con.getPort1().getPortType().getCode() + "\n" +  rb.getString("mac") + con.getPort1().getMACAddress() + "\n" + "\n" +  rb.getString("equipo_destino" )+ con.getPort2().getEquipment().getCode() + "\n" +  rb.getString("puerto" )+ con.getPort2().getPortType().getCode() + "\n" +  rb.getString("mac") + con.getPort2().getMACAddress());
+        switch (e){
+            case Equipment eq ->{
+                propiedades.setText(eq.toString());
+                setIcon(eq.getEquipmentType().getCode());
+            }
+            case Location loc ->{
+                setIcon("LOC");
+                propiedades.setText( rb.getString("codigo") + loc.getCode() +
+                        "\n" +  rb.getString("descripcion") + loc.getDescription());
+            }
+            case Connection con ->{
+                setIcon(con.getWire().getCode());
+                propiedades.setText( rb.getString("equipo_origen") + con.getPort1().getEquipment().getCode() +
+                        "\n" + rb.getString( "puerto" )+ con.getPort1().getPortType().getCode() +
+                        "\n" +  rb.getString("mac") + con.getPort1().getMACAddress() +
+                        "\n" +
+                        "\n" +  rb.getString("equipo_destino" )+ con.getPort2().getEquipment().getCode() +
+                        "\n" +  rb.getString("puerto" )+ con.getPort2().getPortType().getCode() +
+                        "\n" +  rb.getString("mac") + con.getPort2().getMACAddress());
+            }
+            case WireType wire ->{
+                setIcon(wire.getCode());
+                propiedades.setText( rb.getString("codigo") + wire.getCode() +
+                        "\n\n" +  rb.getString("descripcion") + wire.getDescription() +
+                        "\n\n" + rb.getString("velocidad") + wire.getSpeed());
+            }
+            case PortType port ->{
+                setIcon("COM");
+                propiedades.setText( rb.getString("codigo") + port.getCode() +
+                        "\n\n" +  rb.getString("descripcion") + port.getDescription() +
+                        "\n\n" + rb.getString("velocidad") + port.getSpeed());
+            }
+            case EquipmentType eqType ->{
+                setIcon(eqType.getCode());
+                propiedades.setText( rb.getString("codigo") + eqType.getCode() +
+                        "\n\n" +  rb.getString("descripcion") + eqType.getDescription());
+            }
+
+            case null ->  throw new IllegalStateException("null value: " + e);
+            default -> throw new IllegalStateException("Unexpected value: " + e);
         }
     }
 
@@ -106,4 +135,11 @@ public class PanelDerecho {
         panel.repaint();
     }
 
+    public JPanel getPanel(){
+        return panel;
+    }
+
+    public void removeAllFromPanel(){
+        this.panel.removeAll();
+    }
 }
