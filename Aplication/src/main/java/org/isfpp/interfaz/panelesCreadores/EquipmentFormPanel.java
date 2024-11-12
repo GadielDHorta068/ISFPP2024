@@ -23,7 +23,9 @@ public class EquipmentFormPanel extends JPanel {
     private JCheckBox statusCheckBox;
     private ResourceBundle rb;
     private Coordinator coordinator;
+
     public EquipmentFormPanel() {}
+
     public void run() {
         this.rb=coordinator.getResourceBundle();
         JFrame frame = new JFrame(rb.getString("formulario_equipo"));

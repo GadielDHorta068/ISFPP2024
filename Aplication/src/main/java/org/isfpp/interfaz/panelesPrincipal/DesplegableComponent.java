@@ -1,9 +1,7 @@
 package org.isfpp.interfaz.panelesPrincipal;
 import org.isfpp.controller.Coordinator;
 import org.isfpp.interfaz.stylusUI.StylusUI;
-import org.isfpp.modelo.Connection;
-import org.isfpp.modelo.Equipment;
-import org.isfpp.modelo.Location;
+import org.isfpp.modelo.*;
 import org.isfpp.logica.Lan;
 
 import javax.swing.*;
@@ -62,12 +60,21 @@ public class DesplegableComponent<T> {
         rb=coordinator.getResourceBundle();
         // Inicializa dataList basado en el tipo del primer elemento
         Object e = dataList.isEmpty() ? null : dataList.get(0);
-        if (e instanceof Equipment) {
-            dataList = (List<T>) new ArrayList<>(lan.getHardware().values());
-        } else if (e instanceof Location) {
-            dataList = (List<T>) new ArrayList<>(lan.getLocations().values());
-        } else if (e instanceof Connection) {
-            dataList = (List<T>) new ArrayList<>(lan.getConnections());
+
+        switch (e) {
+            case Equipment eq ->
+                    dataList = (List<T>) new ArrayList<>(lan.getHardware().values());
+            case Location loc ->
+                    dataList = (List<T>) new ArrayList<>(lan.getLocations().values());
+            case Connection con ->
+                    dataList = (List<T>) new ArrayList<>(lan.getConnections());
+            case WireType wire ->
+                    dataList = (List<T>) new ArrayList<>(lan.getWireTypes().values());
+            case PortType port ->
+                    dataList = (List<T>) new ArrayList<>(lan.getPortTypes().values());
+            case EquipmentType eqType ->
+                dataList = (List<T>) new ArrayList<>(lan.getEquipmentTypes().values());
+            default -> throw new IllegalStateException("Unexpected value: " + e);
         }
 
         Object[][] data = new Object[dataList.size()][3];
@@ -94,6 +101,22 @@ public class DesplegableComponent<T> {
                     data[i][1] = connection.getWire().getDescription();
                     data[i][2] = connection;
                 }
+                case PortType portType ->{
+                    data[i][0] = portType.getCode();
+                    data[i][1] = String.format("%s-%s", portType.getDescription(),portType.getSpeed());
+                    data[i][2] = portType;
+                }
+                case WireType wireType ->{
+                    data[i][0] = wireType.getCode();
+                    data[i][1] = String.format("%s-%s", wireType.getDescription(),wireType.getSpeed());
+                    data[i][2] = wireType;
+                }
+                case EquipmentType equipmentType ->{
+                    data[i][0] = equipmentType.getCode();
+                    data[i][1] = equipmentType.getDescription();
+                    data[i][2] = equipmentType;
+                }
+
                 case null, default -> {
                     data[i][0] = item.toString();
                     data[i][1] = "";
@@ -147,7 +170,7 @@ public class DesplegableComponent<T> {
         panel = new JPanel();
         panel.setLayout(new BorderLayout());
 
-        toggleButton = new JButton("▶ " + rb.getString(titulo));
+        toggleButton = new JButton("▶ " + titulo);
         StylusUI.aplicarEstiloBoton(toggleButton, false);
         toggleButton.setHorizontalAlignment(SwingConstants.LEFT);
         //toggleButton.addActionListener(e -> toggle());
@@ -175,6 +198,21 @@ public class DesplegableComponent<T> {
                             connection.getPort2().getEquipment().getCode());
                     data[i][1] = connection.getWire().getDescription();
                     data[i][2] = item;
+                }
+                case PortType portType ->{
+                    data[i][0] = portType.getCode();
+                    data[i][1] = String.format("%s-%s", portType.getDescription(),portType.getSpeed());
+                    data[i][2] = portType;
+                }
+                case WireType wireType ->{
+                    data[i][0] = wireType.getCode();
+                    data[i][1] = String.format("%s-%s", wireType.getDescription(),wireType.getSpeed());
+                    data[i][2] = wireType;
+                }
+                case EquipmentType equipmentType ->{
+                    data[i][0] = equipmentType.getCode();
+                    data[i][1] = equipmentType.getDescription();
+                    data[i][2] = equipmentType;
                 }
                 case null, default -> {
                     assert item != null;
@@ -223,6 +261,12 @@ public class DesplegableComponent<T> {
                                 panelDerecho.updateProperties(selectedLocation);
                         case Connection selectedConnection ->
                                 panelDerecho.updateProperties(selectedConnection);
+                        case WireType selectedWire ->
+                                panelDerecho.updateProperties(selectedWire);
+                        case PortType selectedPort ->
+                                panelDerecho.updateProperties(selectedPort);
+                        case EquipmentType selectedEqType ->
+                                panelDerecho.updateProperties(selectedEqType);
                         case null, default ->
                             // Fallback para cualquier otro tipo de objeto
                                 panelDerecho.updateProperties(selectedItem.toString(), rb.getString("descripcion_no_disponible"));

@@ -30,7 +30,7 @@ public class App {
         App app = new App();
         app.inicio();
         app.launch();
-        app.minitest();
+        //app.minitest();
 
     }
 
@@ -40,13 +40,12 @@ public class App {
         settings=new Settings();
         coordinator = new Coordinator();
         calculoGraph =new CalculoGraph();
-        mainMenu= new MainMenu();
-
+        mainMenu = new MainMenu();
         /* Se establecen las relaciones entre clases */
         settings.setCoordinador(coordinator);
         lan.setCoordinator(coordinator);
         calculoGraph.setCoordinator(coordinator);
-        mainMenu.SetCoordinator(coordinator);
+        mainMenu.setCoordinator(coordinator);
 
 
         /* Se establecen relaciones con la clase coordinador */

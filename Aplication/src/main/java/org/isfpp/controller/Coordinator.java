@@ -392,8 +392,8 @@ public class Coordinator {
     public ResourceBundle getResourceBundle() {return this.settings.getResourceBundle();
     }
 
-    public void updateConnection(Connection c, Connection connection) {
-        lan.updateConnection(c,connection);
+    public void updateConnection(Connection originalConnection, Connection updateConnection) {
+        lan.updateConnection(originalConnection, updateConnection);
     }
 
     public HashMap<Object, EquipmentType> getEquipmentTypes() {return lan.getEquipmentTypes();

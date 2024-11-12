@@ -25,8 +25,8 @@ public class StylusUI {
     public static final Color COLOR_TEXTO = new Color(240, 240, 240); // Menos blanco par reducir contraste
     public static final Color COLOR_HOVER_BOTON = new Color(132, 146, 156); // Pantone 7544 C (Gris medio)
     public static final Color COLOR_PRESIONADO_BOTON = new Color(60, 75, 83); // Pantone 7545 C (Gris profundo)
+    public static final Color DARK_BACKGROUND_COLOR = new Color(55, 54, 54); // Pantone Black 7 C (Negro ahumado)
 
-    private static final Color DARK_BACKGROUND_COLOR = new Color(55, 54, 54); // Pantone Black 7 C (Negro ahumado)
     private static final Color TEXT_COLOR = new Color(230, 230, 230); // Color del texto
     private static final Color ERROR_COLOR = Color.RED; // Color para errores (sin cambios)
     private static final int PADDING_HORIZONTAL = 2; // Espacio extra en los botones
@@ -534,6 +534,14 @@ public class StylusUI {
         menu.setFont(new Font("Arial", Font.BOLD, 14));
         menu.setBackground(COLOR_SECUNDARIO);
         menu.setForeground(TEXT_COLOR);
+    }
+
+    public static void styleSubMenu(JMenu subMenu) {
+        subMenu.setFont(new Font("Arial", Font.PLAIN, 14));
+        subMenu.setBackground(new Color(45, 45, 45));
+        subMenu.setForeground(TEXT_COLOR);
+        subMenu.setIconTextGap(10);
+
     }
 
     /**
