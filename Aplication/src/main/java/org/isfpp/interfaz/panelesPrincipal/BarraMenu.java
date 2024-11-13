@@ -43,11 +43,11 @@ public class BarraMenu {
         StylusUI.styleMenuBar(menuBar);
 
         menuBar.add(crearArchivoMenu());
-        menuBar.add(crearVistaMenu());
+       // menuBar.add(crearVistaMenu());
         menuBar.add(crearEditarMenu());
         menuBar.add(crearAyudaMenu());
         menuBar.add(crearHerramientasMenu());
-
+        menuBar.add(crearMenuItem("vista",this::switchTablas));
         return menuBar;
     }
 
@@ -95,13 +95,6 @@ public class BarraMenu {
             coordinator.insertAllInto(directory);
 
         }
-    }
-
-    private JMenu crearVistaMenu(){
-        JMenu vista = new JMenu("vista");
-        StylusUI.styleMenu(vista);
-        vista.add(crearMenuItem("vista",this::switchTablas));
-        return vista;
     }
 
     private void switchTablas(ActionEvent actionEvent) {
@@ -371,6 +364,7 @@ public class BarraMenu {
         JMenuItem menuItem = new JMenuItem(texto);
         StylusUI.styleMenuItem(menuItem);
         menuItem.addActionListener(accion);
+        menuItem.setIcon(new ImageIcon("img/COM.png"));
         return menuItem;
     }
 
