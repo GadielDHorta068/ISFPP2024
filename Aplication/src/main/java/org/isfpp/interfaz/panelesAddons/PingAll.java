@@ -25,7 +25,7 @@ public class PingAll {
     private JTextArea textArea;
     private Coordinator coordinator;
     private ResourceBundle rb;
-
+    private JProgressBar progressBar;
     /**
      * Constructor por defecto
      */
@@ -35,6 +35,9 @@ public class PingAll {
      * Metodo que dibujara y contiene todos los elementos graficos
      */
     public void scanIp() {
+        progressBar = new JProgressBar(0, 100);
+        progressBar.setStringPainted(true);
+        StylusUI.aplicarEstiloProgressBar(progressBar, false);
         this.rb = coordinator.getResourceBundle();
         frame = new JFrame(rb.getString("ip_Scanner"));
         frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -55,18 +58,23 @@ public class PingAll {
 
         JButton scanButton = new JButton(rb.getString("scan_IPs"));
         scanButton.addActionListener(e -> {
+            progressBar.setValue(0);
             textArea.setText(""); // Limpiar antes de iniciar nuevo escaneo
             String ip1 = ipInicial.getText();
             String ip2 = ipFinal.getText();
             new IPScannerWorker(ip1, ip2).execute();
         });
 
+        JPanel southPanel = new JPanel();
+        southPanel.setLayout(new GridLayout(2, 1));
+        southPanel.add(progressBar, BorderLayout.NORTH);
+        southPanel.add(scanButton, BorderLayout.NORTH);
         JPanel northPanel = new JPanel();
         northPanel.setLayout(new GridLayout(1, 2));
         northPanel.add(ipInicial);
         northPanel.add(ipFinal);
+        frame.getContentPane().add(southPanel, BorderLayout.SOUTH);
         frame.getContentPane().add(scrollPane, BorderLayout.CENTER);
-        frame.getContentPane().add(scanButton, BorderLayout.SOUTH);
         frame.getContentPane().add(northPanel, BorderLayout.NORTH);
         StylusUI.aplicarEstiloScrollPane(scrollPane);
         StylusUI.styleTextArea(textArea);
@@ -81,25 +89,35 @@ public class PingAll {
     private class IPScannerWorker extends SwingWorker<Void, String> {
         private final String ipStart;
         private final String ipEnd;
-
+        private final int progress;
         public IPScannerWorker(String ipStart, String ipEnd) {
             this.ipStart = ipStart;
             this.ipEnd = ipEnd;
+            this.progress = 0;
         }
-
+        public void updateProgress(int progress){
+            progressBar.setValue(progress);
+        }
         @Override
         protected Void doInBackground() {
-            ExecutorService executor = Executors.newFixedThreadPool(2);
+
+            ExecutorService executor = Executors.newFixedThreadPool(3);
 
             try {
                 long ipInicio = ipToLong(ipStart);
                 long ipFinal = ipToLong(ipEnd);
-                long midPoint = (ipInicio + ipFinal) / 2;
+
 
                 List<String> direcciones = coordinator.scanIP(ipStart, ipEnd, textArea);
+                int cont=0;
                 for (String direccion : direcciones) {
-                    publish(direccion);  // Publica cada IP encontrada para actualizar en la interfaz
+                    cont++;
+                    publish(direccion);// Publica cada IP encontrada para actualizar en la interfaz
+                    updateProgress((int) ((cont * 100) / direcciones.size()));
+
                 }
+
+
             } catch (Exception e) {
                 e.printStackTrace();
             } finally {
