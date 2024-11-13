@@ -19,9 +19,7 @@ import java.io.InputStream;
 import java.net.URI;
 import java.util.ResourceBundle;
 
-/**
- * Barra superior de la interfaz
- */
+
 public class BarraMenu {
     private static final Logger log = Logger.getLogger(BarraMenu.class);
     private ResourceBundle rb;
@@ -45,11 +43,11 @@ public class BarraMenu {
         StylusUI.styleMenuBar(menuBar);
 
         menuBar.add(crearArchivoMenu());
-        menuBar.add(crearVistaMenu());
+       // menuBar.add(crearVistaMenu());
         menuBar.add(crearEditarMenu());
         menuBar.add(crearAyudaMenu());
         menuBar.add(crearHerramientasMenu());
-
+        menuBar.add(crearMenuItem("vista",this::switchTablas));
         return menuBar;
     }
 
@@ -99,21 +97,6 @@ public class BarraMenu {
         }
     }
 
-    /**
-     * Crea un menu desplegable con la accion de cambiar la vista de las tablas
-     * @return JMenu
-     */
-    private JMenu crearVistaMenu(){
-        JMenu vista = new JMenu("vista");
-        StylusUI.styleMenu(vista);
-        vista.add(crearMenuItem("vista",this::switchTablas));
-        return vista;
-    }
-
-    /**
-     * se usa en crearVistaMenu() para intercambiar la vista de las tablas
-     * @param actionEvent
-     */
     private void switchTablas(ActionEvent actionEvent) {
         System.out.println(coordinator.getMainMenu().getSelect());
         int i = coordinator.getMainMenu().getSelect();
@@ -125,19 +108,12 @@ public class BarraMenu {
         }
     }
 
-    /**
-     * Permite ver las tablas principales del menu Principal
-     * @param actionEvent
-     */
     private void verTablaPrincipal(ActionEvent actionEvent) {
         MainMenu menu = coordinator.getMainMenu();
         menu.principalMenu(coordinator.getWeb());
     }
 
-    /**
-     * Permite ver las tablas secundarias del menu principal
-     * @param actionEvent
-     */
+
     private void verTablasDeTipos(ActionEvent actionEvent) {
         MainMenu menu = coordinator.getMainMenu();
         menu.secondaryMenu(coordinator.getWeb());
@@ -153,7 +129,8 @@ public class BarraMenu {
 
         JMenu subMenuAgregar = new JMenu(rb.getString("agregar"));
         editarMenu.add(subMenuAgregar);
-        StylusUI.styleSubMenu(subMenuAgregar);
+        StylusUI.styleMenu(subMenuAgregar);
+        subMenuAgregar.setBackground(StylusUI.COLOR_PRIMARIO);
         subMenuAgregar.setOpaque(true);
 
 
@@ -176,9 +153,9 @@ public class BarraMenu {
         }));
 
         subMenuAgregar.add(crearMenuItem(rb.getString("agregar_connexion"), e -> {
-            ConnectionFormPanel connectionPanel = new ConnectionFormPanel();
-            connectionPanel.setCoordinator(coordinator);
-            connectionPanel.run(null);
+            EditConnection editConnection = new EditConnection();
+            editConnection.setCoordinator(coordinator);
+            editConnection.run(null);
         }));
 
         subMenuAgregar.add(crearMenuItem(rb.getString("agregar_tipo_de_cable"), e -> {
@@ -200,6 +177,10 @@ public class BarraMenu {
         return editarMenu;
     }
 
+    /**
+     * editar puertos
+     * @param actionEvent metodo que se ejecuta al presionar el listener del boton
+     */
     private void accionEditarPuerto(ActionEvent actionEvent) {
         Object seleccionado = coordinator.getSelectedItem();
         if (seleccionado != null) {
@@ -324,6 +305,8 @@ public class BarraMenu {
         }
     }
 
+
+
     private JMenu crearHerramientasMenu() {
         JMenu herramientasMenu = new JMenu(rb.getString("herramientas"));
         StylusUI.styleMenu(herramientasMenu);
@@ -342,6 +325,8 @@ public class BarraMenu {
         if (coordinator.getSelectedItem() instanceof Equipment equipo){
             equipo.setStatus(!equipo.isStatus());
             coordinator.updateTablas(lan);
+        }else {
+            JOptionPane.showMessageDialog(null, rb.getString("seleccionar_equipo"));
         }
     }
 
@@ -364,7 +349,7 @@ public class BarraMenu {
     }
 
     private void iniciarConnectionIssues() {
-        ConnectionIssues connection = new ConnectionIssues();
+        ConnectionsTo connection = new ConnectionsTo();
         connection.setCoordinator(coordinator);
         connection.scanIp();
     }
@@ -379,6 +364,7 @@ public class BarraMenu {
         JMenuItem menuItem = new JMenuItem(texto);
         StylusUI.styleMenuItem(menuItem);
         menuItem.addActionListener(accion);
+        menuItem.setIcon(new ImageIcon("img/COM.png"));
         return menuItem;
     }
 

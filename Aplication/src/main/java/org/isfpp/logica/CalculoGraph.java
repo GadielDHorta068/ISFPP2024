@@ -14,11 +14,12 @@ import org.jgrapht.graph.SimpleGraph;
 import org.jgrapht.graph.SimpleWeightedGraph;
 import org.jgrapht.traverse.BreadthFirstIterator;
 
+import javax.swing.*;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.stream.IntStream;
+import java.util.concurrent.ThreadLocalRandom;
 
 import static java.lang.Thread.sleep;
 
@@ -299,28 +300,25 @@ public class CalculoGraph implements Observer{
         return ((ipLong >> 24) & 0xFF) + "." + ((ipLong >> 16) & 0xFF) + "." +
                 ((ipLong >> 8) & 0xFF) + "." + (ipLong & 0xFF);
     }
-    public List<String> scanIP(String ip1, String ip2) {
-        ExecutorService executor = Executors.newFixedThreadPool(2);
+
+
+    public List<String> scanIP(String ip1, String ip2, JTextArea textArea) {
+        ExecutorService executor = Executors.newFixedThreadPool(1);
         List<String> results = new ArrayList<>();
+
         if (compareIPs(ip1, ip2) > 0) {
-            // Si ip1 > ip2, intercambiar las IPs
             String temp = ip1;
             ip1 = ip2;
             ip2 = temp;
         }
 
         try {
-            // Crear tareas para los dos subrangos
             long ipStart = ipToLong(ip1);
             long ipEnd = ipToLong(ip2);
-            long midPoint = (ipStart + ipEnd) / 2;
+            Future<List<String>> future = executor.submit(() -> scanRange(ipStart, ipEnd, textArea));
 
-            Future<List<String>> firstHalfFuture = executor.submit(() -> scanRange(ipStart, midPoint));
-            Future<List<String>> secondHalfFuture = executor.submit(() ->scanRange(midPoint + 1, ipEnd));
+            results.addAll(future.get());
 
-            // Esperar resultados y combinarlos
-            results.addAll(firstHalfFuture.get());
-            results.addAll(secondHalfFuture.get());
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -329,27 +327,29 @@ public class CalculoGraph implements Observer{
 
         return results;
     }
-        private static List<String> scanRange(long start, long end) {
-            List<String> ipList = new ArrayList<>();
-            for (long ipLong = start; ipLong <= end; ipLong++) {
-                String ip = longToIp(ipLong);
-                if (CalculoGraph.ping(ip)) { // Suponiendo que ping verifica si la IP es alcanzable
-                    ipList.add(ip);
-                    try {
-                        Thread.sleep(45); // Pausa 45ms entre ping devuelto
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
-                }else{
-                    try {
-                        Thread.sleep(200); // Pausa 200ms entre ping inexistene
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
+
+    /**
+     * Escanea un rango de direcciones IP y actualiza el JTextArea en tiempo real para cada IP alcanzable.
+     */
+    public List<String> scanRange(long ipStart, long ipEnd, JTextArea textArea) throws InterruptedException {
+        List<String> reachableIPs = new ArrayList<>();
+        for (long i = ipStart; i <= ipEnd; i++) {
+            String ip = longToIp(i);
+
+            System.out.println("Escaneando IP: " + ip);
+
+            if (ping(ip)) {
+                reachableIPs.add(ip);
+                SwingUtilities.invokeLater(() -> textArea.append(ip + "\n"));
+
+                Thread.sleep(ThreadLocalRandom.current().nextInt(150, 1500));
+            } else {
+                System.out.println("IP no alcanzable: " + ip);
+              //  Thread.sleep(ThreadLocalRandom.current().nextInt(0, 3));
             }
-            return ipList;
         }
+        return reachableIPs;
+    }
 
     private int compareIPs(String ip1, String ip2) {
         String[] parts1 = ip1.split("\\.");

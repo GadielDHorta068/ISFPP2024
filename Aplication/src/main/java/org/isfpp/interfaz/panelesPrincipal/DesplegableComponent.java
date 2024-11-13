@@ -74,7 +74,7 @@ public class DesplegableComponent<T> {
                     dataList = (List<T>) new ArrayList<>(lan.getPortTypes().values());
             case EquipmentType eqType ->
                 dataList = (List<T>) new ArrayList<>(lan.getEquipmentTypes().values());
-             default -> throw new IllegalStateException("Unexpected value: " + e);
+            default -> throw new IllegalStateException("Unexpected value: " + e);
         }
 
         Object[][] data = new Object[dataList.size()][3];
@@ -163,7 +163,6 @@ public class DesplegableComponent<T> {
      * @param panelDerecho El panel derecho donde se mostrarán propiedades adicionales.
      */
     public void IniciarTabla(String titulo, List<T> dataList, PanelDerecho panelDerecho) {
-        this.panelDerecho = panelDerecho;
         this.lan = this.coordinator.getWeb();
         this.dataList = dataList;
         rb = coordinator.getResourceBundle();
@@ -270,10 +269,7 @@ public class DesplegableComponent<T> {
                                 panelDerecho.updateProperties(selectedEqType);
                         case null, default ->
                             // Fallback para cualquier otro tipo de objeto
-                        {
-                            assert selectedItem != null;
-                            panelDerecho.updateProperties(selectedItem.toString(), rb.getString("descripcion_no_disponible"));
-                        }
+                                panelDerecho.updateProperties(selectedItem.toString(), rb.getString("descripcion_no_disponible"));
                     }
                 }
             }
