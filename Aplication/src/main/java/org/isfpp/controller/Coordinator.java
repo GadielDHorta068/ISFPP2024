@@ -2,7 +2,6 @@ package org.isfpp.controller;
 
 import org.isfpp.interfaz.panelesPrincipal.MainMenu;
 import org.isfpp.interfaz.panelesPrincipal.DesplegableComponent;
-import org.isfpp.interfaz.panelesPrincipal.PanelDerecho;
 import org.isfpp.logica.CalculoGraph;
 import org.isfpp.logica.Lan;
 import org.isfpp.modelo.*;
@@ -343,13 +342,14 @@ public class Coordinator {
     /**
      * Escanea una dirección IP.
      *
-     * @param ip1   la dirección IP a escanear.
-     * @param ip2   direccion ip hasta donde escanear
-     * @param textarea area de texto a actualizar
+     * @param ip1         la dirección IP a escanear.
+     * @param ip2         direccion ip hasta donde escanear
+     * @param textarea    area de texto a actualizar
+     * @param progressBar barra de progreso
      * @return una lista de resultados del escaneo.
      */
-    public List<String> scanIP(String ip1, String ip2, JTextArea textarea) {
-        return calculoGraph.scanIP(ip1,ip2, textarea);
+    public List<String> scanIP(String ip1, String ip2, JTextArea textarea, JProgressBar progressBar) {
+        return calculoGraph.scanIP(ip1,ip2, textarea, progressBar);
     }
 
     /**

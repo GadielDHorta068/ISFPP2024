@@ -302,7 +302,7 @@ public class CalculoGraph implements Observer{
     }
 
 
-    public List<String> scanIP(String ip1, String ip2, JTextArea textArea) {
+    public List<String> scanIP(String ip1, String ip2, JTextArea textArea, JProgressBar progressBar) {
         ExecutorService executor = Executors.newFixedThreadPool(1);
         List<String> results = new ArrayList<>();
 
@@ -315,9 +315,9 @@ public class CalculoGraph implements Observer{
         try {
             long ipStart = ipToLong(ip1);
             long ipEnd = ipToLong(ip2);
-            Future<List<String>> future = executor.submit(() -> scanRange(ipStart, ipEnd, textArea));
+            Future<List<String>> future = executor.submit(() -> scanRange(ipStart, ipEnd, textArea, progressBar));
 
-            results.addAll(future.get());
+            results.addAll(future.get());// Limpiar antes de iniciar nuevo escaneo
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -331,11 +331,12 @@ public class CalculoGraph implements Observer{
     /**
      * Escanea un rango de direcciones IP y actualiza el JTextArea en tiempo real para cada IP alcanzable.
      */
-    public List<String> scanRange(long ipStart, long ipEnd, JTextArea textArea) throws InterruptedException {
+    public List<String> scanRange(long ipStart, long ipEnd, JTextArea textArea, JProgressBar progressBar) throws InterruptedException {
         List<String> reachableIPs = new ArrayList<>();
+        float steps = 100f / (ipEnd - ipStart + 1);
         for (long i = ipStart; i <= ipEnd; i++) {
             String ip = longToIp(i);
-
+            progressBar.setValue((int) ((progressBar.getValue() + steps) * 100));
             System.out.println("Escaneando IP: " + ip);
 
             if (ping(ip)) {
@@ -361,7 +362,7 @@ public class CalculoGraph implements Observer{
                 return diff;  // Si los segmentos son diferentes, devolver la diferencia
             }
         }
-        return 0;  // Si son iguales
+        return 0;
     }
 
 

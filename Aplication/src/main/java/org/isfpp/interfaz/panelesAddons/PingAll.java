@@ -59,7 +59,7 @@ public class PingAll {
         JButton scanButton = new JButton(rb.getString("scan_IPs"));
         scanButton.addActionListener(e -> {
             progressBar.setValue(0);
-            textArea.setText(""); // Limpiar antes de iniciar nuevo escaneo
+            textArea.setText("");
             String ip1 = ipInicial.getText();
             String ip2 = ipFinal.getText();
             new IPScannerWorker(ip1, ip2).execute();
@@ -101,21 +101,21 @@ public class PingAll {
         @Override
         protected Void doInBackground() {
 
-            ExecutorService executor = Executors.newFixedThreadPool(3);
+            ExecutorService executor = Executors.newFixedThreadPool(1);
 
             try {
                 long ipInicio = ipToLong(ipStart);
                 long ipFinal = ipToLong(ipEnd);
 
 
-                List<String> direcciones = coordinator.scanIP(ipStart, ipEnd, textArea);
-                int cont=0;
-                for (String direccion : direcciones) {
-                    cont++;
-                    publish(direccion);// Publica cada IP encontrada para actualizar en la interfaz
-                    updateProgress((int) ((cont * 100) / direcciones.size()));
+                List<String> direcciones = coordinator.scanIP(ipStart, ipEnd, textArea, progressBar);
+                //int cont=0;
+                //for (String direccion : direcciones) {
+                  //  cont++;
+                //    publish(direccion);// Publica cada IP encontrada para actualizar en la interfaz
+               //     updateProgress((int) ((cont * 100) / direcciones.size()));
 
-                }
+               // }///
 
 
             } catch (Exception e) {
