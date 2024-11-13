@@ -7,6 +7,9 @@ import java.io.InputStream;
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
 
+/**
+ * Configuracion del usuario
+ */
 public class Settings {
 
         private Coordinator coordinador;
@@ -15,7 +18,11 @@ public class Settings {
         private String name;
 
 
-        public Settings() {
+    /**
+     * Constructor por defecto de la clase
+     *
+     */
+    public Settings() {
             Properties prop = new Properties();
             InputStream input;
             try {
@@ -25,9 +32,7 @@ public class Settings {
                 CountDownLatch latch = new CountDownLatch(1);
                 ls = new LanguageSelectorPanel(latch);
                 latch.await();
-           //     Locale.setDefault(new Locale(prop.getProperty("language"), prop.getProperty("country")));
                 Locale locale = LanguageSelectorPanel.getLoc();
-              //  resourceBundle = ResourceBundle.getBundle(prop.getProperty("labels"));
                 resourceBundle = ResourceBundle.getBundle("messages", locale);
                 name = ls.getName();
 
@@ -41,17 +46,6 @@ public class Settings {
         public ResourceBundle getResourceBundle() {
             return resourceBundle;
         }
-
-    public static class ObtenerIdiomaSistema {
-        public static void main(String[] args) {
-            Locale locale = Locale.getDefault();
-            String idioma = locale.getLanguage();
-            String pais = locale.getCountry();
-
-            System.out.println("Idioma del sistema: " + idioma);
-            System.out.println("País del sistema: " + pais);
-        }
-    }
 
 
     public void setCoordinador(Coordinator coordinador) {

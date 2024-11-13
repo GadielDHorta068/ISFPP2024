@@ -5,9 +5,16 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
 
+/**
+ *  Clase que se encargara de establecer la conexion con la base de datos
+ */
 public class BDConnection {
     private static java.sql.Connection con = null;
 
+    /**
+     * Clase que devuelve los atributos de la conexion
+     * @return Connection
+     */
     public static Connection getConnection(){
         try {
             if (con == null){
@@ -31,8 +38,6 @@ public class BDConnection {
     }
 
     private static class MishDwnHook extends Thread {
-        // justo antes de finalizar el programa la JVM invocara
-        // a este metodo donde podemos cerrar la conexion
         public void run() {
             try {
                 Connection con = BDConnection.getConnection();

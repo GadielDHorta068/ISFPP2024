@@ -389,9 +389,17 @@ public class Coordinator {
         tablas.add(d);
     }
 
+    /**
+     * Indicar los settings del programa
+     * @param settings referencia a la clase settings
+     */
     public void setSettings(Settings settings) {this.settings=settings;
     }
 
+    /**
+     * Obtener ResourceBoundle de settings
+     * @return ResourceBundle
+     */
     public ResourceBundle getResourceBundle() {return this.settings.getResourceBundle();
     }
 
@@ -427,31 +435,58 @@ public class Coordinator {
 
     }
 
-    //metodos searchAllOf de Web, (lectura)
+    /**
+     * Lectura de las locaciones de la LAN
+     * @param directory directorio del archivo
+     */
     public void searchAllLocarionOf(String directory){
         lan.addAllLocationOf(directory);
     }
 
+    /**
+     * Lectura de todos los tipos de cable de la LAN
+     * @param directory directorio del archivo
+     */
     public void searchAllWireTypeOf(String directory){
         lan.addAllWiretypeOf(directory);
     }
 
+    /**
+     * Lectura de todos los tipos de equipo de la LAN
+     * @param directory directorio del archivo
+     */
     public void searchAllEquipmentType(String directory){
         lan.addAllEquipmentTypeOf(directory);
     }
 
+    /**
+     * Lectura de todos los tipos de puerto de la LAN
+     * @param directory directorio del archivo
+     */
     public void searchAllPortType(String directory){
         lan.addAllPortTypeOf(directory);
     }
 
+    /**
+     * Lectura de todos los equipos en la LAN
+     * @param diretory directorio del archivo
+     */
     public void searchAllEquipmentOf(String diretory){
         lan.addAllEquipmentOf(diretory);
     }
 
+    /**
+     * Lectura de todas las conecciones de la LAN
+     * @param directory directorio del archivo
+     */
     public void searchAllConnectionOf(String directory){
         lan.addAllConnectionOf(directory);
     }
 
+    /**
+     * Leer objetos desde
+     * @param directory directorio
+     */
     public void searchAllOf(String directory){
         searchAllLocarionOf(directory);
         searchAllWireTypeOf(directory);
@@ -461,31 +496,59 @@ public class Coordinator {
         searchAllConnectionOf(directory);
     }
 
-    //metodos insertALl de Web, (escritor)
+
+    /**
+     * Escribir todos los equipos en el archivo
+     * @param directory directorio del archivo
+     */
     public void insertAllEquipmentInto(String directory){
         lan.insertAllWireTypeInto(directory);
     }
 
+    /**
+     * Escribir todas las conxiones de la LAN
+     * @param directory directorio del archivo
+     */
     public void insertAllConnectionInto(String directory){
         lan.insertAllConnectionInto(directory);
     }
 
+    /**
+     * Escribir todas las locaciones de la LAN
+     * @param directory directorio del archivo
+     */
     public void insertAllLocationInto(String directory){
         lan.insertAllLocationInto(directory);
     }
 
+    /**
+     * Escribir todos los tipos de puerto
+     * @param directory directorio del archivo
+     */
     public void insertAllPortTypeInto(String directory){
         lan.insertAllPortTypeInto(directory);
     }
 
+    /**
+     * Escribir todos los tipo de cable
+     * @param directory directorio del archivo
+     */
     public void insertAllWireTypeInto(String directory){
         lan.insertAllPortTypeInto(directory);
     }
 
+    /**
+     * Escribir todos los tipos de equipo de la LAN
+     * @param directory directorio del archivo
+     */
     public void insertAllEquipmentTypeInto(String directory){
         lan.insertAllEquipmentTypeInto(directory);
     }
 
+    /**
+     * Escribir todos los elementos de la LAN
+     * @param directory directorio del archivo
+     */
     public void insertAllInto(String directory){
         insertAllConnectionInto(directory);
         insertAllEquipmentInto(directory);
@@ -495,10 +558,18 @@ public class Coordinator {
         insertAllWireTypeInto(directory);
     }
 
+    /**
+     * Obtener nombre de usuario
+     * @return String
+     */
     public String getUser() {
        return settings.getName();
     }
 
+    /**
+     * Obtener los settings
+     * @return Settings
+     */
     public Settings getSettings(){
         return settings;
     }

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public interface ConnectionDAO {
+
     void insert(Connection connection);  // Inserta una nueva Connection
 
     void update(Connection connection);  // Actualiza una Connection existente

@@ -46,7 +46,7 @@ public abstract class AbstractConnectionDAO {
         Scanner inFile = null;
 
         try {
-            File file = new File(fileName); // Carga el archivo directamente
+            File file = new File(fileName);
             inFile = new Scanner(file);
             inFile.useDelimiter("\\s*;\\s*");
             while (inFile.hasNext()) {
@@ -82,7 +82,7 @@ public abstract class AbstractConnectionDAO {
                         connection.getPort2().getPortType().getCode(),
                         connection.getWire().getCode()));
 
-                writer.newLine();  // Escribir salto de línea después de cada línea
+                writer.newLine();
             }
         }catch (FileNotFoundException fileNotFoundException) {
             System.err.println("Error creating file Connection.");
@@ -109,23 +109,19 @@ public abstract class AbstractConnectionDAO {
 
     public void insertAllIn(String directory, List<Connection> list) {
         boolean check = true;
-        // Validación: el directorio no debe ser nulo ni vacío
         if (directory == null || directory.trim().isEmpty()) {
             System.err.println("El directorio proporcionado es nulo o está vacío.");
             check = false;
         }
 
-        // Validación: Verificar si el directorio existe y es un directorio válido
         File dir = new File(directory);
         if (!dir.exists() || !dir.isDirectory()) {
             System.err.println("El directorio no existe o no es válido: " + dir.getAbsolutePath());
             check = false;
         }
 
-        // Crear la ruta completa al archivo
         File file = new File(directory, fileName);
 
-        // Validación: Verificar si el archivo existe y es un archivo regular
         if (!file.exists()) {
             System.err.println("El archivo no existe: " + file.getAbsolutePath());
             check = false;
@@ -136,7 +132,6 @@ public abstract class AbstractConnectionDAO {
             check = false;
         }
 
-        // Validación: Verificar si el archivo es legible
         if (!file.canRead()) {
             System.err.println("El archivo no tiene permisos de lectura: " + file.getAbsolutePath());
             check = false;
@@ -147,23 +142,19 @@ public abstract class AbstractConnectionDAO {
     }
 
     public List<Connection> searchAllIn(String directory) {
-        // Validación: el directorio no debe ser nulo ni vacío
         if (directory == null || directory.trim().isEmpty()) {
             System.err.println("El directorio proporcionado es nulo o está vacío.");
             return new ArrayList<>();
         }
 
-        // Validación: Verificar si el directorio existe y es un directorio válido
         File dir = new File(directory);
         if (!dir.exists() || !dir.isDirectory()) {
             System.err.println("El directorio no existe o no es válido: " + dir.getAbsolutePath());
             return new ArrayList<>();
         }
 
-        // Crear la ruta completa al archivo
         File file = new File(directory, fileName);
 
-        // Validación: Verificar si el archivo existe y es un archivo regular
         if (!file.exists()) {
             System.err.println("El archivo no existe: " + file.getAbsolutePath());
             return new ArrayList<>();
@@ -174,16 +165,13 @@ public abstract class AbstractConnectionDAO {
             return new ArrayList<>();
         }
 
-        // Validación: Verificar si el archivo es legible
         if (!file.canRead()) {
             System.err.println("El archivo no tiene permisos de lectura: " + file.getAbsolutePath());
             return new ArrayList<>();
         }
 
         List<Connection> connectionList =  readFromFile(file.getAbsolutePath());
-        // Intentar leer el archivo y manejar posibles excepciones
-        // Leer el archivo y devolver la lista de conexiones
-        return connectionList; // Retornar la lista de conexiones leídas
+        return connectionList;
     }
 
 }

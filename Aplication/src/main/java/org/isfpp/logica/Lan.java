@@ -14,6 +14,9 @@ import org.isfpp.modelo.*;
 
 import javax.swing.*;
 
+/**
+ * Clase principal del modelo, la misma contiene todos los objetos
+ */
 public class Lan {
 	private static Lan lan = null;
 
@@ -35,6 +38,9 @@ public class Lan {
 	private Coordinator coordinator;
 
 
+	/**
+	 * Constructor de la clase
+	 */
 	public Lan() {
 		super();
 		setNombre("RedLocal");
@@ -58,12 +64,20 @@ public class Lan {
 		connections.addAll(connectionService.searchAll());
 	}
 
+	/**
+	 * Devolverse a si mismo
+	 * @return Lan
+	 */
 	public static Lan getLan() {
 		if (lan ==  null)
 			lan = new Lan();
 		return lan;
 	}
-	//Name
+
+	/**
+	 * Obtener el nombre de nuestra red
+	 * @return String
+	 */
 	public String getNombre() {
 		return nombre;
 	}
@@ -72,7 +86,19 @@ public class Lan {
 		this.nombre = nombre;
 	}
 
-	//Equipment
+	/**
+	 * Añadir equipo nuevo pasando todos sus atributos
+	 * @param code codigo del equipo
+	 * @param description descripcion del equipo
+	 * @param marca marca del equipo
+	 * @param model modelo
+	 * @param portType tipo de puerto que tendra
+	 * @param cantidad cantidad de ese tipo
+	 * @param equipmentType tipo de equipo
+	 * @param location ubicacion
+	 * @param status estado
+	 * @return Equipment
+	 */
 	public Equipment addEquipment(String code, String description, String marca, String model, PortType portType,int cantidad,
 								  EquipmentType equipmentType, Location location,Boolean status)  {
 		if (hardware.containsKey(code))
@@ -119,20 +145,23 @@ public class Lan {
 
     }
 
+	/**
+	 * Eliminar un equipo de la Lan
+	 * @param e equipo a ser borrado
+	 */
 	public void eraseEquipment(Equipment e) {
 		if (!hardware.containsKey(e.getCode())) {
 			throw new NotFoundException("equipo invalido");
 		}
         for (Connection c : List.copyOf(connections)) {
-            // Eliminar la conexión del equipo si coincide con alguno de los puertos
             if (c.getPort1().getEquipment().equals(e) || c.getPort2().getEquipment().equals(e)) {
                 if (connections.contains(c)) {
-                    eraseConnection(c); // Solo llama a eraseConnection si la conexión aún está en la lista
+                    eraseConnection(c);
                 }
             }
         }
 
-		hardware.remove(e.getCode(), e);  // Eliminar el equipo del hardware
+		hardware.remove(e.getCode(), e);
 		equipmentService.erase(e);
 		subject.refresh();
 		logger.info("Se elimino un equipo");
@@ -140,6 +169,11 @@ public class Lan {
 		coordinator.setSelectedItem(null);
 	}
 
+	/**
+	 * Buscar un equipo
+	 * @param equipment equipo a buscar
+	 * @return Equipo
+	 */
 	public Equipment searchEquipment(Equipment equipment) {
 		return hardware.get(equipment.getCode());
 	}
@@ -177,7 +211,6 @@ public class Lan {
 
 	//Connection
 	public Connection addConnection(Port port1, Port port2, WireType wire) {
-		// Verificar si los equipos existen en el hardware
 		Equipment e1 = hardware.get(port1.getEquipment().getCode());
 		Equipment e2 = hardware.get(port2.getEquipment().getCode());
 
@@ -201,7 +234,6 @@ public class Lan {
 		if (connections.contains(connection))
 			throw new AlreadyExistException("La conexión entre " + port1.getEquipment().getCode() + " y " + port2.getEquipment().getCode() + " ya existe.");
 
-		// Agregar la conexión a la lista de conexiones
 		connections.add(connection);
 		connectionService.insert(connection);
 		coordinator.updateTablas(this);
@@ -221,7 +253,6 @@ public class Lan {
 		Equipment eq1 = connection.getPort1().getEquipment();
 		Equipment eq2 = connection.getPort2().getEquipment();
 
-		// Verificar si los equipos existen en el hardware
 		if (!hardware.containsKey(eq1.getCode()))
 			throw new NotFoundException("El equipo " + eq1.getCode() + " no se encuentra.");
 		if (!hardware.containsKey(eq2.getCode()))
@@ -230,7 +261,6 @@ public class Lan {
 		if (connections.contains(connection))
 			throw new AlreadyExistException("La conexión entre " + eq1.getCode() + " y " + eq2.getCode() + " ya existe.");
 
-		// Agregar la conexión a la lista de conexiones
 		connections.add(connection);
 		subject.refresh();
 		logger.info("Se agrega una conexion");
@@ -239,11 +269,9 @@ public class Lan {
     }
 
 	public void eraseConnection(Connection connection) {
-		// Verificar si la conexión existe
 		if (!connections.contains(connection))
 			throw new NotFoundException("La conexión no se encuentra.");
 
-		// Eliminar la conexión de la lista
 		connection.getPort1().setInUse(false);
 		connection.getPort2().setInUse(false);
 		connections.remove(connection);
@@ -302,7 +330,6 @@ public class Lan {
 		this.connections = connections;
 	}
 
-	//Location
 	public Location addLocation(String code, String description) {
 		if (locations.containsKey(code)){
 			JOptionPane.showMessageDialog(null,"La localizacion ya se encuentra", "Error de duplicacion", JOptionPane.INFORMATION_MESSAGE);
@@ -337,6 +364,10 @@ public class Lan {
         logger.info("Se agrego una localizacion");
     }
 
+	/**
+	 * Eliminar una ubicacion
+	 * @param l ubicacion
+	 */
 	public void eraseLocation(Location l) {
 		if (!locations.containsKey(l.getCode()))
 			JOptionPane.showMessageDialog(null,"Error de locacion", "Error de dependencia", JOptionPane.INFORMATION_MESSAGE);
