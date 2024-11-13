@@ -48,8 +48,8 @@ public class Traceroute {
         okButton.addActionListener(e -> {
             try {
                 textArea.setText("");
-                Equipment e1 = coordinator.getHardware().get(textE1.getText().toUpperCase());
-                Equipment e2 = coordinator.getHardware().get(textE2.getText().toUpperCase());
+                Equipment e1 = coordinator.getHardware().get(textE1.getText());
+                Equipment e2 = coordinator.getHardware().get(textE2.getText());
                 direcciones = coordinator.traceroute(e1, e2);
                 updateTextArea();
             } catch (Exception exception) {
