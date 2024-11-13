@@ -2,6 +2,7 @@ package org.isfpp.dao.posgresql;
 
 import org.isfpp.connection.BDConnection;
 import org.isfpp.dao.EquipmentTypeDAO;
+import org.isfpp.dao.abstractDao.AbstractEquimentTypeDAO;
 import org.isfpp.modelo.Connection;
 import org.isfpp.modelo.EquipmentType;
 
@@ -12,11 +13,14 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
-public class EquipmentTypePosgresqlDAO implements EquipmentTypeDAO {
+public class EquipmentTypePosgresqlDAO extends AbstractEquimentTypeDAO implements EquipmentTypeDAO {
+    private static Hashtable<String, EquipmentType> map;
+    private static boolean update  = true;
 
     public EquipmentTypePosgresqlDAO(){
-
+        super();
     }
+
     @Override
     public void insert(EquipmentType equipmentType) {
         java.sql.Connection con = null;
@@ -38,6 +42,8 @@ public class EquipmentTypePosgresqlDAO implements EquipmentTypeDAO {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }finally {
+            map.put(equipmentType.getCode(),equipmentType);
+            update = true;
             try {
                 if(rs != null)
                     rs.close();
@@ -73,6 +79,8 @@ public class EquipmentTypePosgresqlDAO implements EquipmentTypeDAO {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
+            map.replace(equipmentType.getCode(), equipmentType);
+            update = true;
             try {
                 if (rs != null)
                     rs.close();
@@ -101,6 +109,8 @@ public class EquipmentTypePosgresqlDAO implements EquipmentTypeDAO {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }finally {
+            map.remove(equipmentType.getCode());
+            update = true;
             try {
                 if (rs != null)
                     rs.close();
@@ -113,49 +123,56 @@ public class EquipmentTypePosgresqlDAO implements EquipmentTypeDAO {
     }
 
     @Override
-    public void insertAllIn(String directory) {
-
-    }
-
-    @Override
     public Hashtable<String, EquipmentType> searchAll() {
-        java.sql.Connection con = null;
-        PreparedStatement pstm = null;
-        ResultSet rs = null;
-        try {
-            con = BDConnection.getConnection();
-            String sql = "SELECT " +
-                    "   code," +
-                    "   description " +
-                    "FROM poo2024.rcg_equipment_type ";
-            pstm = con.prepareStatement(sql);
-            rs = pstm.executeQuery();
-            Hashtable<String, EquipmentType> ret= new Hashtable<>();
-            while (rs.next()) {
-                EquipmentType equipmentType = new EquipmentType();
-                equipmentType.setCode(rs.getString("code"));
-                equipmentType.setDescription(rs.getString("description"));
-                ret.put(equipmentType.getCode(), equipmentType);
-            }
-            return ret;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        if (update) {
+            Hashtable<String, EquipmentType> ret = new Hashtable<>();
+            java.sql.Connection con = null;
+            PreparedStatement pstm = null;
+            ResultSet rs = null;
             try {
-                if (rs != null)
-                    rs.close();
-                if (pstm != null)
-                    pstm.close();
+                con = BDConnection.getConnection();
+                String sql = "SELECT " +
+                        "   code," +
+                        "   description " +
+                        "FROM poo2024.rcg_equipment_type ";
+                pstm = con.prepareStatement(sql);
+                rs = pstm.executeQuery();
+                while (rs.next()) {
+                    EquipmentType equipmentType = new EquipmentType();
+                    equipmentType.setCode(rs.getString("code"));
+                    equipmentType.setDescription(rs.getString("description"));
+                    ret.put(equipmentType.getCode(), equipmentType);
+                }
             } catch (Exception ex) {
                 ex.printStackTrace();
                 throw new RuntimeException(ex);
+            } finally {
+                map = ret;
+                update = false;
+                try {
+                    if (rs != null)
+                        rs.close();
+                    if (pstm != null)
+                        pstm.close();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    throw new RuntimeException(ex);
+                }
             }
         }
+        return map;
+    }
+
+    @Override
+    public void insertAllIn(String directory) {
+        super.insertAllIn(directory, map);
     }
 
     @Override
     public Hashtable<String, EquipmentType> searchAllIn(String directory) {
-        return null;
+        for(EquipmentType equimentType: super.searchAllIn(directory).values())
+            if (!map.contains(equimentType))
+                map.put(equimentType.getCode(),equimentType);
+        return map;
     }
 }

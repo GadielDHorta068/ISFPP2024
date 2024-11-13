@@ -13,9 +13,9 @@ public interface LocationDAO {
 
     void erase(Location location);             // Elimina un Location por su ID
 
-    void insertAllIn(String directory);
-
     Hashtable<String,Location> searchAll();        // Lee todos los Locations
+
+    void insertAllIn(String directory);
 
     Hashtable<String, Location> searchAllIn(String directory);
 

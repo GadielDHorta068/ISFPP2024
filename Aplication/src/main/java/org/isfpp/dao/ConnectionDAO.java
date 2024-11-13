@@ -1,5 +1,7 @@
 package org.isfpp.dao;
 import org.isfpp.modelo.Connection;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public interface ConnectionDAO {
