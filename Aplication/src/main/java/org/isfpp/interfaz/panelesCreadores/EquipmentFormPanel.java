@@ -96,10 +96,10 @@ public class EquipmentFormPanel extends JPanel {
 
         JLabel estado = new JLabel(rb.getString("estado_activo"));
         StylusUI.aplicarEstiloEtiqueta(estado);
-        //formPanel.add(estado);
+        formPanel.add(estado);
         statusCheckBox = new JCheckBox();
         StylusUI.aplicarEstiloCheckBox(statusCheckBox);
-        //formPanel.add(statusCheckBox);
+        formPanel.add(statusCheckBox);
 
 
         add(formPanel, BorderLayout.CENTER);
@@ -116,7 +116,7 @@ public class EquipmentFormPanel extends JPanel {
             EquipmentType equipmentType = (EquipmentType) equipmentTypeCombo.getSelectedItem();
             Location location = (Location) locationCombo.getSelectedItem();
             PortType portType = (PortType) portTypeCombo.getSelectedItem();
-            boolean status = true;
+            boolean status = statusCheckBox.isSelected();
 
             if (Objects.equals(code, "")) {
                 JOptionPane.showMessageDialog(this, rb.getString("codigo_no_vacio"),rb.getString( "error"), JOptionPane.ERROR_MESSAGE);

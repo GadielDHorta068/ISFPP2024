@@ -2,6 +2,7 @@ package org.isfpp.dao.posgresql;
 
 import org.isfpp.connection.BDConnection;
 import org.isfpp.dao.PortTypeDAO;
+import org.isfpp.dao.abstractDao.AbstractPortTypeDAO;
 import org.isfpp.modelo.PortType;
 
 import java.sql.Connection;
@@ -10,13 +11,15 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Hashtable;
 
-public class PortTypePosgresqlDAO implements PortTypeDAO {
+public class PortTypePosgresqlDAO extends AbstractPortTypeDAO implements PortTypeDAO {
+    private static Hashtable<String, PortType> map;
+    private static boolean update  = true;
+
     @Override
     public void insert(PortType portType) {
         java.sql.Connection con = null;
         PreparedStatement pstm = null;
         ResultSet rs = null;
-
         try {
             con = BDConnection.getConnection();
             String sql ="";
@@ -34,6 +37,8 @@ public class PortTypePosgresqlDAO implements PortTypeDAO {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }finally {
+            map.put(portType.getCode(),portType);
+            update = true;
             try {
                 if(rs != null)
                     rs.close();
@@ -69,6 +74,8 @@ public class PortTypePosgresqlDAO implements PortTypeDAO {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
+            map.replace(portType.getCode(),portType);
+            update = true;
             try {
                 if (rs != null)
                     rs.close();
@@ -98,6 +105,8 @@ public class PortTypePosgresqlDAO implements PortTypeDAO {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }finally {
+            map.remove(portType.getCode());
+            update = true;
             try {
                 if (rs != null)
                     rs.close();
@@ -110,50 +119,58 @@ public class PortTypePosgresqlDAO implements PortTypeDAO {
     }
 
     @Override
-    public void insertAllIn(String directory) {
-
-    }
-
-    @Override
     public Hashtable<String, PortType> searchAll() {
-        Connection con = null;
-        PreparedStatement pstm = null;
-        ResultSet rs = null;
-        try {
-            con = BDConnection.getConnection();
-            String sql = "SELECT code, " +
-                    "   description, " +
-                    "   speed ";
-            sql += "FROM poo2024.RCG_port_Type ";
-            pstm = con.prepareStatement(sql);
-            rs = pstm.executeQuery();
+        if (update) {
             Hashtable<String, PortType> ret = new Hashtable<>();
-            while (rs.next()) {
-                PortType portType = new PortType();
-                portType.setCode(rs.getString("code"));
-                portType.setDescription(rs.getString("description"));
-                portType.setSpeed(rs.getInt("speed"));
-                ret.put(portType.getCode(), portType);
-            }
-            return ret;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+            Connection con = null;
+            PreparedStatement pstm = null;
+            ResultSet rs = null;
             try {
-                if (rs != null)
-                    rs.close();
-                if (pstm != null)
-                    pstm.close();
+                con = BDConnection.getConnection();
+                String sql = "SELECT code, " +
+                        "   description, " +
+                        "   speed ";
+                sql += "FROM poo2024.RCG_port_Type ";
+                pstm = con.prepareStatement(sql);
+                rs = pstm.executeQuery();
+                while (rs.next()) {
+                    PortType portType = new PortType();
+                    portType.setCode(rs.getString("code"));
+                    portType.setDescription(rs.getString("description"));
+                    portType.setSpeed(rs.getInt("speed"));
+                    ret.put(portType.getCode(), portType);
+                }
             } catch (Exception ex) {
                 ex.printStackTrace();
                 throw new RuntimeException(ex);
+            } finally {
+                map = ret;
+                try {
+                    if (rs != null)
+                        rs.close();
+                    if (pstm != null)
+                        pstm.close();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    throw new RuntimeException(ex);
+                }
             }
         }
+        return map;
+    }
+
+    @Override
+    public void insertAllIn(String directory) {
+        super.insertAllIn(directory, map);
     }
 
     @Override
     public Hashtable<String, PortType> searchAllIn(String directory) {
-        return null;
+        if (map == null)
+            map = new Hashtable<>();
+        for(PortType portType: super.searchAllIn(directory).values())
+            if (!map.contains(portType))
+                map.put(portType.getCode(),portType);
+        return map;
     }
 }

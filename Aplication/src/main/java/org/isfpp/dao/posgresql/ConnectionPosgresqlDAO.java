@@ -6,6 +6,7 @@ import org.isfpp.dao.EquipmentDAO;
 import org.isfpp.dao.PortTypeDAO;
 import org.isfpp.dao.Secuencial.ConnectionSequentialDAO;
 import org.isfpp.dao.WireTypeDAO;
+import org.isfpp.dao.abstractDao.AbstractConnectionDAO;
 import org.isfpp.modelo.*;
 
 import java.sql.PreparedStatement;
@@ -15,34 +16,12 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
-public class ConnectionPosgresqlDAO implements ConnectionDAO{
-    private static boolean update;
+public class ConnectionPosgresqlDAO extends AbstractConnectionDAO implements ConnectionDAO{
+    private static boolean update = true;
     private static List<Connection> list;
 
-    private final PortTypeDAO portTypeDAO;
-    private final EquipmentDAO equipmentDAO;
-    private final WireTypeDAO wireTypeDAO;
-
-    private Hashtable<String, PortType> portTypeTable;
-    private Hashtable<String, Equipment> equipmentTable;
-    private Hashtable<String, WireType> wireTypeTable;
-
     public ConnectionPosgresqlDAO(){
-        portTypeDAO = new PortTypePosgresqlDAO();
-        wireTypeDAO = new WireTypePosgresqlDAO();
-        equipmentDAO = new EquipmentPosgresqlDAO();
-    }
-
-    private Hashtable<String, PortType> loadPortTypes(){
-        return portTypeDAO.searchAll();
-    }
-
-    private Hashtable<String, Equipment> loadEquipments(){
-        return equipmentDAO.searchAll();
-    }
-
-    private Hashtable<String, WireType> loadWireType(){
-        return wireTypeDAO.searchAll();
+        super();
     }
 
     @Override
@@ -72,6 +51,8 @@ public class ConnectionPosgresqlDAO implements ConnectionDAO{
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }finally {
+            list.add(connection);
+            update = true;
             try {
                 if(rs != null)
                     rs.close();
@@ -115,6 +96,9 @@ public class ConnectionPosgresqlDAO implements ConnectionDAO{
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
+            int pos = list.indexOf(connection);
+            list.set(pos, connection);
+            update = true;
             try {
                 if (rs != null)
                     rs.close();
@@ -124,6 +108,7 @@ public class ConnectionPosgresqlDAO implements ConnectionDAO{
                 System.err.println("Error al cerrar comunicación con la base de datos");
                 throw new RuntimeException(e);
             }
+
         }
     }
 
@@ -145,6 +130,8 @@ public class ConnectionPosgresqlDAO implements ConnectionDAO{
         } catch (Exception e) {
             throw new RuntimeException(e);
         }finally {
+            list.remove(connection);
+            update = true;
             try {
                 if (rs != null)
                     rs.close();
@@ -157,69 +144,67 @@ public class ConnectionPosgresqlDAO implements ConnectionDAO{
     }
 
     @Override
-    public void insertAllIn(String directory) {
-
-    }
-
-    @Override
     public List<Connection> searchAll() {
-        java.sql.Connection con = null;
-        PreparedStatement pstm = null;
-        ResultSet rs = null;
-        try {
-            con = BDConnection.getConnection();
-            String sql = "SELECT code_port_type1," +
-                    "   code_equipment1," +
-                    "   code_port_type2," +
-                    "   code_equipment2," +
-                    "   code_wire_type";
-            sql += " FROM poo2024.rcg_connection ";
-            pstm = con.prepareStatement(sql);
-            rs = pstm.executeQuery();
+        if(update) {
             List<Connection> ret = new ArrayList<>();
-            equipmentTable = loadEquipments();
-            portTypeTable = loadPortTypes();
-            wireTypeTable = loadWireType();
-            while (rs.next()) {
-                Connection connection = new Connection();
-                System.out.println(rs.getString("code_equipment1"));
-                System.out.println(rs.getString("code_port_type1"));
-                System.out.println(rs.getString("code_equipment2"));
-                System.out.println(rs.getString("code_port_type2"));
-                System.out.println(rs.getString("code_wire_type"));
-                System.out.println(equipmentTable.get(rs.getString("code_equipment1")).getCode());
-                System.out.println(equipmentTable.get(rs.getString("code_equipment1")).getAllPortsTypes().keySet());
-                System.out.println(equipmentTable.get(rs.getString("code_equipment2")).getCode());
-                System.out.println(equipmentTable.get(rs.getString("code_equipment2")).getAllPortsTypes().keySet()+"\n\n");
-
-                connection.setPort1(equipmentTable.get(rs.getString("code_equipment1")).
-                        checkPort(portTypeTable.get(rs.getString("code_port_type1"))));
-                connection.setPort2(equipmentTable.get(rs.getString("code_equipment2")).
-                        checkPort(portTypeTable.get(rs.getString("code_port_type2"))));
-                connection.setWire(wireTypeTable.get(rs.getString("code_wire_type")));
-
-                ret.add(connection);
-            }
-            return ret;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+            java.sql.Connection con = null;
+            PreparedStatement pstm = null;
+            ResultSet rs = null;
             try {
-                if (rs != null)
-                    rs.close();
-                if (pstm != null)
-                    pstm.close();
+                con = BDConnection.getConnection();
+                String sql = "SELECT code_port_type1," +
+                        "   code_equipment1," +
+                        "   code_port_type2," +
+                        "   code_equipment2," +
+                        "   code_wire_type";
+                sql += " FROM poo2024.rcg_connection ";
+                pstm = con.prepareStatement(sql);
+                rs = pstm.executeQuery();
+                equipments = super.readEquipments();
+                portTypes = super.readPortTypes();
+                wireTypes = super.readWireTypes();
+                while (rs.next()) {
+                    Connection connection = new Connection();
+
+                    connection.setPort1(equipments.get(rs.getString("code_equipment1")).
+                            checkPort(portTypes.get(rs.getString("code_port_type1"))));
+                    connection.setPort2(equipments.get(rs.getString("code_equipment2")).
+                            checkPort(portTypes.get(rs.getString("code_port_type2"))));
+                    connection.setWire(wireTypes.get(rs.getString("code_wire_type")));
+
+                    ret.add(connection);
+                }
             } catch (Exception ex) {
                 ex.printStackTrace();
                 throw new RuntimeException(ex);
+            } finally {
+                list = ret;
+                update = false;
+                try {
+                    if (rs != null)
+                        rs.close();
+                    if (pstm != null)
+                        pstm.close();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    throw new RuntimeException(ex);
+                }
             }
         }
+        return list;
+    }
+
+    @Override
+    public void insertAllIn(String directory) {
+        super.insertAllIn(directory, list);
     }
 
     @Override
     public List<Connection> searchAllIn(String directory) {
-        return List.of();
+        for (Connection connection: super.searchAllIn(directory)){
+            insert(connection);
+            list.add(connection);
+        }
+        return list;
     }
-
 }

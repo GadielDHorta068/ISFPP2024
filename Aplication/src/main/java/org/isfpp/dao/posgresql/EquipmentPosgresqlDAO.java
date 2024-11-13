@@ -2,6 +2,7 @@ package org.isfpp.dao.posgresql;
 
 import org.isfpp.connection.BDConnection;
 import org.isfpp.dao.*;
+import org.isfpp.dao.abstractDao.AbstractEquipmentDAO;
 import org.isfpp.modelo.*;
 
 import java.io.*;
@@ -12,115 +13,13 @@ import java.sql.Statement;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class EquipmentPosgresqlDAO implements EquipmentDAO {
+public class EquipmentPosgresqlDAO extends AbstractEquipmentDAO implements EquipmentDAO {
     private static boolean update = true;
     private static Hashtable<String, Equipment> map = new Hashtable<>();
 
-    private PortTypeDAO portTypeDAO;
-    private EquipmentTypeDAO equipmentTypeDAO;
-    private LocationDAO locationDAO;
-
-    private Hashtable<String, PortType> portTypeTable;
-    private Hashtable<String, EquipmentType> equipmentTypeTable;
-    private Hashtable<String, Location> locationTable;
 
     public EquipmentPosgresqlDAO() {
-        portTypeDAO = new PortTypePosgresqlDAO();
-        portTypeTable = loadPortTypes();
-        equipmentTypeDAO = new EquipmentTypePosgresqlDAO();
-        equipmentTypeTable = loadEquipmentTypes();
-        locationDAO = new LocationPosgresqlDAO();
-        locationTable = loadLocations();
-    }
-
-    private Hashtable<String, Location> loadLocations() {
-        return locationDAO.searchAll();
-    }
-
-    private Hashtable<String, EquipmentType> loadEquipmentTypes() {
-        return equipmentTypeDAO.searchAll();
-    }
-
-    private Hashtable<String, PortType> loadPortTypes() {
-        return portTypeDAO.searchAll();
-    }
-
-    private Hashtable<String, Equipment> readFromFile(String fileName) {
-        Hashtable<String, Equipment> map = new Hashtable<>();
-        Scanner inFile = null;
-        try {
-            // Cambia a FileInputStream para leer del sistema de archivos
-            inFile = new Scanner(new FileInputStream(fileName));
-            inFile.useDelimiter("\\s*;\\s*");
-            String[] minireader;
-            while (inFile.hasNext()) {
-                Equipment equipment = new Equipment();
-                equipment.setCode(inFile.next());
-                equipment.setDescription(inFile.next());
-                equipment.setMake(inFile.next());
-                equipment.setModel(inFile.next());
-                equipment.setEquipmentType(equipmentTypeTable.get(inFile.next()));
-                equipment.setLocation(locationTable.get(inFile.next()));
-                minireader = inFile.next().split(",");
-                for (int i = 0; i < minireader.length; i += 2)
-                    for (int cap = 0; cap < Integer.parseInt(minireader[i + 1]); cap++)
-                        equipment.addPort(portTypeTable.get(minireader[i]));
-
-                minireader = inFile.next().split(",");
-                for (String ip : minireader)
-                    equipment.addIp(ip);
-
-                equipment.setStatus(inFile.nextBoolean());
-                System.out.println("SAS EN TODA LA BOCA"+equipment.getCode());
-                map.put(equipment.getCode(), equipment);
-            }
-        } catch (FileNotFoundException fileNotFoundException) {
-            System.err.println("Error al abrir el archivo: " + fileName);
-            fileNotFoundException.printStackTrace();
-        } catch (NoSuchElementException noSuchElementException) {
-            System.err.println("Error en la estructura del registro del archivo.");
-            noSuchElementException.printStackTrace();
-        } catch (IllegalStateException illegalStateException) {
-            System.err.println("Error al leer desde el archivo.");
-            illegalStateException.printStackTrace();
-        } finally {
-            if (inFile != null)
-                inFile.close();
-        }
-        return map;
-    }
-
-    private void writeToFile(Hashtable<String, Equipment> equipmentMap, String fileName) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, false))) {
-            HashMap<PortType, Integer> portMap;
-            for (Equipment equipment : equipmentMap.values()) {
-                portMap = equipment.getAllPortsTypes();
-                writer.write(String.format("%s;%s;%s;%s;%s;%s;",
-                        equipment.getCode(),
-                        equipment.getDescription(),
-                        equipment.getMake(),
-                        equipment.getModel(),
-                        equipment.getEquipmentType().getCode(),
-                        equipment.getLocation().getCode()));
-                int portIndex = 0;
-                for (PortType portType : portMap.keySet()) {
-                    writer.write(String.format("%s,%s%s", portType.getCode(), portMap.get(portType),
-                            (portIndex < portMap.size() - 1 ? "," : ";")));
-                    portIndex++;
-                }
-                for (int i = 0; i < equipment.getIpAdresses().size(); i++)
-                    writer.write(String.format("%s%s", equipment.getIpAdresses().get(i),
-                            (i < equipment.getIpAdresses().size() - 1 ? "," : ";")));
-
-                writer.write(String.format("%s;", equipment.isStatus() ? "true" : "false"));
-                writer.newLine();  // Escribir salto de línea después de cada línea
-            }
-            System.out.println("Archivo reescrito exitosamente.");
-        } catch (IOException e) {
-            e.printStackTrace();  // Manejo de excepciones
-        } catch (FormatterClosedException formatterClosedException) {
-            System.err.println("Error al escribir en el archivo.");
-        }
+        super();
     }
 
     @Override
@@ -175,7 +74,8 @@ public class EquipmentPosgresqlDAO implements EquipmentDAO {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
-            System.out.println("LALLAL");
+            map.put(equipment.getCode(),equipment);
+            update = true;
             try {
                 if (pstm != null) pstm.close();
             } catch (SQLException e) {
@@ -188,13 +88,11 @@ public class EquipmentPosgresqlDAO implements EquipmentDAO {
 
     }
 
-
     @Override
     public void update(Equipment equipment) {
         java.sql.Connection con = null;
         PreparedStatement pstm = null;
         ResultSet rs = null;
-
         try {
             con = BDConnection.getConnection();;
 
@@ -254,6 +152,8 @@ public class EquipmentPosgresqlDAO implements EquipmentDAO {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
+            map.replace(equipment.getCode(), equipment);
+            update = true;
             try {
                 if (rs != null)
                     rs.close();
@@ -264,8 +164,6 @@ public class EquipmentPosgresqlDAO implements EquipmentDAO {
                 throw new RuntimeException(e);
             }
         }
-        map.replace(equipment.getCode(),equipment);
-        update = true;
     }
 
     @Override
@@ -289,6 +187,8 @@ public class EquipmentPosgresqlDAO implements EquipmentDAO {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }finally {
+            map.remove(equipment.getCode());
+            update = true;
             try {
                 if (rs != null)
                     rs.close();
@@ -302,55 +202,14 @@ public class EquipmentPosgresqlDAO implements EquipmentDAO {
     }
 
     @Override
-    public void insertAllIn(String directory) {
-        boolean check = true;
-        // Validación: el directorio no debe ser nulo ni vacío
-        if (directory == null || directory.trim().isEmpty()) {
-            System.err.println("El directorio proporcionado es nulo o está vacío.");
-            check = false;
-        }
-
-        // Validación: Verificar si el directorio existe y es un directorio válido
-        File dir = new File(directory);
-        if (!dir.exists() || !dir.isDirectory()) {
-            System.err.println("El directorio no existe o no es válido: " + dir.getAbsolutePath());
-            check = false;
-        }
-
-        // Crear la ruta completa al archivo
-        File file = new File(directory, "data"+File.pathSeparator+"equipo.txt");
-
-        // Validación: Verificar si el archivo existe y es un archivo regular
-        if (!file.exists()) {
-            System.err.println("El archivo no existe: " + file.getAbsolutePath());
-            check = false;
-        }
-
-        if (!file.isFile()) {
-            System.err.println("La ruta no es un archivo válido: " + file.getAbsolutePath());
-            check = false;
-        }
-
-        // Validación: Verificar si el archivo es legible
-        if (!file.canRead()) {
-            System.err.println("El archivo no tiene permisos de lectura: " + file.getAbsolutePath());
-            check = false;
-        }
-
-
-        if (check)
-            writeToFile(map, file.getAbsolutePath());
-    }
-
-    @Override
     public Hashtable<String, Equipment> searchAll() {
         if (update) {
+            Hashtable<String, Equipment> ret = new Hashtable<>();
             java.sql.Connection con = null;
             PreparedStatement pstm = null;
             ResultSet rs = null;
             try {
                 con = BDConnection.getConnection();
-
                 String sql = "SELECT " +
                         "   e.code AS equipment_code," +
                         "   e.description," +
@@ -368,10 +227,9 @@ public class EquipmentPosgresqlDAO implements EquipmentDAO {
                         ";" ;
                 pstm = con.prepareStatement(sql);
                 rs = pstm.executeQuery();
-                Hashtable<String, Equipment> ret = new Hashtable<>();
-                equipmentTypeTable = loadEquipmentTypes();
-                portTypeTable = loadPortTypes();
-                locationTable = loadLocations();
+                equipmentTypes = readEquipmentTypes();
+                portTypes = readPortTypes();
+                locations = readLocations();
                 while (rs.next()) {
                     String code = rs.getString("equipment_code");
                     Equipment equipment = ret.get(code);
@@ -381,8 +239,8 @@ public class EquipmentPosgresqlDAO implements EquipmentDAO {
                         equipment.setDescription(rs.getString("description"));
                         equipment.setMake(rs.getString("marca"));
                         equipment.setModel(rs.getString("modelo"));
-                        equipment.setEquipmentType(equipmentTypeTable.get(rs.getString("code_equipment_type")));
-                        equipment.setLocation(locationTable.get(rs.getString("code_location")));
+                        equipment.setEquipmentType(equipmentTypes.get(rs.getString("code_equipment_type")));
+                        equipment.setLocation(locations.get(rs.getString("code_location")));
                         equipment.setStatus(rs.getBoolean("status"));
                         ret.put(code, equipment);
                     }
@@ -392,22 +250,23 @@ public class EquipmentPosgresqlDAO implements EquipmentDAO {
                     int portCapacity = rs.getInt("cantidad");
                     if (portTypeCode != null && portCapacity > 0) {
                         for (int i = 0; i < portCapacity; i++) {
-                            equipment.addPort(portTypeTable.get(portTypeCode));
+                            equipment.addPort(portTypes.get(portTypeCode));
                         }
                     }
                     String ip = rs.getString("ip");
                     if (ip != null && !equipment.getIpAdresses().contains(ip)) {
-                        System.out.println(ip);
                         equipment.addIp(ip);
                     }
                 }
                 rs.close();
                 pstm.close();
-                map = ret;
             } catch (Exception ex) {
                 ex.printStackTrace();
               //  throw new RuntimeException(ex);
             } finally {
+                map = ret;
+                update = false;
+
                 try {
                     if (rs != null)
                         rs.close();
@@ -418,51 +277,21 @@ public class EquipmentPosgresqlDAO implements EquipmentDAO {
                     throw new RuntimeException(ex);
                 }
             }
-            update = false;
         }
         return map;
     }
 
+    @Override
+    public void insertAllIn(String directory) {
+        super.insertAllIn(directory,map);
+    }
 
     @Override
     public Hashtable<String, Equipment> searchAllIn(String directory) {
-        // Validación: el directorio no debe ser nulo ni vacío
-        if (directory == null || directory.trim().isEmpty()) {
-            System.err.println("El directorio proporcionado es nulo o está vacío.");
-            return new Hashtable<>();
-        }
-
-        // Validación: Verificar si el directorio existe y es un directorio válido
-        File dir = new File(directory);
-        if (!dir.exists() || !dir.isDirectory()) {
-            System.err.println("El directorio no existe o no es válido: " + dir.getAbsolutePath());
-            return new Hashtable<>();
-
-        }
-        // Crear la ruta completa al archivo
-        File file = new File(directory, "data"+File.pathSeparator+"equipo.txt");
-
-        // Validación: Verificar si el archivo existe y es un archivo regular
-        if (!file.exists()) {
-            System.err.println("El archivo no existe: " + file.getAbsolutePath());
-            return new Hashtable<>();
-        }
-
-        if (!file.isFile()) {
-            System.err.println("La ruta no es un archivo válido: " + file.getAbsolutePath());
-            return new Hashtable<>();
-        }
-
-        // Validación: Verificar si el archivo es legible
-        if (!file.canRead()) {
-            System.err.println("El archivo no tiene permisos de lectura: " + file.getAbsolutePath());
-            return new Hashtable<>();
-        }
-        Hashtable<String,Equipment> equipmentHashtable =  readFromFile(file.getAbsolutePath());
-        // Intentar leer el archivo y manejar posibles excepciones
-        // Leer el archivo y devolver la lista de conexiones
-        update = false;
-        return equipmentHashtable;
+        for (Equipment equipment: super.searchAllIn(directory).values())
+            if (!map.contains(equipment))
+                map.put(equipment.getCode(), equipment);
+        return map;
     }
 }
 

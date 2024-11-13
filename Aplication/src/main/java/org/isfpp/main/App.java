@@ -40,7 +40,8 @@ public class App {
         settings=new Settings();
         coordinator = new Coordinator();
         calculoGraph =new CalculoGraph();
-        mainMenu = new MainMenu();
+        mainMenu= new MainMenu();
+
         /* Se establecen las relaciones entre clases */
         settings.setCoordinador(coordinator);
         lan.setCoordinator(coordinator);
