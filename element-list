@@ -1,7 +1,10 @@
+org.isfpp.connection
 org.isfpp.controller
 org.isfpp.dao
+org.isfpp.dao.abstractDao
+org.isfpp.dao.posgresql
 org.isfpp.dao.Secuencial
-org.isfpp.datos
+org.isfpp.data
 org.isfpp.exceptions
 org.isfpp.interfaz
 org.isfpp.interfaz.panelesAddons
@@ -13,4 +16,3 @@ org.isfpp.logica
 org.isfpp.main
 org.isfpp.modelo
 org.isfpp.Service
-org.isfpp.test
