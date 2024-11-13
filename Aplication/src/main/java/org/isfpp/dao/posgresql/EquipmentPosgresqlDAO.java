@@ -255,7 +255,6 @@ public class EquipmentPosgresqlDAO extends AbstractEquipmentDAO implements Equip
                     }
                     String ip = rs.getString("ip");
                     if (ip != null && !equipment.getIpAdresses().contains(ip)) {
-                        System.out.println(ip);
                         equipment.addIp(ip);
                     }
                 }

@@ -17,7 +17,7 @@ import java.util.Hashtable;
 import java.util.List;
 
 public class ConnectionPosgresqlDAO extends AbstractConnectionDAO implements ConnectionDAO{
-    private static boolean update;
+    private static boolean update = true;
     private static List<Connection> list;
 
     public ConnectionPosgresqlDAO(){
