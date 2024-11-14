@@ -6,7 +6,7 @@
 
     <groupId>org.isfpp</groupId>
     <artifactId>Aplication</artifactId>
-    <version>1.3-SNAPSHOT</version>
+    <version>1.4-RELEASE</version>
     <packaging>jar</packaging>
 
     <properties>
@@ -49,7 +49,7 @@
         <dependency>
             <groupId>org.isfpp</groupId>
             <artifactId>Aplication</artifactId>
-            <version>1.3-SNAPSHOT</version>
+            <version>1.4-RELEASE</version>
         </dependency>
         <dependency>
             <groupId>log4j</groupId>
