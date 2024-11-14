@@ -200,9 +200,11 @@ public class BarraMenu {
             switch (seleccionado) {
                 case Equipment equipment -> coordinator.eraseEquipment(equipment);
                 case Location location -> coordinator.eraseLocation(location);
-                case PortType puerto -> coordinator.erasePort(puerto);
                 case Connection connection -> coordinator.eraseConnection(connection);
-                default -> System.out.println(rb.getString("clase_no_detectada") + seleccionado.getClass());
+                case EquipmentType equipmentType -> JOptionPane.showMessageDialog(null,rb.getString( "no_editable_tipo_equipo"));
+                case WireType wireType -> JOptionPane.showMessageDialog(null,rb.getString( "no_editable_tipo_cable"));
+                case PortType portType -> JOptionPane.showMessageDialog(null,rb.getString( "no_editable_tipo_puerto"));
+                default -> JOptionPane.showMessageDialog(null,rb.getString( "seleccionar_item_compatible"));
             }
         }else {
             JOptionPane.showMessageDialog(null,rb.getString( "seleccionar_item"));
