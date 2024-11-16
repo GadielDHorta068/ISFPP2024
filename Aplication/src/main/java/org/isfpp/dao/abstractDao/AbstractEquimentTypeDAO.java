@@ -76,23 +76,19 @@ public class AbstractEquimentTypeDAO {
 
     public void insertAllIn(String directory, Hashtable<String, EquipmentType> map) {
         boolean check = true;
-        // Validación: el directorio no debe ser nulo ni vacío
         if (directory == null || directory.trim().isEmpty()) {
             System.err.println("El directorio proporcionado es nulo o está vacío.");
             check = false;
         }
 
-        // Validación: Verificar si el directorio existe y es un directorio válido
         File dir = new File(directory);
         if (!dir.exists() || !dir.isDirectory()) {
             System.err.println("El directorio no existe o no es válido: " + dir.getAbsolutePath());
             check = false;
         }
 
-        // Crear la ruta completa al archivo
         File file = new File(directory, fileName);
 
-        // Validación: Verificar si el archivo existe y es un archivo regular
         if (!file.exists()) {
             System.err.println("El archivo no existe: " + file.getAbsolutePath());
             check = false;
@@ -103,7 +99,6 @@ public class AbstractEquimentTypeDAO {
             check = false;
         }
 
-        // Validación: Verificar si el archivo es legible
         if (!file.canRead()) {
             System.err.println("El archivo no tiene permisos de lectura: " + file.getAbsolutePath());
             check = false;
@@ -114,23 +109,19 @@ public class AbstractEquimentTypeDAO {
     }
 
     public Hashtable<String, EquipmentType> searchAllIn(String directory) {
-        // Validación: el directorio no debe ser nulo ni vacío
         if (directory == null || directory.trim().isEmpty()) {
             System.err.println("El directorio proporcionado es nulo o está vacío.");
             return new Hashtable<>();
         }
 
-        // Validación: Verificar si el directorio existe y es un directorio válido
         File dir = new File(directory);
         if (!dir.exists() || !dir.isDirectory()) {
             System.err.println("El directorio no existe o no es válido: " + dir.getAbsolutePath());
             return new Hashtable<>();
 
         }
-        // Crear la ruta completa al archivo
         File file = new File(directory, fileName);
 
-        // Validación: Verificar si el archivo existe y es un archivo regular
         if (!file.exists()) {
             System.err.println("El archivo no existe: " + file.getAbsolutePath());
             return new Hashtable<>();
@@ -141,14 +132,11 @@ public class AbstractEquimentTypeDAO {
             return new Hashtable<>();
         }
 
-        // Validación: Verificar si el archivo es legible
         if (!file.canRead()) {
             System.err.println("El archivo no tiene permisos de lectura: " + file.getAbsolutePath());
             return new Hashtable<>();
         }
         Hashtable<String,EquipmentType> equipmentHashtable =  readFromFile(file.getAbsolutePath());
-        // Intentar leer el archivo y manejar posibles excepciones
-        // Leer el archivo y devolver la lista de conexiones
 
         return equipmentHashtable; // Retornar la lista de conexiones leídas
     }

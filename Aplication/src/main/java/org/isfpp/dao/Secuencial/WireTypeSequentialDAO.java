@@ -37,7 +37,6 @@ public class WireTypeSequentialDAO extends AbstractWireTypeDAO implements WireTy
     @Override
     public Hashtable<String,WireType> searchAll() {
         if (update) {
-            System.out.println("SAS EN TODA LA BOCA");
             map = readFromFile(fileName);
             update = false;
         }

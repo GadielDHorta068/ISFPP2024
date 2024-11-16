@@ -39,7 +39,6 @@ public class PortTypeSequentialDAO extends AbstractPortTypeDAO implements PortTy
     @Override
     public Hashtable<String, PortType> searchAll() {
         if (update) {
-            System.out.println("SAS EN TODA LA BOCA");
             map = readFromFile(fileName);
             update = false;
         }

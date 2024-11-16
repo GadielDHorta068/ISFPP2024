@@ -37,7 +37,6 @@ public class LocationSequentialDAO extends AbstractLocationDAO implements Locati
     @Override
     public Hashtable<String, Location> searchAll() {
         if (update) {
-            System.out.println("SAS EN TODA LA BOCA");
             map = readFromFile(fileName);
             update = false;
         }

@@ -55,7 +55,7 @@ public class EquipmentPosgresqlDAO extends AbstractEquipmentDAO implements Equip
                     .map(entry -> String.format("INSERT INTO poo2024.RCG_equipment_port (cantidad, code_port_type, code_equipment) " +
                                     "VALUES (%d, '%s', '%s')",
                             entry.getValue(), entry.getKey().getCode(), equipment.getCode()))
-                    .collect(Collectors.joining("; "));  // Separa cada `INSERT` con `;` para ejecutar múltiples instrucciones
+                    .collect(Collectors.joining("; "));
 
             Statement stmtPorts = con.createStatement();
             stmtPorts.executeUpdate(insertsPortFormat);  // Ejecuta todos los inserts de puertos
