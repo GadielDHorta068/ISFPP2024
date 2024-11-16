@@ -46,11 +46,11 @@
             <version>RELEASE</version>
             <scope>compile</scope>
         </dependency>
-        <dependency>
-            <groupId>org.isfpp</groupId>
-            <artifactId>Aplication</artifactId>
-            <version>1.4-RELEASE</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.isfpp</groupId>-->
+<!--            <artifactId>Aplication</artifactId>-->
+<!--            <version>1.4-RELEASE</version>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
